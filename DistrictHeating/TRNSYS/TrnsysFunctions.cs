@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,8 +58,7 @@ namespace DistrictEnergy.TRNSYS
                 file.WriteLine(controlcards.WriteControlCards());
 
                 // Write Equations used in the deck file
-                Equations equation = Equations();
-
+                //**Code goes here**//
 
                 // Write Weather
                 Type15 weather = new Type15(trnsys_model.WeatherFile);

@@ -7,6 +7,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Button Content="Create Network Layers&#xD;&#xA;" HorizontalAlignment="Center" Margin="88,132,88,148" VerticalAlignment="Center" Click="Button_Click" Height="20"/>
+        <Button x:Name="button" Content="Run Trnsys" HorizontalAlignment="Center" Margin="88,157,88,123" VerticalAlignment="Center" Width="124" Click="button_Click_1"/>
 
     </Grid>
 </UserControl>
