@@ -67,13 +67,16 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Rhino">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Rhino.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RunTrnsys.cs" />
     <Compile Include="TRNSYS\CreateDckFile.cs" />
     <Compile Include="TRNSYS\Models.cs" />
     <Compile Include="TRNSYS\TrnsysFunctions.cs" />
