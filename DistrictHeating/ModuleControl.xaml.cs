@@ -33,7 +33,7 @@ namespace DistrictEnergy
 
         private void button_Click_1(object sender, RoutedEventArgs e)
         {
-            RhinoApp.RunScript("RunTrnsys", echo: true);
+            RhinoApp.RunScript("RunTrnsysCommand", echo: true);
         }
     }
 }
