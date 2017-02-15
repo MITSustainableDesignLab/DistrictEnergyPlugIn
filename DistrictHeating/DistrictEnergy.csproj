@@ -77,10 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RunTrnsysCommand.cs" />
-    <Compile Include="TRNSYS\CreateDckFile.cs" />
-    <Compile Include="TRNSYS\Models.cs" />
-    <Compile Include="TRNSYS\TrnsysFunctions.cs" />
-    <Compile Include="TRNSYS\Types.cs" />
     <Compile Include="CreateNetworkLayer.cs" />
     <Compile Include="DistrictEnergyPlugIn.cs" />
     <Compile Include="ModelParameters.cs" />
@@ -108,6 +104,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TrnsysUmiPlatform\ConsoleApp1\TrnsysUmiPlatform.csproj">
+      <Project>{8929276d-f93f-4243-831e-eac6070ed705}</Project>
+      <Name>TrnsysUmiPlatform</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

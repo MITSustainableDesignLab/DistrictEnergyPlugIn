@@ -30,7 +30,7 @@ namespace DistrictEnergy
         public DistrictEnergyPlugIn()
         {
             //ModuleControl = new ModuleControl();
-            SimulateTabHeaderIconSource = Properties.Resources.TabHeaderIcon.ToBitmap().ToImageSource(ImageFormat.Png, tabHeaderIconStream);
+            SimulateTabHeaderIconSource = DistrictEnergy.Properties.Resources.TabHeaderIcon.ToBitmap().ToImageSource(ImageFormat.Png, tabHeaderIconStream);
             Instance = this;
         }
 
