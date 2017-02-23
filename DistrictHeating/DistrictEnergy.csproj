@@ -76,6 +76,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalculateCentroidXYZ.cs" />
+    <Compile Include="ConnectBldgsToPlant.cs" />
+    <Compile Include="OrderNetwork.cs" />
     <Compile Include="RunTrnsysCommand.cs" />
     <Compile Include="CreateNetworkLayer.cs" />
     <Compile Include="DistrictEnergyPlugIn.cs" />
