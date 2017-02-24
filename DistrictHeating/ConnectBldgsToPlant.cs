@@ -49,7 +49,7 @@ namespace DistrictEnergy
 
             doc.Objects.UnselectAll();
 
-            // Select Thermal Plant
+            // Select 1 Thermal Plant
             ObjRef[] plantRefs;
             Result rc1 = RhinoGet.GetMultipleObjects("Select 1 Thermal Plant", true, ObjectType.Brep, out plantRefs);
             if (rc1 != Result.Success)
@@ -93,8 +93,7 @@ namespace DistrictEnergy
                         doc.Views.Redraw();
                         //return Rhino.Commands.Result.Success;
                     }
-                }
-                
+                }  
             }
 
             return Result.Success;

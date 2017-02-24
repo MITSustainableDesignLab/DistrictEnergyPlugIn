@@ -2,6 +2,10 @@
 using Rhino;
 using Rhino.Commands;
 using TrnsysUmiPlatform;
+using Rhino.DocObjects;
+using Mit.Umi.Core;
+using Mit.Umi.RhinoServices;
+using Mit.Umi.RhinoServices.RhinoWrappers;
 
 namespace DistrictEnergy
 {
@@ -27,17 +31,32 @@ namespace DistrictEnergy
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            // TODO: complete command.
+            try
+            {
+                // Gather Rhino doc objects to be translated into Trnsys components
 
-            var trnsys_model = new TrnsysModel();
-            trnsys_model.PlantSelection = "Plant 1";
-            trnsys_model.ModelName = "MyModel";
-            trnsys_model.WeatherFile = "CAN_PQ_Montreal.Intl.AP.716270_CWEC";
-            trnsys_model.HourlyTimestep = 0.25;
+                int layerIndex = doc.Layers.Find("Heating Network", true);
+                Layer lay = doc.Layers[layerIndex];
+                RhinoObject[] objs = doc.Objects.FindByLayer(lay);
 
-            var b = new WriteDckFile(trnsys_model);
 
-            var c = new RunTrnsys(trnsys_model);
+                TrnsysModel trnsys_model = new TrnsysModel();
+
+                //trnsys_model.PlantSelection = "Plant 1";
+                //trnsys_model.ModelName = "MyModel";
+                //trnsys_model.WeatherFile = "CAN_PQ_Montreal.Intl.AP.716270_CWEC";
+                //trnsys_model.HourlyTimestep = 0.25;
+                //trnsys_model.WorkingDirectory = RhinoDoc.ActiveDoc.Path.ToString();
+
+                //var b = new WriteDckFile(trnsys_model, objs);
+
+                //var c = new RunTrnsys(trnsys_model);
+            }
+            catch (Exception e)
+            {
+                RhinoApp.WriteLine($"Error: {e.Message}");
+                return Result.Failure;
+            }
 
             return Result.Success;
         }

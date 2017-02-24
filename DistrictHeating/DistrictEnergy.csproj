@@ -65,6 +65,10 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="TrnsysUmiPlatform">
+      <HintPath>..\..\TrnsysUmiPlatform\ConsoleApp1\bin\Debug\TrnsysUmiPlatform.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
       <Private>False</Private>
@@ -79,6 +83,7 @@
     <Compile Include="CalculateCentroidXYZ.cs" />
     <Compile Include="ConnectBldgsToPlant.cs" />
     <Compile Include="OrderNetwork.cs" />
+    <Compile Include="ReverseCurve.cs" />
     <Compile Include="RunTrnsysCommand.cs" />
     <Compile Include="CreateNetworkLayer.cs" />
     <Compile Include="DistrictEnergyPlugIn.cs" />
@@ -107,13 +112,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\TrnsysUmiPlatform\ConsoleApp1\TrnsysUmiPlatform.csproj">
-      <Project>{8929276d-f93f-4243-831e-eac6070ed705}</Project>
-      <Name>TrnsysUmiPlatform</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
