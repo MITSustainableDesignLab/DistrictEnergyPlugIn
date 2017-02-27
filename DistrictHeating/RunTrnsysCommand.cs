@@ -6,6 +6,7 @@ using Rhino.DocObjects;
 using Mit.Umi.Core;
 using Mit.Umi.RhinoServices;
 using Mit.Umi.RhinoServices.RhinoWrappers;
+using Rhino.ApplicationSettings;
 
 namespace DistrictEnergy
 {
@@ -40,17 +41,12 @@ namespace DistrictEnergy
                 RhinoObject[] objs = doc.Objects.FindByLayer(lay);
 
 
-                TrnsysModel trnsys_model = new TrnsysModel();
+                TrnsysModel trnsys_model =  new TrnsysModel(doc.Name,1, "CAN_PQ_Montreal.Intl.AP.716270_CWEC","Samuel Letellier-Duchesne","No Description", FileSettings.WorkingFolder);
+                RhinoApp.WriteLine(FileSettings.WorkingFolder);
 
-                //trnsys_model.PlantSelection = "Plant 1";
-                //trnsys_model.ModelName = "MyModel";
-                //trnsys_model.WeatherFile = "CAN_PQ_Montreal.Intl.AP.716270_CWEC";
-                //trnsys_model.HourlyTimestep = 0.25;
-                //trnsys_model.WorkingDirectory = RhinoDoc.ActiveDoc.Path.ToString();
+                var b = new WriteDckFile(trnsys_model, objs);
 
-                //var b = new WriteDckFile(trnsys_model, objs);
-
-                //var c = new RunTrnsys(trnsys_model);
+                var c = new RunTrnsys(trnsys_model);
             }
             catch (Exception e)
             {
