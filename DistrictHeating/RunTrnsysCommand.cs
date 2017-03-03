@@ -7,6 +7,10 @@ using Mit.Umi.Core;
 using Mit.Umi.RhinoServices;
 using Mit.Umi.RhinoServices.RhinoWrappers;
 using Rhino.ApplicationSettings;
+using System.Text;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
 
 namespace DistrictEnergy
 {
@@ -32,18 +36,21 @@ namespace DistrictEnergy
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
+            
             try
             {
                 // Gather Rhino doc objects to be translated into Trnsys components
 
                 int layerIndex = doc.Layers.Find("Heating Network", true);
                 Layer lay = doc.Layers[layerIndex];
-                RhinoObject[] objs = doc.Objects.FindByLayer(lay);
+                Rhino.DocObjects.RhinoObject[] objs = doc.Objects.FindByLayer(lay);
+                string weather = GlobalContext.ActiveEpwPath.ToString();
+                TrnsysModel trnsys_model =  new TrnsysModel(doc.Name,1, weather, "Samuel Letellier-Duchesne","No Description", FileSettings.WorkingFolder);
+                RhinoApp.WriteLine("The working Trnsys folder is : " + FileSettings.WorkingFolder);
 
-
-                TrnsysModel trnsys_model =  new TrnsysModel(doc.Name,1, "CAN_PQ_Montreal.Intl.AP.716270_CWEC","Samuel Letellier-Duchesne","No Description", FileSettings.WorkingFolder);
-                RhinoApp.WriteLine(FileSettings.WorkingFolder);
-
+                // Get building loads
+                
+                // Run
                 var b = new WriteDckFile(trnsys_model, objs);
 
                 var c = new RunTrnsys(trnsys_model);

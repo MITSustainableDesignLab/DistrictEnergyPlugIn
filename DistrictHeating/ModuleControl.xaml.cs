@@ -35,5 +35,10 @@ namespace DistrictEnergy
         {
             RhinoApp.RunScript("RunTrnsysCommand", echo: true);
         }
+
+        private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
+        }
     }
 }
