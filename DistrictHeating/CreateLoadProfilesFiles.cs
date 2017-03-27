@@ -1,16 +1,11 @@
-﻿using System;
-using Rhino;
+﻿using Rhino;
 using Rhino.Commands;
 using System.Collections.Generic;
 using System.Text;
 using Rhino.ApplicationSettings;
-using Mit.Umi.Core;
 using System.Linq;
 using System.IO;
-using System.Windows;
-using System.Data.SQLite;
 using Mit.Umi.RhinoServices;
-using Rhino.Input.Custom;
 
 namespace DistrictEnergy
 {

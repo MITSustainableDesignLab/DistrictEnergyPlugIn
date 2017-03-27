@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 using Rhino.PlugIns;
-
-using Mit.Umi.Core;
 using Mit.Umi.RhinoServices;
+using Rhino;
+using Newtonsoft.Json;
 
 namespace DistrictEnergy
 {
@@ -21,7 +19,7 @@ namespace DistrictEnergy
     /// attributes in AssemblyInfo.cs (you might need to click "Project" ->
     /// "Show All Files" to see it in the "Solution Explorer" window).</para>
     ///</summary>
-    public class DistrictEnergyPlugIn : Mit.Umi.RhinoServices.UmiModule
+    public class DistrictEnergyPlugIn : UmiModule
     {
         private UserControl moduleControl;
 
@@ -67,7 +65,51 @@ namespace DistrictEnergy
         protected override LoadReturnCode OnLoad(ref string errorMessage)
         {
             moduleControl = new DistrictEnergy.ModuleControl();
+            GlobalContext.ActiveProjectSwitched += OnActiveProjectSwitched;
             return base.OnLoad(ref errorMessage);
+
+        }
+
+        // The thing to do when a project is saved
+        private void OnDocumentSaved(object sender, DocumentSaveEventArgs e)
+        {
+            DistrictSettings settings = getCurrentSettings();
+            var serialized = JsonConvert.SerializeObject(settings);
+            GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, serialized);
+        }
+
+        private DistrictSettings getCurrentSettings()
+        {
+            throw new NotImplementedException();
+        }
+
+        // The thing to do when a new project is loaded
+        private void OnActiveProjectSwitched(object sender, ProjectSwitchEventArgs e)
+        {
+            if (e.NewProject != null)
+            {
+                
+                DistrictSettings settings = new DistrictSettings();
+                var serialized = JsonConvert.SerializeObject(settings);
+                var settingsPath = GlobalContext.AuxiliaryFileStore.GetFullPath(DistrictSettingsPath.SettingsFilePathInBundle);
+                GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, serialized);
+
+                // Plug these settings into the actual panel form somehow
+                // (How you decide to do that is an orthogonal concern)
+
+                // If OldProject is null, then we need to register the save handler so
+                // our settings actually get saved
+                if (e.OldProject == null)
+                {
+                    RhinoDoc.EndSaveDocument -= OnDocumentSaved;
+                }
+            }
+            else
+            {
+                // If NewProject is null, then we need to deregister our save handler so
+                // that UMI doesn't try to do UMI things when there isn't a project open
+                RhinoDoc.EndSaveDocument -= OnDocumentSaved;
+            }
         }
     }
 }

@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="DistrictEnergy.toDelete"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DistrictEnergy"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <GroupBox Header="Carbon equivalence and costs"
+                                      HorizontalAlignment="Stretch">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="Width" Value="35" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="3" />
+                </Style>
+            </Grid.Resources>
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                                               Text="Electricity"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="0" Grid.Column="1"
+                                               Text="kgCO2/kWh:"/>
+            <TextBox Grid.Row="0" Grid.Column="2"
+                                             Text="{Binding ElectricityCarbon}" />
+            <TextBlock Grid.Row="0" Grid.Column="3"
+                                               Text="$/kWh:"/>
+            <TextBox Grid.Row="0" Grid.Column="4"
+                                             Text="{Binding ElectricityDollars}" />
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Text="Gas"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="1" Grid.Column="1"
+                                               Text="kgCO2/kWh:" />
+            <TextBox Grid.Row="1" Grid.Column="2"
+                                             Text="{Binding GasCarbon}" />
+            <TextBlock Grid.Row="1" Grid.Column="3"
+                                               Text="$/kWh:" />
+            <TextBox Grid.Row="1" Grid.Column="4"
+                                             Text="{Binding GasDollars}" />
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                                               Text="Oil"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="2" Grid.Column="1"
+                                               Text="kgCO2/kWh:" />
+            <TextBox Grid.Row="2" Grid.Column="2"
+                                             Text="{Binding OilCarbon}" />
+            <TextBlock Grid.Row="2" Grid.Column="3"
+                                               Text="$/kWh:" />
+            <TextBox Grid.Row="2" Grid.Column="4"
+                                             Text="{Binding OilDollars}" />
+        </Grid>
+    </GroupBox>
+</UserControl>

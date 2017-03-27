@@ -5,11 +5,6 @@ using System.Collections.Generic;
 using Rhino;
 using Rhino.Commands;
 using Rhino.DocObjects;
-using Rhino.Geometry;
-
-using Mit.Umi.Core;
-using Mit.Umi.RhinoServices;
-using Mit.Umi.RhinoServices.RhinoWrappers;
 
 namespace DistrictEnergy
 {

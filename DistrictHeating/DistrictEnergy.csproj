@@ -36,22 +36,40 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper">
+      <HintPath>..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\bin\Debug\CsvHelper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EnergyPlusWeather">
+      <HintPath>..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\bin\Debug\EnergyPlusWeather.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="GH_IO">
       <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Common Files\McNeel\Rhinoceros\5.0\Plug-ins\Grasshopper (b45a29b1-4343-4035-989e-044e8580d9cf)\0.9.76.0\GH_IO.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Grasshopper">
       <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Common Files\McNeel\Rhinoceros\5.0\Plug-ins\Grasshopper (b45a29b1-4343-4035-989e-044e8580d9cf)\0.9.76.0\Grasshopper.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics.Core, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.Core.3.17.0\lib\net35\MathNet.Numerics.Core.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
+    <Reference Include="System.Core">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net45\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
@@ -69,7 +87,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading, Version=1.0.2856.102, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\TaskParallelLibrary.1.0.2856.0\lib\Net35\System.Threading.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
@@ -81,6 +99,10 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="TrnsysUmiPlatform">
+      <HintPath>..\..\TrnsysUmiPlatform\ConsoleApp1\bin\Debug\TrnsysUmiPlatform.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
       <Private>False</Private>
@@ -94,10 +116,10 @@
   <ItemGroup>
     <Compile Include="CalculateCentroidXYZ.cs" />
     <Compile Include="ConnectBldgsToPlant.cs" />
-    <Compile Include="ConnectitityMatrix.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
+    <Compile Include="DistrictSettings.cs" />
+    <Compile Include="EnergySupplyScheme.cs" />
     <Compile Include="OrderNetwork.cs" />
-    <Compile Include="ReverseCurve.cs" />
     <Compile Include="RunTrnsysCommand.cs" />
     <Compile Include="CreateNetworkLayer.cs" />
     <Compile Include="DistrictEnergyPlugIn.cs" />
@@ -111,9 +133,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="toDelete.xaml.cs">
+      <DependentUpon>toDelete.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="ModuleControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="toDelete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -128,12 +157,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\TrnsysUmiPlatform\ConsoleApp1\TrnsysUmiPlatform.csproj">
-      <Project>{8929276D-F93F-4243-831E-EAC6070ED705}</Project>
-      <Name>TrnsysUmiPlatform</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
