@@ -8,6 +8,7 @@ using Rhino.PlugIns;
 using Mit.Umi.RhinoServices;
 using Rhino;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace DistrictEnergy
 {
@@ -21,13 +22,13 @@ namespace DistrictEnergy
     ///</summary>
     public class DistrictEnergyPlugIn : UmiModule
     {
-        private UserControl moduleControl;
+        //private UserControl moduleControl;
 
         private readonly MemoryStream tabHeaderIconStream = new MemoryStream();
 
         public DistrictEnergyPlugIn()
         {
-            //ModuleControl = new ModuleControl();
+            ModuleControl = new DistrictControl();
             SimulateTabHeaderIconSource = DistrictEnergy.Properties.Resources.TabHeaderIcon.ToBitmap().ToImageSource(ImageFormat.Png, tabHeaderIconStream);
             Instance = this;
         }
@@ -40,10 +41,7 @@ namespace DistrictEnergy
 
         protected override UserControl ModuleControl
         {
-            get
-            {
-                return moduleControl;
-            }
+            get;
         }
 
         protected override ImageSource SimulateTabHeaderIconSource
@@ -59,12 +57,17 @@ namespace DistrictEnergy
             }
         }
 
+        public static DistrictSettings activeSettings
+        {
+            get; set;
+        }
+
         // You can override methods here to change the plug-in behavior on
         // loading and shut down, add options pages to the Rhino _Option command
         // and mantain plug-in wide options in a document.
         protected override LoadReturnCode OnLoad(ref string errorMessage)
         {
-            moduleControl = new DistrictEnergy.ModuleControl();
+            //moduleControl = new DistrictEnergy.ModuleControl();
             GlobalContext.ActiveProjectSwitched += OnActiveProjectSwitched;
             return base.OnLoad(ref errorMessage);
 
@@ -73,35 +76,27 @@ namespace DistrictEnergy
         // The thing to do when a project is saved
         private void OnDocumentSaved(object sender, DocumentSaveEventArgs e)
         {
-            DistrictSettings settings = getCurrentSettings();
+            DistrictSettings settings = activeSettings;
             var serialized = JsonConvert.SerializeObject(settings);
             GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, serialized);
         }
 
-        private DistrictSettings getCurrentSettings()
-        {
-            throw new NotImplementedException();
-        }
 
         // The thing to do when a new project is loaded
         private void OnActiveProjectSwitched(object sender, ProjectSwitchEventArgs e)
         {
             if (e.NewProject != null)
             {
-                
-                DistrictSettings settings = new DistrictSettings();
-                var serialized = JsonConvert.SerializeObject(settings);
-                var settingsPath = GlobalContext.AuxiliaryFileStore.GetFullPath(DistrictSettingsPath.SettingsFilePathInBundle);
-                GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, serialized);
-
-                // Plug these settings into the actual panel form somehow
-                // (How you decide to do that is an orthogonal concern)
+                var settingsPath = e.NewProject.AuxiliaryFiles.SingleOrDefault(aux => Path.GetFileName(aux) == "districtSettings.json");
+                activeSettings = File.Exists(settingsPath) != false
+                                    ? JsonConvert.DeserializeObject<DistrictSettings>(File.ReadAllText(settingsPath))
+                                    : new DistrictSettings();
 
                 // If OldProject is null, then we need to register the save handler so
                 // our settings actually get saved
                 if (e.OldProject == null)
                 {
-                    RhinoDoc.EndSaveDocument -= OnDocumentSaved;
+                    RhinoDoc.EndSaveDocument += OnDocumentSaved;
                 }
             }
             else

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DistrictEnergy.ModuleControl"
+﻿<UserControl x:Class="DistrictEnergy.DistrictControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,16 +9,18 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <GroupBox x:Name="Parameters" Header="Parameters" Margin="10,10,10,0" VerticalAlignment="Top">
+        <GroupBox x:Name="Parameters" Header="Parameters" Margin="10,10,10,0" VerticalAlignment="Top" Height="176">
             <Grid Margin="0,3,0,0" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="2">
-                    <TextBox x:Name="ElectricityGenerationCost" Height="21" Text="{Binding ElectricityGenerationCost}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Cost to generate electricity" TextChanged="Cost_Electricity_TextChanged" Width="35"/>
+                <StackPanel x:Name="Settingsdata" Grid.Column="2">
+                    <TextBox x:Name="ElectricityGenerationCost" Height="21" Text="{Binding ElectricityGenerationCost}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Cost to generate electricity" TextChanged="CostElectricity_TextChanged" Width="35"/>
                     <TextBox x:Name="PriceNaturalGas" Height="21" Text="{Binding PriceNaturalGas}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Price of natural gas" TextChanged="Price_NaturalGas_TextChanged" Width="35"/>
                     <TextBox x:Name="EmissionsElectricGeneration" Height="21" Text="{Binding EmissionsElectricGeneration}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="[MTCO2/kWh for grid -produced electricity" TextChanged="Emissions_ElectricGeneration_TextChanged" Width="35"/>
                     <TextBox x:Name="LossesTransmission" Height="21" Text="{Binding LossesTransmission}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="% of electricity lost as heat during transmission" TextChanged="Transmission_Losses_TextChanged" Width="35"/>
@@ -43,7 +45,7 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="SupplyScheme" Header="Choose an Energy Supply Scheme" Margin="10,10,10,0" Height="131" Grid.Row="1" VerticalAlignment="Top">
+        <GroupBox x:Name="SupplyScheme" Header="Choose an Energy Supply Scheme" Margin="10,11,10,0" Height="131" Grid.Row="1" VerticalAlignment="Top" Grid.RowSpan="1">
             <Grid Height="112" Margin="0,0,0,-3" VerticalAlignment="Top">
                 <RadioButton x:Name="radioButton1" Content="Scenario 1" HorizontalAlignment="Left" Margin="0,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" ToolTip="This is a tooltip" Checked="radioButton1_Checked"/>
                 <RadioButton x:Name="radioButton2" Content="Scenario 2" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
@@ -52,15 +54,28 @@
                 <Button x:Name="button" Content="Run" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,3,5" Grid.Column="1" Click="button_Click_2" Height="20"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="Advanced" Header="More advanced stuff" Margin="10,10,10,0" VerticalAlignment="Top" Height="80" Grid.Row="2">
+        <GroupBox x:Name="Advanced" Header="More advanced stuff" Margin="10,10,10,7" Grid.Row="3">
             <StackPanel Margin="2,0" Orientation="Vertical" VerticalAlignment="Bottom" Height="50">
                 <Label x:Name="label" Content="Still in development..." HorizontalAlignment="Left" Margin="-4,0,0,0" FontSize="8"/>
-                <StackPanel Height="20" Orientation="Horizontal">
-                    <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" Width="133"/>
-                    <Button x:Name="RunTransys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Right" Width="67"/>
-                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" HorizontalAlignment="Left" Padding="3,1"/>
+                    <Button x:Name="RunTrnsys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Left" Grid.Column="2" Padding="3,1"/>
+                    <Button x:Name="Export_to_Studio" Content="Export to Studio" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" Padding="3,1"/>
+
+                </Grid>
+
+
 
             </StackPanel>
+        </GroupBox>
+        <GroupBox x:Name="Network_Topology" Header="Network Topology" Margin="10,10,10,0" Grid.Row="4" Height="73" VerticalAlignment="Top">
+            <Button x:Name="button1" HorizontalAlignment="Left" Margin="0,5,0,0" Height="20" VerticalAlignment="Top" Padding="3,1" Content="Show Topology" Click="button1_Click">
+            </Button>
         </GroupBox>
     </Grid>
 

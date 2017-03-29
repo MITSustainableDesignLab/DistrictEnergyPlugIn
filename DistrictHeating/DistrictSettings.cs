@@ -2,7 +2,7 @@
 
 namespace DistrictEnergy
 {
-    internal class DistrictSettings
+    public class DistrictSettings
     {
         [DefaultValue(0.15)]
         public double ElectricityGenerationCost { get; set; } = 0.15;
