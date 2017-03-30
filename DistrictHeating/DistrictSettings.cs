@@ -52,14 +52,50 @@ namespace DistrictEnergy
             }
         }
 
+        private double _lossesTransmission;
         [DefaultValue(0.18)]
-        public double LossesTransmission { get; set; } = 0.18;
+        public double LossesTransmission
+        {
+            get
+            {
+                return _lossesTransmission;
+            }
+            set
+            {
+                _lossesTransmission = value;
+                OnPropertyChanged("LossesTransmission");
+            }
+        }
 
+        private double _lossesHeatHydronic;
         [DefaultValue(0.18)]
-        public double LossesHeatHydronic { get; set; } = 0.18;
+        public double LossesHeatHydronic
+        {
+            get
+            {
+                return _lossesHeatHydronic;
+            }
+            set
+            {
+                _lossesHeatHydronic = value;
+                OnPropertyChanged("LossesHeatHydronic");
+            }
+        }
 
+        private double _efficPowerGen;
         [DefaultValue(0.18)]
-        public double EfficPowerGen { get; set; } = 0.18;
+        public double EfficPowerGen
+        {
+            get
+            {
+                return _efficPowerGen;
+            }
+            set
+            {
+                _efficPowerGen = value;
+                OnPropertyChanged("EfficPowerGen");
+            }
+        }
 
         // Create the OnPropertyChanged method to raise the event
         protected void OnPropertyChanged(string name)
@@ -68,10 +104,6 @@ namespace DistrictEnergy
         }
 
     }
-
-
-
-
 
     internal class DistrictSettingsPath
     {
