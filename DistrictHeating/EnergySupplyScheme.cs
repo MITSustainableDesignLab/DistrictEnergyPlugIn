@@ -96,7 +96,7 @@ namespace DistrictEnergy
 
             //Write file
             // Create file and test if already exists
-            string file_name = @"C:\tmp\DryBulbData.csv";
+            string file_name = @"C:\UMI\temp\DryBulbData.csv";
             try
             {
                 StreamWriter writer = File.CreateText(file_name);

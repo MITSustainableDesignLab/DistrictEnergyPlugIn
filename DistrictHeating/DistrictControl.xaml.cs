@@ -44,10 +44,10 @@ namespace DistrictEnergy
 
         private void button_Click_2(object sender, RoutedEventArgs e)
         {
-            GetScenario(radioButton1, @"C:\tmp\KuwaitGroup02_v22-sysInputs.py");
-            GetScenario(radioButton2, @"C:\tmp\sample1.py");
-            GetScenario(radioButton3, @"C:\tmp\sample1.py");
-            GetScenario(radioButton4, @"C:\tmp\sample1.py");
+            GetScenario(radioButton1, @"C:\UMI\temp\KuwaitGroup02_v22-sysInputs.py");
+            GetScenario(radioButton2, @"C:\UMI\temp\sample1.py");
+            GetScenario(radioButton3, @"C:\UMI\temp\sample1.py");
+            GetScenario(radioButton4, @"C:\UMI\temp\sample1.py");
         }
 
         private void GetScenario(RadioButton rdoButton, string fileName)
