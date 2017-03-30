@@ -11,7 +11,7 @@ using Rhino.PlugIns;
 [assembly: PlugInDescription(DescriptionType.Email, "samuel.letellier-duchesne@polymtl.ca")]
 [assembly: PlugInDescription(DescriptionType.Phone, "-")]
 [assembly: PlugInDescription(DescriptionType.Fax, "-")]
-[assembly: PlugInDescription(DescriptionType.Organization, "Polytechnique Montreal")]
+[assembly: PlugInDescription(DescriptionType.Organization, "Polytechnique Montreal & Massachusetts Institute of Technology")]
 [assembly: PlugInDescription(DescriptionType.UpdateUrl, "-")]
 [assembly: PlugInDescription(DescriptionType.WebSite, "-")]
 
@@ -19,7 +19,7 @@ using Rhino.PlugIns;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DistrictEnergy")] // Plug-In title is extracted from this
+[assembly: AssemblyTitle("DistrictPlugin")] // Plug-In title is extracted from this
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

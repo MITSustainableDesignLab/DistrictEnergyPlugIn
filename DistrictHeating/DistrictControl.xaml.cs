@@ -14,14 +14,14 @@ namespace DistrictEnergy
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(Page_Loaded);
+            this.DataContext = this;
         }
 
         void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            Settingsdata.DataContext = DistrictEnergyPlugIn.activeSettings; ;
+            Settingsdata.DataContext = DistrictEnergyPlugIn.activeSettings;
         }
-        
-
+      
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RhinoApp.RunScript("CreateNetworkLayer", echo: true);
