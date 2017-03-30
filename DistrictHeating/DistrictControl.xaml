@@ -60,7 +60,7 @@
                     <RowDefinition Height="8*"/>
                 </Grid.RowDefinitions>
                 <GroupBox x:Name="Advanced" Header="More advanced stuff" Margin="0,10,0,0" Grid.RowSpan="1">
-                    <StackPanel Margin="2,0" Orientation="Vertical" VerticalAlignment="Bottom" Height="50">
+                    <StackPanel Margin="0" Orientation="Vertical" VerticalAlignment="Bottom" Height="50">
                         <Label x:Name="label" Content="Still in development..." HorizontalAlignment="Left" Margin="-4,0,0,0" FontSize="8"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -68,9 +68,9 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" HorizontalAlignment="Left" Padding="3,1" Height="20"/>
-                            <Button x:Name="RunTrnsys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Left" Grid.Column="2" Padding="3,1" Height="20"/>
-                            <Button x:Name="Export_to_Studio" Content="Export to Studio" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" Padding="3,1" Height="20"/>
+                            <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" HorizontalAlignment="Left" Padding="3,1"/>
+                            <Button x:Name="RunTrnsys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Left" Grid.Column="2" Padding="3,1"/>
+                            <Button x:Name="Export_to_Studio" Content="Export to Studio" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" Padding="3,1"/>
 
                         </Grid>
 
@@ -78,7 +78,7 @@
 
                     </StackPanel>
                 </GroupBox>
-                <GroupBox x:Name="Network_Topology" Header="Network Topology" Margin="0,10,0,0" Grid.Row="4" Height="73" VerticalAlignment="Top">
+                <GroupBox x:Name="Network_Topology" Header="Network Topology" Margin="0,10,0,0" Grid.Row="4" VerticalAlignment="Top">
                     <Button x:Name="button1" HorizontalAlignment="Left" Margin="0,5,0,0" Height="20" VerticalAlignment="Top" Padding="3,1" Content="Show Topology" Click="button1_Click">
                     </Button>
                 </GroupBox>
