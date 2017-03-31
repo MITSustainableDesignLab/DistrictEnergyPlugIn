@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistrictEnergy", "DistrictHeating\DistrictEnergy.csproj", "{BD1D8B7C-53FD-4DD7-AED6-AB6519FFC862}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8929276D-F93F-4243-831E-EAC6070ED705} = {8929276D-F93F-4243-831E-EAC6070ED705}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrnsysUmiPlatform", "..\TrnsysUmiPlatform\ConsoleApp1\TrnsysUmiPlatform.csproj", "{8929276D-F93F-4243-831E-EAC6070ED705}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,16 +24,6 @@ Global
 		{BD1D8B7C-53FD-4DD7-AED6-AB6519FFC862}.Debug64|Any CPU.Build.0 = Debug64|Any CPU
 		{BD1D8B7C-53FD-4DD7-AED6-AB6519FFC862}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD1D8B7C-53FD-4DD7-AED6-AB6519FFC862}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug5|Any CPU.ActiveCfg = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug5|Any CPU.Build.0 = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug5H|Any CPU.ActiveCfg = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug5H|Any CPU.Build.0 = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug64|Any CPU.ActiveCfg = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Debug64|Any CPU.Build.0 = Debug|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8929276D-F93F-4243-831E-EAC6070ED705}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

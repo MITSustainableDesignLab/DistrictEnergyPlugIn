@@ -2,106 +2,26 @@
 
 namespace DistrictEnergy
 {
-    public class DistrictSettings : INotifyPropertyChanged
+    public class DistrictSettings
     {
-        // Declare the event
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        private double _electricityGeneration;
         [DefaultValue(0.15)]
-        public double ElectricityGenerationCost
-        {
-            get
-            {
-                return _electricityGeneration;
-            }
-            set
-            {
-                _electricityGeneration = value;
-                OnPropertyChanged("ElectricityGenerationCost");
-            }
-        }
+        public double ElectricityGenerationCost { get; set; } = 0.15;
 
-        private double _priceNaturalGas;
         [DefaultValue(0.18)]
-        public double PriceNaturalGas
-        {
-            get
-            {
-                return _priceNaturalGas;
-            }
-            set
-            {
-                _priceNaturalGas = value;
-                OnPropertyChanged("PriceNaturalGas");
-            }
-        }
+        public double PriceNaturalGas { get; set; } = 0.18;
 
-        private double _emissionsElectricGeneration;
         [DefaultValue(0.18)]
-        public double EmissionsElectricGeneration
-        {
-            get
-            {
-                return _emissionsElectricGeneration;
-            }
-            set
-            {
-                _emissionsElectricGeneration = value;
-                OnPropertyChanged("EmissionsElectricGeneration");
-            }
-        }
+        public double EmissionsElectricGeneration { get; set; } = 0.18;
 
-        private double _lossesTransmission;
         [DefaultValue(0.18)]
-        public double LossesTransmission
-        {
-            get
-            {
-                return _lossesTransmission;
-            }
-            set
-            {
-                _lossesTransmission = value;
-                OnPropertyChanged("LossesTransmission");
-            }
-        }
+        public double LossesTransmission { get; set; } = 0.18;
 
-        private double _lossesHeatHydronic;
         [DefaultValue(0.18)]
-        public double LossesHeatHydronic
-        {
-            get
-            {
-                return _lossesHeatHydronic;
-            }
-            set
-            {
-                _lossesHeatHydronic = value;
-                OnPropertyChanged("LossesHeatHydronic");
-            }
-        }
+        public double LossesHeatHydronic { get; set; } = 0.18;
 
-        private double _efficPowerGen;
         [DefaultValue(0.18)]
-        public double EfficPowerGen
-        {
-            get
-            {
-                return _efficPowerGen;
-            }
-            set
-            {
-                _efficPowerGen = value;
-                OnPropertyChanged("EfficPowerGen");
-            }
-        }
-
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        public double EfficPowerGen { get; set; } = 0.18;
 
     }
 

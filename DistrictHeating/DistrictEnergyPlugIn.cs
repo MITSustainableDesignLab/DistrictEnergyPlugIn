@@ -57,7 +57,7 @@ namespace DistrictEnergy
             }
         }
 
-        public static DistrictSettings activeSettings
+        public DistrictSettings activeSettings
         {
             get; set;
         }
