@@ -11,8 +11,8 @@ namespace DistrictEnergy
         [DefaultValue(0.05)]
         public double PriceNaturalGas { get; set; } = 0.05;
 
-        [DefaultValue(0.18)]
-        public double EmissionsElectricGeneration { get; set; } = 0.18;
+        [DefaultValue(4.25E-4)]
+        public double EmissionsElectricGeneration { get; set; } = 4.25E-4;
 
         [DefaultValue(0.05)]
         public double LossesTransmission { get; set; } = 0.05;
