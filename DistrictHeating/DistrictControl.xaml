@@ -40,11 +40,11 @@
                 </StackPanel>
                 <StackPanel Margin="0">
                     <Label x:Name="label5" Content="Electricity Generation" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                    <Label x:Name="label6" Content="Natural Gaz" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                    <Label x:Name="label6" Content="Natural Gas" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
                     <Label x:Name="label7" Content="Electric Generation Emissions" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                    <Label x:Name="label8" Content="Transmission Losses" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                    <Label x:Name="label8_Copy" Content="Hydronic System Losses" Height="21" Margin="39,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                    <Label x:Name="label9" Content="Power generation Efficiency" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                    <Label x:Name="label8" Content="Electrical Transmission Losses" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                    <Label x:Name="label8_Copy" Content="Distribution Heat Losses" Height="21" Margin="39,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                    <Label x:Name="label9" Content="Grid Power Generation Efficiency" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -54,7 +54,7 @@
                 <RadioButton x:Name="radioButton2" Content="Scenario 2" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                 <RadioButton x:Name="radioButton3" Content="Scenario 3" HorizontalAlignment="Left" Margin="0,47,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="radioButton2_Copy_Checked"/>
                 <RadioButton x:Name="radioButton4" Content="Scenario 4" HorizontalAlignment="Left" Margin="0,67,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                <Button x:Name="button" Content="Run" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,3,5" Grid.Column="1" Click="button_Click_2" Height="20"/>
+                <Button x:Name="button" Content="Run" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,3,5" Grid.Column="1" Click="button_Click_2" Height="21"/>
             </Grid>
         </GroupBox>
         <Expander x:Name="expander" Header="Trnsys commands" Margin="10,10,10,0" Grid.Row="2" VerticalAlignment="Top">
@@ -83,7 +83,7 @@
                     </StackPanel>
                 </GroupBox>
                 <GroupBox x:Name="Network_Topology" Header="Network Topology" Margin="0,10,0,0" Grid.Row="4" VerticalAlignment="Top">
-                    <Button x:Name="button1" HorizontalAlignment="Left" Margin="0,5,0,0" Height="20" VerticalAlignment="Top" Padding="3,1" Content="Show Topology" Click="button1_Click">
+                    <Button x:Name="button1" HorizontalAlignment="Left" Margin="0,5,0,0" Height="21" VerticalAlignment="Top" Padding="3,1" Content="Show Topology" Click="button1_Click">
                     </Button>
                 </GroupBox>
             </Grid>

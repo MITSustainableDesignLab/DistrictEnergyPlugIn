@@ -8,20 +8,20 @@ namespace DistrictEnergy
         [DefaultValue(0.15)]
         public double ElectricityGenerationCost { get; set; } = 0.15;
 
-        [DefaultValue(0.18)]
-        public double PriceNaturalGas { get; set; } = 0.18;
+        [DefaultValue(0.05)]
+        public double PriceNaturalGas { get; set; } = 0.05;
 
         [DefaultValue(0.18)]
         public double EmissionsElectricGeneration { get; set; } = 0.18;
 
-        [DefaultValue(0.18)]
-        public double LossesTransmission { get; set; } = 0.18;
+        [DefaultValue(0.05)]
+        public double LossesTransmission { get; set; } = 0.05;
 
-        [DefaultValue(0.18)]
-        public double LossesHeatHydronic { get; set; } = 0.18;
+        [DefaultValue(0.10)]
+        public double LossesHeatHydronic { get; set; } = 0.10;
 
-        [DefaultValue(0.18)]
-        public double EfficPowerGen { get; set; } = 0.18;
+        [DefaultValue(0.40)]
+        public double EfficPowerGen { get; set; } = 0.40;
 
     }
 
