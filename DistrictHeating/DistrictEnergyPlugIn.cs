@@ -9,6 +9,7 @@ using Mit.Umi.RhinoServices;
 using Rhino;
 using Newtonsoft.Json;
 using System.Linq;
+using DistrictEnergy.ViewModels;
 
 namespace DistrictEnergy
 {
@@ -22,7 +23,6 @@ namespace DistrictEnergy
     ///</summary>
     public class DistrictEnergyPlugIn : UmiModule
     {
-        //private UserControl moduleControl;
 
         private readonly MemoryStream tabHeaderIconStream = new MemoryStream();
 
@@ -57,7 +57,7 @@ namespace DistrictEnergy
             }
         }
 
-        public DistrictSettings activeSettings
+        public static DistrictSettings activeSettings
         {
             get; set;
         }
@@ -76,7 +76,7 @@ namespace DistrictEnergy
         // The thing to do when a project is saved
         private void OnDocumentSaved(object sender, DocumentSaveEventArgs e)
         {
-            DistrictSettings settings = activeSettings;
+            DistrictSettings settings = DistrictSettingsViewModel.backing;
             var serialized = JsonConvert.SerializeObject(settings);
             GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, serialized);
         }
@@ -91,6 +91,9 @@ namespace DistrictEnergy
                 activeSettings = File.Exists(settingsPath) != false
                                     ? JsonConvert.DeserializeObject<DistrictSettings>(File.ReadAllText(settingsPath))
                                     : new DistrictSettings();
+
+                DistrictSettingsViewModel.backing = activeSettings;
+                
 
                 // If OldProject is null, then we need to register the save handler so
                 // our settings actually get saved

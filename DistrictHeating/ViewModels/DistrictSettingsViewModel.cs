@@ -1,13 +1,17 @@
 ﻿using Mit.Umi.RhinoServices;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 
 namespace DistrictEnergy.ViewModels
 {
     public class DistrictSettingsViewModel : INotifyPropertyChanged
     {
- 
-        private DistrictSettings backing = new DistrictSettings();
+
+        public static DistrictSettings backing = new DistrictSettings();
+
 
         public DistrictSettingsViewModel()
         {
@@ -17,15 +21,13 @@ namespace DistrictEnergy.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-        private void PopulateFrom(DistrictEnergyPlugIn panel)
+        public void PopulateFrom(RhinoProject panel)
         {
             if (panel == null) { return; }
-            if (panel.activeSettings == null)
-            {
-                throw new ArgumentException("A project settings viewmodel cannot be instantiated from a project with no instantiated settings object");
-            }
-
-            backing = panel.activeSettings;
+            var settingsPath = panel.AuxiliaryFiles.SingleOrDefault(aux => Path.GetFileName(aux) == "districtSettings.json");
+            backing = File.Exists(settingsPath) != false
+                                ? JsonConvert.DeserializeObject<DistrictSettings>(File.ReadAllText(settingsPath))
+                                : new DistrictSettings();
             PropertyChanged(this, new PropertyChangedEventArgs(String.Empty));
         }
 

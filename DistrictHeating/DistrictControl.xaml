@@ -20,9 +20,9 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="2">
-                    <!--<StackPanel.DataContext>
+                    <StackPanel.DataContext>
                         <vm:DistrictSettingsViewModel />
-                    </StackPanel.DataContext>-->
+                    </StackPanel.DataContext>
                     <TextBox x:Name="ElectricityGenerationCost" Height="21" Text="{Binding ElectricityGenerationCost}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Cost to generate electricity" TextChanged="CostElectricity_TextChanged" Width="35"/>
                     <TextBox x:Name="PriceNaturalGas" Height="21" Text="{Binding PriceNaturalGas}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Price of natural gas" TextChanged="Price_NaturalGas_TextChanged" Width="35"/>
                     <TextBox x:Name="EmissionsElectricGeneration" Height="21" Text="{Binding EmissionsElectricGeneration}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="[MTCO2/kWh for grid -produced electricity" TextChanged="Emissions_ElectricGeneration_TextChanged" Width="35"/>
@@ -72,9 +72,9 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" HorizontalAlignment="Left" Padding="3,1"/>
-                            <Button x:Name="RunTrnsys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Left" Grid.Column="2" Padding="3,1"/>
-                            <Button x:Name="Export_to_Studio" Content="Export to Studio" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" Padding="3,1"/>
+                            <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" HorizontalAlignment="Left" Padding="3,1" Height="21"/>
+                            <Button x:Name="RunTrnsys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Left" Grid.Column="2" Padding="3,1" Height="21"/>
+                            <Button x:Name="Export_to_Studio" Content="Export to Studio" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" Padding="3,1" Height="21"/>
 
                         </Grid>
 
@@ -87,9 +87,6 @@
                     </Button>
                 </GroupBox>
             </Grid>
-
-
-
         </Expander>
     </Grid>
 
