@@ -1,8 +1,12 @@
 ﻿using Mit.Umi.RhinoServices;
 using Rhino;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 namespace DistrictEnergy
 {
     /// <summary>
@@ -14,7 +18,7 @@ namespace DistrictEnergy
         {
             InitializeComponent();
         }
-      
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RhinoApp.RunScript("CreateNetworkLayer", echo: true);
@@ -37,7 +41,7 @@ namespace DistrictEnergy
 
         private void button_Click_2(object sender, RoutedEventArgs e)
         {
-            GetScenario(radioButton1, @"C:\UMI\temp\KuwaitGroup02_v22-sysInputs.py");
+            GetScenario(radioButton1, @"C:\UMI\temp\Variable_v24.py");
             GetScenario(radioButton2, @"C:\UMI\temp\sample1.py");
             GetScenario(radioButton3, @"C:\UMI\temp\sample1.py");
             GetScenario(radioButton4, @"C:\UMI\temp\sample1.py");
@@ -47,19 +51,66 @@ namespace DistrictEnergy
         {
             if (rdoButton.IsChecked == true)
             {
+                //Create Loads CSV File
+                RhinoApp.RunScript("DHLoadstoCSV", echo: true);
+
                 //Create weatherfile csv
-                //DryBulbCSV();
+                RhinoApp.RunScript("DHDryBulbCSV", echo: true);
+
+                double a = Convert.ToDouble(ElectricityGenerationCost.Text);
+                double b = Convert.ToDouble(PriceNaturalGas.Text);
+                double c = Convert.ToDouble(EmissionsElectricGeneration.Text);
+                double d = Convert.ToDouble(LossesTransmission.Text);
+                double e = Convert.ToDouble(LossesHeatHydronic.Text);
+                double f = Convert.ToDouble(EfficPowerGen.Text);
 
                 //Run Python.exe
-                string args = " " + ElectricityGenerationCost.Text + " " + PriceNaturalGas.Text + " " + EmissionsElectricGeneration.Text + " " + LossesTransmission.Text + " " + LossesHeatHydronic.Text + " " + EfficPowerGen.Text;
-                //cmd.runcmd(fileName, args);
+                string args = fileName + " " + a + " " + b + " " + c + " " + d + " " + e + " " + f;
+                runcmd(fileName, args);
             }
         }
 
+        private void runcmd(string fileName, string args)
+        {
+            {
+                Process p = new Process();
+                p.StartInfo = new ProcessStartInfo(@"C:\Python27\python.exe")
+                {
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    RedirectStandardInput = false,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    Arguments = args,
+                };
+                p.ErrorDataReceived += cmd_Error;
+                p.OutputDataReceived += cmd_DataReceived;
+                p.EnableRaisingEvents = true;
+
+                p.Start();
+
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+
+                p.WaitForExit();
+
+            }
+        }
+        static void cmd_DataReceived(object sender, DataReceivedEventArgs e)
+        {
+            //RhinoApp.WriteLine("Output from other process");
+            RhinoApp.WriteLine(e.Data);
+        }
+
+        static void cmd_Error(object sender, DataReceivedEventArgs e)
+        {
+            //RhinoApp.WriteLine("Error from other process");
+            RhinoApp.WriteLine(e.Data);
+        }
 
         private void Cost_Electricity_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+
             //GlobalContext.StoreSettings("Cost_Electricity", Cost_Electricity);
         }
 
@@ -85,7 +136,7 @@ namespace DistrictEnergy
 
         private void Effic_PowerGen_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+
         }
 
         private void radioButton1_Checked(object sender, RoutedEventArgs e)
