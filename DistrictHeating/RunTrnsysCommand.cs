@@ -1,16 +1,10 @@
-﻿using System;
+﻿using Mit.Umi.RhinoServices;
 using Rhino;
-using Rhino.Commands;
-using TrnsysUmiPlatform;
-using Rhino.DocObjects;
-using Mit.Umi.Core;
-using Mit.Umi.RhinoServices;
-using Mit.Umi.RhinoServices.RhinoWrappers;
 using Rhino.ApplicationSettings;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
+using Rhino.Commands;
+using Rhino.DocObjects;
+using System;
+using TrnsysUmiPlatform;
 
 namespace DistrictEnergy
 {
