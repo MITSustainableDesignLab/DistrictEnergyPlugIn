@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define DistrictEnergy_TargetDir=$(var.DistrictEnergy.TargetDir)?>
+	<Product Id="*" Name="SetupProject" Language="1033" Version="1.0.0.0" Manufacturer="Sustainbale Design Lab" UpgradeCode="3af8d35b-5b14-4825-8a48-4e37d6a59e80">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="SetupProject" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="SetupProject" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			<!-- <Component Id="ProductComponent"> -->
+				<!-- TODO: Insert files, registry keys, and other resources here. -->
+			<!-- </Component> -->
+			<Component Id="DistrictEnergy.dll" Guid="3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a">
+			  <File Id="DistrictEnergy.dll" Name="DistrictEnergy.dll" Source="$(var.DistrictEnergy_TargetDir)DistrictEnergy.dll" />
+			</Component>
+			<Component Id="CsvHelper.dll" Guid="295ae20f-1de8-4b9b-9072-fca726712b53">
+			  <File Id="CsvHelper.dll" Name="CsvHelper.dll" Source="$(var.DistrictEnergy_TargetDir)CsvHelper.dll" />
+			</Component>
+			<Component Id="EnergyPlusWeather.dll" Guid="8fc205b4-8791-47f2-99f0-4b1e3de070ae">
+			  <File Id="EnergyPlusWeather.dll" Name="EnergyPlusWeather.dll" Source="$(var.DistrictEnergy_TargetDir)EnergyPlusWeather.dll" />
+			</Component>
+			<Component Id="Newtonsoft.Json.dll" Guid="1a7e8834-fcc7-4287-b0c9-85d414f60af1">
+			  <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.DistrictEnergy_TargetDir)Newtonsoft.Json.dll" />
+			</Component>
+			<Component Id="TrnsysUmiPlatform.dll" Guid="f3a4dded-5801-4b2d-b580-13efe53b8174">
+			  <File Id="TrnsysUmiPlatform.dll" Name="TrnsysUmiPlatform.dll" Source="$(var.DistrictEnergy_TargetDir)TrnsysUmiPlatform.dll" />
+			</Component>
+			<Component Id="MathNet.Numerics.dll" Guid="6b30cc80-e0f1-4084-aa9e-63520855456a">
+			  <File Id="MathNet.Numerics.dll" Name="MathNet.Numerics.dll" Source="$(var.DistrictEnergy_TargetDir)MathNet.Numerics.dll" />
+			</Component>
+			<Component Id="RhinoCommon.dll" Guid="ffee52e5-2d42-42e3-9219-bc5c7eb8fb1f">
+			  <File Id="RhinoCommon.dll" Name="RhinoCommon.dll" Source="$(var.DistrictEnergy_TargetDir)RhinoCommon.dll" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
