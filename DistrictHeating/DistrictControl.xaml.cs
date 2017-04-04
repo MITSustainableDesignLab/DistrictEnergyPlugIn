@@ -41,10 +41,10 @@ namespace DistrictEnergy
 
         private void button_Click_2(object sender, RoutedEventArgs e)
         {
-            GetScenario(radioButton1, @"C:\UMI\temp\Variable_v24.py");
-            GetScenario(radioButton2, @"C:\UMI\temp\sample1.py");
-            GetScenario(radioButton3, @"C:\UMI\temp\sample1.py");
-            GetScenario(radioButton4, @"C:\UMI\temp\sample1.py");
+            GetScenario(radioButton1, @"C:\UMI\temp\SC01.py");
+            GetScenario(radioButton2, @"C:\UMI\temp\SC02.py");
+            GetScenario(radioButton3, @"C:\UMI\temp\SC03.py");
+            GetScenario(radioButton4, @"C:\UMI\temp\SC04.py");
         }
 
         private void GetScenario(RadioButton rdoButton, string fileName)
@@ -87,12 +87,14 @@ namespace DistrictEnergy
                 p.OutputDataReceived += cmd_DataReceived;
                 p.EnableRaisingEvents = true;
 
+                Rhino.Runtime.HostUtils.DisplayOleAlerts(false);
                 p.Start();
 
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
 
                 p.WaitForExit();
+                Rhino.Runtime.HostUtils.DisplayOleAlerts(true);
 
             }
         }

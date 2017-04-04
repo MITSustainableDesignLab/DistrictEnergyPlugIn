@@ -69,7 +69,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="TrnsysUmiPlatform">
       <HintPath>..\..\TrnsysUmiPlatform\ConsoleApp1\bin\Debug\TrnsysUmiPlatform.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
