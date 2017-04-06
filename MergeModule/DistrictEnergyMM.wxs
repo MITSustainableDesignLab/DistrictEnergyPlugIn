@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Module Id="DistrictHeatingPlugIn" Language="1033" Version="1.0.0.0">
+		<Package Id="{6E37865E-8156-44BF-95F1-932D47143047}" Manufacturer="SDL" InstallerVersion="200" InstallScope="perUser" />
+
+    <!-- This next bit defines the plug-in file and registry entry for Rhino -->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+      <!-- We do a per-user installation to the Roaming AppData folder -->
+      <Directory Id="AppDataFolder" Name="AppDataFolder">
+        <!-- Our directory is called MARIN Rhino Plug-Ins -->
+        <Directory Id="PLUGINFOLDER" Name="District Energy Plug-Ins" >
+          <!-- this defines the RHP file -->
+          <Component Id="DistrictEnergyPlugIn" Guid="0710815b-0916-4111-94ae-3dabe3dc34de">
+            <!-- Install the plug-in from dev/bin/win64/Release to the plug-in folder-->
+            <File Id="DistrictEnergyPlugIn" Name="DistrictEnergy.rhp" Source="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\bin\DistrictEnergy.rhp"/>
+
+            <!-- this is required because we install the the user profile -->
+            <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall"/>
+
+            <!-- this is required because we install the the user profile -->
+            <RegistryKey Root="HKCU" Key="Software\SDL\RhinoPlugIns">
+              <RegistryValue Name="DistrictEnergyPlugIn" Value="1" KeyPath="yes" Type="integer"/>
+            </RegistryKey>
+
+            <!-- the following will tell Rhinoceros to find the plug-in there on the next run -->
+            <RegistryKey Root="HKCU" Key="Software\McNeel\Rhinoceros\5.0x64\Plug-ins\0710815b-0916-4111-94ae-3dabe3dc34de">
+              <RegistryValue Name="Name" Value="DH Common" Type="string"/>
+              <RegistryValue Name="FileName" Value="[PLUGINFOLDER]DistrictEnergy.rhp" Type="string"/>
+            </RegistryKey>
+
+            <!-- when uninstalling, remove the registry entry for this plug-in -->
+            <RemoveRegistryKey Root="HKCU" Key="Software\McNeel\Rhinoceros\5.0x64\Plug-ins\0710815b-0916-4111-94ae-3dabe3dc34de" Action="removeOnUninstall" />
+          </Component>
+        </Directory>
+      </Directory>
+		</Directory>
+	</Module>
+</Wix>

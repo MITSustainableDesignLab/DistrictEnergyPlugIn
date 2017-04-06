@@ -6,8 +6,9 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>eef33bc1-2e0d-44ec-87d7-8d5f21d7738a</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>MergeModule</OutputName>
+    <OutputName>DistrictEnergyMM</OutputName>
     <OutputType>Module</OutputType>
+    <Name>DistrictEnergyMM</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -19,10 +20,17 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MergeModule.wxs" />
+    <Compile Include="DistrictEnergyMM.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MergeModule.wax" />
+    <ProjectReference Include="..\DistrictEnergy\DistrictEnergy.csproj">
+      <Name>DistrictEnergy</Name>
+      <Project>{bd1d8b7c-53fd-4dd7-aed6-ab6519ffc862}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
