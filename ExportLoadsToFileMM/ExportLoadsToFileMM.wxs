@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Module Id="ExportLoadsToFileMM" Language="1033" Version="1.0.0.0">
-    <Package Id="{B58382A7-026C-41FC-835E-CC857374E956}" Manufacturer="SDL" InstallerVersion="200" InstallScope="perUser" />
+    <Package Id="{B58382A7-026C-41FC-835E-CC857374E956}" Manufacturer="MIT Sustainable Design Lab" InstallerVersion="200" InstallScope="perUser" />
 
     <!-- This next bit defines the plug-in file and registry entry for Rhino -->
     <Directory Id="TARGETDIR" Name="SourceDir">
@@ -18,7 +18,7 @@
             <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall"/>
 
             <!-- this is required because we install the the user profile -->
-            <RegistryKey Root="HKCU" Key="Software\SDL\RhinoPlugIns">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="ExportLoadsToFile" Value="1" KeyPath="yes" Type="integer"/>
             </RegistryKey>
 
