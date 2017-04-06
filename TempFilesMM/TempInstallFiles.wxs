@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLLOCATION">
+            <Component Id="cmp75AC5F2BD9369D86D050EAD655BDD8BD" Guid="{8AEDC1B2-A2CA-47F8-9CD0-AACA4B51973F}">
+                <File Id="fil29E65ED454FFFD950A267D580A7C1D48" KeyPath="yes" Source="$(var.UmiTempLocation)\DryBulbData.csv" />
+            </Component>
+            <Component Id="cmp94E114E8DE610B34208402AF9957D676" Guid="{A0ECCA0B-C2E5-45C5-A4A7-A350E7514722}">
+                <File Id="fil7C253ACFB40A15EDF683A738D3C2991F" KeyPath="yes" Source="$(var.UmiTempLocation)\Loads.csv" />
+            </Component>
+            <Component Id="cmpC13C7AA348517FAEA07F5A7E353EF0BD" Guid="{8CAE8873-2BE9-497B-9007-E8A7231B007F}">
+                <File Id="fil7BD3AC89920EA109356DB6C10203031E" KeyPath="yes" Source="$(var.UmiTempLocation)\SC01.py" />
+            </Component>
+            <Component Id="cmp7622BD805633B2E4B83A4BD2F9DF8A3F" Guid="{86D49799-BB2E-433D-998D-2E86AA11BEC3}">
+                <File Id="fil3C6AD8A03F52A49BE1DACFFBA784B2F4" KeyPath="yes" Source="$(var.UmiTempLocation)\SC02.py" />
+            </Component>
+            <Component Id="cmp69D8DD3279F340493340A98D585C0E12" Guid="{39FF35D7-8133-46F0-8468-0D616CC861CE}">
+                <File Id="fil30C5E42910DB5F95AD6A1C3D6560D32D" KeyPath="yes" Source="$(var.UmiTempLocation)\SC03.py" />
+            </Component>
+            <Component Id="cmp6CB862703EF48640C363C7ECD6261CE1" Guid="{1E0243D4-3CF9-4996-82A4-50895552804C}">
+                <File Id="fil5851A7D08F6DEF4FE0B96B0E49459466" KeyPath="yes" Source="$(var.UmiTempLocation)\SC04.py" />
+            </Component>
+            <Directory Id="dir3A20336C9712F846BA5A617C3BC03758" Name="DHSimulationResults">
+                <Component Id="cmpFFF5C547AEA65163EB6E30B1BCDE2DC0" Guid="{3CE6AA2C-1AE8-4CB7-982A-2A76D4923A20}">
+                    <File Id="filC6ABEE483575B15403B26BA7E7FADB2A" KeyPath="yes" Source="$(var.UmiTempLocation)\DHSimulationResults\SC01_Export_OutputDataFrame.csv" />
+                </Component>
+                <Component Id="cmpF21603DBA90CD1AC90B03EEF17DE3953" Guid="{2F74738F-6210-4E0D-BFEF-87CB3BB4C6DA}">
+                    <File Id="fil225DD7FD28EE374D216F72C3D3D4B58E" KeyPath="yes" Source="$(var.UmiTempLocation)\DHSimulationResults\SC01_Export_ResultsDataFrame.csv" />
+                </Component>
+                <Component Id="cmp95324D1430953407A13ACA9C0ED51E20" Guid="{1726BF5E-045B-467B-B1A5-DF1372FC5287}">
+                    <File Id="fil8C00EBAEF9F2EC028463317729D3A21A" KeyPath="yes" Source="$(var.UmiTempLocation)\DHSimulationResults\SC03_Export_DHCDataFrame.csv" />
+                </Component>
+                <Component Id="cmp0E7844F32E4C1715B8CD314DFB80B364" Guid="{6638A26D-67B6-43FD-BEA6-E3C5D43226B0}">
+                    <File Id="fil42A9DCB0550ACDD83DD481347923A523" KeyPath="yes" Source="$(var.UmiTempLocation)\DHSimulationResults\SC03_Export_OutputDataFrame.csv" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="TempFilesComponentGroup">
+            <ComponentRef Id="cmp75AC5F2BD9369D86D050EAD655BDD8BD" />
+            <ComponentRef Id="cmp94E114E8DE610B34208402AF9957D676" />
+            <ComponentRef Id="cmpC13C7AA348517FAEA07F5A7E353EF0BD" />
+            <ComponentRef Id="cmp7622BD805633B2E4B83A4BD2F9DF8A3F" />
+            <ComponentRef Id="cmp69D8DD3279F340493340A98D585C0E12" />
+            <ComponentRef Id="cmp6CB862703EF48640C363C7ECD6261CE1" />
+            <ComponentRef Id="cmpFFF5C547AEA65163EB6E30B1BCDE2DC0" />
+            <ComponentRef Id="cmpF21603DBA90CD1AC90B03EEF17DE3953" />
+            <ComponentRef Id="cmp95324D1430953407A13ACA9C0ED51E20" />
+            <ComponentRef Id="cmp0E7844F32E4C1715B8CD314DFB80B364" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>

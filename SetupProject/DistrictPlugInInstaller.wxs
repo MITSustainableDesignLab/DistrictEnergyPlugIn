@@ -6,7 +6,7 @@
  
   <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="1.0.1.0" Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
     <!-- Install perUser -->
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" />
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <!-- Customized UI taken literally from http://neilsleightholm.blogspot.nl/2008/08/customised-uis-for-wix.html -->
     <UI Id="WixUI_MondoNoLicense">
@@ -63,7 +63,6 @@
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog"
                Value="MaintenanceWelcomeDlg">1</Publish>
     </UI>
-
     <UIRef Id="WixUI_Common" />
     <WixVariable Id="WixUIBannerBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\banner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\WixUIDialogBmp.bmp"/>
@@ -105,6 +104,7 @@
       <Feature Id="DHcommon" Title="District Energy Plug-In" Level="2" Absent="disallow">
         <MergeRef Id="DistrictEnergyMM" />
         <MergeRef Id="ExportLoadsToFileMM"/>
+        <MergeRef Id ="TempFilesMM"/>
       </Feature>
     </Feature>
 
@@ -115,6 +115,7 @@
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="DistrictEnergyMM" SourceFile="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\MergeModule\bin\Debug\DistrictEnergyMM.msm" Language="1033" DiskId="1" />
       <Merge Id="ExportLoadsToFileMM" SourceFile="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\ExportLoadsToFileMM\bin\Debug\ExportLoadsToFileMM.msm" Language="1033" DiskId="1" />
+      <Merge Id="TempFilesMM" SourceFile="$(var.TempFilesMM.TargetDir)TempFilesMM.msm" Language="1033" DiskId="1" />
     </DirectoryRef>
   </Fragment>
 
