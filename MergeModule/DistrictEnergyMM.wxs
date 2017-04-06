@@ -10,9 +10,9 @@
         <!-- Our directory is called MARIN Rhino Plug-Ins -->
         <Directory Id="PLUGINFOLDER" Name="District Energy Plug-Ins" >
           <!-- this defines the RHP file -->
-          <Component Id="DistrictEnergyPlugIn" Guid="0710815b-0916-4111-94ae-3dabe3dc34de">
+          <Component Id="DistrictEnergyPlugIn" Guid="{4EC8B4C5-E9D3-49E8-9A69-9487D944ACB8}">
             <!-- Install the plug-in from dev/bin/win64/Release to the plug-in folder-->
-            <File Id="DistrictEnergyPlugIn" Name="DistrictEnergy.rhp" Source="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\bin\DistrictEnergy.rhp"/>
+            <File Id="DistrictEnergyPlugIn" Name="DistrictEnergy.rhp" Source="$(var.DistrictEnergy.TargetDir)DistrictEnergy.rhp"/>
 
             <!-- this is required because we install the the user profile -->
             <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall"/>
@@ -24,7 +24,7 @@
 
             <!-- the following will tell Rhinoceros to find the plug-in there on the next run -->
             <RegistryKey Root="HKCU" Key="Software\McNeel\Rhinoceros\5.0x64\Plug-ins\0710815b-0916-4111-94ae-3dabe3dc34de">
-              <RegistryValue Name="Name" Value="DH Common" Type="string"/>
+              <RegistryValue Name="Name" Value="DistrictEnergy" Type="string"/>
               <RegistryValue Name="FileName" Value="[PLUGINFOLDER]DistrictEnergy.rhp" Type="string"/>
             </RegistryKey>
 

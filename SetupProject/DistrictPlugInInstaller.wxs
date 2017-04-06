@@ -3,7 +3,8 @@
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
      xmlns:ui="http://schemas.microsoft.com/wix/">
   <!-- Use Id=* to generate a new GUID each time. Note that UpgradeCode MUST always stay the same for ever and ever. -->
-  <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="1.0.0.0" Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
+ 
+  <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="1.0.1.0" Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
     <!-- Install perUser -->
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" />
 
@@ -66,6 +67,7 @@
     <UIRef Id="WixUI_Common" />
     <WixVariable Id="WixUIBannerBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\banner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\WixUIDialogBmp.bmp"/>
+    
     <!-- Define the MARIN icon to show in the Add/Remove Programs (ARP) dialog-->
     <Icon Id="TabHeaderIcon.ico" SourceFile="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\TabHeaderIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="TabHeaderIcon.ico" />
@@ -119,12 +121,12 @@
   <!-- This is where the dependencies are grouped. See below for the components -->
   <Fragment Id="FRG_DependenciesGroup">
     <ComponentGroup Id="CMPGRP_Dependencies">
-      <ComponentRef Id="DistrictEnergy" />
-      <ComponentRef Id="CsvHelper" />
-      <ComponentRef Id="EnergyPlusWeather" />
+      <ComponentRef Id="DistrictEnergyDLL" />
+      <ComponentRef Id="CsvHelperDLL" />
+      <ComponentRef Id="EnergyPlusWeatherDLL" />
       <!--<ComponentRef Id="NewtonsoftJson" />-->
-      <ComponentRef Id="TrnsysUmiPlatform" />
-      <ComponentRef Id="MathNetNumerics" />
+      <ComponentRef Id="TrnsysUmiPlatformDLL" />
+      <ComponentRef Id="MathNetNumericsDLL" />
     </ComponentGroup>
   </Fragment>
 
@@ -134,73 +136,44 @@
         <Directory Id="PLUGINFOLDER" Name="District Energy Plug-Ins">
 
 
-          <Component Id="DistrictEnergy" Guid="3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a">
+          <Component Id="DistrictEnergyDLL" Guid="3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a">
             <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall"/>
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="DistrictEnergy" Value="1" KeyPath="yes" Type="integer" />
+              <RegistryValue Name="DistrictEnergyDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="DistrictEnergy" Name="DistrictEnergy.dll" Source="$(var.DistrictEnergy.TargetDir)DistrictEnergy.dll"/>
+            <File Id="DistrictEnergyDLL" Name="DistrictEnergy.dll" Source="$(var.DistrictEnergy.TargetDir)DistrictEnergy.dll"/>
           </Component>
 
-          <Component Id="CsvHelper" Guid="{BC056345-4E4F-458B-AC27-2D8421BE6B00}">
+          <Component Id="CsvHelperDLL" Guid="{BC056345-4E4F-458B-AC27-2D8421BE6B00}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="CsvHelper" Value="1" KeyPath="yes" Type="integer" />
+              <RegistryValue Name="CsvHelperDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="CsvHelper" Name="CsvHelper.dll" Source="$(var.ExportLoadsToFile.TargetDir)CsvHelper.dll"/>
+            <File Id="CsvHelperDLL" Name="CsvHelper.dll" Source="$(var.ExportLoadsToFile.TargetDir)CsvHelper.dll"/>
           </Component>
 
-          <Component Id="EnergyPlusWeather" Guid="{E31B8CD5-F5EB-4A12-A191-C66E46344E03}">
+          <Component Id="EnergyPlusWeatherDLL" Guid="{E31B8CD5-F5EB-4A12-A191-C66E46344E03}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="EnergyPlusWeather" Value="1" KeyPath="yes" Type="integer" />
+              <RegistryValue Name="EnergyPlusWeatherDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="EnergyPlusWeather" Name="EnergyPlusWeather.dll" Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll"/>
+            <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll" Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll"/>
           </Component>
 
-          <Component Id="TrnsysUmiPlatform" Guid="{36302638-557D-4B30-9667-22DCA2AB6050}">
+          <Component Id="TrnsysUmiPlatformDLL" Guid="{36302638-557D-4B30-9667-22DCA2AB6050}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="TrnsysUmiPlatform" Value="1" KeyPath="yes" Type="integer" />
+              <RegistryValue Name="TrnsysUmiPlatformDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="TrnsysUmiPlatform" Name="TrnsysUmiPlatform.dll" Source="$(var.TrnsysUmiPlatform.TargetDir)TrnsysUmiPlatform.dll"/>
+            <File Id="TrnsysUmiPlatformDLL" Name="TrnsysUmiPlatform.dll" Source="$(var.TrnsysUmiPlatform.TargetDir)TrnsysUmiPlatform.dll"/>
           </Component>
 
-          <Component Id="MathNetNumerics" Guid="{3843BF61-0F61-4C1D-8FDD-B40B40DC8E29}">
+          <Component Id="MathNetNumericsDLL" Guid="{3843BF61-0F61-4C1D-8FDD-B40B40DC8E29}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="MathNetNumerics" Value="1" KeyPath="yes" Type="integer" />
+              <RegistryValue Name="MathNetNumericsDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="MathNetNumerics" Name="MathNet.Numerics.dll" Source="$(var.EnergyPlusWeather.TargetDir)MathNet.Numerics.dll"/>
+            <File Id="MathNetNumericsDLL" Name="MathNet.Numerics.dll" Source="$(var.EnergyPlusWeather.TargetDir)MathNet.Numerics.dll"/>
           </Component>
 
         </Directory>
       </Directory>
     </Directory>
   </Fragment>
-  
-  <!--<Fragment>
-    <Directory Id="TARGETDIR2" Name="SourceDir">
-      <Directory Id="ProgramFilesFolder">
-        <Directory Id="MyVendor" Name="MyVendor">
-          <Directory Id="INSTALLDIR" Name="MyDir">
-            <Component Id="MyFileId" Guid="{6C484E6B-1DF2-4A14-B06D-EDB5996E35A2}">
-              <File Id="MyFileId" Name="MyFile" Source="C:\Python27" KeyPath="yes" >
-              </File>
-            </Component>
-
-
-            <DirectoryRef Id="TARGETDIR2">
-              <Component Id="MyFileCopyId" Guid="{BF8E09BB-7B3A-4556-8BCB-BA771D44D79A}">
-                <RemoveFile Id="MyFileRemoveId" Name="MyFile" On="install" Directory="C:\UMI\temp\Python27" />
-                <CopyFile Id="MyFileCopyId" FileId="MyFileId" DestinationDirectory="C:\UMI\temp\Python27" />
-              </Component>
-
-
-              <Feature Id="MyFeature" >
-                <ComponentRef Id="MyFileId" />
-                <ComponentRef Id="MyFileCopyId" />
-              </Feature>
-            </DirectoryRef>
-          </Directory>
-        </Directory>
-      </Directory>
-    </Directory>
-  </Fragment>-->
 </Wix>
