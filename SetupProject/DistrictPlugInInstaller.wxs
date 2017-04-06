@@ -64,7 +64,8 @@
     </UI>
 
     <UIRef Id="WixUI_Common" />
-
+    <WixVariable Id="WixUIBannerBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\WixUIDialogBmp.bmp"/>
     <!-- Define the MARIN icon to show in the Add/Remove Programs (ARP) dialog-->
     <Icon Id="TabHeaderIcon.ico" SourceFile="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\TabHeaderIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="TabHeaderIcon.ico" />
