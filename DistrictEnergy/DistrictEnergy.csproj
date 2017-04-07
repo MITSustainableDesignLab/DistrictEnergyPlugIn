@@ -130,5 +130,6 @@
     </StartArguments>
     <StartAction>Program</StartAction>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\DistrictEnergyDocs.XML</DocumentationFile>
   </PropertyGroup>
 </Project>
