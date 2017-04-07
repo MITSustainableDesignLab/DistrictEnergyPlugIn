@@ -101,13 +101,6 @@
     <Content Include="icons\Help.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TrnsysUmiPlatform\ConsoleApp1\TrnsysUmiPlatform.csproj">
-      <Name>TrnsysUmiPlatform</Name>
-      <Project>{8929276d-f93f-4243-831e-eac6070ed705}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="RhinoCommon, Version=5.1.30000.16, Culture=neutral, PublicKeyToken=552281e97c755530">
       <HintPath>..\DistrictEnergy\Resources\RhinoCommon.dll</HintPath>
       <Private>True</Private>
