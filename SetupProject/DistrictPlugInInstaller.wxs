@@ -3,8 +3,8 @@
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
      xmlns:ui="http://schemas.microsoft.com/wix/">
   <!-- Use Id=* to generate a new GUID each time. Note that UpgradeCode MUST always stay the same for ever and ever. -->
- 
-  <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="1.0.1.0" Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
+  <?define ProductVersion="$(fileVersion.ProductVersion($(var.DistrictEnergy.TargetPath)))" ?>
+  <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="$(var.ProductVersion)" Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
     <!-- Install perUser -->
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -64,11 +64,11 @@
                Value="MaintenanceWelcomeDlg">1</Publish>
     </UI>
     <UIRef Id="WixUI_Common" />
-    <WixVariable Id="WixUIBannerBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\banner.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\WixUIDialogBmp.bmp"/>
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.DistrictEnergy.ProjectDir)Resources\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.DistrictEnergy.ProjectDir)Resources\WixUIDialogBmp.bmp"/>
     
     <!-- Define the MARIN icon to show in the Add/Remove Programs (ARP) dialog-->
-    <Icon Id="TabHeaderIcon.ico" SourceFile="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\TabHeaderIcon.ico" />
+    <Icon Id="TabHeaderIcon.ico" SourceFile="$(var.DistrictEnergy.ProjectDir)\Resources\TabHeaderIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="TabHeaderIcon.ico" />
 
     <!-- end of customized UI -->
@@ -113,8 +113,8 @@
   <!-- This is where the merge modules are referenced. Each plug-in creates a merge module -->
   <Fragment Id="FRG_Merge">
     <DirectoryRef Id="TARGETDIR">
-      <Merge Id="DistrictEnergyMM" SourceFile="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\MergeModule\bin\Debug\DistrictEnergyMM.msm" Language="1033" DiskId="1" />
-      <Merge Id="ExportLoadsToFileMM" SourceFile="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\ExportLoadsToFileMM\bin\Debug\ExportLoadsToFileMM.msm" Language="1033" DiskId="1" />
+      <Merge Id="DistrictEnergyMM" SourceFile="$(var.DistrictEnergyMM.TargetDir)DistrictEnergyMM.msm" Language="1033" DiskId="1" />
+      <Merge Id="ExportLoadsToFileMM" SourceFile="$(var.ExportLoadsToFileMM.TargetDir)ExportLoadsToFileMM.msm" Language="1033" DiskId="1" />
       <Merge Id="TempFilesMM" SourceFile="$(var.TempFilesMM.TargetDir)TempFilesMM.msm" Language="1033" DiskId="1" />
     </DirectoryRef>
   </Fragment>
