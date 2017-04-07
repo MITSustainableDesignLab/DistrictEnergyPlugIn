@@ -88,8 +88,8 @@
   <HelpKINode Title="TrnSysType class">
     <HelpKINode Title="TrnSysType Class" Url="html/baced4a8-02ea-f117-1c60-3f69034c45ee.htm" />
     <HelpKINode Title="about TrnSysType class" Url="html/baced4a8-02ea-f117-1c60-3f69034c45ee.htm" />
-    <HelpKINode Title="constructor" Url="html/92087a31-e956-a6f7-9381-52dfd6cfb437.htm" />
     <HelpKINode Title="constructor" Url="html/f3605cf7-6716-e703-b696-184241c34d82.htm" />
+    <HelpKINode Title="constructor" Url="html/92087a31-e956-a6f7-9381-52dfd6cfb437.htm" />
     <HelpKINode Title="fields" Url="html/76a96281-af9a-9b67-f153-d61d5cf4165f.htm" />
     <HelpKINode Title="methods" Url="html/81468522-b36d-0976-c0e8-0fc5b3baf268.htm" />
     <HelpKINode Title="properties" Url="html/98d91891-91a4-aff4-1060-cc25a54fcb1c.htm" />
@@ -109,8 +109,8 @@
   <HelpKINode Title="TrnSysType.NParameters property" Url="html/37b05a23-502b-fae3-8ac9-9e06c572afad.htm" />
   <HelpKINode Title="TrnSysType.Parameter_string property" Url="html/93e6dad6-1aec-5b65-b4eb-5c647a9951c0.htm" />
   <HelpKINode Title="TrnSysType.TrnSysType constructor">
-    <HelpKINode Title="TrnSysType Constructor " Url="html/f3605cf7-6716-e703-b696-184241c34d82.htm" />
     <HelpKINode Title="TrnSysType Constructor " Url="html/92087a31-e956-a6f7-9381-52dfd6cfb437.htm" />
+    <HelpKINode Title="TrnSysType Constructor " Url="html/f3605cf7-6716-e703-b696-184241c34d82.htm" />
   </HelpKINode>
   <HelpKINode Title="TrnSysType.Type_number property" Url="html/90397003-228e-3959-8fe1-8e2a59474e5a.htm" />
   <HelpKINode Title="TrnSysType.Unit_name property" Url="html/8d2400cd-f14c-0a1f-2127-56690f03fa6c.htm" />

@@ -2,41 +2,41 @@
 <HelpTOC>
 
   <HelpTOCNode Title="Welcome to the Support Documentation for the District Energy PlugIn" Url="html/23792159-fbec-4e08-a57f-63688e757943.htm" />
-  <HelpTOCNode Id="33388b45-094d-417b-9105-99b6fa792f12" Title="Version History" Url="html/d1d6df39-df8d-4d28-8584-c2733cbbc069.htm">
+  <HelpTOCNode Id="e9ea8850-652d-49fb-8408-8261ce9d26ec" Title="Version History" Url="html/d1d6df39-df8d-4d28-8584-c2733cbbc069.htm">
     <HelpTOCNode Title="Version 1.0.0.0" Url="html/59db6904-aaab-4b72-929e-677b0ea0587d.htm" />
   </HelpTOCNode>
-  <HelpTOCNode Id="a27be514-b776-4847-97f6-ee5c63ea09e4" Title="TrnsysUmiPlatform" Url="html/3d5ae078-4bcf-ffd9-df27-a6bbd3d3df7d.htm">
-    <HelpTOCNode Id="b9aef064-361e-4802-80eb-a62f7e89a7d1" Title="ControlCards Class" Url="html/b2464c95-3ec4-c621-2954-8946ac1a2883.htm">
+  <HelpTOCNode Id="2ef44edd-497c-4d08-a58d-0a6299c6100f" Title="TrnsysUmiPlatform" Url="html/3d5ae078-4bcf-ffd9-df27-a6bbd3d3df7d.htm">
+    <HelpTOCNode Id="b77e52e7-3f81-4946-9709-2df047487442" Title="ControlCards Class" Url="html/b2464c95-3ec4-c621-2954-8946ac1a2883.htm">
       <HelpTOCNode Title="ControlCards Constructor " Url="html/1ab249df-2b5d-3ca5-3eec-6b9e20664d3e.htm" />
-      <HelpTOCNode Id="82e46663-93a5-46f0-b96f-6b4534f13801" Title="ControlCards Properties" Url="html/ef46717f-7b9b-cd48-8843-61a8dc5e104d.htm">
+      <HelpTOCNode Id="5a2474bf-fa8a-4bb2-ad18-3b27e433bf8c" Title="ControlCards Properties" Url="html/ef46717f-7b9b-cd48-8843-61a8dc5e104d.htm">
         <HelpTOCNode Title="Data_step Property " Url="html/14283de2-28a8-aca7-b582-183e8be2f7d8.htm" />
         <HelpTOCNode Title="Start Property " Url="html/4d813bfa-bd08-e1b2-d04c-00e19909f28b.htm" />
         <HelpTOCNode Title="Stop Property " Url="html/08344b5c-8ba1-eeed-6ded-832d8cbf275a.htm" />
       </HelpTOCNode>
-      <HelpTOCNode Id="3d342592-6f65-4aea-8e34-a48dfc02d642" Title="ControlCards Methods" Url="html/2c85bf0d-07d8-9f1e-28b0-b4432279c7dd.htm">
+      <HelpTOCNode Id="7135fb5b-b7ac-4ab3-bc62-c3ad02361b1c" Title="ControlCards Methods" Url="html/2c85bf0d-07d8-9f1e-28b0-b4432279c7dd.htm">
         <HelpTOCNode Title="WriteControlCards Method " Url="html/f6795e63-6fa3-62ec-f5c0-8822a7b24f12.htm" />
       </HelpTOCNode>
     </HelpTOCNode>
-    <HelpTOCNode Id="0cf4bf72-9e7d-4c6d-896e-61d73e58d84b" Title="Intro Class" Url="html/49717e8e-86d7-b33d-3907-bd00f7cafc32.htm">
+    <HelpTOCNode Id="0352b36f-b98e-4163-94d1-cd190a423654" Title="Intro Class" Url="html/49717e8e-86d7-b33d-3907-bd00f7cafc32.htm">
       <HelpTOCNode Title="Intro Constructor " Url="html/2051ac6e-058b-9b1e-162c-fcfea6e5ee22.htm" />
-      <HelpTOCNode Id="d4718992-50c0-4fd3-8293-14e150ccc866" Title="Intro Properties" Url="html/3d5379eb-473b-62c2-335d-9d22ab2052ed.htm">
+      <HelpTOCNode Id="e0b5db18-2b48-4609-8f79-0d3a43dc840c" Title="Intro Properties" Url="html/3d5379eb-473b-62c2-335d-9d22ab2052ed.htm">
         <HelpTOCNode Title="Creation_Date Property " Url="html/546b4419-4b22-0e31-5e98-92f6490af3cf.htm" />
         <HelpTOCNode Title="Creator Property " Url="html/4fda3fea-c291-8fbc-bcc5-63d653fc313d.htm" />
         <HelpTOCNode Title="Description Property " Url="html/6b5359d3-665e-562a-8da5-d0bdcdb946d2.htm" />
         <HelpTOCNode Title="Modified_Date Property " Url="html/e8f7fe40-0f14-98b4-2d6e-d41d77ea8564.htm" />
       </HelpTOCNode>
-      <HelpTOCNode Id="0409b3a4-4532-4ef7-b650-754fe804b9f8" Title="Intro Methods" Url="html/93a13da6-ea6a-bde6-515d-caa75cb752f6.htm">
+      <HelpTOCNode Id="88d58043-67d9-4625-a55e-c40a583827fc" Title="Intro Methods" Url="html/93a13da6-ea6a-bde6-515d-caa75cb752f6.htm">
         <HelpTOCNode Title="WriteIntro Method " Url="html/cb543805-e638-9f19-e63b-959b1424a91d.htm" />
       </HelpTOCNode>
     </HelpTOCNode>
     <HelpTOCNode Title="NamespaceDoc Class" Url="html/5ef8d0ac-5363-b0ea-b6ff-0313d0fa3042.htm" />
-    <HelpTOCNode Id="1479f859-bf4e-49fc-abba-91a4551866ce" Title="RunTrnsys Class" Url="html/b8d395a5-81e3-e778-ec0c-fc593d347782.htm">
+    <HelpTOCNode Id="09d521fa-5bd6-4220-9d62-338b6b91cc2a" Title="RunTrnsys Class" Url="html/b8d395a5-81e3-e778-ec0c-fc593d347782.htm">
       <HelpTOCNode Title="RunTrnsys Constructor " Url="html/a72dd165-d4fc-c1c8-ce23-53a39dd55d45.htm" />
       <HelpTOCNode Title="RunTrnsys Methods" Url="html/0d71fb8d-2add-eba5-4739-4be30698c119.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="2086563e-93e7-4f81-a3d6-9770fe0c7d2f" Title="TrnsysModel Class" Url="html/4e8eee82-e246-f519-adfe-b6fc00ac4ac3.htm">
+    <HelpTOCNode Id="806cba83-72ff-4a61-b5c7-1e4cbb41773b" Title="TrnsysModel Class" Url="html/4e8eee82-e246-f519-adfe-b6fc00ac4ac3.htm">
       <HelpTOCNode Title="TrnsysModel Constructor " Url="html/d7a9de6b-5e44-e8f8-23bf-57052a96d7c6.htm" />
-      <HelpTOCNode Id="e687ee36-1c19-44af-a786-5ddd47b85c02" Title="TrnsysModel Properties" Url="html/4bbd0e0d-9cfc-f0fa-00ca-e2ed7e09d7ad.htm">
+      <HelpTOCNode Id="e4c79641-d12d-4548-93eb-3ba0f40ec09e" Title="TrnsysModel Properties" Url="html/4bbd0e0d-9cfc-f0fa-00ca-e2ed7e09d7ad.htm">
         <HelpTOCNode Title="CreationDate Property " Url="html/aba0275e-e8f7-1b2a-8fa8-de42cc247f76.htm" />
         <HelpTOCNode Title="Description Property " Url="html/f80cd3ab-0731-9348-9cbb-a94dda6ca28c.htm" />
         <HelpTOCNode Title="HourlyTimestep Property " Url="html/80f71863-36d6-175a-00d5-6da671eb82e1.htm" />
@@ -49,10 +49,10 @@
       </HelpTOCNode>
       <HelpTOCNode Title="TrnsysModel Methods" Url="html/e40a937e-c261-45c9-35d2-ad3e48766695.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="af8981df-4391-48a6-a650-304925df22cf" Title="TrnSysType Class" Url="html/baced4a8-02ea-f117-1c60-3f69034c45ee.htm">
+    <HelpTOCNode Id="8bcfbafc-a41e-4198-afe0-bb08101a0fc7" Title="TrnSysType Class" Url="html/baced4a8-02ea-f117-1c60-3f69034c45ee.htm">
       <HelpTOCNode Title="TrnSysType Constructor " Url="html/f3605cf7-6716-e703-b696-184241c34d82.htm" />
       <HelpTOCNode Title="TrnSysType Constructor " Url="html/92087a31-e956-a6f7-9381-52dfd6cfb437.htm" />
-      <HelpTOCNode Id="75d2c062-5fed-442f-8940-918911b8ec1a" Title="TrnSysType Properties" Url="html/98d91891-91a4-aff4-1060-cc25a54fcb1c.htm">
+      <HelpTOCNode Id="b07947be-3d56-45b7-82f5-a8c49aff98f8" Title="TrnSysType Properties" Url="html/98d91891-91a4-aff4-1060-cc25a54fcb1c.htm">
         <HelpTOCNode Title="Derivatives_string Property " Url="html/9e5c189b-ec30-7cd0-0c1c-acbe7fbc8dbb.htm" />
         <HelpTOCNode Title="External_file Property " Url="html/0a71ac1a-93a6-70cd-c132-c7760a0d4a20.htm" />
         <HelpTOCNode Title="Heading1_string Property " Url="html/091bf564-76a8-c4b6-e58c-d8f1004182b7.htm" />
@@ -67,45 +67,45 @@
         <HelpTOCNode Title="Type_number Property " Url="html/90397003-228e-3959-8fe1-8e2a59474e5a.htm" />
         <HelpTOCNode Title="Unit_name Property " Url="html/8d2400cd-f14c-0a1f-2127-56690f03fa6c.htm" />
       </HelpTOCNode>
-      <HelpTOCNode Id="8fd6caaf-75b2-4700-80fd-28201ee81bec" Title="TrnSysType Methods" Url="html/81468522-b36d-0976-c0e8-0fc5b3baf268.htm">
+      <HelpTOCNode Id="53ac3cc5-f9cd-4119-a87c-cd48109aca20" Title="TrnSysType Methods" Url="html/81468522-b36d-0976-c0e8-0fc5b3baf268.htm">
         <HelpTOCNode Title="WriteDerivatives Method " Url="html/4359f599-1f78-69be-6723-7d662378ea83.htm" />
         <HelpTOCNode Title="WriteInputs Method " Url="html/201cb66b-12a7-97ec-fe04-9fbb2a9c2fc1.htm" />
         <HelpTOCNode Title="WriteParameters Method " Url="html/b1a19483-23a7-9bcb-ce4f-ab0cbcc01a9d.htm" />
         <HelpTOCNode Title="WriteType Method " Url="html/6e17eca0-cd4b-21bb-dd60-d87005af718c.htm" />
       </HelpTOCNode>
-      <HelpTOCNode Id="35af2587-750a-460b-9452-d47978458371" Title="TrnSysType Fields" Url="html/76a96281-af9a-9b67-f153-d61d5cf4165f.htm">
+      <HelpTOCNode Id="b1f84b14-7b65-47fa-bd91-947448adaf20" Title="TrnSysType Fields" Url="html/76a96281-af9a-9b67-f153-d61d5cf4165f.htm">
         <HelpTOCNode Title="Base_External_file_number Field" Url="html/394f9393-fb1d-18a8-bc64-081d5d611290.htm" />
         <HelpTOCNode Title="BaseUnit_number Field" Url="html/a0f0f2f1-61c6-1c7c-e2fd-c5922e5ed3e3.htm" />
         <HelpTOCNode Title="External_file_number Field" Url="html/cf15d0bb-5c50-df84-1f21-2ba3afa16213.htm" />
         <HelpTOCNode Title="Unit_number Field" Url="html/e7c86005-a478-1780-3a3c-73e9b09b20a9.htm" />
       </HelpTOCNode>
     </HelpTOCNode>
-    <HelpTOCNode Id="b64f1589-851e-4c44-9135-6c43b66f0f3c" Title="Type11 Class" Url="html/cb8d794e-d610-9429-7c83-2adf468efd61.htm">
+    <HelpTOCNode Id="a602d28b-b9ef-4e67-8502-967d4deb4ff2" Title="Type11 Class" Url="html/cb8d794e-d610-9429-7c83-2adf468efd61.htm">
       <HelpTOCNode Title="Type11 Constructor " Url="html/88331120-281f-0496-257d-ed0046b2e331.htm" />
       <HelpTOCNode Title="Type11 Properties" Url="html/a1af3e51-6ed4-6e4a-6248-be8e658efbd3.htm" />
       <HelpTOCNode Title="Type11 Methods" Url="html/638e5b4e-f12e-4dac-6992-e2eaa733cafc.htm" />
       <HelpTOCNode Title="Type11 Fields" Url="html/8b841e89-c6ba-cb86-e994-fee9446df4df.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="1d67391b-b772-4a5c-b3e1-9028bda95f32" Title="Type15_3 Class" Url="html/77e90df0-1757-9992-0856-36ea75cf076b.htm">
+    <HelpTOCNode Id="52dec9e4-e71b-4168-a1ea-4cb8d434d333" Title="Type15_3 Class" Url="html/77e90df0-1757-9992-0856-36ea75cf076b.htm">
       <HelpTOCNode Title="Type15_3 Constructor " Url="html/f17514d9-6b07-a90d-df05-3f53244e08ec.htm" />
       <HelpTOCNode Title="Type15_3 Properties" Url="html/fefbd1d7-9d49-8a6f-4ee2-f0c2b2bd58f2.htm" />
       <HelpTOCNode Title="Type15_3 Methods" Url="html/44c3509e-4586-bd87-2646-a7992f1a326b.htm" />
       <HelpTOCNode Title="Type15_3 Fields" Url="html/156c2f32-3ff1-4664-42dc-75f6e8e8963a.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="8fd51924-2fed-4014-9fc8-19063ba21d44" Title="Type25c Class" Url="html/64ab5fca-95dc-e4f7-7b4b-568071336449.htm">
+    <HelpTOCNode Id="71e4ff55-2316-4bb3-9eed-2a00f2098c78" Title="Type25c Class" Url="html/64ab5fca-95dc-e4f7-7b4b-568071336449.htm">
       <HelpTOCNode Title="Type25c Constructor " Url="html/29567369-b5d9-9064-d3ac-eba526dbaa83.htm" />
       <HelpTOCNode Title="Type25c Properties" Url="html/944db6cd-a5f4-c2f8-791c-c3eb38493c1c.htm" />
       <HelpTOCNode Title="Type25c Methods" Url="html/4265a86c-152a-0ffd-92a6-98db4f39b477.htm" />
       <HelpTOCNode Title="Type25c Fields" Url="html/7568e997-fdd6-dd73-bb0c-b6644dd927d5.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="c14cba31-651f-452d-98fa-be9c01bacbd4" Title="Type31 Class" Url="html/6de6a307-c3f6-9b75-ae2c-fdfa2f8f0310.htm">
+    <HelpTOCNode Id="abf6d6ef-4aeb-4cd8-bcf5-69ba306856f9" Title="Type31 Class" Url="html/6de6a307-c3f6-9b75-ae2c-fdfa2f8f0310.htm">
       <HelpTOCNode Title="Type31 Constructor " Url="html/d4c46bc7-d488-8f35-1720-8dcdcd3175bf.htm" />
       <HelpTOCNode Title="Type31 Properties" Url="html/c3019178-b039-21eb-1ec9-d6ecac19b06d.htm" />
-      <HelpTOCNode Id="ee41d370-96ed-4f48-bf7b-954cf4c12c2c" Title="Type31 Methods" Url="html/e318aae7-29d0-35ed-e38a-76fc7fcd7f35.htm">
+      <HelpTOCNode Id="50ed0d16-d8eb-4c6e-bbc0-0aa87349ea91" Title="Type31 Methods" Url="html/e318aae7-29d0-35ed-e38a-76fc7fcd7f35.htm">
         <HelpTOCNode Title="DoNotAllowNegativeValues Method " Url="html/1c770d53-50ff-84e0-f410-c08a3b17ee8e.htm" />
         <HelpTOCNode Title="SetInputs Method " Url="html/ff87a6b1-a3c6-7f88-a887-b827dbcfc60c.htm" />
       </HelpTOCNode>
-      <HelpTOCNode Id="14b4ee03-02d1-45cc-8769-f60604ededa3" Title="Type31 Fields" Url="html/583ea10f-bb56-3d7d-3638-9dfa583cfd8e.htm">
+      <HelpTOCNode Id="0f0714ec-0580-4e6d-b7c7-9094e98504d1" Title="Type31 Fields" Url="html/583ea10f-bb56-3d7d-3638-9dfa583cfd8e.htm">
         <HelpTOCNode Title="_fluidDensity Field" Url="html/0a360386-7bb1-7050-2830-ed3115359d00.htm" />
         <HelpTOCNode Title="_fluidSpecificHeat Field" Url="html/d39b3259-2d42-3eca-7964-e6d3bc63bf52.htm" />
         <HelpTOCNode Title="_initialFluidTemp Field" Url="html/92c0fa1c-64f2-ab74-c87b-e3642d04e92d.htm" />
@@ -115,31 +115,31 @@
         <HelpTOCNode Title="_pipeLength Field" Url="html/43d24ef1-0d5a-f7cb-122b-3cf6336326ec.htm" />
       </HelpTOCNode>
     </HelpTOCNode>
-    <HelpTOCNode Id="5eee3c55-6ee7-4b49-97c5-ce00ef0805b3" Title="Type46 Class" Url="html/58519cfc-bbc1-3508-34e5-3c7a60af6fa8.htm">
+    <HelpTOCNode Id="31266e40-e9b3-4e5c-af7f-4ec52c51e6ad" Title="Type46 Class" Url="html/58519cfc-bbc1-3508-34e5-3c7a60af6fa8.htm">
       <HelpTOCNode Title="Type46 Constructor " Url="html/acf17657-90fb-c845-8f8a-7f989fac0a7d.htm" />
       <HelpTOCNode Title="Type46 Properties" Url="html/41b9beea-260d-12e6-e123-701983b63ee2.htm" />
       <HelpTOCNode Title="Type46 Methods" Url="html/46d7d86d-d445-153b-b8ec-6e6b14bb2c8e.htm" />
       <HelpTOCNode Title="Type46 Fields" Url="html/000106fa-451c-6f70-fc1c-d0e9987174db.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="922639e3-26bb-4ea2-971c-41af21cedafa" Title="Type659 Class" Url="html/78dc1120-fe90-a44a-553c-3e8f8a8ea9eb.htm">
+    <HelpTOCNode Id="c87f3407-6568-401c-be28-e8967f78af17" Title="Type659 Class" Url="html/78dc1120-fe90-a44a-553c-3e8f8a8ea9eb.htm">
       <HelpTOCNode Title="Type659 Constructor " Url="html/80b315b5-4167-5d27-a555-d0429effdb18.htm" />
       <HelpTOCNode Title="Type659 Properties" Url="html/577ffbda-7867-e548-360d-7dc83d130071.htm" />
       <HelpTOCNode Title="Type659 Methods" Url="html/0b0153e5-e694-3474-6d76-c2bcc58d3427.htm" />
       <HelpTOCNode Title="Type659 Fields" Url="html/0afdfe8e-e5a5-70d2-f00d-21a9bc4f4399.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="4c6405e3-215f-40f3-bf87-c912e2b4916b" Title="Type741 Class" Url="html/16519dad-6905-8d66-06fc-e53f7f53630f.htm">
+    <HelpTOCNode Id="f83854aa-7528-4866-9674-c9d1e2fc239c" Title="Type741 Class" Url="html/16519dad-6905-8d66-06fc-e53f7f53630f.htm">
       <HelpTOCNode Title="Type741 Constructor " Url="html/97811d7a-dba7-8075-95fa-8b5e15d34949.htm" />
       <HelpTOCNode Title="Type741 Properties" Url="html/ee77d4b9-0c95-7792-c7c3-fe723b1c632b.htm" />
       <HelpTOCNode Title="Type741 Methods" Url="html/f4948b99-ed23-0d9e-1056-e39c47a2bc7a.htm" />
       <HelpTOCNode Title="Type741 Fields" Url="html/2ea56c1d-d1b0-9c27-728c-c5f140d70c33.htm" />
     </HelpTOCNode>
-    <HelpTOCNode Id="e6fd7086-36ce-417b-9b81-dd1b2cfa9f3a" Title="WriteDckFile Class" Url="html/da92e166-7b7f-6b9f-3001-42bfd57becf5.htm">
-      <HelpTOCNode Id="754b59cf-5998-448d-b8c0-e0dce8e096d8" Title="WriteDckFile Constructor " Url="html/7bda85f2-adaa-debb-6499-190f5ef36c10.htm">
+    <HelpTOCNode Id="bd10dcd3-5448-4d01-8170-3864d806d8c3" Title="WriteDckFile Class" Url="html/da92e166-7b7f-6b9f-3001-42bfd57becf5.htm">
+      <HelpTOCNode Id="4b67e91d-976f-46ae-ae0a-499be3d82250" Title="WriteDckFile Constructor " Url="html/7bda85f2-adaa-debb-6499-190f5ef36c10.htm">
         <HelpTOCNode Title="WriteDckFile Constructor (TrnsysModel)" Url="html/e325e2f7-fa6a-f609-b530-86fbdf812f3f.htm" />
         <HelpTOCNode Title="WriteDckFile Constructor (TrnsysModel, RhinoObject[])" Url="html/0cb31cc3-dd78-4846-b850-8f942dbd499b.htm" />
       </HelpTOCNode>
       <HelpTOCNode Title="WriteDckFile Methods" Url="html/24f7758e-8b49-8725-30a7-db3ec7410770.htm" />
-      <HelpTOCNode Id="01ca4f2a-877a-49b0-b6c1-fc392d83c900" Title="WriteDckFile Fields" Url="html/d6fad528-9fda-58ec-b9c0-3dad3c995884.htm">
+      <HelpTOCNode Id="a8d5ef35-8285-4a1e-8b1a-9ce003e3d015" Title="WriteDckFile Fields" Url="html/d6fad528-9fda-58ec-b9c0-3dad3c995884.htm">
         <HelpTOCNode Title="trnsys_model Field" Url="html/d249c180-e743-768c-92d8-13723532a2bf.htm" />
       </HelpTOCNode>
     </HelpTOCNode>
