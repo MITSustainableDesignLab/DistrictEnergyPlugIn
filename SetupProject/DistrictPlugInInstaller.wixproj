@@ -84,7 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixFileVersionExtension">
-      <HintPath>..\..\..\..\..\..\..\Downloads\WixFileVersionExtension\WixFileVersionExtension.dll</HintPath>
+      <HintPath>..\lib\WixFileVersionExtension.dll</HintPath>
       <Name>WixFileVersionExtension</Name>
     </WixExtension>
     <WixExtension Include="WixUtilExtension">

@@ -2,20 +2,20 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="INSTALLLOCATION">
-            <Component Id="cmpC13C7AA348517FAEA07F5A7E353EF0BD" Guid="{7B7D6DD9-E08A-4343-AF99-5F30146EE934}">
+            <Component Id="cmpC13C7AA348517FAEA07F5A7E353EF0BD" Guid="{F9E29B47-052D-4CC8-B178-3AFB68EE134F}">
                 <File Id="fil7BD3AC89920EA109356DB6C10203031E" KeyPath="yes" Source="$(var.UmiTempLocation)\SC01.py" />
             </Component>
-            <Component Id="cmp7622BD805633B2E4B83A4BD2F9DF8A3F" Guid="{27FFACE2-6E64-4638-8D26-D540D8F45A8A}">
+            <Component Id="cmp7622BD805633B2E4B83A4BD2F9DF8A3F" Guid="{220FDE6F-8841-49AA-B11E-0C7D38710DA1}">
                 <File Id="fil3C6AD8A03F52A49BE1DACFFBA784B2F4" KeyPath="yes" Source="$(var.UmiTempLocation)\SC02.py" />
             </Component>
-            <Component Id="cmp69D8DD3279F340493340A98D585C0E12" Guid="{2A02A056-1546-499F-9C76-CFFF11B4EE39}">
+            <Component Id="cmp69D8DD3279F340493340A98D585C0E12" Guid="{76E472EB-DF45-498B-94DE-C265E7560A5D}">
                 <File Id="fil30C5E42910DB5F95AD6A1C3D6560D32D" KeyPath="yes" Source="$(var.UmiTempLocation)\SC03.py" />
             </Component>
-            <Component Id="cmp6CB862703EF48640C363C7ECD6261CE1" Guid="{70A632B7-3514-40CE-B3EA-7DD7AA7FF629}">
+            <Component Id="cmp6CB862703EF48640C363C7ECD6261CE1" Guid="{98E5A385-7FE4-4399-9D00-9637C495D900}">
                 <File Id="fil5851A7D08F6DEF4FE0B96B0E49459466" KeyPath="yes" Source="$(var.UmiTempLocation)\SC04.py" />
             </Component>
             <Directory Id="dir3A20336C9712F846BA5A617C3BC03758" Name="DHSimulationResults">
-                <Component Id="cmp2C5614441C66FA2F2722468548613BF4" Guid="{744FBCE4-0015-4EAE-BBE0-97A4609FD024}" KeyPath="yes">
+                <Component Id="cmp2C5614441C66FA2F2722468548613BF4" Guid="{C8F1E36B-EDFF-44AA-86E5-7FD7ECEDD5E0}" KeyPath="yes">
                     <CreateFolder />
                 </Component>
             </Directory>
