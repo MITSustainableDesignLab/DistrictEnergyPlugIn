@@ -37,13 +37,13 @@ namespace DistrictEnergy
 
         private void button_Click_2(object sender, RoutedEventArgs e)
         {
-            GetScenario(radioButton1, @"C:\UMI\temp\SC01.py");
-            GetScenario(radioButton2, @"C:\UMI\temp\SC02.py");
-            GetScenario(radioButton3, @"C:\UMI\temp\SC03.py");
-            GetScenario(radioButton4, @"C:\UMI\temp\SC04.py");
+            GetScenario(radioButton1, 1);
+            GetScenario(radioButton2, 2);
+            GetScenario(radioButton3, 3);
+            GetScenario(radioButton4, 4);
         }
 
-        private void GetScenario(RadioButton rdoButton, string fileName)
+        private void GetScenario(RadioButton rdoButton, int scenario)
         {
             if (rdoButton.IsChecked == true)
             {
@@ -61,16 +61,16 @@ namespace DistrictEnergy
                 double f = Convert.ToDouble(EfficPowerGen.Text);
 
                 //Run Python.exe
-                string args = fileName + " " + a + " " + b + " " + c + " " + d + " " + e + " " + f;
-                runcmd(fileName, args);
+                string args = scenario + " " + a + " " + b + " " + c + " " + d + " " + e + " " + f;
+                runcmd(args);
             }
         }
 
-        private void runcmd(string fileName, string args)
+        private void runcmd(string args)
         {
             {
                 Process p = new Process();
-                p.StartInfo = new ProcessStartInfo(@"C:\Python27\python.exe")
+                p.StartInfo = new ProcessStartInfo(@"C:\UMI\temp\DEenginePython\DEenginePython.exe")
                 {
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,

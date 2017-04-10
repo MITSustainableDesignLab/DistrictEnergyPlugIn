@@ -12,7 +12,7 @@ namespace TrnsysUmiPlatform
         /// <param name="weather"></param>
         /// <param name="projectcreator"></param>
         /// <param name="description"></param>
-        /// <param name="directory"></param>
+        /// <param name="directory">Where to save the dck file and performe the simulation</param>
         public TrnsysModel(string modelname, int hourlytimestep, string weather, string projectcreator, string description, string directory)
         {
             ModelName = modelname;

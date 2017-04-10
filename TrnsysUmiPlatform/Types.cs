@@ -52,6 +52,7 @@ namespace TrnsysUmiPlatform
         public string External_file { get; set; }
         private static int Base_External_file_number = 29;
         public int External_file_number;
+        public string ProformaPath;
 
         public string WriteParameters()
         {
@@ -70,38 +71,39 @@ namespace TrnsysUmiPlatform
 
         public string WriteType()
         {
-            string type_string = "* Model \"" + Unit_name + "\" (Type " + Type_number.ToString() + ")\n*\n\n";
-            type_string += "UNIT " + Unit_number.ToString() + " TYPE " + Type_number.ToString() + "\t " + Unit_name.ToString() + "\n";
+            string type_string = "* Model \"" + Unit_name + "\" (Type " + Type_number.ToString() + ")\r\n*\r\n\r\n";
+            type_string += "UNIT " + Unit_number.ToString() + " TYPE " + Type_number.ToString() + "\t " + Unit_name.ToString() + "\r\n";
+            type_string += "*$Model";
             if (NParameters > 0)
             {
-                type_string += "PARAMETERS " + NParameters.ToString() + "\n";
+                type_string += "PARAMETERS " + NParameters.ToString() + "\r\n";
                 type_string += WriteParameters();
             }
 
             if (NInputs > 0)
             {
-                type_string += "INPUTS " + NInputs.ToString() + "\n";
+                type_string += "INPUTS " + NInputs.ToString() + "\r\n";
                 type_string += WriteInputs();
-                type_string += "*** INITIAL INPUT VALUES\n";
+                type_string += "*** INITIAL INPUT VALUES\r\n";
                 string input_str = String.Join(" ", Initial_inputs);
                 type_string += input_str;
             }
 
             if (NDerivatives > 0)
             {
-                type_string += "\nDERIVATIVES " + NDerivatives.ToString() + "\n";
+                type_string += "\r\nDERIVATIVES " + NDerivatives.ToString() + "\r\n";
                 type_string += WriteDerivatives();
                 type_string += Heading1_string;
                 type_string += Heading2_string;
-                type_string += Labels_string + "\n";
+                type_string += Labels_string + "\r\n";
             }
 
             if (External_file != "")
             {
-                type_string += "\n*** External files\nASSIGN \"" + External_file + "\" " + External_file_number + "\n";
+                type_string += "\r\n*** External files\r\nASSIGN \"" + External_file + "\" " + External_file_number + "\r\n";
             }
 
-            type_string += "\n*------------------------------------------------------------------------------\n";
+            type_string += "\r\n*------------------------------------------------------------------------------\r\n";
 
             return type_string;
         }
@@ -115,15 +117,15 @@ namespace TrnsysUmiPlatform
         /// <param name="weather_file">Which file contains the Energy+ Weather Data</param>
         public Type15_3(string weather_file) : base("Weather", "15-3", 9, 0, weather_file)
         {
-            this.Parameter_string = "3\t\t! 1 File Type\n" +
-                                    this.External_file_number + "\t\t! 2 Logical unit\n" +
-                                    "3\t\t! 3 Tilted Surface Radiation Mode\n" +
-                                    "0.2\t\t! 4 Ground reflectance -no snow\n" +
-                                    "0.7\t\t! 5 Ground reflectance -snow cover\n" +
-                                    "1\t\t! 6 Number of surfaces\n" +
-                                    "1\t\t! 7 Tracking mode\n" +
-                                    "0.0\t\t! 8 Slope of surface\n" +
-                                    "0\t\t! 9 Azimut of surface\n";
+            this.Parameter_string = "3\t\t! 1 File Type\r\n" +
+                                    this.External_file_number + "\t\t! 2 Logical unit\r\n" +
+                                    "3\t\t! 3 Tilted Surface Radiation Mode\r\n" +
+                                    "0.2\t\t! 4 Ground reflectance -no snow\r\n" +
+                                    "0.7\t\t! 5 Ground reflectance -snow cover\r\n" +
+                                    "1\t\t! 6 Number of surfaces\r\n" +
+                                    "1\t\t! 7 Tracking mode\r\n" +
+                                    "0.0\t\t! 8 Slope of surface\r\n" +
+                                    "0\t\t! 9 Azimut of surface\r\n";
         }
     }
     public class Type25c:TrnSysType
@@ -138,7 +140,7 @@ namespace TrnsysUmiPlatform
         public Type25c(string filename, int nInputs, string input_string, string heanding1_string) :
             base(filename, "25", 10, nInputs, filename + ".txt")
         {
-            this.Parameter_string = "1\t\t! 1 Printing interval\n0\t\t! 2 Start time\n8760\t\t! 3 Stop time\n" + this.External_file_number + "\t\t! 4 Logical unit\n1\t\t! 5 Units printing mode\n0\t\t! 6 Relative or absolute start time\n-1\t\t! 7 Overwrite or Append\n-1\t\t! 8 Print header\n0\t\t! 9 Delimiter\n1\t\t! 10 Print labels\n";
+            this.Parameter_string = "1\t\t! 1 Printing interval\r\n0\t\t! 2 Start time\r\n8760\t\t! 3 Stop time\r\n" + this.External_file_number + "\t\t! 4 Logical unit\r\n1\t\t! 5 Units printing mode\r\n0\t\t! 6 Relative or absolute start time\r\n-1\t\t! 7 Overwrite or Append\r\n-1\t\t! 8 Print header\r\n0\t\t! 9 Delimiter\r\n1\t\t! 10 Print labels\r\n";
             this.Inputs_string = input_string;
             this.Heading1_string = heanding1_string;
             var hstring = "";
@@ -147,7 +149,7 @@ namespace TrnsysUmiPlatform
                 int a = i + 1;
                 hstring += "unit" + a.ToString() + " ";
             }
-            this.Heading2_string = hstring + "\n";
+            this.Heading2_string = hstring + "\r\n";
         }
     }
     public class Type46:TrnSysType
@@ -163,7 +165,7 @@ namespace TrnsysUmiPlatform
         public Type46(string filename, int nInputs, string input_string, string heanding1_string, string labels_string) :
             base(filename, "46", 5, nInputs, filename + ".out")
         {
-            this.Parameter_string = this.External_file_number.ToString() + "\t\t! 1 Logical unit\n-1\t\t! 2 Logical unit for monthly summaries\n0\t\t! 3 Relative or absolute start time\nSTEP\t\t! 4 Printing & integrating interval\n0\t\t! 5 Number of inputs to avoid integration\n";
+            this.Parameter_string = this.External_file_number.ToString() + "\t\t! 1 Logical unit\r\n-1\t\t! 2 Logical unit for monthly summaries\r\n0\t\t! 3 Relative or absolute start time\r\nSTEP\t\t! 4 Printing & integrating interval\r\n0\t\t! 5 Number of inputs to avoid integration\r\n";
             this.Inputs_string = input_string;
             this.Heading1_string = heanding1_string;
             this.Labels_string = labels_string;
@@ -185,7 +187,6 @@ namespace TrnsysUmiPlatform
         /// This plug-flow model does not consider mixing or conduction between adjacent elements. A maximum of 25 segments is allowed in the pipe.
         /// When the maximum is reached, the two adjacent segments with the closest temperatures are combined to make one segment.
         /// </summary>
-        /// <param name="inputs">0 Inlet Temperature; 1 Inlet Flow rate; 2 Environment temperature</param>
         /// <param name="insideDiameter">The inside diameter of the pipe.  If a square duct is to be modeled, this parameter should be set to an equivalent diameter which gives the same surface area.</param>
         /// <param name="pipeLength">The length of the pipe to be considered.</param>
         /// <param name="lossCoefficient">The heat transfer coefficient for thermal losses to the environment based on the inside pipe surface area.</param>
@@ -200,17 +201,17 @@ namespace TrnsysUmiPlatform
             _fluidDensity = fluidDensity;
             _initialFluidTemp = initialFluidTemp;
 
-            this.Parameter_string = insideDiameter.ToString() + "\t\t! 1 Inside diameter\n" +
-                                    pipeLength.ToString() + "\t\t! 2 Pipe length\n" +
-                                    lossCoefficient.ToString() + "\t\t! 3 Loss coefficient\n" +
-                                    fluidDensity.ToString() + "\t\t! 4 Fluid density\n" +
-                                    fluidSpecificHeat.ToString() + "\t\t! 5 Fluid specific heat\n" +
-                                    initialFluidTemp.ToString() + "\t\t! 6 Initial fluid temperature\n";
+            this.Parameter_string = insideDiameter.ToString() + "\t\t! 1 Inside diameter\r\n" +
+                                    pipeLength.ToString() + "\t\t! 2 Pipe length\r\n" +
+                                    lossCoefficient.ToString() + "\t\t! 3 Loss coefficient\r\n" +
+                                    fluidDensity.ToString() + "\t\t! 4 Fluid density\r\n" +
+                                    fluidSpecificHeat.ToString() + "\t\t! 5 Fluid specific heat\r\n" +
+                                    initialFluidTemp.ToString() + "\t\t! 6 Initial fluid temperature\r\n";
             if (_inputs != null)
             {
-                this.Inputs_string = _inputs[0, 0].ToString() + "," + _inputs[0, 1].ToString() + "\t\t! Inlet temperature\n" +
-                                     _inputs[1, 0].ToString() + "," + _inputs[1, 1].ToString() + "\t\t! Inlet flow rate\n" +
-                                     _inputs[2, 0].ToString() + "," + _inputs[2, 1].ToString() + "\t\t! Environment temperature\n";
+                this.Inputs_string = _inputs[0, 0].ToString() + "," + _inputs[0, 1].ToString() + "\t\t! Inlet temperature\r\n" +
+                                     _inputs[1, 0].ToString() + "," + _inputs[1, 1].ToString() + "\t\t! Inlet flow rate\r\n" +
+                                     _inputs[2, 0].ToString() + "," + _inputs[2, 1].ToString() + "\t\t! Environment temperature\r\n";
             }
             
 
@@ -331,7 +332,7 @@ namespace TrnsysUmiPlatform
         /// <param name="rated_capacity">The rated capacity (the maximum possible energy transfer to the fluid stream) of the boiler</param>
         public Type659(double rated_capacity):base("Boiler","31",2,7,"")
         {
-            this.Parameter_string = rated_capacity.ToString() + "\t\t! 1 Rated Capacity" + "CpFluid\t\t! 2 Specific Heat of Fluid\n";
+            this.Parameter_string = rated_capacity.ToString() + "\t\t! 1 Rated Capacity" + "CpFluid\t\t! 2 Specific Heat of Fluid\r\n";
             this.Inputs_string = "";
             this.Initial_inputs = new double[] { 20.0, 10000.0, 1, 50.0, 0.0, 1.0, 20.0 };
         }
@@ -350,10 +351,10 @@ namespace TrnsysUmiPlatform
         /// <param name="motor_heatloss_fraction">The fraction of the motor heat loss transferred to the fluid stream.</param>
         public Type741(double rated_flowrate, double fluid_specific_heat, double fluid_density, double motor_heatloss_fraction) :base("Variable-Speed Pump", "741", 4, 6, "")
         {
-            this.Parameter_string = rated_flowrate.ToString() + "\t\t! 1 Rated Flowrate\n" + 
-                                    fluid_specific_heat.ToString() + "\t\t! 2 Fluid Specific Heat\n" + 
-                                    fluid_density + "\t\t! 3 Fluid Density\n" + 
-                                    motor_heatloss_fraction.ToString() + "\t\t! 4 Motor Heat Loss Fraction\n";
+            this.Parameter_string = rated_flowrate.ToString() + "\t\t! 1 Rated Flowrate\r\n" + 
+                                    fluid_specific_heat.ToString() + "\t\t! 2 Fluid Specific Heat\r\n" + 
+                                    fluid_density + "\t\t! 3 Fluid Density\r\n" + 
+                                    motor_heatloss_fraction.ToString() + "\t\t! 4 Motor Heat Loss Fraction\r\n";
             this.Inputs_string = "";
             this.Initial_inputs = new double[] { 20.0, 0.0, 1.0, 0.6, 0.9, 10.0 };
         }
@@ -378,7 +379,7 @@ namespace TrnsysUmiPlatform
 
         public string WriteIntro()
         {
-            return "VERSION 17\n*******************************************************************************\n*** TRNSYS input file (deck) generated by Trnweb\n*** Creator: " + Creator + "\n*** Created: " + Creation_Date + "\n*** Modified: " + Modified_Date + "\n*** Description: " + Description + "\n***\n*** If you edit this file, use the File/Import TRNSYS Input File function in\n*** TrnsysStudio to update the project.\n***\n*** If you have problems, questions or suggestions please contact your local\n*** TRNSYS distributor or mailto:software@cstb.fr\n***\n*******************************************************************************";
+            return "VERSION 17\r\n*******************************************************************************\r\n*** TRNSYS input file (deck) generated by Trnweb\r\n*** Creator: " + Creator + "\r\n*** Created: " + Creation_Date + "\r\n*** Modified: " + Modified_Date + "\r\n*** Description: " + Description + "\r\n***\r\n*** If you edit this file, use the File/Import TRNSYS Input File function in\r\n*** TrnsysStudio to update the project.\r\n***\r\n*** If you have problems, questions or suggestions please contact your local\r\n*** TRNSYS distributor or mailto:software@cstb.fr\r\n***\r\n*******************************************************************************";
 
         }
     }
@@ -400,7 +401,7 @@ namespace TrnsysUmiPlatform
             // The value to be returned
             string value;
             {
-                value = "*******************************************************************************\n*** Control cards\n*******************************************************************************\n* START, STOP and STEP\nCONSTANTS 3\nSTART=" + Start.ToString() + "\nSTOP=" + Stop.ToString() + "\nSTEP=" + Data_step.ToString() + "\nSIMULATION \t START\t STOP\t STEP\t! Start time\tEnd time\tTime step\nTOLERANCES 0.001 0.001\t\t\t! Integration\t Convergence\nLIMITS 50 1000 30\t\t\t\t! Max iterations\tMax warnings\tTrace limit\nDFQ 1\t\t\t\t\t! TRNSYS numerical integration solver method\nWIDTH 80\t\t\t\t! TRNSYS output file width, number of characters\nLIST \t\t\t\t\t! NOLIST statement\n\t\t\t\t\t\t! MAP statement\nSOLVER 0 1 1\t\t\t! Solver statement\tMinimum relaxation factor\tMaximum relaxation factor\nNAN_CHECK 0\t\t\t\t! Nan DEBUG statement\nOVERWRITE_CHECK 0\t\t! Overwrite DEBUG statement\nTIME_REPORT 0\t\t\t! disable time report\nEQSOLVER 0\t\t\t\t! EQUATION SOLVER statement\n";
+                value = "*******************************************************************************\r\n*** Control cards\r\n*******************************************************************************\r\n* START, STOP and STEP\r\nCONSTANTS 3\r\nSTART=" + Start.ToString() + "\r\nSTOP=" + Stop.ToString() + "\r\nSTEP=" + Data_step.ToString() + "\r\nSIMULATION \t START\t STOP\t STEP\t! Start time\tEnd time\tTime step\r\nTOLERANCES 0.001 0.001\t\t\t! Integration\t Convergence\r\nLIMITS 50 1000 30\t\t\t\t! Max iterations\tMax warnings\tTrace limit\r\nDFQ 1\t\t\t\t\t! TRNSYS numerical integration solver method\r\nWIDTH 80\t\t\t\t! TRNSYS output file width, number of characters\r\nLIST \t\t\t\t\t! NOLIST statement\r\n\t\t\t\t\t\t! MAP statement\r\nSOLVER 0 1 1\t\t\t! Solver statement\tMinimum relaxation factor\tMaximum relaxation factor\r\nNAN_CHECK 0\t\t\t\t! Nan DEBUG statement\r\nOVERWRITE_CHECK 0\t\t! Overwrite DEBUG statement\r\nTIME_REPORT 0\t\t\t! disable time report\r\nEQSOLVER 0\t\t\t\t! EQUATION SOLVER statement\r\n";
             }
             return value;
         }

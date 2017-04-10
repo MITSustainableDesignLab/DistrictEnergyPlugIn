@@ -3,6 +3,8 @@ using System.IO;
 using System.Diagnostics;
 using Rhino.DocObjects;
 using Rhino;
+using ShortestWalk.Geometry;
+using Rhino.Geometry;
 
 namespace TrnsysUmiPlatform
 {   
@@ -35,15 +37,25 @@ public class RunTrnsys
         }
     }
 
+    /// <summary>Responsible for writing the .dck File</summary>
     public class WriteDckFile
     {
         private TrnsysModel trnsys_model;
 
+        /// <summary>
+        /// A deck file contructor
+        /// </summary>
+        /// <param name="trnsys_model">The Trnsys Model to write to a deck file</param>
         public WriteDckFile(TrnsysModel trnsys_model)
         {
             this.trnsys_model = trnsys_model;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trnsys_model">The Trnsys Model to write to a deck file</param>
+        /// <param name="components">A list of components to write</param>
         public WriteDckFile(TrnsysModel trnsys_model, RhinoObject[] components)
         {
             string filename = Path.Combine(trnsys_model.WorkingDirectory, trnsys_model.ModelName + ".dck");
@@ -64,26 +76,11 @@ public class RunTrnsys
                 Type741 pump = new Type741(0, 0, 0, 0);
                 file.WriteLine(pump.WriteType());
 
-                // Write Type31 (pipes)
-                for (int i = 0; i < components.Length; i++)
-                {
-                    if (components[i].ObjectType == Rhino.DocObjects.ObjectType.Curve)
-                    {
-                        var curveA = components[i] as CurveObject;
-                        Rhino.Geometry.Curve crv = curveA.CurveGeometry;
-
-                        double crv_length = crv.GetLength();
-
-                        Type31 supplyPipe = new Type31(0.1, crv_length, 3, 998, 4.31, 10);
-                        file.WriteLine(supplyPipe.WriteType());
-                    }
-                }
-
                 // Write Loads
                 //foreach (var obj in doc.GetUmiSimulationBuildings())
                 //Database.GetObjects();
 
-                file.WriteLine("END\\n");
+                file.WriteLine("END\\r\n");
                 file.Close();
             }
         }

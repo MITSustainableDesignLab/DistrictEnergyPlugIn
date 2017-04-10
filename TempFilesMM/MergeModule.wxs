@@ -3,7 +3,7 @@
   <Module Id="TempFilesMM" Language="1033" Version="1.0.0.0">
     <Package Id="9f5b21ce-db22-40aa-a2f6-f82ed89958a5" Manufacturer="MIT Sustainable Design Lab" InstallerVersion="200" InstallScope="perMachine"/>
     <Property Id="INSTALLLOCATION">
-      <DirectorySearch Id="Search_EXISTING_INSTALLLOCATION" Path="C:\UMI\temp"/>
+      <DirectorySearch Id="Search_EXISTING_INSTALLLOCATION" Path="[WINDOWSFOLDER]\UMI\temp"/>
     </Property>
     
     <!--<CustomAction Id="SetTARGETDIR" Property="TARGETDIR" Value="[WINDOWSFOLDER]\UMI\temp"/>-->

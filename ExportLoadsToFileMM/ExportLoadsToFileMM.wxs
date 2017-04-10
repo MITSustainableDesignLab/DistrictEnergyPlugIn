@@ -14,7 +14,7 @@
             <!-- Install the plug-in from dev/bin/win64/Release to the plug-in folder-->
             <File Id="ExportLoadsToFile" Name="ExportLoadsToFile.rhp" Source="$(var.ExportLoadsToFile.TargetDir)ExportLoadsToFile.rhp"/>
 
-            <!-- this is required because we install the the user profile -->
+            <!-- this is required because we install to the user profile -->
             <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall"/>
 
             <!-- this is required because we install to the user profile -->

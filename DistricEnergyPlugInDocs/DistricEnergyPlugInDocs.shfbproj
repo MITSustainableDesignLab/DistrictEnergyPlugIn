@@ -31,7 +31,9 @@
       <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\TrnsysUmiPlatform\ConsoleApp1\bin\TrnsysUmiPlatform.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll" />
+      <DocumentationSource sourceFile="..\..\ShortestWalk\ShortestWalk\bin\ShortestWalk.dll" />
+      <DocumentationSource sourceFile="..\..\ShortestWalk\ShortestWalk\bin\ShortestWalk.xml" />
     </DocumentationSources>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
@@ -103,6 +105,18 @@
   <ItemGroup>
     <Reference Include="RhinoCommon, Version=5.1.30000.16, Culture=neutral, PublicKeyToken=552281e97c755530">
       <HintPath>..\DistrictEnergy\Resources\RhinoCommon.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RhinoCommon, Version=5.1.30000.17, Culture=neutral, PublicKeyToken=552281e97c755530">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Rhinoceros 5\System\RhinoCommon.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Umi.Core, Version=4.0.0.31262, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Umi.Rhino, Version=3.6.0.28718, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Rhino.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

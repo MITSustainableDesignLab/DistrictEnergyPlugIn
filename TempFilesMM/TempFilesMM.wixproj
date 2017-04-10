@@ -12,18 +12,28 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;UmiTempLocation=C:\UMI\temp;</DefineConstants>
+    <DefineConstants>Debug;UmiTempLocation=C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DHEngine\bin\dist\DEenginePython;</DefineConstants>
     <WixVariables>
     </WixVariables>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>UmiTempLocation=C:\UMI\temp;</DefineConstants>
+    <DefineConstants>Debug;UmiTempLocation=C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DHEngine\bin\dist\DEenginePython;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="MergeModule.wxs" />
     <Compile Include="TempInstallFiles.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DHEngine\DEengine.csproj">
+      <Name>DEengine</Name>
+      <Project>{5f81ce7f-4d23-408a-aa9e-b51f4fa29bed}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
@@ -33,7 +43,7 @@
   <!--To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.-->
   <Target Name="BeforeBuild">
-    <HeatDirectory NoLogo="true" ToolPath="$(WixToolPath)" GenerateGuidsNow="true" OutputFile="$(ProjectDir)\TempInstallFiles.wxs" SuppressFragments="true" Directory="C:\UMI\temp" ComponentGroupName="TempFilesComponentGroup" DirectoryRefId="INSTALLLOCATION" KeepEmptyDirectories="true" PreprocessorVariable="var.UmiTempLocation" SuppressCom="true" SuppressRootDirectory="true" SuppressRegistry="true" />
+    <HeatDirectory NoLogo="true" ToolPath="$(WixToolPath)" GenerateGuidsNow="true" OutputFile="$(ProjectDir)\TempInstallFiles.wxs" SuppressFragments="true" Directory="C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DHEngine\bin\dist\DEenginePython" ComponentGroupName="TempFilesComponentGroup" DirectoryRefId="INSTALLLOCATION" KeepEmptyDirectories="true" PreprocessorVariable="var.UmiTempLocation" SuppressCom="true" SuppressRootDirectory="false" SuppressRegistry="true" />
   </Target>
   <Target Name="AfterBuild">
   </Target>

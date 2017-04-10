@@ -3,6 +3,7 @@ using Rhino;
 using Rhino.ApplicationSettings;
 using Rhino.Commands;
 using Rhino.DocObjects;
+using Rhino.Geometry;
 using System;
 using TrnsysUmiPlatform;
 
@@ -12,6 +13,8 @@ namespace DistrictEnergy
     public class RunTrnsysCommand : Command
     {
         static RunTrnsysCommand _instance;
+
+
         public RunTrnsysCommand()
         {
             _instance = this;
@@ -37,17 +40,24 @@ namespace DistrictEnergy
 
                 int layerIndex = doc.Layers.Find("Heating Network", true);
                 Layer lay = doc.Layers[layerIndex];
-                Rhino.DocObjects.RhinoObject[] objs = doc.Objects.FindByLayer(lay);
-                string weather = GlobalContext.ActiveEpwPath.ToString();
-                TrnsysModel trnsys_model =  new TrnsysModel(doc.Name,1, weather, "Samuel Letellier-Duchesne","No Description", FileSettings.WorkingFolder);
-                RhinoApp.WriteLine("The working Trnsys folder is : " + FileSettings.WorkingFolder);
+                Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(lay);
+                if (rhobjs.Length > 0)
+                {
+                    string weather = GlobalContext.ActiveEpwPath.ToString();
+                    TrnsysModel trnsys_model = new TrnsysModel(doc.Name, 1, weather, "Samuel Letellier-Duchesne", "No Description", FileSettings.WorkingFolder);
+                    RhinoApp.WriteLine("The working Trnsys folder is : " + FileSettings.WorkingFolder);
 
-                // Get building loads
-                
-                // Run
-                var b = new WriteDckFile(trnsys_model, objs);
+                    // Get building loads
 
-                var c = new RunTrnsys(trnsys_model);
+                    // Run
+                    var b = new WriteDckFile(trnsys_model, rhobjs);
+
+                    var c = new RunTrnsys(trnsys_model);
+                }
+                else
+                {
+                    throw new InvalidOperationException("No pipes found on layer Heating Network");
+                }
             }
             catch (Exception e)
             {
