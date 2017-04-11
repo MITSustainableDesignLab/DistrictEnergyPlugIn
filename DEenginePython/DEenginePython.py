@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import errno
 
 # ...................................................................
 
@@ -285,7 +286,7 @@ def sc01():
     # Results['Scenario01'] = SC01_NonHVACEnergy, SC01_HeatingEnergy, SC01_CoolingEnergy, Energy_SC01, SC01_AvgCoolingCOP, SC01_AvgHeatingCOP, Cost_SC01, Emissions_SC01
 
     # Export Data
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     Output.to_csv('C:/UMI/temp/DHSimulationResults/SC01_Export_OutputDataFrame.csv')
     Results.to_csv('C:/UMI/temp/DHSimulationResults/SC01_Export_ResultsDataFrame.csv')
 # ...................................................................
@@ -371,7 +372,7 @@ def sc02():
 
     # Export Data
 
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     Output.to_csv('C:/UMI/temp/DHSimulationResults/SC02_Export_OutputDataFrame.csv')
     Results.to_csv('C:/UMI/temp/DHSimulationResults/SC02_Export_ResultsDataFrame.csv')
 # ...................................................................
@@ -460,7 +461,7 @@ def sc03():
 
     # Export Data
 
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     Output.to_csv('C:/UMI/temp/DHSimulationResults/SC03_Export_OutputDataFrame.csv')
     DHC.to_csv('C:/UMI/temp/DHSimulationResults/SC03_Export_DHCDataFrame.csv')
 # ...................................................................
@@ -672,7 +673,8 @@ def sc04():
     # ...................................................................
     # Export Data
 
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     # Output.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_OutputDataFrame.csv')
     DHC.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_DHCDataFrame.csv')
     CCHP.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_CCHPDataFrame.csv')
@@ -688,3 +690,13 @@ options = {1 : sc01,
 # Call function
 num = int(sys.argv[1])
 options[num]()
+
+# Make directory for saving files
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise

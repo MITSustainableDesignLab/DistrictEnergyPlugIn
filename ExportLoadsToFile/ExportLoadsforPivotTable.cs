@@ -1,6 +1,5 @@
 ﻿using System;
 using Rhino.Commands;
-using Rhino.DocObjects;
 using Mit.Umi.RhinoServices;
 using Rhino;
 using System.Windows.Forms;
@@ -8,9 +7,6 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
-using Mit.Umi.Core;
-using Rhino.Input.Custom;
-using Rhino.Input;
 
 namespace ExportLoadsToFile
 {
