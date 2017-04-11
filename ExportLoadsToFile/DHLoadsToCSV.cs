@@ -47,7 +47,7 @@ namespace ExportLoadsToFile
                 int count = 0;
                 foreach (var o in GlobalContext.GetObjects())
                 {
-                    int t = 1;
+                    DateTime t = new DateTime(2017, 1, 1, 0, 0, 0);
                     var series = o.Data.Select(kvp => kvp.Value)
                         .Where(item => filterList.Contains(item.Name));
                     for (int i = 0; i < 8760; i++)
@@ -65,7 +65,7 @@ namespace ExportLoadsToFile
 
                         //Write all the fields
                         csvWriter.WriteField(t);
-                        t++;
+                        t = t.AddHours(1);
                         csvWriter.WriteField(o.Name);
                         foreach (var m in series)
                             csvWriter.WriteField(m.Data[i]);

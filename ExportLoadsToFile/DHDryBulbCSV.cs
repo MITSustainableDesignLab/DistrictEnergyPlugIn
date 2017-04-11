@@ -51,15 +51,18 @@ namespace ExportLoadsToFile
                 csv.NextRecord();
                 foreach (var item in r)
                 {
-                    int time = 1;
+                    DateTime time = new DateTime(2017, 1, 1, 0, 0, 0);
                     foreach (var line in item.Value)
                     {
                         csv.WriteField(time);
                         csv.WriteField(line);
                         csv.NextRecord();
-                        time++;
+                        time = time.AddHours(1);
                     }
-                    csv.WriteField(time);
+                    // these extra lines shouldn't exist but Brad's script needs a loop value (first of the year) at
+                    // the end of the file
+                    DateTime time2 = new DateTime(2017, 1, 1, 0, 0, 0);
+                    csv.WriteField(time2);
                     csv.WriteField(item.Value[0]);
                     csv.NextRecord();
                 }
