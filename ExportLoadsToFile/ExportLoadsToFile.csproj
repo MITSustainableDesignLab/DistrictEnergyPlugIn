@@ -38,7 +38,7 @@
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="EnergyPlusWeather">
-      <HintPath>..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\bin\Release\EnergyPlusWeather.dll</HintPath>
+      <HintPath>..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\bin\EnergyPlusWeather.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

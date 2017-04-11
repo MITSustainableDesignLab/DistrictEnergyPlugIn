@@ -49,6 +49,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\ExportLoadsToFile\ExportLoadsToFile.csproj">
+      <Name>ExportLoadsToFile</Name>
+      <Project>{897eca20-9485-475e-8e35-6c681b70a582}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\MergeModule\DistrictEnergyMM.wixproj">
       <Name>DistrictEnergyMM</Name>
       <Project>{eef33bc1-2e0d-44ec-87d7-8d5f21d7738a}</Project>

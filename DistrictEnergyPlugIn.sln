@@ -49,6 +49,9 @@ EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "DEenginePython", "DEenginePython\DEenginePython.pyproj", "{A106E382-7E8A-4B55-8F3C-6224CC6FC951}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportLoadsToFile", "ExportLoadsToFile\ExportLoadsToFile.csproj", "{897ECA20-9485-475E-8E35-6C681B70A582}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8} = {D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
