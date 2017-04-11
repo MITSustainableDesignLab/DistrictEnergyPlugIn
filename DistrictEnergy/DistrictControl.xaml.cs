@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System;
+using System.IO;
+
 namespace DistrictEnergy
 {
     /// <summary>
@@ -158,6 +160,20 @@ namespace DistrictEnergy
                 button1.Content = "Show Topology";
             }
             RhinoApp.RunScript("ToggleShowNetworkTopology", echo: true);
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            string value = @"%SystemDrive%\UMI\temp\DHSimulationResults";
+            string path = Environment.ExpandEnvironmentVariables(value);
+            try
+            {
+                System.Diagnostics.Process.Start(path);
+            }
+            catch (Exception ex)
+            {
+                RhinoApp.WriteLine("This location does not exist yet since no simulation has been performed\r\nRun a scenario first : {0}, {1}",ex.GetType().Name, ex.Message);
+            }
         }
     }
 }
