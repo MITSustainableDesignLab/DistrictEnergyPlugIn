@@ -180,7 +180,7 @@ c3_ac = 2.74E-01
 # Update Output dataframe
 Output['TotalHeating'] = Output['SDL/Heating'] + Output['SDL/Domestic Hot Water']
 Output['Electricity'] = Output['SDL/Equipment'] + Output['SDL/Lighting']
-Output = Output.join(WeatherData['DB'], on='Hour')
+Output = Output.join(WeatherData.set_index('Hour'), on='Hour')
 
 # ...................................................................
 
@@ -210,6 +210,16 @@ Output = Output.join(HeatingMax, on='Building', rsuffix='Max')
 
 ElectricMax = Output.groupby('Building')['Electricity'].max()
 Output = Output.join(ElectricMax, on='Building', rsuffix='Max')
+
+# Make directory for saving files
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 def sc01():
 	    # ...................................................................
@@ -690,13 +700,3 @@ options = {1 : sc01,
 # Call function
 num = int(sys.argv[1])
 options[num]()
-
-# Make directory for saving files
-def mkdir_p(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc:  # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
