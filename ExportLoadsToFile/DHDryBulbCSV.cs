@@ -59,12 +59,12 @@ namespace ExportLoadsToFile
                         csv.NextRecord();
                         time = time.AddHours(1);
                     }
-                    // these extra lines shouldn't exist but Brad's script needs a loop value (first of the year) at
-                    // the end of the file
-                    DateTime time2 = new DateTime(2017, 1, 1, 0, 0, 0);
-                    csv.WriteField(time2);
-                    csv.WriteField(item.Value[0]);
-                    csv.NextRecord();
+                    //// these extra lines shouldn't exist but Brad's script needs a loop value (first of the year) at
+                    //// the end of the file
+                    //DateTime time2 = new DateTime(2017, 1, 1, 0, 0, 0);
+                    //csv.WriteField(time2);
+                    //csv.WriteField(item.Value[0]);
+                    //csv.NextRecord();
                 }
 
                 writer.Close();
