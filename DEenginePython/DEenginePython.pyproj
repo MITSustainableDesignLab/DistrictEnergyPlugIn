@@ -16,7 +16,7 @@
     <InterpreterVersion>2.7</InterpreterVersion>
     <IsWindowsApplication>False</IsWindowsApplication>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>1 1 1 1 1 1 1</CommandLineArguments>
+    <CommandLineArguments>4 0.13 0.058020 7.273400E-4 0.05 0.1 0.35</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

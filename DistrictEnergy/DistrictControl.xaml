@@ -59,7 +59,7 @@
                 <RadioButton x:Name="radioButton3" Content="Strategy 3: Electric Grid + District Heating and Cooling Plant" HorizontalAlignment="Left" Margin="0,47,0,0" VerticalAlignment="Top" Checked="radioButton2_Copy_Checked" Height="15" Width="336"/>
                 <RadioButton x:Name="radioButton4" Content="Strategy 4: Combined Cooling, Heat, and Power (CCHP)" HorizontalAlignment="Left" Margin="0,67,0,0" VerticalAlignment="Top" Height="15" Width="310"/>
                 <Button x:Name="button" Content="Run" HorizontalAlignment="Right" Width="89" Margin="0,10,10,0" Click="button_Click_2" Grid.Row="1" Padding="1" Height="21" VerticalAlignment="Top"/>
-                <Button x:Name="button2" Content="Open Directory" Margin="0,37,10,0" Grid.Row="1" Click="button2_Click" HorizontalAlignment="Right" Padding="3,1" Height="21" VerticalAlignment="Top"/>
+                <Button x:Name="button2" Content="Open Directory" Margin="0,37,10,0" Grid.Row="1" Click="button2_Click" HorizontalAlignment="Right" Padding="3,1" Height="21" VerticalAlignment="Top" Width="89"/>
 
             </Grid>
         </GroupBox>
