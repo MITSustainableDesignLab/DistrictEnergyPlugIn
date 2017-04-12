@@ -3,7 +3,7 @@ import numpy as np
 import sys
 import os
 import errno
-import tqdm
+from tqdm import tqdm
 
 # ...................................................................
 
@@ -587,8 +587,9 @@ def sc04():
 
     #--------------------------
 
-    for index, row in CCHP.iterrows(): 
 
+    
+    for index, row in tqdm(CCHP.iterrows(),total=len(CCHP.index),dynamic_ncols=True):
         while row['COP_delta'] > row['COP_threshold'] and row['PLR_delta'] > row['PLR_threshold']:
 
             # Calculate cooling capacity based on COP and heat remaining
