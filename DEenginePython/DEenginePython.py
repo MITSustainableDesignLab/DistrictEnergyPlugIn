@@ -589,7 +589,7 @@ def sc04():
 
 
     
-    for index, row in tqdm(CCHP.iterrows(),total=len(CCHP.index),dynamic_ncols=True):
+    for index, row in tqdm(CCHP.iterrows(),total=len(CCHP.index), ncols=80):
         while row['COP_delta'] > row['COP_threshold'] and row['PLR_delta'] > row['PLR_threshold']:
 
             # Calculate cooling capacity based on COP and heat remaining

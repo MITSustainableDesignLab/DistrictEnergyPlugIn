@@ -104,7 +104,7 @@ namespace DistrictEnergy
         static void cmd_Error(object sender, DataReceivedEventArgs e)
         {
             //RhinoApp.WriteLine("Error from other process");
-            RhinoApp.WriteLine(e.Data);
+            RhinoApp.SetCommandPrompt(e.Data);
         }
 
         private void Cost_Electricity_TextChanged(object sender, TextChangedEventArgs e)
