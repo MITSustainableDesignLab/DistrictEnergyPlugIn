@@ -6,4 +6,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Polytechnique Montreal 2017")]
 [assembly: AssemblyProduct("DistricEnergyPlugIn")]
 
-[assembly: AssemblyVersion("1.1.*")]
+[assembly: AssemblyVersion("1.2.*")]
