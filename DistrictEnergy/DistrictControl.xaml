@@ -34,7 +34,7 @@
                     <StackPanel Grid.Column="1" Margin="0">
                         <Label x:Name="label1" Content="USD/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
                         <Label x:Name="label2" Content="USD/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-                        <Label x:Name="label3" Content="MTCO2/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                        <Label x:Name="label3" Content="kgCO2/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
                         <Label x:Name="label4" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
                         <Label x:Name="label4_Copy1" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
                         <Label x:Name="label4_Copy" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>

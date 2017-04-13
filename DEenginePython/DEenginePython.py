@@ -15,7 +15,7 @@ WeatherData = pd.read_csv('C:/UMI/temp/DryBulbData.csv', delimiter=',', encoding
 # > > > User-specified Parameters [DYNAMIC INPUTS] < < < 
 Cost_Electricity = float(sys.argv[2]) #Generation cost per kWh Source: https://www.oxfordenergy.org/wpcms/wp-content/uploads/2014/04/MEP-9.pdf
 Price_NaturalGas = float(sys.argv[3]) #Dollars per kWh
-Emissions_ElectricGeneration = float(sys.argv[4]) #Metric ton CO2 per kWh produced
+Emissions_ElectricGeneration = float(sys.argv[4])*1000 #Metric ton CO2 per kWh produced (kgCO2eq/kWh as an input)
 Effic_PowerGen = float(sys.argv[7]) #Average thermal efficiency of electrical generation in Kuwait
 Losses_Transmission = float(sys.argv[5]) #Electrical transmission losses https://www.eia.gov/tools/faqs/faq.php?id=105&t=3
 Losses_Heat_Hydronic = float(sys.argv[6]) #Heat transfer losses from hydronic distribution systemission losses https://www.eia.gov/tools/faqs/faq.php?id=105&t=3
