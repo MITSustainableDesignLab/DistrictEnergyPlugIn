@@ -15,7 +15,7 @@ WeatherData = pd.read_csv('C:/UMI/temp/DryBulbData.csv', delimiter=',', encoding
 # > > > User-specified Parameters [DYNAMIC INPUTS] < < < 
 Cost_Electricity = float(sys.argv[2]) #Generation cost per kWh Source: https://www.oxfordenergy.org/wpcms/wp-content/uploads/2014/04/MEP-9.pdf
 Price_NaturalGas = float(sys.argv[3]) #Dollars per kWh
-Emissions_ElectricGeneration = float(sys.argv[4]) #Metric ton CO2 per kWh produced
+Emissions_ElectricGeneration = float(sys.argv[4])*1000 #Metric ton CO2 per kWh produced (kgCO2eq/kWh as an input)
 Effic_PowerGen = float(sys.argv[7]) #Average thermal efficiency of electrical generation in Kuwait
 Losses_Transmission = float(sys.argv[5]) #Electrical transmission losses https://www.eia.gov/tools/faqs/faq.php?id=105&t=3
 Losses_Heat_Hydronic = float(sys.argv[6]) #Heat transfer losses from hydronic distribution systemission losses https://www.eia.gov/tools/faqs/faq.php?id=105&t=3
@@ -461,7 +461,7 @@ def sc03():
     Cost_Electricity_SC03 = (Load_Grid_SC03 + (Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03) * Effic_PowerGen)* Cost_Electricity
     Cost_NG_SC03 = Energy_NaturalGas_SC03 * Price_NaturalGas
     Cost_SC03 = Cost_Electricity_SC03 + Cost_NG_SC03
-    print "Annual cost of generating electricity for Non-HVAC loads and to run electric centrifugal chillers and purchasing NG from grid (USD):" , Cost_SC03
+    print "Annual cost of generating electricity for Non-HVAC loads and to run\nelectric centrifugal chillers and purchasing NG from grid (USD):" , Cost_SC03
 
     Emissions_Electricity_SC03 = (Load_Grid_SC03 + (Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03) * Effic_PowerGen) * Emissions_ElectricGeneration
     Emissions_NG_SC03 = Energy_NaturalGas_SC03 * Emissions_NG_Combustion_kWh
@@ -693,8 +693,8 @@ def sc04():
 
     
     mkdir_p('C:/UMI/temp/DHSimulationResults')
-    # Output.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_OutputDataFrame.csv')
-    DHC.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_DHCDataFrame.csv')
+    Output.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_OutputDataFrame.csv')
+    # DHC.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_DHCDataFrame.csv')
     CCHP.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_CCHPDataFrame.csv')
 # ...................................................................
 
