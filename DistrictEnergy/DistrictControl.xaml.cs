@@ -98,7 +98,7 @@ namespace DistrictEnergy
         static void cmd_DataReceived(object sender, DataReceivedEventArgs e)
         {
             //RhinoApp.WriteLine("Output from other process");
-            RhinoApp.WriteLine(e.Data);
+            RhinoApp.SetCommandPrompt(e.Data);
         }
 
         static void cmd_Error(object sender, DataReceivedEventArgs e)
