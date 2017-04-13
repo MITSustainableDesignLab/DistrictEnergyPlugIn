@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>2a10a76b-558f-424d-965b-d2c84703cee0</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>DistrictPluginInstaller</OutputName>
+    <OutputName>DistrictPluginInstaller-release-1.2</OutputName>
     <OutputType>Package</OutputType>
     <Name>DistrictPlugInInstaller</Name>
   </PropertyGroup>
@@ -33,14 +33,6 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\..\ExportLoadsToFile\ExportLoadsToFile\ExportLoadsToFile.csproj">
-      <Name>ExportLoadsToFile</Name>
-      <Project>{930c7eda-1d1b-410c-bf19-6fc5ec4cacb2}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\DistrictEnergy\DistrictEnergy.csproj">
       <Name>DistrictEnergy</Name>
       <Project>{bd1d8b7c-53fd-4dd7-aed6-ab6519ffc862}</Project>
@@ -52,6 +44,14 @@
     <ProjectReference Include="..\ExportLoadsToFileMM\ExportLoadsToFileMM.wixproj">
       <Name>ExportLoadsToFileMM</Name>
       <Project>{98853a97-4086-4bb0-9c04-2ca271f03db6}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\ExportLoadsToFile\ExportLoadsToFile.csproj">
+      <Name>ExportLoadsToFile</Name>
+      <Project>{897eca20-9485-475e-8e35-6c681b70a582}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

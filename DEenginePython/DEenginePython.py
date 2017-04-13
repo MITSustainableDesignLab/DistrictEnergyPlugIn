@@ -2,13 +2,15 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import errno
+from tqdm import tqdm
 
 # ...................................................................
 
 # > > > Load Input Data [DYNAMIC INPUTS] < < <
 LoadData = pd.read_csv('C:/UMI/temp/Loads.csv')
 Output = LoadData #Reformatted Kuwait output to bypass the reformat section
-WeatherData = pd.read_csv('C:/UMI/temp/DryBulbData.csv')
+WeatherData = pd.read_csv('C:/UMI/temp/DryBulbData.csv', delimiter=',', encoding="utf-8")
 
 # > > > User-specified Parameters [DYNAMIC INPUTS] < < < 
 Cost_Electricity = float(sys.argv[2]) #Generation cost per kWh Source: https://www.oxfordenergy.org/wpcms/wp-content/uploads/2014/04/MEP-9.pdf
@@ -65,7 +67,7 @@ c4 = 0.047468326
 Size_HeatPump_Heating = 3.516825 #Nominal rated capacity of the heat pump in heating mode [kW]
 Power_Max_Heating = 2.164 #Max work by compressor in kW
 MinPLR_HP_Heating = 0.28
-MinCOP_Heating = 0.0
+MinCOP_Heating = 1
 
 THot_Heating = 308.15 #35C in Kelvin
 TCold_Heating = 253.15 #-20C in Kelvin
@@ -88,7 +90,7 @@ MinPLR_HP_Cooling = 0.1 # Set this to 0, because a min PLR of 10% results in odd
 COP_Nominal_Cooling = 3.81
 
 THot_Cooling =  313.15 #12.5C in Kelvin based on the assumption of the constant evaporator temperature at 12.5C from Tea's work
-TCold_Cooling = 285.65  #40C in Kelvin
+TCold_Cooling = 285.65 #40C in Kelvin
 
 MinCOP_Cooling = 0.0
 MaxCOP_Cooling = TCold_Cooling / (THot_Cooling - TCold_Cooling)
@@ -179,7 +181,7 @@ c3_ac = 2.74E-01
 # Update Output dataframe
 Output['TotalHeating'] = Output['SDL/Heating'] + Output['SDL/Domestic Hot Water']
 Output['Electricity'] = Output['SDL/Equipment'] + Output['SDL/Lighting']
-Output = Output.join(WeatherData['DB'], on='Hour')
+Output = Output.join(WeatherData.set_index('Hour'), on='Hour')
 
 # ...................................................................
 
@@ -210,6 +212,16 @@ Output = Output.join(HeatingMax, on='Building', rsuffix='Max')
 ElectricMax = Output.groupby('Building')['Electricity'].max()
 Output = Output.join(ElectricMax, on='Building', rsuffix='Max')
 
+# Make directory for saving files
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
 def sc01():
 	    # ...................................................................
     print "Scenario 01: Grid Supplied Electricity Satisfies All Heating, Cooling, and Electric loads"
@@ -222,10 +234,11 @@ def sc01():
     Output['PLR_HeatPump_Heating'] = np.where(Output['PLR_HeatPump_Heating']<=MinPLR_HP_Heating, MinPLR_HP_Heating, (Output['TotalHeating']/Output['NumHeatPumps_Heat'])/Size_HeatPump_Heating)
     Output['HP_Heat_Modifier'] = a1 + a2 * Output['PLR_HeatPump_Heating'] + a3 * Output['PLR_HeatPump_Heating']**2 + a4 * Output['PLR_HeatPump_Heating'] + a5 * Output['PLR_HeatPump_Heating']**3 + a6 * Output['PLR_HeatPump_Heating'] + a7 * Output['PLR_HeatPump_Heating']
     Output['Energy_HeatPump_Heating'] = Output['HP_Heat_Modifier'] * Power_Max_Heating * Output['NumHeatPumps_Heat']
-    Output['COP_HeatPump_Heating'] = np.where(Output['Energy_HeatPump_Heating'] < MinCOP_Heating,MinCOP_Heating, Output['TotalHeating'] / Output['Energy_HeatPump_Heating'])
-    Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] >MaxCOP_Heating, MaxCOP_Heating, Output['COP_HeatPump_Heating'])
-
-    # ...................................................................
+    Output['COP_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= 0, 0, Output['TotalHeating'] / Output['Energy_HeatPump_Heating']) # v23
+    Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] < MinCOP_Heating,MinCOP_Heating, Output['TotalHeating'] / Output['Energy_HeatPump_Heating'])
+    Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] > MaxCOP_Heating, MaxCOP_Heating, Output['COP_HeatPump_Heating'])
+ 
+    Output['Energy_HeatPump_Heating'] = np.where(Output['TotalHeating']<=0 , 0, Output['TotalHeating']/Output['COP_HeatPump_Heating']) # added v23       # ...................................................................
 
     # Calculate total cooling energy needed
     Output['NumHeatPumps_Cool'] = Output['SDL/CoolingMax']/Size_HeatPump_Cooling
@@ -253,6 +266,7 @@ def sc01():
 
     SC01_NonHVACEnergy = sum(NonHVAC_Electricity) * (1+Losses_Transmission) / Effic_PowerGen
     SC01_HeatingEnergy = sum(Output['Energy_HeatPump_Heating']) * (1+Losses_Transmission) / Effic_PowerGen
+    Output['SourceHeatingEnergy'] = Output['Energy_HeatPump_Heating'] * (1+Losses_Transmission) / Effic_PowerGen
     SC01_CoolingEnergy = sum(Output['Energy_HeatPump_Cooling']) * (1+Losses_Transmission) / Effic_PowerGen
     SC01_FanEnergy = sum(Output['FanPowerSC01']) * (1+Losses_Transmission) / Effic_PowerGen
 
@@ -285,7 +299,7 @@ def sc01():
     # Results['Scenario01'] = SC01_NonHVACEnergy, SC01_HeatingEnergy, SC01_CoolingEnergy, Energy_SC01, SC01_AvgCoolingCOP, SC01_AvgHeatingCOP, Cost_SC01, Emissions_SC01
 
     # Export Data
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     Output.to_csv('C:/UMI/temp/DHSimulationResults/SC01_Export_OutputDataFrame.csv')
     Results.to_csv('C:/UMI/temp/DHSimulationResults/SC01_Export_ResultsDataFrame.csv')
 # ...................................................................
@@ -371,7 +385,7 @@ def sc02():
 
     # Export Data
 
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     Output.to_csv('C:/UMI/temp/DHSimulationResults/SC02_Export_OutputDataFrame.csv')
     Results.to_csv('C:/UMI/temp/DHSimulationResults/SC02_Export_ResultsDataFrame.csv')
 # ...................................................................
@@ -388,9 +402,10 @@ def sc03():
     NumDistrictBoilers = np.ceil(max(PeakHeating) * (1 + Losses_Heat_Hydronic) /Size_DistrictBoiler) 
 
     DHC = pd.DataFrame()
-
+    DHC['Hour'] = WeatherData.iloc[:,0].values
+    DHC = DHC.set_index(['Hour'])
     DHC['Load_HourlyHeating'] = Output.groupby('Hour')['TotalHeating'].sum()
-    DHC['Drybulb'] = Output['DB']
+    DHC['Drybulb'] = WeatherData.iloc[:,1].values
 
     DHC['PLR_DistrictBoiler'] = np.where(DHC['Load_HourlyHeating']<=0, 0, (DHC['Load_HourlyHeating']/NumDistrictBoilers)/Size_DistrictBoiler)
     DHC['PLR_DistrictBoiler'] = np.where(DHC['PLR_DistrictBoiler'] < MinPLR_Boiler, MinPLR_Boiler, DHC['PLR_DistrictBoiler']) # Added in v22
@@ -460,7 +475,7 @@ def sc03():
 
     # Export Data
 
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     Output.to_csv('C:/UMI/temp/DHSimulationResults/SC03_Export_OutputDataFrame.csv')
     DHC.to_csv('C:/UMI/temp/DHSimulationResults/SC03_Export_DHCDataFrame.csv')
 # ...................................................................
@@ -472,9 +487,10 @@ def sc04():
     NumDistrictBoilers = np.ceil(max(PeakHeating) * (1 + Losses_Heat_Hydronic) /Size_DistrictBoiler) 
 
     DHC = pd.DataFrame()
-
+    DHC['Hour'] = WeatherData.iloc[:,0].values
+    DHC = DHC.set_index(['Hour'])
     DHC['Load_HourlyHeating'] = Output.groupby('Hour')['TotalHeating'].sum()
-    DHC['Drybulb'] = Output['DB']
+    DHC['Drybulb'] = WeatherData.iloc[:,1].values
 
     DHC['PLR_DistrictBoiler'] = np.where(DHC['Load_HourlyHeating']<=0, 0, (DHC['Load_HourlyHeating']/NumDistrictBoilers)/Size_DistrictBoiler)
     DHC['PLR_DistrictBoiler'] = np.where(DHC['PLR_DistrictBoiler'] < MinPLR_Boiler, MinPLR_Boiler, DHC['PLR_DistrictBoiler']) # Added in v22
@@ -517,10 +533,12 @@ def sc04():
 
 
     CCHP = pd.DataFrame()
+    CCHP['Hour'] = WeatherData.iloc[:,0].values
+    CCHP = CCHP.set_index(['Hour'])
     CCHP['Load_HourlyElectricity'] = (Output.groupby('Hour')['Electricity'].sum())
     CCHP['Load_HourlyHeating'] = Output.groupby('Hour')['TotalHeating'].sum()
     CCHP['Load_HourlyCooling'] = (Output.groupby('Hour')['SDL/Cooling'].sum()) * (1 + Losses_Heat_Hydronic)
-    CCHP['Drybulb'] = Output['DB']
+    CCHP['Drybulb'] = WeatherData.iloc[:,1].values
     CCHP['CWR_T'] = DHC['CWR_T']
     CCHP['CHWS_T'] = CHWS_T
 
@@ -569,8 +587,9 @@ def sc04():
 
     #--------------------------
 
-    for index, row in CCHP.iterrows(): 
 
+    
+    for index, row in tqdm(CCHP.iterrows(),total=len(CCHP.index),dynamic_ncols=True):
         while row['COP_delta'] > row['COP_threshold'] and row['PLR_delta'] > row['PLR_threshold']:
 
             # Calculate cooling capacity based on COP and heat remaining
@@ -672,7 +691,8 @@ def sc04():
     # ...................................................................
     # Export Data
 
-    os.makedirs('C:/UMI/temp/DHSimulationResults')
+    
+    mkdir_p('C:/UMI/temp/DHSimulationResults')
     # Output.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_OutputDataFrame.csv')
     DHC.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_DHCDataFrame.csv')
     CCHP.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_CCHPDataFrame.csv')
