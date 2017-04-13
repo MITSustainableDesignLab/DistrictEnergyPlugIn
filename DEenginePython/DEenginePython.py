@@ -461,7 +461,7 @@ def sc03():
     Cost_Electricity_SC03 = (Load_Grid_SC03 + (Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03) * Effic_PowerGen)* Cost_Electricity
     Cost_NG_SC03 = Energy_NaturalGas_SC03 * Price_NaturalGas
     Cost_SC03 = Cost_Electricity_SC03 + Cost_NG_SC03
-    print "Annual cost of generating electricity for Non-HVAC loads and to run electric centrifugal chillers and purchasing NG from grid (USD):" , Cost_SC03
+    print "Annual cost of generating electricity for Non-HVAC loads and to run\nelectric centrifugal chillers and purchasing NG from grid (USD):" , Cost_SC03
 
     Emissions_Electricity_SC03 = (Load_Grid_SC03 + (Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03) * Effic_PowerGen) * Emissions_ElectricGeneration
     Emissions_NG_SC03 = Energy_NaturalGas_SC03 * Emissions_NG_Combustion_kWh
@@ -693,7 +693,7 @@ def sc04():
 
     
     mkdir_p('C:/UMI/temp/DHSimulationResults')
-    # Output.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_OutputDataFrame.csv')
+    Output.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_OutputDataFrame.csv')
     # DHC.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_DHCDataFrame.csv')
     CCHP.to_csv('C:/UMI/temp/DHSimulationResults/SC04_Export_CCHPDataFrame.csv')
 # ...................................................................
