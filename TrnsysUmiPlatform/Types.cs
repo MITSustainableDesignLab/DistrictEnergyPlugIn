@@ -52,7 +52,8 @@ namespace TrnsysUmiPlatform
         public string External_file { get; set; }
         private static int Base_External_file_number = 29;
         public int External_file_number;
-        public string ProformaPath;
+        public string ProformaPath { get; set; }
+        public double[] Position { get; set; }
 
         public string WriteParameters()
         {
@@ -73,7 +74,10 @@ namespace TrnsysUmiPlatform
         {
             string type_string = "* Model \"" + Unit_name + "\" (Type " + Type_number.ToString() + ")\r\n*\r\n\r\n";
             type_string += "UNIT " + Unit_number.ToString() + " TYPE " + Type_number.ToString() + "\t " + Unit_name.ToString() + "\r\n";
-            type_string += "*$Model";
+            type_string += "*$UNIT_NAME " + Unit_name + "\r\n";
+            type_string += "*$MODEL " + ProformaPath + "\r\n";
+            type_string += "*$POSITION " + String.Join(" ", Position) + "\r\n";
+            type_string += "*$LAYER MAIN #\r\n";
             if (NParameters > 0)
             {
                 type_string += "PARAMETERS " + NParameters.ToString() + "\r\n";
@@ -115,7 +119,7 @@ namespace TrnsysUmiPlatform
         /// This component serves the purpose of reading data at regular time intervals from an external weather data file.
         /// </summary>
         /// <param name="weather_file">Which file contains the Energy+ Weather Data</param>
-        public Type15_3(string weather_file) : base("Weather", "15-3", 9, 0, weather_file)
+        public Type15_3(string weather_file) : base("Type15-3", "15", 9, 0, weather_file)
         {
             this.Parameter_string = "3\t\t! 1 File Type\r\n" +
                                     this.External_file_number + "\t\t! 2 Logical unit\r\n" +
@@ -126,9 +130,11 @@ namespace TrnsysUmiPlatform
                                     "1\t\t! 7 Tracking mode\r\n" +
                                     "0.0\t\t! 8 Slope of surface\r\n" +
                                     "0\t\t! 9 Azimut of surface\r\n";
+
+            ProformaPath = ".\\Weather Data Reading and Processing\\Standard Format\\Energy+ Weather Files (EPW)\\Type15-3.tmf";
         }
     }
-    public class Type25c:TrnSysType
+    public class Type25c : TrnSysType
     {
         /// <summary>
         /// The printer component is used to output (or print) selected system variables at specified (even) intervals of time.
@@ -152,7 +158,7 @@ namespace TrnsysUmiPlatform
             this.Heading2_string = hstring + "\r\n";
         }
     }
-    public class Type46:TrnSysType
+    public class Type46 : TrnSysType
     {
         /// <summary>
         /// The component is used to print the integrated values of the connected inputs to a user-specified data file.
@@ -180,6 +186,7 @@ namespace TrnsysUmiPlatform
         double _fluidDensity;
         double _fluidSpecificHeat;
         double _initialFluidTemp;
+        int _edgeId;
         /// <summary>
         /// This component models the thermal behavior of fluid flow in a pipe or duct using variable size segments of fluid.
         /// Entering fluid shifts the position of existing segments. The mass of the new segment is equal to the flow rate times the simulation timestep.
@@ -187,21 +194,23 @@ namespace TrnsysUmiPlatform
         /// This plug-flow model does not consider mixing or conduction between adjacent elements. A maximum of 25 segments is allowed in the pipe.
         /// When the maximum is reached, the two adjacent segments with the closest temperatures are combined to make one segment.
         /// </summary>
+        /// <param name="inputs">0 Inlet Temperature; 1 Inlet Flow rate; 2 Environment temperature</param>
         /// <param name="insideDiameter">The inside diameter of the pipe.  If a square duct is to be modeled, this parameter should be set to an equivalent diameter which gives the same surface area.</param>
         /// <param name="pipeLength">The length of the pipe to be considered.</param>
         /// <param name="lossCoefficient">The heat transfer coefficient for thermal losses to the environment based on the inside pipe surface area.</param>
         /// <param name="fluidDensity">The density of the fluid in the pipe/duct.</param>
         /// <param name="fluidSpecificHeat">The specific heat of the fluid in the pipe/duct.</param>
-        /// <param name="intitial_fluid_temperature">The temperature of the fluid in the pipe at the beginning of the simulation.</param>
-        public Type31(double insideDiameter, double pipeLength, double lossCoefficient, double fluidDensity, double fluidSpecificHeat, double initialFluidTemp):base("Type 31", "31", 6, 3, "")
+        /// <param name="initialFluidTemp">The temperature of the fluid in the pipe at the beginning of the simulation.</param>
+        public Type31(double insideDiameter, double pipeLength, double lossCoefficient, double fluidDensity, double fluidSpecificHeat, double initialFluidTemp) : base("Type31", "31", 6, 3, "")
         {
+            _inputs = new int[3, 2];
             _insideDiameter = insideDiameter;
             _pipeLength = pipeLength;
             _lossCoefficient = lossCoefficient;
             _fluidDensity = fluidDensity;
             _initialFluidTemp = initialFluidTemp;
 
-            this.Parameter_string = insideDiameter.ToString() + "\t\t! 1 Inside diameter\r\n" +
+            Parameter_string = insideDiameter.ToString() + "\t\t! 1 Inside diameter\r\n" +
                                     pipeLength.ToString() + "\t\t! 2 Pipe length\r\n" +
                                     lossCoefficient.ToString() + "\t\t! 3 Loss coefficient\r\n" +
                                     fluidDensity.ToString() + "\t\t! 4 Fluid density\r\n" +
@@ -209,23 +218,44 @@ namespace TrnsysUmiPlatform
                                     initialFluidTemp.ToString() + "\t\t! 6 Initial fluid temperature\r\n";
             if (_inputs != null)
             {
-                this.Inputs_string = _inputs[0, 0].ToString() + "," + _inputs[0, 1].ToString() + "\t\t! Inlet temperature\r\n" +
-                                     _inputs[1, 0].ToString() + "," + _inputs[1, 1].ToString() + "\t\t! Inlet flow rate\r\n" +
-                                     _inputs[2, 0].ToString() + "," + _inputs[2, 1].ToString() + "\t\t! Environment temperature\r\n";
+                Inputs_string = SetInputString(_inputs);
             }
-            
 
-            this.Initial_inputs = new double[] { initialFluidTemp, 100,10};
+            ProformaPath = ".\\Hydronics\\Pipe_Duct\\Type31.tmf";
+
+            Initial_inputs = new double[] { initialFluidTemp, 100, 10 };
 
         }
-        public void SetInputs(int fromUnit, int[] fromOutput)
+        public void SetInputs(int[] fromUnit, int[] fromOutput)
         {
-            _inputs[0, 0] = fromUnit;
-            _inputs[1, 0] = fromUnit;
-            _inputs[2, 0] = fromUnit;
-            _inputs[0, 1] = fromOutput[0];
-            _inputs[1, 1] = fromOutput[1];
-            _inputs[2, 1] = fromOutput[2];
+            _inputs.SetValue(fromUnit[0], 0, 0);
+            _inputs.SetValue(fromUnit[1], 1, 0);
+            _inputs.SetValue(fromUnit[2], 2, 0);
+            _inputs.SetValue(fromOutput[0], 0, 1);
+            _inputs.SetValue(fromOutput[1], 1, 1);
+            _inputs.SetValue(fromOutput[2], 2, 1);
+
+            Inputs_string = SetInputString(_inputs);
+        }
+
+        private string SetInputString(int[,] _inputs)
+        {
+            Inputs_string = _inputs[0, 0].ToString() + "," + _inputs[0, 1].ToString() + "\t\t! Inlet temperature\r\n" +
+                                _inputs[1, 0].ToString() + "," + _inputs[1, 1].ToString() + "\t\t! Inlet flow rate\r\n" +
+                                _inputs[2, 0].ToString() + "," + _inputs[2, 1].ToString() + "\t\t! Environment temperature\r\n";
+            return Inputs_string;
+        }
+
+        public int EdgeId
+        {
+            get
+            {
+                return _edgeId;
+            }
+            set
+            {
+                _edgeId = value;
+            }
         }
 
         internal double PipeLength
@@ -317,20 +347,20 @@ namespace TrnsysUmiPlatform
         /// This instance of the Type11 model uses mode 2 to model a flow diverter in which a single
         /// inlet liquid stream is split according to a user specified valve setting into two liquid outlet streams.
         /// </summary>
-        public Type11():base("Type 31","31",1,3,"")
+        public Type11() : base("Type 31", "31", 1, 3, "")
         {
             this.Parameter_string = "2\t\t! 1 Controlled flow diverter mode";
             this.Inputs_string = "";
         }
     }
-    public class Type659:TrnSysType
+    public class Type659 : TrnSysType
     {
         /// <summary>
         /// Type659 models an external, proportionally controlled fluid heater. External proportional control (an
         /// input signal between 0 and 1) is in effect as long as a fluid set point temperature is not exceeded.
         /// </summary>
         /// <param name="rated_capacity">The rated capacity (the maximum possible energy transfer to the fluid stream) of the boiler</param>
-        public Type659(double rated_capacity):base("Boiler","31",2,7,"")
+        public Type659(double rated_capacity) : base("Boiler", "31", 2, 7, "")
         {
             this.Parameter_string = rated_capacity.ToString() + "\t\t! 1 Rated Capacity" + "CpFluid\t\t! 2 Specific Heat of Fluid\r\n";
             this.Inputs_string = "";
@@ -349,14 +379,16 @@ namespace TrnsysUmiPlatform
         /// <param name="fluid_specific_heat">The specific heat of the fluid flowing through the device.</param>
         /// <param name="fluid_density">The density of the fluid flowing through the device.</param>
         /// <param name="motor_heatloss_fraction">The fraction of the motor heat loss transferred to the fluid stream.</param>
-        public Type741(double rated_flowrate, double fluid_specific_heat, double fluid_density, double motor_heatloss_fraction) :base("Variable-Speed Pump", "741", 4, 6, "")
+        public Type741(double rated_flowrate, double fluid_specific_heat, double fluid_density, double motor_heatloss_fraction) : base("Type741", "741", 4, 6, "")
         {
-            this.Parameter_string = rated_flowrate.ToString() + "\t\t! 1 Rated Flowrate\r\n" + 
-                                    fluid_specific_heat.ToString() + "\t\t! 2 Fluid Specific Heat\r\n" + 
-                                    fluid_density + "\t\t! 3 Fluid Density\r\n" + 
+            this.Parameter_string = rated_flowrate.ToString() + "\t\t! 1 Rated Flowrate\r\n" +
+                                    fluid_specific_heat.ToString() + "\t\t! 2 Fluid Specific Heat\r\n" +
+                                    fluid_density + "\t\t! 3 Fluid Density\r\n" +
                                     motor_heatloss_fraction.ToString() + "\t\t! 4 Motor Heat Loss Fraction\r\n";
-            this.Inputs_string = "";
+            this.Inputs_string = "0,0\r\n0,0\r\n0,0\r\n0,0\r\n0,0\r\n0,0\r\n";
             this.Initial_inputs = new double[] { 20.0, 0.0, 1.0, 0.6, 0.9, 10.0 };
+
+            ProformaPath = ".\\Hydronics Library (TESS)\\Pumps\\Sets the Mass Flow Rate\\Variable-Speed\\Power from Efficiency and Pressure Drop\\Type741.tmf";
         }
     }
     //#########################################################################################################
