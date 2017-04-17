@@ -7,10 +7,9 @@ using Rhino.Geometry;
 using Rhino.Input;
 using Rhino.Input.Custom;
 using NetworkDraw.Geometry;
-using NetworkDraw;
 using Mit.Umi.RhinoServices;
-using ShortestWalk.Trnsys;
 using System.Collections.Generic;
+using TrnsysUmiPlatform;
 
 namespace NetworkDraw
 {

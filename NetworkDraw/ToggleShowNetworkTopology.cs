@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Drawing;
-using System.Text;
 using Rhino;
 using Rhino.Commands;
 using Rhino.Geometry;
-using Rhino.Input;
 using Rhino.Input.Custom;
 using NetworkDraw.Geometry;
-using NetworkDraw;
-using System.Collections.Generic;
 
 namespace NetworkDraw
 {

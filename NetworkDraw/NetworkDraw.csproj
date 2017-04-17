@@ -42,6 +42,17 @@
       <HintPath>C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\RhinoCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="TrnsysUmiPlatform">
+      <HintPath>..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Umi.Core">
+      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Umi.Rhino">
+      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Rhino.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurvesGetter.cs" />
