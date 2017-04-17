@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="TrnsysUmiPlatform">
       <HintPath>..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Core.dll</HintPath>
@@ -82,7 +83,7 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).rhp"
-Erase "$(TargetPath)"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>

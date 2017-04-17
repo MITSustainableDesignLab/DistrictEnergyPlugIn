@@ -9,13 +9,13 @@ namespace TrnsysUmiPlatform
     public abstract class TrnSysType
     {
         /// <summary>
-        /// This is the base class for a TRNSYS type.  It defines all the things that are comon to types
+        /// This is the base class for a TRNSYS type.  It defines all the things that are common to types
         /// </summary>
         /// <param name="unit_name">The TRNSYS type unit name</param>
         /// <param name="type_number">The Type number</param>
         /// <param name="nParameters">Number of parameters the type has</param>
         /// <param name="nInputs">Number of inputs the type has</param>
-        /// <param name="external_file">The external file associated to the type</param>
+        /// <param name="external_file">The external file associated to the type. The external file unit number is set auomatically.</param>
         public TrnSysType(string unit_name, string type_number, int nParameters, int nInputs, string external_file)
         {
             Unit_name = unit_name;
@@ -70,6 +70,10 @@ namespace TrnsysUmiPlatform
             return Derivatives_string;
         }
 
+        /// <summary>
+        /// Method that generates the text file. It collects the content of a type and depending on it's kind, writes to a string the necessary blocks of test.
+        /// </summary>
+        /// <returns>type_string: the string to be written to the dck file.</returns>
         public string WriteType()
         {
             string type_string = "* Model \"" + Unit_name + "\" (Type " + Type_number.ToString() + ")\r\n*\r\n\r\n";

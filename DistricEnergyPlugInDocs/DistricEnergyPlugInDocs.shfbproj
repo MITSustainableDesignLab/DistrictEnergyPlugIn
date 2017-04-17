@@ -32,8 +32,8 @@
     </TransformComponentArguments>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll" />
-      <DocumentationSource sourceFile="..\..\ShortestWalk\ShortestWalk\bin\ShortestWalk.dll" />
-      <DocumentationSource sourceFile="..\..\ShortestWalk\ShortestWalk\bin\ShortestWalk.xml" />
+      <DocumentationSource sourceFile="..\ExportLoadsToFile\bin\ExportLoadsToFile.dll" />
+      <DocumentationSource sourceFile="..\NetworkDraw\bin\NetworkDraw.dll" />
     </DocumentationSources>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
