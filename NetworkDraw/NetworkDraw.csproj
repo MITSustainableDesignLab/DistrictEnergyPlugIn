@@ -44,9 +44,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NetworkDrawCommand.cs" />
-    <Compile Include="NetworkDrawPlugIn.cs" />
+    <Compile Include="CurvesGetter.cs" />
+    <Compile Include="Geometry\CurvesTopology.cs" />
+    <Compile Include="Geometry\EdgeAddress.cs" />
+    <Compile Include="Geometry\NodeAddress.cs" />
+    <Compile Include="Geometry\PathMethods.cs" />
+    <Compile Include="GetterExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShortestWalkCommand.cs" />
+    <Compile Include="ShortestWalkPlugIn.cs" />
+    <Compile Include="ToggleShowNetworkTopology.cs" />
+    <Compile Include="TrackingPointGetter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
