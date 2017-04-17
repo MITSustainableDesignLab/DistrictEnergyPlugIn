@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using Rhino.DocObjects;
 using Rhino;
-using ShortestWalk.Geometry;
-using Rhino.Geometry;
+using System.Collections.Generic;
 
 namespace TrnsysUmiPlatform
-{   
-public class RunTrnsys
+{
+    public class RunTrnsys
     {
         public RunTrnsys(TrnsysModel trnsys_model)
         {
@@ -37,30 +35,20 @@ public class RunTrnsys
         }
     }
 
-    /// <summary>Responsible for writing the .dck File</summary>
     public class WriteDckFile
     {
         private TrnsysModel trnsys_model;
 
-        /// <summary>
-        /// A deck file contructor
-        /// </summary>
-        /// <param name="trnsys_model">The Trnsys Model to write to a deck file</param>
         public WriteDckFile(TrnsysModel trnsys_model)
         {
             this.trnsys_model = trnsys_model;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="trnsys_model">The Trnsys Model to write to a deck file</param>
-        /// <param name="components">A list of components to write</param>
-        public WriteDckFile(TrnsysModel trnsys_model, RhinoObject[] components)
+        public WriteDckFile(TrnsysModel trnsys_model, List<Type31> pipes)
         {
             string filename = Path.Combine(trnsys_model.WorkingDirectory, trnsys_model.ModelName + ".dck");
 
-            using (StreamWriter file = new StreamWriter(filename, false))
+            using (StreamWriter file = new StreamWriter(filename, false, System.Text.Encoding.Default))
             {
                 // Write the begining of the deck file.
                 Intro intro = new Intro(trnsys_model.ProjectCreator, trnsys_model.CreationDate, trnsys_model.ModifiedDate, trnsys_model.Description);
@@ -71,18 +59,24 @@ public class RunTrnsys
                 file.WriteLine(controlcards.WriteControlCards());
 
                 Type15_3 weather2 = new Type15_3(trnsys_model.WeatherFile);
+                weather2.Position = new double[2] { 179, 596 };
                 file.WriteLine(weather2.WriteType());
 
+
                 Type741 pump = new Type741(0, 0, 0, 0);
+                pump.Position = new double[2] { 315, 596 };
                 file.WriteLine(pump.WriteType());
 
-                // Write Loads
-                //foreach (var obj in doc.GetUmiSimulationBuildings())
-                //Database.GetObjects();
+                // Write Type31 (pipes)
+                foreach (Type31 _pipe in pipes)
+                {
+                    file.WriteLine(_pipe.WriteType());
+                }
 
-                file.WriteLine("END\\r\n");
+                file.WriteLine("END\r\n");
                 file.Close();
             }
+            //return;
         }
     }
 }

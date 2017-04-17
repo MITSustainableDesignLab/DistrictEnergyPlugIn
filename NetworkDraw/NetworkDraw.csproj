@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{897ECA20-9485-475E-8E35-6C681B70A582}</ProjectGuid>
+    <ProjectGuid>{4BD0987C-02DD-40F9-ABA9-D93190F32D17}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ExportLoadsToFile</RootNamespace>
-    <AssemblyName>ExportLoadsToFile</AssemblyName>
+    <RootNamespace>NetworkDraw</RootNamespace>
+    <AssemblyName>NetworkDraw</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -34,14 +34,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CsvHelper">
-      <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="EnergyPlusWeather">
-      <HintPath>..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\bin\EnergyPlusWeather.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -50,6 +42,10 @@
     <Reference Include="RhinoCommon">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\RhinoCommon.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="TrnsysUmiPlatform">
+      <HintPath>..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Core">
@@ -62,24 +58,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DHDryBulbCSV.cs" />
-    <Compile Include="DHLoadsToCSV.cs" />
-    <Compile Include="ExportLoadColumns.cs" />
-    <Compile Include="ExportLoadsforPivotTable.cs" />
-    <Compile Include="ExportLoadsToFileCommand.cs" />
-    <Compile Include="ExportLoadsToFilePlugIn.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
+    <Compile Include="CurvesGetter.cs" />
+    <Compile Include="Geometry\CurvesTopology.cs" />
+    <Compile Include="Geometry\EdgeAddress.cs" />
+    <Compile Include="Geometry\NodeAddress.cs" />
+    <Compile Include="Geometry\PathMethods.cs" />
+    <Compile Include="GetterExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NetworkDrawCommand.cs" />
+    <Compile Include="NetworkDrawPlugIn.cs" />
+    <Compile Include="ToggleShowNetworkTopology.cs" />
+    <Compile Include="TrackingPointGetter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
+    <Content Include="Properties\legalstuff.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -90,7 +82,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).rhp"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).rhp"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
