@@ -64,8 +64,8 @@
     <Compile Include="Geometry\PathMethods.cs" />
     <Compile Include="GetterExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShortestWalkCommand.cs" />
-    <Compile Include="ShortestWalkPlugIn.cs" />
+    <Compile Include="NetworkDrawCommand.cs" />
+    <Compile Include="NetworkDrawPlugIn.cs" />
     <Compile Include="ToggleShowNetworkTopology.cs" />
     <Compile Include="TrackingPointGetter.cs" />
   </ItemGroup>

@@ -2,9 +2,9 @@
 
 namespace NetworkDraw
 {
-    public class ShortestWalkPlugIn : PlugIn
+    public class NetworkDrawPlugIn : PlugIn
     {
-        public ShortestWalkPlugIn()
+        public NetworkDrawPlugIn()
             : base()
         {
         }

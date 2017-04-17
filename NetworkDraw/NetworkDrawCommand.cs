@@ -19,7 +19,7 @@ namespace NetworkDraw
         {
             get
             {
-                return "ShortestWalk";
+                return "NetworkDraw";
             }
         }
 
