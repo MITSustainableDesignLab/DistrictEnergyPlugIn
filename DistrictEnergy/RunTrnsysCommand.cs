@@ -50,7 +50,7 @@ namespace DistrictEnergy
                     // Get building loads
 
                     // Run
-                    var b = new WriteDckFile(trnsys_model, rhobjs);
+                    //var b = new WriteDckFile(trnsys_model, rhobjs);
 
                     var c = new RunTrnsys(trnsys_model);
                 }
