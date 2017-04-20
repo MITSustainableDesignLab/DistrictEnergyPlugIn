@@ -40,7 +40,7 @@ namespace NetworkDraw
             OptionDouble tol = new OptionDouble(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance, true, 0.0);
             using (CurvesGetter getLines = new CurvesGetter("Select curves meeting at endpoints. Press Enter when done"))
             {
-                for( ; ;)
+                for (;;)
                 {
                     getLines.ClearCommandOptions();
                     getLines.EnableClearObjectsOnEntry(false);
@@ -49,7 +49,7 @@ namespace NetworkDraw
                     int tolInt = getLines.AddOptionDouble("Tolerance", ref tol);
                     int modeInt = GetterExtension.AddEnumOptionList(getLines, sm);
 
-                    if (getLines.Curves(1, 0, out curves))
+                    if (getLines.Curves(1,0,out curves))
                         break;
                     else
                     {
@@ -64,15 +64,38 @@ namespace NetworkDraw
                         }
                         else
                         {
-                            RhinoApp.WriteLine("Less than three lines were selected");
-                            return Result.Cancel;
+
+                            // Get all of the objects on the layer. If layername is bogus, you will
+                            // just get an empty list back
+                            string layername = "Heating Network";
+                            Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername);
+                            if (rhobjs == null || rhobjs.Length < 1)
+                                return Rhino.Commands.Result.Cancel;
+
+                            curves = new Curve[rhobjs.Length];
+
+                            for (int i = 0; i < rhobjs.Length; i++)
+                            {
+                                GeometryBase geom = rhobjs[i].Geometry;
+                                Curve x = geom as Curve;
+                                if (x != null && x.IsValid)
+                                {
+                                    curves[i] = x;
+                                }
+                            }
+                            if (curves.Length == 0)
+                            {
+                                RhinoApp.WriteLine("Less than three lines are on the layer");
+                                return Result.Cancel;
+                            }
+                            break;
                         }
                     }
                 }
             }
             CurvesTopology crvTopology = new CurvesTopology(curves, tol.CurrentValue);
 
-            
+
 
             Guid[] ids = null;
             if (tog.CurrentValue)
@@ -118,13 +141,13 @@ namespace NetworkDraw
             bool[] eDirs;
             double totLength;
 
-            for(int i=0;i<walkToIndex.Count;i++)
-            {              
-                
-                    Curve c = 
-                        pathSearch.Cross(walkFromIndex, walkToIndex[i], out nIndices, out eIndices, out eDirs, out totLength);
+            for (int i = 0; i < walkToIndex.Count; i++)
+            {
 
-                
+                Curve c =
+                    pathSearch.Cross(walkFromIndex, walkToIndex[i], out nIndices, out eIndices, out eDirs, out totLength);
+
+
                 if (c != null && c.IsValid)
                 {
                     if (tog.CurrentValue)
@@ -132,7 +155,7 @@ namespace NetworkDraw
                         RhinoApp.WriteLine("Vertices: {0}", FormatNumbers(nIndices));
                         RhinoApp.WriteLine("Edges: {0}", FormatNumbers(eIndices));
                     }
-                    
+
                     for (int j = 0; j < eIndices.Length; j++)
                     {
                         int[,] inputs = { { 0, 0, 0 }, { 0, 0, 0 } };
@@ -143,7 +166,7 @@ namespace NetworkDraw
                         var bbox = crvTopology.CurveAt(eIndices[j]).GetBoundingBox(true);
                         if (!bbox.IsValid)
                             return Rhino.Commands.Result.Failure;
-                        
+
 
                         int[] fromOutputs = { 1, 2, 0 };
                         bool contains = false;
@@ -155,20 +178,20 @@ namespace NetworkDraw
                             int[] fromUnit = { prevUnit, prevUnit, 0 };
                             pipe.SetInputs(fromUnit, fromOutputs);
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
+                            pipe.Position = new double[2] { bbox.Center.X * 2, 2000 - bbox.Center.Y * 2 };
                             pipe.EdgeId = eIndices[j];
                             contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
                         else
                         {
-                            pipe.SetInputs(new int[3] { 0,0,0}, fromOutputs);
+                            pipe.SetInputs(new int[3] { 0, 0, 0 }, fromOutputs);
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
+                            pipe.Position = new double[2] { bbox.Center.X * 2, 2000 - bbox.Center.Y * 2 };
                             pipe.EdgeId = eIndices[j];
                             contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
-                        
-                        if (contains!=true)   
+
+                        if (contains != true)
                             Pipes.Add(pipe);
                     }
                 }
@@ -181,7 +204,7 @@ namespace NetworkDraw
             TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\tmp");
             WriteDckFile b = new WriteDckFile(model, Pipes);
 
-            
+
 
             EndOperations(ids);
             return wasSuccessful;

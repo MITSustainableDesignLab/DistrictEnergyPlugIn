@@ -60,7 +60,6 @@ namespace NetworkDraw
 
                 CurvesTopology crvTopology = new CurvesTopology(curves, tol.CurrentValue);
 
-                //Guid[] ids = null;
                 ids = CurvesTopologyPreview.Mark(crvTopology, Color.LightBlue, Color.LightCoral, Color.GreenYellow);
 
                 return Result.Success;
