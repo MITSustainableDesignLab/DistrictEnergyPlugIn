@@ -13,13 +13,13 @@ using TrnsysUmiPlatform;
 
 namespace NetworkDraw
 {
-    public class ShortestPathInCurvesCommand : Command
+    public class NetworkDrawCommand : Command
     {
         public override string EnglishName
         {
             get
             {
-                return "NetworkDraw";
+                return "CrossNetwork";
             }
         }
 
@@ -27,7 +27,7 @@ namespace NetworkDraw
         {
             get
             {
-                return new Guid("{94838428-8c17-4db6-a652-595dfd71ff03}");
+                return new Guid("{A98535DA-B2F5-477D-807D-28481965584B}");
             }
         }
 
@@ -37,7 +37,6 @@ namespace NetworkDraw
 
             Curve[] curves;
             OptionToggle tog = new OptionToggle(false, "Hide", "Show");
-            //OptionToggle beg = new OptionToggle(false, "FromLast", "FromStart");
             OptionDouble tol = new OptionDouble(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance, true, 0.0);
             using (CurvesGetter getLines = new CurvesGetter("Select curves meeting at endpoints. Press Enter when done"))
             {
@@ -80,45 +79,51 @@ namespace NetworkDraw
                 ids = CurvesTopologyPreview.Mark(crvTopology, Color.LightBlue, Color.LightCoral, Color.GreenYellow);
 
             int walkFromIndex;
-            using (var getStart = new TrackingPointGetter("Select the start point of the walk on the curves", crvTopology))
-            {
-                if (getStart.GetPointOnTopology(out walkFromIndex) != Result.Success)
-                {
-                    EndOperations(ids);
-                    return Result.Cancel;
-                }
-            }
+            //using (var getStart = new TrackingPointGetter("Select the start point of the walk on the curves", crvTopology))
+            //{
+            //    if (getStart.GetPointOnTopology(out walkFromIndex) != Result.Success)
+            //    {
+            //        EndOperations(ids);
+            //        return Result.Cancel;
+            //    }
+            //}
 
             Result wasSuccessful = Result.Cancel;
             List<Type31> Pipes = new List<Type31>();
-            for (; ; )
+            List<int> walked = new List<int>();
+
+            walkFromIndex = 14; //should be automatically determined by umi
+
+            List<int> walkToIndex;
+            double[] distances;
+            using (var getEnd = new PointGetter(crvTopology, walkFromIndex, sm))
             {
-
-                int walkToIndex;
-                double[] distances;
-                using (var getEnd = new TrackingPointGetter("Select the end point", crvTopology, walkFromIndex, sm))
+                if (getEnd.GetBuildingPointOnTopology(out walkToIndex) != Result.Success)
                 {
-                    if (getEnd.GetPointOnTopology(out walkToIndex) != Result.Success)
-                    {
-                        break;
-                    }
-                    distances = getEnd.DistanceCache;
+                    return Result.Failure;
                 }
+                distances = getEnd.DistanceCache;
+            }
 
-                if (walkFromIndex == walkToIndex)
-                {
-                    RhinoApp.WriteLine("Start and end points are equal");
-                    EndOperations(ids);
-                    return Result.Nothing;
-                }
+            if (walkToIndex.Contains(walkFromIndex))
+            {
+                RhinoApp.WriteLine("Start and end points are equal");
+                EndOperations(ids);
+                return Result.Nothing;
+            }
 
-                PathMethod pathSearch = PathMethod.FromMode(sm, crvTopology, distances);
+            PathMethod pathSearch = PathMethod.FromMode(sm, crvTopology, distances);
 
-                int[] nIndices, eIndices;
-                bool[] eDirs;
-                double totLength;
-                Curve c =
-                    pathSearch.Cross(walkFromIndex, walkToIndex, out nIndices, out eIndices, out eDirs, out totLength);
+            int[] nIndices, eIndices;
+            bool[] eDirs;
+            double totLength;
+
+            for(int i=0;i<walkToIndex.Count;i++)
+            {              
+                
+                    Curve c = 
+                        pathSearch.Cross(walkFromIndex, walkToIndex[i], out nIndices, out eIndices, out eDirs, out totLength);
+
                 
                 if (c != null && c.IsValid)
                 {
@@ -127,25 +132,44 @@ namespace NetworkDraw
                         RhinoApp.WriteLine("Vertices: {0}", FormatNumbers(nIndices));
                         RhinoApp.WriteLine("Edges: {0}", FormatNumbers(eIndices));
                     }
-
-                    var a = RhinoDoc.ActiveDoc.CreateDefaultAttributes();
-                    Guid g = RhinoDoc.ActiveDoc.Objects.AddCurve(c, a);
-
-                    var obj = RhinoDoc.ActiveDoc.Objects.Find(g);
-                    if (obj != null)
+                    
+                    for (int j = 0; j < eIndices.Length; j++)
                     {
-                        obj.Select(true);
-                        wasSuccessful = Result.Success;
-                        //if (beg.CurrentValue) //Here we would allow a user to choose between WalkFromIndex or WalkToIndex
-                            //walkFromIndex = walkToIndex;
+                        int[,] inputs = { { 0, 0, 0 }, { 0, 0, 0 } };
 
+                        Type31 pipe = new Type31(0.2, crvTopology.CurveAt(eIndices[j]).GetLength(), 1, 1000, 4.29, 20);
 
-                    }
-                    else
-                    {
-                        RhinoApp.WriteLine("An error occurred while adding the new polycurve.");
-                        wasSuccessful = Result.Failure;
-                        break;
+                        // Compute the tight bounding box of the curve in world coordinates
+                        var bbox = crvTopology.CurveAt(eIndices[j]).GetBoundingBox(true);
+                        if (!bbox.IsValid)
+                            return Rhino.Commands.Result.Failure;
+                        
+
+                        int[] fromOutputs = { 1, 2, 0 };
+                        bool contains = false;
+
+                        if (j > 0)
+                        {
+                            int prev = j - 1;
+                            int prevUnit = Pipes[prev].Unit_number;
+                            int[] fromUnit = { prevUnit, prevUnit, 0 };
+                            pipe.SetInputs(fromUnit, fromOutputs);
+                            pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
+                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
+                            pipe.EdgeId = eIndices[j];
+                            contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
+                        }
+                        else
+                        {
+                            pipe.SetInputs(new int[3] { 0,0,0}, fromOutputs);
+                            pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
+                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
+                            pipe.EdgeId = eIndices[j];
+                            contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
+                        }
+                        
+                        if (contains!=true)   
+                            Pipes.Add(pipe);
                     }
                 }
                 else
@@ -154,10 +178,10 @@ namespace NetworkDraw
                     wasSuccessful = Result.Nothing;
                 }
             }
+            TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\tmp");
+            WriteDckFile b = new WriteDckFile(model, Pipes);
 
-            RhinoApp.RunScript("Explode", true);
-            RhinoApp.RunScript("Seldup", true);
-            RhinoApp.RunScript("Delete", false);
+            
 
             EndOperations(ids);
             return wasSuccessful;
