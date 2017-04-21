@@ -66,7 +66,7 @@ namespace NetworkDraw.Geometry
             {
                 return _isDiverter;
             }
-            internal set
+            set
             {
                 _isDiverter = value;
             }
