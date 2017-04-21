@@ -101,18 +101,22 @@ namespace NetworkDraw
             if (tog.CurrentValue)
                 ids = CurvesTopologyPreview.Mark(crvTopology, Color.LightBlue, Color.LightCoral, Color.GreenYellow);
 
-            int walkFromIndex;
+            List<int> walkFromIndex;
 
             Result wasSuccessful = Result.Cancel;
             List<Type31> Pipes = new List<Type31>();
             List<Type11> Diverters = new List<Type11>();
             List<int> walked = new List<int>();
 
-            walkFromIndex = 16; //should be automatically determined by umi
+            if (GetThermalPlantsPointOnTopology(crvTopology, out walkFromIndex) != Result.Success)
+            {
+                RhinoApp.WriteLine("Error: No Thermal plant is defined on layer Thermal Plants");
+                return Result.Failure;
+            }
 
             List<int> walkToIndex;
             double[] distances;
-            using (var getEnd = new PointGetter(crvTopology, walkFromIndex, sm))
+            using (var getEnd = new PointGetter(crvTopology, walkFromIndex[0], sm)) //Can only do 1 thermal plant
             {
                 if (getEnd.GetBuildingPointOnTopology(out walkToIndex) != Result.Success)
                 {
@@ -121,7 +125,7 @@ namespace NetworkDraw
                 distances = getEnd.DistanceCache;
             }
 
-            if (walkToIndex.Contains(walkFromIndex))
+            if (walkToIndex.Contains(walkFromIndex[0]))
             {
                 RhinoApp.WriteLine("Start and end points are equal");
                 EndOperations(ids);
@@ -138,7 +142,7 @@ namespace NetworkDraw
             {
 
                 Curve c =
-                    pathSearch.Cross(walkFromIndex, walkToIndex[i], out nIndices, out eIndices, out eDirs, out totLength);
+                    pathSearch.Cross(walkFromIndex[0], walkToIndex[i], out nIndices, out eIndices, out eDirs, out totLength);
 
 
                 if (c != null && c.IsValid)
@@ -187,7 +191,7 @@ namespace NetworkDraw
                                     Type11 diverter = new Type11();
                                     diverter.SetInputs(fromUnit, fromOutputs);
                                     diverter.Unit_name = "Diverter_" + start.ToString();
-                                    diverter.Position = new double[2] { crvTopology.VertexAt(start).X * 3, 2000 - crvTopology.VertexAt(start).Y * 3 };
+                                    diverter.Position = new double[2] { crvTopology.VertexAt(start).X, 2000 - crvTopology.VertexAt(start).Y };
                                     diverter.NodeId = start;
                                     fromUnit.SetValue(diverter.Unit_number, 0); // resets the "from unit" number to the diverter's Unit_number
                                     fromUnit.SetValue(diverter.Unit_number, 1); // Idem
@@ -204,7 +208,7 @@ namespace NetworkDraw
 
                             pipe.SetInputs(fromUnit, fromOutputs);
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X * 3, 2000 - bbox.Center.Y * 3 };
+                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
                             pipe.EdgeId = eIndices[j];
                             contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
@@ -212,7 +216,7 @@ namespace NetworkDraw
                         {
                             pipe.SetInputs(new int[3] { 0, 0, 0 }, fromOutputs);
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X * 3, 2000 - bbox.Center.Y * 3 };
+                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
                             pipe.EdgeId = eIndices[j];
                             contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
@@ -230,10 +234,9 @@ namespace NetworkDraw
             TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\tmp");
             WriteDckFile b = new WriteDckFile(model, Pipes, Diverters);
 
-
-
             EndOperations(ids);
             return wasSuccessful;
+
         }
 
         private static void EndOperations(Guid[] ids)
@@ -255,5 +258,40 @@ namespace NetworkDraw
             }
             return s.ToString();
         }
+
+        public Result GetThermalPlantsPointOnTopology(CurvesTopology _crvTopology, out List<int> index)
+        {
+            string layername = "Thermal Plant";
+
+            // Get all of the objects on the layer. If layername is bogus, you will
+            // just get an empty list back
+            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername);
+            if (rhobjs == null || rhobjs.Length < 1)
+            {
+                index = null;
+                return Result.Cancel;
+            }
+
+            index = new List<int>();
+            foreach (var obj in rhobjs)
+            {
+                var objguid = RhinoDoc.ActiveDoc.Objects.Find(obj.Id);
+                if (objguid != null)
+                {
+                    var a = objguid.Geometry.AsBuildingGeometry();
+                    var mass_properties = VolumeMassProperties.Compute(a);
+                    Point3d pt = new Point3d(mass_properties.Centroid.X, mass_properties.Centroid.Y, 0);
+                    index.Add(_crvTopology.GetClosestNode(pt));
+                }
+
+            }
+
+
+
+
+            return Result.Success;
+        }
+
+
     }
 }
