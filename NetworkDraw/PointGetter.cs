@@ -67,10 +67,11 @@ namespace NetworkDraw
 
         public Result GetBuildingPointOnTopology(out List<int> index)
         {
+            var AllBldgs = RhinoDoc.ActiveDoc.GetUmiSimulationBuildings();
             List<Guid> g = new List<Guid>();
-            foreach (var o in GlobalContext.GetObjects())
+            foreach (var o in AllBldgs)
             {
-                g.Add(Guid.Parse(o.Id));
+                g.Add(o.Id);
             }
             index = new List<int>();
             foreach (var guid in g)
