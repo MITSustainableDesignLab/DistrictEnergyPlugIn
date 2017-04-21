@@ -212,6 +212,7 @@ namespace TrnsysUmiPlatform
             _pipeLength = pipeLength;
             _lossCoefficient = lossCoefficient;
             _fluidDensity = fluidDensity;
+            _fluidSpecificHeat = fluidSpecificHeat;
             _initialFluidTemp = initialFluidTemp;
 
             Parameter_string = insideDiameter.ToString() + "\t\t! 1 Inside diameter\r\n" +
@@ -440,6 +441,85 @@ namespace TrnsysUmiPlatform
             ProformaPath = ".\\Hydronics Library (TESS)\\Pumps\\Sets the Mass Flow Rate\\Variable-Speed\\Power from Efficiency and Pressure Drop\\Type741.tmf";
         }
     }
+
+    public class Type682 : TrnSysType
+    {
+        int[,] _inputs;
+        Guid _bldId;
+        string _bldName;
+        double _fluidSpecificHeat;
+        /// <summary>
+        /// This model simply imposes a user-specified load (cooling = positive load, heating = negative load) 
+        /// on a flow stream and calculates the resultant outlet fluid conditions
+        /// </summary>
+        /// <param name="fluidSpecificHeat">The specific heat of the fluid stream[kJ/kg-K]</param>
+        public Type682(double fluidSpecificHeat) : base("Type682", "682", 1, 6, "")
+        {
+            _fluidSpecificHeat = fluidSpecificHeat;
+
+            Parameter_string = fluidSpecificHeat.ToString() + "\t\t! 1 Fluid specific heat\r\n";
+            if (_inputs != null)
+                Inputs_string = SetInputString(_inputs);
+
+            ProformaPath = ".\\Loads and Structures (TESS)\\Flowstream Loads\\Other Fluids\\Type682.tmf";
+
+            Initial_inputs = new double[] { 10.0, 100.0, 0.0, -999, 999 };
+        }
+
+        public void SetInputs(int[] fromUnit, int[] fromOutput)
+        {
+            _inputs.SetValue(fromUnit[0], 0, 0);
+            _inputs.SetValue(fromUnit[1], 1, 0);
+            _inputs.SetValue(fromUnit[2], 2, 0);
+            _inputs.SetValue(fromUnit[3], 3, 0);
+            _inputs.SetValue(fromUnit[4], 4, 0);
+            _inputs.SetValue(fromOutput[0], 0, 1);
+            _inputs.SetValue(fromOutput[1], 1, 1);
+            _inputs.SetValue(fromOutput[2], 2, 1);
+            _inputs.SetValue(fromOutput[3], 3, 1);
+            _inputs.SetValue(fromOutput[4], 4, 1);
+
+            Inputs_string = SetInputString(_inputs);
+        }
+
+        private string SetInputString(int[,] _inputs)
+        {
+            Inputs_string = _inputs[0, 0].ToString() + "," + _inputs[0, 1].ToString() + "\t\t! Inlet Temperature\r\n" +
+                            _inputs[1, 0].ToString() + "," + _inputs[1, 1].ToString() + "\t\t! Inlet flow rate\r\n" +
+                            _inputs[2, 0].ToString() + "," + _inputs[2, 1].ToString() + "\t\t! Load\r\n" +
+                            _inputs[3, 0].ToString() + "," + _inputs[3, 1].ToString() + "\t\t! Minimum Heating Temperature\r\n" +
+                            _inputs[4, 0].ToString() + "," + _inputs[4, 1].ToString() + "\t\t! Maximum Cooling Temperature\r\n";
+            return Inputs_string;
+        }
+
+        public Guid BuildingId
+        {
+            get
+            {
+                return _bldId;
+            }
+            set
+            {
+                _bldId = value;
+            }
+        }
+        public string BuildingName
+        {
+            get
+            {
+                return _bldName;
+            }
+            set
+            {
+                _bldName = value;
+            }
+        }
+
+
+    }
+
+
+
     //#########################################################################################################
     //# The following make up other components of a deck file that are not Types.
     //#########################################################################################################
