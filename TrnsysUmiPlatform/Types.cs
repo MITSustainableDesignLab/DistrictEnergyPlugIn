@@ -351,6 +351,7 @@ namespace TrnsysUmiPlatform
         /// </summary>
         public Type11() : base("Type 11", "11", 1, 3, "")
         {
+            OutUsed = !OutUsed;
             _inputs = new int[3, 2];
 
             Parameter_string = "2\t\t! 1 Controlled flow diverter mode\r\n";
@@ -396,6 +397,9 @@ namespace TrnsysUmiPlatform
                 _nodeId = value;
             }
         }
+
+        public bool OutUsed;
+
 
     }
     public class Type659 : TrnSysType

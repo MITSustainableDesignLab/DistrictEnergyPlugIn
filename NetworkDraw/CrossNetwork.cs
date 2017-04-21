@@ -174,6 +174,7 @@ namespace NetworkDraw
                         int[] fromOutputs = { 1, 2, 0 };
                         bool contains = false;
 
+                        // If this is the first pipe, skip this part
                         if (j > 0)
                         {
                             int prev = j - 1;
@@ -191,8 +192,10 @@ namespace NetworkDraw
                                 start = crvTopology.EdgeAt(eIndices[j]).B;
                             }
 
+                            // Only if the start nodeId of the pipe is an element of the List of Indices crossed by the curve
                             if (Array.Exists(nIndices, element => element.Equals(start)))
                             {
+                                // If the nodeId is a diverter, then create a new diverter
                                 if (crvTopology.NodeAt(start).IsDiverter)
                                 {
                                     Type11 diverter = new Type11();
@@ -207,17 +210,22 @@ namespace NetworkDraw
                                     diverter.NodeId = start;
                                     fromUnit.SetValue(diverter.Unit_number, 0); // resets the "from unit" number to the diverter's Unit_number
                                     fromUnit.SetValue(diverter.Unit_number, 1); // Idem
-                                        
+
+                                    // If that specific diverter ID has already been created, 
+                                    // don't add it to the list but change the outputs, else add it to the list
                                     if (Diverters.Exists(d => d.NodeId == diverter.NodeId))
                                     {
                                         fromUnit.SetValue(Diverters.Find(d => d.NodeId == start).Unit_number, 0); // resets the from unit number to the diverter
                                         fromUnit.SetValue(Diverters.Find(d => d.NodeId == start).Unit_number, 1);
+                                        fromOutputs.SetValue(Diverters.Find(d => d.NodeId == start).OutUsed ? 3:1, 0); // sets the input of the next pipe to the availabe output of the diverter (since it has two)
+                                        fromOutputs.SetValue(Diverters.Find(d => d.NodeId == start).OutUsed ? 4:2, 1);
                                     }
                                     else
                                         Diverters.Add(diverter);
                                 }
                             }
 
+                            // Create the pipe
                             pipe.SetInputs(fromUnit, fromOutputs);
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
                             pipe.Position = new double[2] { bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue };
