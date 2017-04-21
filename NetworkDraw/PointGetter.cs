@@ -66,7 +66,7 @@ namespace NetworkDraw
 
         public Result GetBuildingPointOnTopology(out List<int> index)
         {
-            index = new List<int> {9, 2, 3, 5, 7, 11, 13};
+            index = new List<int> {11, 13, 9, 2, 3, 5, 7};
 
             return Result.Success;
         }

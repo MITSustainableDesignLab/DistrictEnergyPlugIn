@@ -49,7 +49,7 @@ namespace NetworkDraw
                     int tolInt = getLines.AddOptionDouble("Tolerance", ref tol);
                     int modeInt = GetterExtension.AddEnumOptionList(getLines, sm);
 
-                    if (getLines.Curves(1,0,out curves))
+                    if (getLines.Curves(1, 0, out curves))
                         break;
                     else
                     {
@@ -102,17 +102,10 @@ namespace NetworkDraw
                 ids = CurvesTopologyPreview.Mark(crvTopology, Color.LightBlue, Color.LightCoral, Color.GreenYellow);
 
             int walkFromIndex;
-            //using (var getStart = new TrackingPointGetter("Select the start point of the walk on the curves", crvTopology))
-            //{
-            //    if (getStart.GetPointOnTopology(out walkFromIndex) != Result.Success)
-            //    {
-            //        EndOperations(ids);
-            //        return Result.Cancel;
-            //    }
-            //}
 
             Result wasSuccessful = Result.Cancel;
             List<Type31> Pipes = new List<Type31>();
+            List<Type11> Diverters = new List<Type11>();
             List<int> walked = new List<int>();
 
             walkFromIndex = 14; //should be automatically determined by umi
@@ -155,7 +148,6 @@ namespace NetworkDraw
                         RhinoApp.WriteLine("Vertices: {0}", FormatNumbers(nIndices));
                         RhinoApp.WriteLine("Edges: {0}", FormatNumbers(eIndices));
                     }
-
                     for (int j = 0; j < eIndices.Length; j++)
                     {
                         int[,] inputs = { { 0, 0, 0 }, { 0, 0, 0 } };
@@ -174,11 +166,45 @@ namespace NetworkDraw
                         if (j > 0)
                         {
                             int prev = j - 1;
-                            int prevUnit = Pipes[prev].Unit_number;
+                            int prevUnit = Pipes.Find(p => p.EdgeId == eIndices[prev]).Unit_number;
                             int[] fromUnit = { prevUnit, prevUnit, 0 };
+
+                            // Test if need to create a diverter
+                            int start;
+                            if (eDirs[j])
+                            {
+                                start = crvTopology.EdgeAt(eIndices[j]).A;
+                            }
+                            else
+                            {
+                                start = crvTopology.EdgeAt(eIndices[j]).B;
+                            }
+
+                            if (Array.Exists(nIndices, element => element.Equals(start)))
+                            {
+                                if (crvTopology.NodeAt(start).IsDiverter)
+                                {
+                                    Type11 diverter = new Type11();
+                                    diverter.SetInputs(fromUnit, fromOutputs);
+                                    diverter.Unit_name = "Diverter_" + start.ToString();
+                                    diverter.Position = new double[2] { crvTopology.VertexAt(start).X * 3, 2000 - crvTopology.VertexAt(start).Y * 3 };
+                                    diverter.NodeId = start;
+                                    fromUnit.SetValue(diverter.Unit_number, 0); // resets the "from unit" number to the diverter's Unit_number
+                                    fromUnit.SetValue(diverter.Unit_number, 1); // Idem
+                                        
+                                    if (Diverters.Exists(d => d.NodeId == diverter.NodeId))
+                                    {
+                                        fromUnit.SetValue(Diverters.Find(d => d.NodeId == start).Unit_number, 0); // resets the from unit number to the diverter
+                                        fromUnit.SetValue(Diverters.Find(d => d.NodeId == start).Unit_number, 1);
+                                    }
+                                    else
+                                        Diverters.Add(diverter);
+                                }
+                            }
+
                             pipe.SetInputs(fromUnit, fromOutputs);
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X * 2, 2000 - bbox.Center.Y * 2 };
+                            pipe.Position = new double[2] { bbox.Center.X * 3, 2000 - bbox.Center.Y * 3 };
                             pipe.EdgeId = eIndices[j];
                             contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
@@ -186,7 +212,7 @@ namespace NetworkDraw
                         {
                             pipe.SetInputs(new int[3] { 0, 0, 0 }, fromOutputs);
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X * 2, 2000 - bbox.Center.Y * 2 };
+                            pipe.Position = new double[2] { bbox.Center.X * 3, 2000 - bbox.Center.Y * 3 };
                             pipe.EdgeId = eIndices[j];
                             contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
@@ -202,7 +228,7 @@ namespace NetworkDraw
                 }
             }
             TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\tmp");
-            WriteDckFile b = new WriteDckFile(model, Pipes);
+            WriteDckFile b = new WriteDckFile(model, Pipes, Diverters);
 
 
 

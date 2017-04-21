@@ -261,7 +261,6 @@ namespace TrnsysUmiPlatform
                 _edgeId = value;
             }
         }
-
         internal double PipeLength
         {
             get
@@ -334,7 +333,6 @@ namespace TrnsysUmiPlatform
                 _initialFluidTemp = value;
             }
         }
-
         private void DoNotAllowNegativeValues(double value)
         {
             if (value < 0)
@@ -343,19 +341,62 @@ namespace TrnsysUmiPlatform
     }
 
 
-
-
     public class Type11 : TrnSysType
     {
+        int[,] _inputs;
+        int _nodeId;
         /// <summary>
         /// This instance of the Type11 model uses mode 2 to model a flow diverter in which a single
         /// inlet liquid stream is split according to a user specified valve setting into two liquid outlet streams.
         /// </summary>
-        public Type11() : base("Type 31", "31", 1, 3, "")
+        public Type11() : base("Type 11", "11", 1, 3, "")
         {
-            this.Parameter_string = "2\t\t! 1 Controlled flow diverter mode";
-            this.Inputs_string = "";
+            _inputs = new int[3, 2];
+
+            Parameter_string = "2\t\t! 1 Controlled flow diverter mode\r\n";
+
+            if (_inputs != null)
+            {
+                Inputs_string = SetInputString(_inputs);
+            }
+
+            ProformaPath = ".\\Hydronics\\Flow Diverter\\Other Fluids\\Type11f.tmf";
+
+            Initial_inputs = new double[] { 20, 100, 10 };
         }
+
+        public void SetInputs(int[] fromUnit, int[] fromOutput)
+        {
+            _inputs.SetValue(fromUnit[0], 0, 0);
+            _inputs.SetValue(fromUnit[1], 1, 0);
+            _inputs.SetValue(0, 2, 0);
+            _inputs.SetValue(fromOutput[0], 0, 1);
+            _inputs.SetValue(fromOutput[1], 1, 1);
+            _inputs.SetValue(0, 2, 1);
+
+            Inputs_string = SetInputString(_inputs);
+        }
+
+        private string SetInputString(int[,] _inputs)
+        {
+            Inputs_string = _inputs[0, 0].ToString() + "," + _inputs[0, 1].ToString() + "\t\t! Inlet temperature\r\n" +
+                                _inputs[1, 0].ToString() + "," + _inputs[1, 1].ToString() + "\t\t! Inlet flow rate\r\n" +
+                                _inputs[2, 0].ToString() + "," + _inputs[2, 1].ToString() + "\t\t! Control signal\r\n";
+            return Inputs_string;
+        }
+
+        public int NodeId
+        {
+            get
+            {
+                return _nodeId;
+            }
+            set
+            {
+                _nodeId = value;
+            }
+        }
+
     }
     public class Type659 : TrnSysType
     {
