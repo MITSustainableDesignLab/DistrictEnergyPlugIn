@@ -9,6 +9,7 @@ using Rhino.Input;
 using Rhino.Input.Custom;
 using NetworkDraw.Geometry;
 using System.Collections.Generic;
+using Mit.Umi.RhinoServices;
 
 namespace NetworkDraw
 {
@@ -66,7 +67,27 @@ namespace NetworkDraw
 
         public Result GetBuildingPointOnTopology(out List<int> index)
         {
-            index = new List<int> {11, 13, 9, 2, 3, 5, 7};
+            List<Guid> g = new List<Guid>();
+            foreach (var o in GlobalContext.GetObjects())
+            {
+                g.Add(Guid.Parse(o.Id));
+            }
+            index = new List<int>();
+            foreach (var guid in g)
+            {
+                var obj = RhinoDoc.ActiveDoc.Objects.Find(guid);
+                if (obj != null)
+                {
+                    var a = obj.Geometry.AsBuildingGeometry();
+                    var mass_properties = VolumeMassProperties.Compute(a);
+                    Point3d pt = new Point3d(mass_properties.Centroid.X, mass_properties.Centroid.Y, 0);
+                    index.Add(_crvTopology.GetClosestNode(pt));
+                }
+                    
+            }
+                
+
+                
 
             return Result.Success;
         }

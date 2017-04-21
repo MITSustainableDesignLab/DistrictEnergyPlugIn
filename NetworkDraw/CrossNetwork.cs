@@ -108,7 +108,7 @@ namespace NetworkDraw
             List<Type11> Diverters = new List<Type11>();
             List<int> walked = new List<int>();
 
-            walkFromIndex = 14; //should be automatically determined by umi
+            walkFromIndex = 16; //should be automatically determined by umi
 
             List<int> walkToIndex;
             double[] distances;
