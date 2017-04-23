@@ -251,7 +251,7 @@ namespace NetworkDraw
                     wasSuccessful = Result.Nothing;
                 }
             }
-            TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\tmp");
+            TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\UMI\temp");
             WriteDckFile b = new WriteDckFile(model, Pipes, Diverters);
 
             EndOperations(ids);
