@@ -56,28 +56,13 @@ namespace NetworkDraw
                     }
                 }
 
-                SearchMode sm = SearchMode.CurveLength;
-                //Curve[] curves;
-                //OptionToggle tog = new OptionToggle(false, "Hide", "Show");
                 OptionDouble tol = new OptionDouble(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance, true, 0.0);
 
                 CurvesTopology crvTopology = new CurvesTopology(curves, tol.CurrentValue);
 
-                //Guid[] ids = null;
                 ids = CurvesTopologyPreview.Mark(crvTopology, Color.LightBlue, Color.LightCoral, Color.GreenYellow);
 
-                //int walkFromIndex;
-                //using (var getStart = new TrackingPointGetter("Select the start point of the walk on the curves", crvTopology))
-                //{
-                //    if (getStart.GetPointOnTopology(out walkFromIndex) != Result.Success)
-                //    {
-                //        EndOperations(ids);
-                //        return Result.Cancel;
-                //    }
-                //}
-
                 return Result.Success;
-
 
             }
             else

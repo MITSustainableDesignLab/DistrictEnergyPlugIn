@@ -12,7 +12,7 @@ namespace NetworkDraw.Geometry
     public struct NodeAddress
     {
         int _edgeStart;
-
+        bool _isDiverter;
         int _edgeCount;
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace NetworkDraw.Geometry
             {
                 return _isDiverter;
             }
-            internal set
+            set
             {
                 _isDiverter = value;
             }
@@ -124,7 +124,7 @@ namespace NetworkDraw.Geometry
         #region Debugging Help and ToString()
 #if DEBUG
         private CurvesTopology _topology;
-        private bool _isDiverter;
+        
 
         public CurvesTopology Topology
         {

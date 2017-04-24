@@ -147,45 +147,6 @@ namespace NetworkDraw
                         wasSuccessful = Result.Failure;
                         break;
                     }
-                    
-                    for (int i = 0; i < eIndices.Length; i++)
-                    {
-                        int[,] inputs = { { 0, 0, 0 }, { 0, 0, 0 } };
-
-                        Type31 pipe = new Type31(0.2, crvTopology.CurveAt(eIndices[i]).GetLength(), 1, 1000, 4.29, 20);
-
-                        // Compute the tight bounding box of the curve in world coordinates
-                        var bbox = crvTopology.CurveAt(eIndices[i]).GetBoundingBox(true);
-                        if (!bbox.IsValid)
-                            return Rhino.Commands.Result.Failure;
-                        
-
-                        int[] fromOutputs = { 1, 2, 0 };
-                        bool contains = false;
-
-                        if (i > 0)
-                        {
-                            int prev = i - 1;
-                            int prevUnit = Pipes[prev].Unit_number;
-                            int[] fromUnit = { prevUnit, prevUnit, 0 };
-                            pipe.SetInputs(fromUnit, fromOutputs);
-                            pipe.Unit_name = "Pipe_" + eIndices[i].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
-                            pipe.EdgeId = eIndices[i];
-                            contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
-                        }
-                        else
-                        {
-                            pipe.SetInputs(new int[3] { 0,0,0}, fromOutputs);
-                            pipe.Unit_name = "Pipe_" + eIndices[i].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X, 2000 - bbox.Center.Y };
-                            pipe.EdgeId = eIndices[i];
-                            contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
-                        }
-                        
-                        if (contains!=true)   
-                            Pipes.Add(pipe);
-                    }
                 }
                 else
                 {
@@ -193,8 +154,10 @@ namespace NetworkDraw
                     wasSuccessful = Result.Nothing;
                 }
             }
-            TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\tmp");
-            WriteDckFile b = new WriteDckFile(model, Pipes);
+
+            RhinoApp.RunScript("Explode", true);
+            RhinoApp.RunScript("Seldup", true);
+            RhinoApp.RunScript("Delete", false);
 
             EndOperations(ids);
             return wasSuccessful;

@@ -44,7 +44,7 @@ namespace TrnsysUmiPlatform
             this.trnsys_model = trnsys_model;
         }
 
-        public WriteDckFile(TrnsysModel trnsys_model, List<Type31> pipes)
+        public WriteDckFile(TrnsysModel trnsys_model, List<Type31> pipes, List<Type11> diverters)
         {
             string filename = Path.Combine(trnsys_model.WorkingDirectory, trnsys_model.ModelName + ".dck");
 
@@ -71,6 +71,12 @@ namespace TrnsysUmiPlatform
                 foreach (Type31 _pipe in pipes)
                 {
                     file.WriteLine(_pipe.WriteType());
+                }
+
+                // Write Diverters
+                foreach (Type11 _diverter in diverters)
+                {
+                    file.WriteLine(_diverter.WriteType());
                 }
 
                 file.WriteLine("END\r\n");

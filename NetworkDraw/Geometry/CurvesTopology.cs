@@ -171,9 +171,11 @@ namespace NetworkDraw.Geometry
                 pos = _vertices[aLoc].EdgeCount + _vertices[aLoc].EdgeStart;
                 _vEdges[pos] = i;
                 _vertices[aLoc].EdgeCount++;
-
-                if (_edges.Length>2)
-                    _vertices[aLoc].IsDiverter = true;
+            }
+            for (int i = 0; i < _vertices.Length; i++)
+            {
+                if (_vertices[i].EdgeCount > 2)
+                    _vertices[i].IsDiverter = true;
             }
         }
 
@@ -554,7 +556,7 @@ namespace NetworkDraw.Geometry
             //Graph vertices color
             for (int i = 0; i < top.VertexLength; i++)
             {
-                if (top.NodeAt(i).EdgeCount > 2)
+                if (top.NodeAt(i).IsDiverter)
                 {
                     oa.ObjectColor = diverterColor;
                     dots[i] = RhinoDoc.ActiveDoc.Objects.AddTextDot(i.ToString(), top.VertexAt(i), oa);
