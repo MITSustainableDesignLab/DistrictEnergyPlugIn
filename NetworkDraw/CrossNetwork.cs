@@ -109,8 +109,7 @@ namespace NetworkDraw
             List<Type31> Pipes = new List<Type31>();
             List<Type11> Diverters = new List<Type11>();
             List<int> walked = new List<int>();
-
-            if (GetThermalPlantsPointOnTopology(crvTopology, out walkFromIndex) != Result.Success)
+            if (ThermalPlantsOnTopology.GetThermalPlantsPointOnTopology(crvTopology, out walkFromIndex) != Result.Success)
             {
                 RhinoApp.WriteLine("Error: No Thermal plant is defined on layer Thermal Plants");
                 return Result.Failure;
@@ -279,38 +278,38 @@ namespace NetworkDraw
             return s.ToString();
         }
 
-        public Result GetThermalPlantsPointOnTopology(CurvesTopology _crvTopology, out List<int> index)
-        {
-            string layername = "Thermal Plant";
+        //public Result GetThermalPlantsPointOnTopology(CurvesTopology _crvTopology, out List<int> index)
+        //{
+        //    string layername = "Thermal Plant";
 
-            // Get all of the objects on the layer. If layername is bogus, you will
-            // just get an empty list back
-            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername);
-            if (rhobjs == null || rhobjs.Length < 1)
-            {
-                index = null;
-                return Result.Cancel;
-            }
+        //    // Get all of the objects on the layer. If layername is bogus, you will
+        //    // just get an empty list back
+        //    Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername);
+        //    if (rhobjs == null || rhobjs.Length < 1)
+        //    {
+        //        index = null;
+        //        return Result.Cancel;
+        //    }
 
-            index = new List<int>();
-            foreach (var obj in rhobjs)
-            {
-                var objguid = RhinoDoc.ActiveDoc.Objects.Find(obj.Id);
-                if (objguid != null)
-                {
-                    var a = objguid.Geometry.AsBuildingGeometry();
-                    var mass_properties = VolumeMassProperties.Compute(a);
-                    Point3d pt = new Point3d(mass_properties.Centroid.X, mass_properties.Centroid.Y, 0);
-                    index.Add(_crvTopology.GetClosestNode(pt));
-                }
+        //    index = new List<int>();
+        //    foreach (var obj in rhobjs)
+        //    {
+        //        var objguid = RhinoDoc.ActiveDoc.Objects.Find(obj.Id);
+        //        if (objguid != null)
+        //        {
+        //            var a = objguid.Geometry.AsBuildingGeometry();
+        //            var mass_properties = VolumeMassProperties.Compute(a);
+        //            Point3d pt = new Point3d(mass_properties.Centroid.X, mass_properties.Centroid.Y, 0);
+        //            index.Add(_crvTopology.GetClosestNode(pt));
+        //        }
 
-            }
-
-
+        //    }
 
 
-            return Result.Success;
-        }
+
+
+        //    return Result.Success;
+        //}
 
 
     }

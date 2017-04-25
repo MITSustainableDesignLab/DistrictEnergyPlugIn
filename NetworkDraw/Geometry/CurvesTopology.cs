@@ -4,6 +4,8 @@ using System.Drawing;
 using Rhino;
 using Rhino.DocObjects;
 using Rhino.Geometry;
+using Rhino.Commands;
+using Mit.Umi.RhinoServices;
 
 namespace NetworkDraw.Geometry
 {
@@ -594,5 +596,41 @@ namespace NetworkDraw.Geometry
                     RhinoDoc.ActiveDoc.Objects.Delete(dots[i], true);
             }
         }
+    }
+
+    /// <summary>
+    /// A Helper class to find the thermal plants on the topology
+    /// </summary>
+    public class ThermalPlantsOnTopology
+    {
+        public static Result GetThermalPlantsPointOnTopology(CurvesTopology top, out List<int> index)
+        {
+            string layername = "Thermal Plant";
+
+            // Get all of the objects on the layer. If layername is bogus, you will
+            // just get an empty list back
+            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername);
+            if (rhobjs == null || rhobjs.Length < 1)
+            {
+                index = null;
+                return Result.Cancel;
+            }
+
+            index = new List<int>();
+            foreach (var obj in rhobjs)
+            {
+                var objguid = RhinoDoc.ActiveDoc.Objects.Find(obj.Id);
+                if (objguid != null)
+                {
+                    var a = objguid.Geometry.AsBuildingGeometry();
+                    var mass_properties = VolumeMassProperties.Compute(a);
+                    Point3d pt = new Point3d(mass_properties.Centroid.X, mass_properties.Centroid.Y, 0);
+                    index.Add(top.GetClosestNode(pt));
+                }
+
+            }
+            return Result.Success;
+        }
+
     }
 }
