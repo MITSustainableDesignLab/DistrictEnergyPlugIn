@@ -116,10 +116,11 @@ namespace NetworkDraw
             }
 
             List<int> walkToIndex;
+            List<Guid> bldId;
             double[] distances;
             using (var getEnd = new PointGetter(crvTopology, walkFromIndex[0], sm)) //Can only do 1 thermal plant
             {
-                if (getEnd.GetBuildingPointOnTopology(out walkToIndex) != Result.Success)
+                if (getEnd.GetBuildingPointOnTopology(out walkToIndex, out bldId) != Result.Success)
                 {
                     return Result.Failure;
                 }

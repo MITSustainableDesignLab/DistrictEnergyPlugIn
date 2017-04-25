@@ -6,6 +6,7 @@ using NetworkDraw.Geometry;
 using System.Collections.Generic;
 using Mit.Umi.RhinoServices;
 using System.Linq;
+using LINQPad;
 
 namespace NetworkDraw
 {
@@ -59,10 +60,11 @@ namespace NetworkDraw
             }
 
             List<int> walkToIndex;
+            List<Guid> bldId;
             double[] distances;
             using (var getEnd = new PointGetter(crvTopology, walkFromIndex[0], SearchMode.CurveLength)) //Can only do 1 thermal plant
             {
-                if (getEnd.GetBuildingPointOnTopology(out walkToIndex) != Result.Success)
+                if (getEnd.GetBuildingPointOnTopology(out walkToIndex, out bldId) != Result.Success)
                 {
                     return Result.Failure;
                 }
@@ -84,32 +86,55 @@ namespace NetworkDraw
                 Array.Reverse(nIndices);
                 myList.Add(nIndices);
             }
-            var MaxInt = walkToIndex.Max();
-            List<List<int>> NodeLoad = new List<List<int>>();
+            var MaxInt = crvTopology.VertexLength;
+            List<List<int>> NodeLoad = new List<List<int>>(MaxInt);
+            for (int i = 0; i < MaxInt; i++) NodeLoad.Add(new List<int>());
+
             foreach (int[] path in myList)
             {
-                for (int indices=0; indices < walkToIndex.Max();indices++)
+                for (int indices=MaxInt; indices >=0 ;indices--)
                 {
                     int a = Array.FindIndex(path, o => o == indices);
                     if (a-1 >= 0)
                     {
                         var b = a - 1;
                         var prevIndex = path[b];
-                        //NodeLoad.Insert(a,prevIndex);
+                        if (NodeLoad[indices].Contains(prevIndex))
+                            continue;
+                        else
+                        {
+                            NodeLoad[indices].Add(prevIndex);
+                        }   
                     }
                 }
             }
-
-            for (int indices = 0; indices < walkToIndex.Max(); indices++)
-            {
-                RhinoApp.WriteLine("Node {0}'s load is from {1}", indices, NodeLoad[indices].ToString());
-            }
-
-            
 
             return Result.Success;
 
 
         }
+        //private IList<double> FindPeakLoads(IEnumerable<Mit.Umi.Core.UmiObject> a)
+        //{
+        //    //var peaks = new List<Mit.Umi.Core.UmiDataSeries>();
+        //    foreach(var b in a)
+        //    {
+        //        var c = b.Data.Select(kvp => kvp.Value).Where(item => item.Name == "SDL/Heating");
+        //        for (int i = 0; i < c.Select(o => o.Data).Length(); i++)
+        //        {
+        //            var current = c.ToArray()[i];
+        //        }
+        //    }
+            
+        //    {
+                
+        //        //IEnumerable<Peak> range = values;
+        //        //if (i > checksOnEachSide)
+        //        //    range = range.Skip(i - checksOnEachSide);
+        //        //range = range.Take(rangeOfPeaks);
+        //        //if (current.Elevation == range.Max())
+        //        //    peaks.Add(current);
+        //    }
+        //    return null;
+        //}
     }
 }
