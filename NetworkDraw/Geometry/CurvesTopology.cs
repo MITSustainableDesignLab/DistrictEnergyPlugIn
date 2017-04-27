@@ -6,6 +6,7 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using Rhino.Commands;
 using Mit.Umi.RhinoServices;
+using System.Linq;
 
 namespace NetworkDraw.Geometry
 {
@@ -607,9 +608,9 @@ namespace NetworkDraw.Geometry
         {
             string layername = "Thermal Plant";
 
-            // Get all of the objects on the layer. If layername is bogus, you will
+            // Get all of the breps on the layer. If layername is bogus, you will
             // just get an empty list back
-            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername);
+            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername).Where(x=>x.ObjectType == ObjectType.Brep).ToArray();
             if (rhobjs == null || rhobjs.Length < 1)
             {
                 index = null;

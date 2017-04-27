@@ -6,7 +6,6 @@ using NetworkDraw.Geometry;
 using System.Collections.Generic;
 using Mit.Umi.RhinoServices;
 using System.Linq;
-using LINQPad;
 using System.Collections.ObjectModel;
 using QuickGraph;
 using QuickGraph.Algorithms;
@@ -38,11 +37,12 @@ namespace NetworkDraw
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
+            #region Get Layer Content
             string layername = "Heating Network";
 
             // Get all of the objects on the layer. If layername is bogus, you will
             // just get an empty list back
-            Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername);
+            Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername).Where(x => x.ObjectType == Rhino.DocObjects.ObjectType.Curve).ToArray();
             if (rhobjs == null || rhobjs.Length < 1)
                 return Rhino.Commands.Result.Cancel;
 
@@ -79,6 +79,7 @@ namespace NetworkDraw
 
             var bldIndex = walkToIndex.Zip(bldId, (k, v) => new { Index = k, Guid = v })
                      .ToDictionary(x => x.Index, x => x.Guid);
+            #endregion
 
             PathMethod pathSearch = PathMethod.FromMode(SearchMode.CurveLength, crvTopology, distances);
 
