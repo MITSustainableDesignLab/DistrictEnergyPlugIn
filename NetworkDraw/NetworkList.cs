@@ -7,6 +7,12 @@ using System.Collections.Generic;
 using Mit.Umi.RhinoServices;
 using System.Linq;
 using LINQPad;
+using System.Collections.ObjectModel;
+using QuickGraph;
+using QuickGraph.Algorithms;
+using QuickGraph.Algorithms.Search;
+using QuickGraph.Algorithms.Observers;
+using System.Windows;
 
 namespace NetworkDraw
 {
@@ -71,6 +77,9 @@ namespace NetworkDraw
                 distances = getEnd.DistanceCache;
             }
 
+            var bldIndex = walkToIndex.Zip(bldId, (k, v) => new { Index = k, Guid = v })
+                     .ToDictionary(x => x.Index, x => x.Guid);
+
             PathMethod pathSearch = PathMethod.FromMode(SearchMode.CurveLength, crvTopology, distances);
 
             int[] nIndices, eIndices;
@@ -79,6 +88,7 @@ namespace NetworkDraw
 
             List<int[]> myList = new List<int[]>();
 
+            // Create a list of routes
             for (int i = 0; i < walkToIndex.Count; i++)
             {
                 Curve c =
@@ -86,16 +96,18 @@ namespace NetworkDraw
                 Array.Reverse(nIndices);
                 myList.Add(nIndices);
             }
+            List<int[]> SorterdMyList = myList.OrderByDescending(x => x.Length).ToList();
+
             var MaxInt = crvTopology.VertexLength;
             List<List<int>> NodeLoad = new List<List<int>>(MaxInt);
             for (int i = 0; i < MaxInt; i++) NodeLoad.Add(new List<int>());
 
             foreach (int[] path in myList)
             {
-                for (int indices=MaxInt; indices >=0 ;indices--)
+                for (int indices = MaxInt; indices >= 0; indices--)
                 {
                     int a = Array.FindIndex(path, o => o == indices);
-                    if (a-1 >= 0)
+                    if (a - 1 >= 0)
                     {
                         var b = a - 1;
                         var prevIndex = path[b];
@@ -104,37 +116,80 @@ namespace NetworkDraw
                         else
                         {
                             NodeLoad[indices].Add(prevIndex);
-                        }   
+                        }
                     }
+                }
+            }
+
+            Dictionary<int, int[]> dic = new Dictionary<int, int[]>();
+            for (int i = 0; i < NodeLoad.Count; i++)
+            {
+                dic.Add(i, NodeLoad[i].ToArray());
+            }
+
+            var MaxHeatinLoadQuery = GlobalContext.GetObjects().
+                Select(b => new
+                { BuildingId = b.Id, MaxLoad = MaxHeatingLoad(b), BldNode = bldIndex.FirstOrDefault(x => x.Value.ToString() == b.Id).Key });
+
+            int stop = 0;
+            while (stop != 0)
+            {
+                foreach(var a in dic)
+                {
+                    double MaxLoad = MaxHeatinLoadQuery.Where(x => x.BldNode == a.Key).Select(y => y.MaxLoad).Sum();
                 }
             }
 
             return Result.Success;
 
-
         }
-        //private IList<double> FindPeakLoads(IEnumerable<Mit.Umi.Core.UmiObject> a)
-        //{
-        //    //var peaks = new List<Mit.Umi.Core.UmiDataSeries>();
-        //    foreach(var b in a)
-        //    {
-        //        var c = b.Data.Select(kvp => kvp.Value).Where(item => item.Name == "SDL/Heating");
-        //        for (int i = 0; i < c.Select(o => o.Data).Length(); i++)
-        //        {
-        //            var current = c.ToArray()[i];
-        //        }
-        //    }
+        /// <summary>
+        /// This finds the maximum heating Load (SP + DHW)
+        /// </summary>
+        /// <param name="building">A building IUmiObject</param>
+        /// <returns></returns>
+        public static double MaxHeatingLoad(Mit.Umi.Core.IUmiObject building)
+        {
+            return building.Data["SDL/Heating"].Data.Zip(building.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Max();
+        }
+
+        public class BldgIndex
+        {
+            public int BldIndex { get; set; }
+            public Guid BldId { get; set; }
+        }
+
+        Dictionary<int, double> list = new Dictionary<int, double>();
+
+        private double CallNode(TreeNode a, Dictionary<int,Guid> bldIndex)
+        {
+            if (a.ParentNodes.Count() == 0)
+            {
+                double HeatLoad = GlobalContext.GetObjects().
+                Select(b => new
+                { BuildingId = b.Id, MaxLoad = MaxHeatingLoad(b), BldNode = bldIndex.FirstOrDefault(x => x.Value.ToString() == b.Id).Key })
+                .Where(y => y.BldNode == a.NodeId)
+                .Select(x => x.MaxLoad).Sum();
+                list.Add(a.NodeId, HeatLoad);
+                return HeatLoad;
+            }
+            else
+            {
+                double sum = 0;
+                foreach (TreeNode entry in a.ParentNodes)
+                {
+                    sum =+ CallNode(entry, bldIndex);
+                }
+                list.Add(a.NodeId, sum);
+                return sum;
+            }
             
-        //    {
-                
-        //        //IEnumerable<Peak> range = values;
-        //        //if (i > checksOnEachSide)
-        //        //    range = range.Skip(i - checksOnEachSide);
-        //        //range = range.Take(rangeOfPeaks);
-        //        //if (current.Elevation == range.Max())
-        //        //    peaks.Add(current);
-        //    }
-        //    return null;
-        //}
+        }
+
+        class TreeNode
+        {
+            public int NodeId { get; set; }
+            public TreeNode[] ParentNodes { get; set; }
+        }
     }
 }
