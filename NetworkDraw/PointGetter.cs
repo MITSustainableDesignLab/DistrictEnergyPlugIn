@@ -13,7 +13,7 @@ using Mit.Umi.RhinoServices;
 
 namespace NetworkDraw
 {
-    class PointGetter : IDisposable
+    public class PointGetter : IDisposable
     {
         readonly GetPoint _getPoint = new GetPoint();
         readonly int _fromIndex;
@@ -65,10 +65,10 @@ namespace NetworkDraw
             }
         }
 
-        public Result GetBuildingPointOnTopology(out List<int> index)
+        public Result GetBuildingPointOnTopology(out List<int> index, out List<Guid> g)
         {
             var AllBldgs = RhinoDoc.ActiveDoc.GetUmiSimulationBuildings();
-            List<Guid> g = new List<Guid>();
+            g = new List<Guid>();
             foreach (var o in AllBldgs)
             {
                 g.Add(o.Id);
