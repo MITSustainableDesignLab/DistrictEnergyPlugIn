@@ -9,16 +9,16 @@ using System.Collections.Generic;
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("55eb3b88-a514-4722-aa91-3c86b2788ff2")]
-    public class CapacityFactor : Command
+    public class CapacityFactorCommand : Command
     {
-        static CapacityFactor _instance;
-        public CapacityFactor()
+        static CapacityFactorCommand _instance;
+        public CapacityFactorCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the CapacityFactor command.</summary>
-        public static CapacityFactor Instance
+        public static CapacityFactorCommand Instance
         {
             get { return _instance; }
         }
@@ -37,7 +37,7 @@ namespace DistrictEnergy.Metrics
             List<double> cap = new List<double>();
             foreach(var a in MaxHeatinLoadQuery)
             {
-                cap.Add(CalcCapactityFactor(a.AverageLoad, a.MaxLoad));
+                cap.Add(Metrics.CalcCapacityFactor(a.AverageLoad, a.MaxLoad));
             }
 
 
@@ -62,18 +62,6 @@ namespace DistrictEnergy.Metrics
         public static double AverageHeatingLoad(Mit.Umi.Core.IUmiObject building)
         {
             return building.Data["SDL/Heating"].Data.Zip(building.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Average();
-        }
-
-        /// <summary>
-        /// Calculates a capacity factor
-        /// </summary>
-        /// <param name="averageLoad"></param>
-        /// <param name="maximimLoad"></param>
-        /// <returns></returns>
-        public double CalcCapactityFactor(double averageLoad,double maximimLoad)
-        {
-            double cap = averageLoad / maximimLoad;
-            return cap;
         }
     }
 }

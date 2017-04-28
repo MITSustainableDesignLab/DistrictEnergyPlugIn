@@ -6,23 +6,22 @@ using NetworkDraw.Geometry;
 using System.Collections.Generic;
 using Mit.Umi.RhinoServices;
 using System.Linq;
-using System.Collections.ObjectModel;
-using System.Windows;
 using NetworkDraw;
 
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("fb5ded40-ae61-4174-9130-cb0e90e1bcec")]
-    public class NetworkList : Command
+    public class NetworkListCommand : Command
     {
-        static NetworkList _instance;
-        public NetworkList()
+        static NetworkListCommand _instance;
+        /// <summary>Gets the only instance of the NetworkList command.</summary>
+        public NetworkListCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the NetworkList command.</summary>
-        public static NetworkList Instance
+        public static NetworkListCommand Instance
         {
             get { return _instance; }
         }
@@ -181,7 +180,6 @@ namespace DistrictEnergy.Metrics
                 list.Add(a.NodeId, sum);
                 return sum;
             }
-            
         }
 
         class TreeNode

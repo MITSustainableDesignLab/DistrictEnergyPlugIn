@@ -57,8 +57,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
-    <Reference Include="TrnsysUmiPlatform, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="TrnsysUmiPlatform">
       <HintPath>..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Umi.Core">
@@ -78,9 +77,10 @@
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
-    <Compile Include="Metrics\CapacityFactor.cs" />
-    <Compile Include="Metrics\EffectiveThermalWidth.cs" />
-    <Compile Include="Metrics\NetworkList.cs" />
+    <Compile Include="Metrics\CapacityFactorCommand.cs" />
+    <Compile Include="Metrics\EffectiveThermalWidthCommand.cs" />
+    <Compile Include="Metrics\Metrics.cs" />
+    <Compile Include="Metrics\NetworkListCommand.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
     <Compile Include="OrderNetwork.cs" />
