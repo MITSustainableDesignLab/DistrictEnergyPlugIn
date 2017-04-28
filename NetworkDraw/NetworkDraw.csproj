@@ -80,7 +80,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CapacityFactor.cs" />
     <Compile Include="CurvesGetter.cs" />
+    <Compile Include="EffectiveThermalWidth.cs" />
     <Compile Include="Geometry\CurvesTopology.cs" />
     <Compile Include="Geometry\EdgeAddress.cs" />
     <Compile Include="Geometry\NodeAddress.cs" />
