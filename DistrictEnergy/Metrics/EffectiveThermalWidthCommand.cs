@@ -84,29 +84,13 @@ namespace DistrictEnergy.Metrics
                     area = area + areaMassP.Area;
             }
 
-            var thermalWidth = EffThermalWidth(area, lenght);
+            var thermalWidth = Metrics.EffThermalWidth(area, lenght);
 
             RhinoApp.WriteLine("Land area: {0:F0}", area);
             RhinoApp.WriteLine("Total route length: {0:F1}", lenght);
             RhinoApp.WriteLine("Effective width: {0:F2} [m]", thermalWidth);
 
             return Result.Success;
-        }
-
-        /// <summary>
-        /// Simple calculation of the effective thermal width : w = A_L / L [m]
-        /// </summary>
-        /// <param name="area">Total land area</param>
-        /// <param name="length">Total route length</param>
-        /// <returns></returns>
-        public double EffThermalWidth(double area, double length)
-        {
-            double w = new double(); //The Effective width
-            if (area>0 && length > 0)
-            {
-                w = area / length;
-            }  
-            return w;
         }
     }
 }

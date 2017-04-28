@@ -13,8 +13,8 @@ namespace DistrictEnergy.Metrics
         /// <summary>
         /// Calculates a capacity factor
         /// </summary>
-        /// <param name="averageLoad"></param>
-        /// <param name="maximimLoad"></param>
+        /// <param name="averageLoad">The Average capacity demand</param>
+        /// <param name="maximimLoad">The Maximum capacity demand</param>
         /// <returns>The capacity factor. -1 if maximumLoad is lowerOrequal to zero.=</returns>
         public static double CalcCapacityFactor(double averageLoad, double maximimLoad)
         {
@@ -48,6 +48,25 @@ namespace DistrictEnergy.Metrics
             }
             else
                 return -1;
+        }
+
+        /// <summary>
+        /// Simple calculation of the effective thermal width : w = A_L / L [m]
+        /// </summary>
+        /// <param name="area">Total land area</param>
+        /// <param name="length">Total route length</param>
+        /// <returns>The effective thermal width. -1 if lenght is lowerOrequal than zero</returns>
+        public static double EffThermalWidth(double area, double length)
+        {
+            double w = new double(); //The Effective width
+            if (area > 0 && length > 0)
+            {
+                w = area / length;
+                return w;
+            }
+            else
+                return -1;
+            
         }
     }
 }
