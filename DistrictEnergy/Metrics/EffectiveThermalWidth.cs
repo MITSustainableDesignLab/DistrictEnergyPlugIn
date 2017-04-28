@@ -4,7 +4,7 @@ using Rhino.Commands;
 using System.Linq;
 using Rhino.Geometry;
 
-namespace NetworkDraw
+namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("17bca1ed-43ed-4aed-8f18-9777744185f7")]
     public class EffectiveThermalWidth : Command

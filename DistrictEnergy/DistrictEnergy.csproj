@@ -78,6 +78,9 @@
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
+    <Compile Include="Metrics\CapacityFactor.cs" />
+    <Compile Include="Metrics\EffectiveThermalWidth.cs" />
+    <Compile Include="Metrics\NetworkList.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
     <Compile Include="OrderNetwork.cs" />
@@ -113,6 +116,12 @@
   <ItemGroup>
     <Content Include="Resources\banner.bmp" />
     <Content Include="Resources\WixUIDialogBmp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NetworkDraw\NetworkDraw.csproj">
+      <Project>{4BD0987C-02DD-40F9-ABA9-D93190F32D17}</Project>
+      <Name>NetworkDraw</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

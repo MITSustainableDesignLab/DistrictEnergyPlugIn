@@ -7,13 +7,10 @@ using System.Collections.Generic;
 using Mit.Umi.RhinoServices;
 using System.Linq;
 using System.Collections.ObjectModel;
-using QuickGraph;
-using QuickGraph.Algorithms;
-using QuickGraph.Algorithms.Search;
-using QuickGraph.Algorithms.Observers;
 using System.Windows;
+using NetworkDraw;
 
-namespace NetworkDraw
+namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("fb5ded40-ae61-4174-9130-cb0e90e1bcec")]
     public class NetworkList : Command

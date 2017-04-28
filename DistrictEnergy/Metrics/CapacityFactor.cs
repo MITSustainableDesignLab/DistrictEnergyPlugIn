@@ -6,7 +6,7 @@ using System.Linq;
 using Mit.Umi.Core;
 using System.Collections.Generic;
 
-namespace NetworkDraw
+namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("55eb3b88-a514-4722-aa91-3c86b2788ff2")]
     public class CapacityFactor : Command

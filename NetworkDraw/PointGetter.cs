@@ -13,7 +13,7 @@ using Mit.Umi.RhinoServices;
 
 namespace NetworkDraw
 {
-    class PointGetter : IDisposable
+    public class PointGetter : IDisposable
     {
         readonly GetPoint _getPoint = new GetPoint();
         readonly int _fromIndex;
