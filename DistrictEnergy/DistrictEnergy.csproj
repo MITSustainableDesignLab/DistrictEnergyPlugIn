@@ -77,10 +77,12 @@
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
+    <Compile Include="PlanningSettings.cs" />
     <Compile Include="Metrics\CapacityFactorCommand.cs" />
     <Compile Include="Metrics\EffectiveThermalWidthCommand.cs" />
     <Compile Include="Metrics\Metrics.cs" />
     <Compile Include="Metrics\NetworkListCommand.cs" />
+    <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
     <Compile Include="OrderNetwork.cs" />
