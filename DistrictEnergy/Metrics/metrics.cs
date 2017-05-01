@@ -1,4 +1,5 @@
 ﻿using Rhino;
+using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,110 @@ namespace DistrictEnergy.Metrics
             }
             else
                 return -1;
+            
+        }
+
+        /// <summary>
+        /// Calculates the FAR (Floor area ratio)
+        /// </summary>
+        /// <param name="floorArea">Total building floor area</param>
+        /// <param name="landArea">Total land area</param>
+        /// <returns></returns>
+        public static double FAR(double floorArea, double landArea)
+        {
+            var far = floorArea / landArea;
+            return far;
+        }
+
+        /// <summary>
+        /// Returns the Land area [m2]. -1 if error
+        /// </summary>
+        /// <returns></returns>
+        public static double LandArea()
+        {
+            string layername1 = "Site boundary";
+
+            // Get all of the objects on the layer. If layername is bogus, you will
+            // just get an empty list back
+            Rhino.DocObjects.RhinoObject[] rhobjs1 = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername1).Where(x => x.ObjectType == Rhino.DocObjects.ObjectType.Curve).ToArray();
+            if (rhobjs1 == null || rhobjs1.Length < 1)
+            {
+                RhinoApp.WriteLine("Error: No boundary in project found");
+                return -1;
+            }
+
+            var curves1 = new Curve[rhobjs1.Length];
+
+            for (int i = 0; i < rhobjs1.Length; i++)
+            {
+                GeometryBase geom = rhobjs1[i].Geometry;
+                Curve x = geom as Curve;
+                if (x != null && x.IsValid)
+                {
+                    curves1[i] = x;
+                }
+            }
+            double area = new double();
+            foreach (var o in curves1)
+            {
+                var areaMassP = AreaMassProperties.Compute(o);
+                if (areaMassP != null)
+                    area = area + areaMassP.Area;
+            }
+            return area;
+        }
+
+        /// <summary>
+        /// Returns the total route lenght. -1 if error.
+        /// </summary>
+        /// <returns></returns>
+        public static double TotalRouteLength()
+        {
+            string layername = "Heating Network";
+
+            // Get all of the objects on the layer. If layername is bogus, you will
+            // just get an empty list back
+            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername).Where(x => x.ObjectType == Rhino.DocObjects.ObjectType.Curve).ToArray();
+            if (rhobjs == null || rhobjs.Length < 1)
+                return -1;
+
+            var curves = new Curve[rhobjs.Length];
+
+            for (int i = 0; i < rhobjs.Length; i++)
+            {
+                GeometryBase geom = rhobjs[i].Geometry;
+                Curve x = geom as Curve;
+                if (x != null && x.IsValid)
+                {
+                    curves[i] = x;
+                }
+            }
+            double lenght = curves.Sum(x => x.GetLength());
+            return lenght;
+        }
+
+        /// <summary>
+        /// Calculates the distribution capital cost, which represents annual repayments of investment capital for the construction of the district heating network.
+        /// </summary>
+        /// <param name="FAR">Floor to area ratio</param>
+        /// <param name="specificHeatDemand">Specific heat demand</param>
+        /// <param name="effWidth">Effective width</param>
+        /// <param name="annuity">Annuity payment</param>
+        /// <param name="C1">Construction cost constant (pipe)</param>
+        /// <param name="C2">Construction cost coefficient (pip)</param>
+        /// <param name="avgDiameter">Average pipe diameter</param>
+        /// <returns></returns>
+        public static double DistributionCapitalCost(double FAR, double specificHeatDemand, double effWidth, double annuity, double C1, double C2, double avgDiameter)
+        {
+            try
+            {
+                var distCapitalCost = annuity * (C1 + C2 * avgDiameter) / (FAR * specificHeatDemand * effWidth);
+                return distCapitalCost;
+            }
+            catch
+            {
+                return -1;
+            }         
             
         }
     }
