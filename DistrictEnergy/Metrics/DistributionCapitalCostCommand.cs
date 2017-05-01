@@ -41,7 +41,7 @@ namespace DistrictEnergy.Metrics
             double c1 = PlanningSettingsViewModel.backing.C1;
             double c2 = PlanningSettingsViewModel.backing.C2;
 
-            double da = 0.5;
+            double da = Metrics.AveragePipeDiamSwedish(heatDemand * 0.0036 / length);
 
             double capitalCost = Metrics.DistributionCapitalCost(far, specificHeat,effectiveWidth,annuity,c1,c2, da);
 

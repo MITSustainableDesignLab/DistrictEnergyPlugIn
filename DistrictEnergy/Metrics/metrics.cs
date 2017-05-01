@@ -1,4 +1,5 @@
-﻿using Rhino;
+﻿using Mit.Umi.RhinoServices;
+using Rhino;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
@@ -172,6 +173,28 @@ namespace DistrictEnergy.Metrics
                 return -1;
             }         
             
+        }
+        
+        /// <summary>
+        /// Calculates the empirical average pipe diamter, according to Sven Werner. (heat in GJ)
+        /// </summary>
+        /// <param name="linearHeatDensity">!IMPORTANT in GJ/m</param>
+        /// <returns></returns>
+        public static double AveragePipeDiamSwedish(double linearHeatDensity)
+        {
+            var averageDiam = 0.0486 * Math.Log(linearHeatDensity) + 0.0007;
+            return averageDiam;
+        }
+
+        /// <summary>
+        /// Heat sold per annum in GJ
+        /// </summary>
+        /// <returns>GJ</returns>
+        public static double HeatSoldPerAnnum()
+        {
+            var heatDemand = GlobalContext.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum()).Sum()
+                * 0.0036;
+            return heatDemand;
         }
     }
 }
