@@ -2,8 +2,10 @@
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Windows.Data;
 
 namespace DistrictEnergy.ViewModels
 {
@@ -51,14 +53,33 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public double AnnuityFactor
+        public double Rate
         {
-            get { return backing.AnnuityFactor; }
+            get { return backing.Rate; }
             set
             {
-                backing.AnnuityFactor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AnnuityFactor)));
+                backing.Rate = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Annuity)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rate)));
+                
             }
+        }
+
+        public double Periods
+        {
+            get { return backing.Periods; }
+            set
+            {
+                backing.Periods = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Annuity)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Periods)));
+                
+            }
+        }
+
+        public double Annuity
+        {
+            get { return Metrics.Metrics.AnnuityPayment(backing.Rate, backing.Periods); }
         }
 
         public double PumpEfficiency

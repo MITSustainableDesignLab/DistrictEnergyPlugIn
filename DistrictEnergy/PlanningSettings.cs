@@ -11,12 +11,14 @@ namespace DistrictEnergy
         [DefaultValue(1860)]
         public double C2 { get; set; } = 1860;
 
-        [DefaultValue(0.064)]
-        public double AnnuityFactor { get; set; } = 0.064;
+        [DefaultValue(0.03)]
+        public double Rate { get; set; } = 0.03;
+
+        [DefaultValue(25)]
+        public double Periods { get; set; } = 25;
 
         [DefaultValue(0.9)]
         public double PumpEfficiency { get; set; } = 0.9;
-
     }
 
     internal class PlanningSettingsPath

@@ -37,7 +37,7 @@ namespace DistrictEnergy.Metrics
             var specificHeat = heatDemand / bldFloor;
             var effectiveWidth = Metrics.EffThermalWidth(landArea, length);
 
-            double annuity = PlanningSettingsViewModel.backing.AnnuityFactor;
+            double annuity = Metrics.AnnuityPayment(PlanningSettingsViewModel.backing.Rate,PlanningSettingsViewModel.backing.Periods);
             double c1 = PlanningSettingsViewModel.backing.C1;
             double c2 = PlanningSettingsViewModel.backing.C2;
 
@@ -46,7 +46,12 @@ namespace DistrictEnergy.Metrics
             double capitalCost = Metrics.DistributionCapitalCost(far, specificHeat,effectiveWidth,annuity,c1,c2, da);
 
             RhinoApp.WriteLine("Specific capital Cost : {0:F3} [$/kWh]", capitalCost);
-
+#if DEBUG
+            RhinoApp.WriteLine("Debug:\nHeat Demand: {0}", heatDemand);
+            RhinoApp.WriteLine("Annuity: {0}", annuity);
+            RhinoApp.WriteLine("Effective width : {0}",effectiveWidth);
+            RhinoApp.WriteLine("Capital Cost : {0}",capitalCost);
+#endif
 
             return Result.Success;
         }

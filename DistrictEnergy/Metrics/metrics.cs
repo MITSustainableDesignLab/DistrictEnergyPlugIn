@@ -196,5 +196,17 @@ namespace DistrictEnergy.Metrics
                 * 0.0036;
             return heatDemand;
         }
+
+        /// <summary>
+        /// Annuity payment factor formula.
+        /// </summary>
+        /// <param name="rate">Rate per period</param>
+        /// <param name="period">number of periods</param>
+        /// <returns></returns>
+        public static double AnnuityPayment(double rate, double period)
+        {
+            var a = rate / (1 - Math.Pow((1 + rate), -period));
+            return a;
+        }
     }
 }
