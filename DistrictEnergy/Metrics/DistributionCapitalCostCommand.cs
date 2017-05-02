@@ -48,6 +48,7 @@ namespace DistrictEnergy.Metrics
             RhinoApp.WriteLine("Specific capital Cost : {0:F3} [$/kWh]", capitalCost);
 #if DEBUG
             RhinoApp.WriteLine("Debug:\nHeat Demand: {0}", heatDemand);
+            RhinoApp.WriteLine("Average pipe diameter: {0}", da);
             RhinoApp.WriteLine("Annuity: {0}", annuity);
             RhinoApp.WriteLine("Effective width : {0}",effectiveWidth);
             RhinoApp.WriteLine("Capital Cost : {0}",capitalCost);
