@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Mit.Umi.RhinoServices;
 using System.Linq;
 using NetworkDraw;
+using System.Collections;
 
 namespace DistrictEnergy.Metrics
 {
@@ -14,6 +15,9 @@ namespace DistrictEnergy.Metrics
     public class NetworkListCommand : Command
     {
         static NetworkListCommand _instance;
+        private static Dictionary<int,List<int>> dic = new Dictionary<int, List<int>>();
+        private static Dictionary<int,double> BuildingLoads = new Dictionary<int, double>();
+
         /// <summary>Gets the only instance of the NetworkList command.</summary>
         public NetworkListCommand()
         {
@@ -118,28 +122,41 @@ namespace DistrictEnergy.Metrics
                 }
             }
 
-            Dictionary<int, int[]> dic = new Dictionary<int, int[]>();
+            //Dictionary<int, List<int>> dic = new Dictionary<int, List<int>>();
             for (int i = 0; i < NodeLoad.Count; i++)
             {
-                dic.Add(i, NodeLoad[i].ToArray());
+                if (NodeLoad[i].Count > 0)
+                    dic.Add(i, NodeLoad[i].ToList());
+                else
+                    continue;
             }
 
             var MaxHeatinLoadQuery = GlobalContext.GetObjects().
                 Select(b => new
                 { BuildingId = b.Id, MaxLoad = MaxHeatingLoad(b), BldNode = bldIndex.FirstOrDefault(x => x.Value.ToString() == b.Id).Key });
 
-            int stop = 0;
-            while (stop != 0)
+            for (int i=0;i< MaxInt; i++)
             {
-                foreach(var a in dic)
-                {
-                    double MaxLoad = MaxHeatinLoadQuery.Where(x => x.BldNode == a.Key).Select(y => y.MaxLoad).Sum();
-                }
+                var MaxLoad = MaxHeatinLoadQuery.Where(x => x.BldNode == i).Select(y => y.MaxLoad).Sum();
+                if (MaxLoad > 0)
+                    BuildingLoads.Add(i, MaxLoad);
+                else
+                    continue;
+            }
+
+            //Calculate optimal diameter
+            List<double> PipeDiam = new List<double>();
+            for (int i=0;i < crvTopology.EdgeLength;i++)
+            {
+                double maxLoadatB = MaxLoadAt(crvTopology.EdgeAt(i).B);
+                PipeDiam.Add(maxLoadatB);
             }
 
             return Result.Success;
 
         }
+
+
         /// <summary>
         /// This finds the maximum heating Load (SP + DHW)
         /// </summary>
@@ -150,42 +167,86 @@ namespace DistrictEnergy.Metrics
             return building.Data["SDL/Heating"].Data.Zip(building.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Max();
         }
 
-        public class BldgIndex
+        class TreeNode : IEnumerable<TreeNode>
         {
-            public int BldIndex { get; set; }
-            public Guid BldId { get; set; }
-        }
+            private readonly Dictionary<int, TreeNode> _children =
+                                                new Dictionary<int, TreeNode>();
 
-        Dictionary<int, double> list = new Dictionary<int, double>();
+            public readonly int ID;
+            public TreeNode Parent { get; private set; }
 
-        private double CallNode(TreeNode a, Dictionary<int,Guid> bldIndex)
-        {
-            if (a.ParentNodes.Count() == 0)
+            public TreeNode(int id)
             {
-                double HeatLoad = GlobalContext.GetObjects().
-                Select(b => new
-                { BuildingId = b.Id, MaxLoad = MaxHeatingLoad(b), BldNode = bldIndex.FirstOrDefault(x => x.Value.ToString() == b.Id).Key })
-                .Where(y => y.BldNode == a.NodeId)
-                .Select(x => x.MaxLoad).Sum();
-                list.Add(a.NodeId, HeatLoad);
-                return HeatLoad;
+                this.ID = id;
             }
-            else
+
+            public TreeNode GetChild(int id)
             {
-                double sum = 0;
-                foreach (TreeNode entry in a.ParentNodes)
+                return this._children[id];
+            }
+
+            public void Add(TreeNode item)
+            {
+                if (item.Parent != null)
                 {
-                    sum =+ CallNode(entry, bldIndex);
+                    item.Parent._children.Remove(item.ID);
                 }
-                list.Add(a.NodeId, sum);
-                return sum;
+
+                item.Parent = this;
+                this._children.Add(item.ID, item);
+            }
+
+            public IEnumerator<TreeNode> GetEnumerator()
+            {
+                return this._children.Values.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return this.GetEnumerator();
+            }
+
+            public int Count
+            {
+                get { return this._children.Count; }
             }
         }
 
-        class TreeNode
+        private List<int> GetAllChildren(int parent, Dictionary<int,List<int>> dic)
         {
-            public int NodeId { get; set; }
-            public TreeNode[] ParentNodes { get; set; }
+            List<int> children = new List<int>();
+            PopulateChildren(parent, children, dic);
+            return children;
         }
+        private void PopulateChildren(int parent, List<int> children, Dictionary<int, List<int>> dic)
+        {
+            List<int> myChildren;
+            if (dic.TryGetValue(parent, out myChildren))
+            {
+                children.AddRange(myChildren);
+                foreach (int child in myChildren)
+                {
+                    PopulateChildren(child, children, dic);
+                }
+            }
+        }
+        private static void AddEntry(int parent, int child, Dictionary<int, List<int>> dic)
+        {
+            List<int> children;
+            if (!dic.TryGetValue(parent, out children))
+            {
+                children = new List<int>();
+                dic[parent] = children;
+            }
+            children.Add(child);
+        }
+
+        /// <summary>
+        /// Returns the maximum load at a node.
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <returns></returns>
+        public double MaxLoadAt(int nodeId) => dic.ContainsKey(nodeId) ? dic[nodeId].Sum(n => MaxLoadAt(n)) : BuildingLoads.Where(y => y.Key == nodeId).Select(x => x.Value).Sum();
+
     }
 }
