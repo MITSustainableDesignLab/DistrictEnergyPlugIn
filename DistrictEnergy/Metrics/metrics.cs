@@ -192,9 +192,9 @@ namespace DistrictEnergy.Metrics
         /// <returns>GJ</returns>
         public static double HeatSoldPerAnnum()
         {
-            var heatDemand = GlobalContext.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum()).Sum()
-                * 0.0036;
-            return heatDemand;
+            var heatDemand = GlobalContext.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum());
+            var heatDemand2 = heatDemand.Sum() * 0.0036;
+            return heatDemand2;
         }
 
         /// <summary>

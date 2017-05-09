@@ -88,6 +88,7 @@ namespace DistrictEnergy.Metrics
             double totLength;
 
             List<int[]> myList = new List<int[]>();
+            List<bool[]> myBools = new List<bool[]>();
 
             // Create a list of routes
             for (int i = 0; i < walkToIndex.Count; i++)
@@ -96,6 +97,7 @@ namespace DistrictEnergy.Metrics
                     pathSearch.Cross(walkFromIndex[0], walkToIndex[i], out nIndices, out eIndices, out eDirs, out totLength);
                 Array.Reverse(nIndices);
                 myList.Add(nIndices);
+                myBools.Add(eDirs);
             }
             List<int[]> SorterdMyList = myList.OrderByDescending(x => x.Length).ToList();
 

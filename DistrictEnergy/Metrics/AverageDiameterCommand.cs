@@ -109,7 +109,7 @@ namespace DistrictEnergy.Metrics
             switch (sm)
             {
                 case DiamMode.SwedishEmpirical:
-                    double linearHeatDesnsity = Metrics.HeatSoldPerAnnum() / Metrics.TotalRouteLength();
+                    double linearHeatDesnsity = Metrics.HeatSoldPerAnnum() / Metrics.TotalRouteLength(); //GJ/m
                     averageDiameter = Metrics.AveragePipeDiamSwedish(linearHeatDesnsity);
                     break;
                 case DiamMode.Model:
