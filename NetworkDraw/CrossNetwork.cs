@@ -71,7 +71,7 @@ namespace NetworkDraw
                             // Get all of the objects on the layer. If layername is bogus, you will
                             // just get an empty list back
                             string layername = "Heating Network";
-                            Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername).Where(x=>x.ObjectType == Rhino.DocObjects.ObjectType.Brep).ToArray();
+                            Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername).Where(x=>x.ObjectType == Rhino.DocObjects.ObjectType.Curve).ToArray();
                             if (rhobjs == null || rhobjs.Length < 1)
                                 return Rhino.Commands.Result.Cancel;
 
