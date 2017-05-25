@@ -97,7 +97,7 @@ namespace DistrictEnergy
 
             PlanningSettings planningSettings = PlanningSettingsViewModel.backing;
             var planningSerialized = JsonConvert.SerializeObject(planningSettings);
-            GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, planningSerialized);
+            GlobalContext.AuxiliaryFileStore.StoreText(PlanningSettingsPath.SettingsFilePathInBundle, planningSerialized);
         }
 
 
