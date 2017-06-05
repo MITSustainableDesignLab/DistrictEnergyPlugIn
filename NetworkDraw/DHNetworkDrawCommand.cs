@@ -19,7 +19,7 @@ namespace NetworkDraw
         {
             get
             {
-                return "NetworkDraw";
+                return "DHNetworkDraw";
             }
         }
 

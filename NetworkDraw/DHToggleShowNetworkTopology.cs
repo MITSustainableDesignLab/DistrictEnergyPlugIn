@@ -9,23 +9,23 @@ using NetworkDraw.Geometry;
 namespace NetworkDraw
 {
     [System.Runtime.InteropServices.Guid("37e09539-facf-4c22-84f3-c1dd74fc1253")]
-    public class ToggleShowNetworkTopology : Command
+    public class DHToggleShowNetworkTopology : Command
     {
-        static ToggleShowNetworkTopology _instance;
-        public ToggleShowNetworkTopology()
+        static DHToggleShowNetworkTopology _instance;
+        public DHToggleShowNetworkTopology()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the ShowNetworkTopology command.</summary>
-        public static ToggleShowNetworkTopology Instance
+        public static DHToggleShowNetworkTopology Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "ToggleShowNetworkTopology"; }
+            get { return "DHToggleShowNetworkTopology"; }
         }
 
         public Guid[] ids { get; set; }

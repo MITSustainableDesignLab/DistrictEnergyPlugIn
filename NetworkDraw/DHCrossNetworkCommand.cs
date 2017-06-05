@@ -20,7 +20,7 @@ namespace NetworkDraw
         {
             get
             {
-                return "DECrossNetwork";
+                return "DHCrossNetwork";
             }
         }
 

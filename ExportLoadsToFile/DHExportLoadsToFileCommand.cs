@@ -9,9 +9,9 @@ using Rhino.Input.Custom;
 namespace ExportLoadsToFile
 {
     [System.Runtime.InteropServices.Guid("472bcb99-9ded-43f6-a57f-5cbcab384e1e")]
-    public class ExportLoadsToFileCommand : Command
+    public class DHExportLoadsToFileCommand : Command
     {
-        public ExportLoadsToFileCommand()
+        public DHExportLoadsToFileCommand()
         {
             // Rhino only creates one instance of each command class defined in a
             // plug-in, so it is safe to store a refence in a static property.
@@ -19,7 +19,7 @@ namespace ExportLoadsToFile
         }
 
         ///<summary>The only instance of this command.</summary>
-        public static ExportLoadsToFileCommand Instance
+        public static DHExportLoadsToFileCommand Instance
         {
             get; private set;
         }
@@ -27,7 +27,7 @@ namespace ExportLoadsToFile
         ///<returns>The command name as it appears on the Rhino command line.</returns>
         public override string EnglishName
         {
-            get { return "ExportLoadsToFileCommand"; }
+            get { return "DHExportLoadsToFileCommand"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)

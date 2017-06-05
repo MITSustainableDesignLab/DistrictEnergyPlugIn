@@ -15,25 +15,25 @@ using System.Linq;
 namespace ExportLoadsToFile
 {
     [System.Runtime.InteropServices.Guid("6fc2fb7f-9bc9-47bd-846e-44c1789273ef")]
-    public class ExportLoadColumns : Command
+    public class DHExportLoadColumns : Command
     {
-        static ExportLoadColumns _instance;
+        static DHExportLoadColumns _instance;
         private const string delimiter = ",";
 
-        public ExportLoadColumns()
+        public DHExportLoadColumns()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the ExportLoadColumns command.</summary>
-        public static ExportLoadColumns Instance
+        public static DHExportLoadColumns Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "ExportLoadColumns"; }
+            get { return "DHExportLoadColumns"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)

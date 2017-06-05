@@ -11,9 +11,9 @@ using System.Collections.Generic;
 namespace ExportLoadsToFile
 {
     [System.Runtime.InteropServices.Guid("b49322ba-d330-4be8-938c-dcbd46096d34")]
-    public class ExportLoadsforPivotTable : Command
+    public class DHExportLoadsforPivotTableCommand : Command
     {
-        public ExportLoadsforPivotTable()
+        public DHExportLoadsforPivotTableCommand()
         {
             // Rhino only creates one instance of each command class defined in a
             // plug-in, so it is safe to store a refence in a static property.
@@ -21,7 +21,7 @@ namespace ExportLoadsToFile
         }
 
         ///<summary>The only instance of this command.</summary>
-        public static ExportLoadsforPivotTable Instance
+        public static DHExportLoadsforPivotTableCommand Instance
         {
             get; private set;
         }
@@ -29,7 +29,7 @@ namespace ExportLoadsToFile
         ///<returns>The command name as it appears on the Rhino command line.</returns>
         public override string EnglishName
         {
-            get { return "ExportLoadsforPivotTable"; }
+            get { return "DHExportLoadsforPivotTable"; }
         }
 
         public string savePath { get; private set; }

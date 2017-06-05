@@ -64,9 +64,9 @@
   <ItemGroup>
     <Compile Include="DHDryBulbCSV.cs" />
     <Compile Include="DHLoadsToCSV.cs" />
-    <Compile Include="ExportLoadColumns.cs" />
-    <Compile Include="ExportLoadsforPivotTable.cs" />
-    <Compile Include="ExportLoadsToFileCommand.cs" />
+    <Compile Include="DHExportLoadColumns.cs" />
+    <Compile Include="DHExportLoadsforPivotTableCommand.cs" />
+    <Compile Include="DHExportLoadsToFileCommand.cs" />
     <Compile Include="ExportLoadsToFilePlugIn.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

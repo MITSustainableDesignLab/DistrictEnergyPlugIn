@@ -10,18 +10,18 @@ using TrnsysUmiPlatform;
 namespace DistrictEnergy
 {
     [System.Runtime.InteropServices.Guid("4c307111-99c9-4287-9fd5-c2d86393ea7d")]
-    public class DERunTrnsysCommand : Command
+    public class DHRunTrnsysCommand : Command
     {
-        static DERunTrnsysCommand _instance;
+        static DHRunTrnsysCommand _instance;
 
 
-        public DERunTrnsysCommand()
+        public DHRunTrnsysCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the RunTrnsys command.</summary>
-        public static DERunTrnsysCommand Instance
+        public static DHRunTrnsysCommand Instance
         {
             get { return _instance; }
         }

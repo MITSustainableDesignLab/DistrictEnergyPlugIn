@@ -8,23 +8,23 @@ using DistrictEnergy.ViewModels;
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("f178c24e-926c-41cb-91d0-9773eae17cd1")]
-    public class DEDistributionCapitalCostCommand : Command
+    public class DHDistributionCapitalCostCommand : Command
     {
-        static DEDistributionCapitalCostCommand _instance;
-        public DEDistributionCapitalCostCommand()
+        static DHDistributionCapitalCostCommand _instance;
+        public DHDistributionCapitalCostCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the DistributionCapitalCostCommand command.</summary>
-        public static DEDistributionCapitalCostCommand Instance
+        public static DHDistributionCapitalCostCommand Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "DEDistributionCapitalCost"; }
+            get { return "DHDistributionCapitalCost"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)

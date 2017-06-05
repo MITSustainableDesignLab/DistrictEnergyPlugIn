@@ -9,23 +9,23 @@ using System.Collections.Generic;
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("55eb3b88-a514-4722-aa91-3c86b2788ff2")]
-    public class DECapacityFactorCommand : Command
+    public class DHCapacityFactorCommand : Command
     {
-        static DECapacityFactorCommand _instance;
-        public DECapacityFactorCommand()
+        static DHCapacityFactorCommand _instance;
+        public DHCapacityFactorCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the CapacityFactor command.</summary>
-        public static DECapacityFactorCommand Instance
+        public static DHCapacityFactorCommand Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "DECapacityFactor"; }
+            get { return "DHCapacityFactor"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
