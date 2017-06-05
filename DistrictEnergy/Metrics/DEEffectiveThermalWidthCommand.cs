@@ -7,10 +7,10 @@ using Rhino.Geometry;
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("17bca1ed-43ed-4aed-8f18-9777744185f7")]
-    public class EffectiveThermalWidthCommand : Command
+    public class DEEffectiveThermalWidthCommand : Command
     {
-        static EffectiveThermalWidthCommand _instance;
-        public EffectiveThermalWidthCommand()
+        static DEEffectiveThermalWidthCommand _instance;
+        public DEEffectiveThermalWidthCommand()
         {
             _instance = this;
         }
@@ -19,14 +19,14 @@ namespace DistrictEnergy.Metrics
         ///the concept of thermal width was introduced by Sven Werner (Werner, 1997).
         ///Depending on the network-design, an area with a certain thermal density can have 
         ///different thermal length and thermal width</summary>
-        public static EffectiveThermalWidthCommand Instance
+        public static DEEffectiveThermalWidthCommand Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "EffectiveThermalWidth"; }
+            get { return "DEEffectiveThermalWidth"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)

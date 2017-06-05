@@ -6,25 +6,25 @@ using Rhino.Input.Custom;
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("df8e2e9c-61e3-42b4-b7b8-aeb080d8281b")]
-    public class AverageDiameterCommand : Command
+    public class DEAverageDiameterCommand : Command
     {
-        static AverageDiameterCommand _instance;
+        static DEAverageDiameterCommand _instance;
         private Enum sm;
 
-        public AverageDiameterCommand()
+        public DEAverageDiameterCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the AverageDiameterCommand command.</summary>
-        public static AverageDiameterCommand Instance
+        public static DEAverageDiameterCommand Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "AverageDiameterCommand"; }
+            get { return "DEAverageDiameterCommand"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)

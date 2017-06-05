@@ -86,7 +86,7 @@
     <Compile Include="Geometry\NodeAddress.cs" />
     <Compile Include="Geometry\PathMethods.cs" />
     <Compile Include="GetterExtension.cs" />
-    <Compile Include="CrossNetwork.cs" />
+    <Compile Include="DECrossNetworkCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NetworkDrawCommand.cs" />
     <Compile Include="NetworkDrawPlugIn.cs" />

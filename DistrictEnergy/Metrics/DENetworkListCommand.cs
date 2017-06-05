@@ -12,27 +12,27 @@ using System.Collections;
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("fb5ded40-ae61-4174-9130-cb0e90e1bcec")]
-    public class NetworkListCommand : Command
+    public class DENetworkListCommand : Command
     {
-        static NetworkListCommand _instance;
+        static DENetworkListCommand _instance;
         private static Dictionary<int,List<int>> dic = new Dictionary<int, List<int>>();
         private static Dictionary<int,double> BuildingLoads = new Dictionary<int, double>();
 
         /// <summary>Gets the only instance of the NetworkList command.</summary>
-        public NetworkListCommand()
+        public DENetworkListCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the NetworkList command.</summary>
-        public static NetworkListCommand Instance
+        public static DENetworkListCommand Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "NetworkList"; }
+            get { return "DENetworkList"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)

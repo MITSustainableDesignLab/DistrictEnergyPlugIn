@@ -10,25 +10,25 @@ using TrnsysUmiPlatform;
 namespace DistrictEnergy
 {
     [System.Runtime.InteropServices.Guid("4c307111-99c9-4287-9fd5-c2d86393ea7d")]
-    public class RunTrnsysCommand : Command
+    public class DERunTrnsysCommand : Command
     {
-        static RunTrnsysCommand _instance;
+        static DERunTrnsysCommand _instance;
 
 
-        public RunTrnsysCommand()
+        public DERunTrnsysCommand()
         {
             _instance = this;
         }
 
         ///<summary>The only instance of the RunTrnsys command.</summary>
-        public static RunTrnsysCommand Instance
+        public static DERunTrnsysCommand Instance
         {
             get { return _instance; }
         }
 
         public override string EnglishName
         {
-            get { return "RunTrnsysCommand"; }
+            get { return "DERunTrnsysCommand"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
