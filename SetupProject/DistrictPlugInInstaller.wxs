@@ -68,8 +68,8 @@
     <WixVariable Id="WixUIDialogBmp" Value="$(var.DistrictEnergy.ProjectDir)Resources\WixUIDialogBmp.bmp"/>
     
     <!-- Define the MARIN icon to show in the Add/Remove Programs (ARP) dialog-->
-    <Icon Id="TabHeaderIcon.ico" SourceFile="$(var.DistrictEnergy.ProjectDir)\Resources\TabHeaderIcon.ico" />
-    <Property Id="ARPPRODUCTICON" Value="TabHeaderIcon.ico" />
+    <Icon Id="TabHeaderIcon.png" SourceFile="$(var.DistrictEnergy.ProjectDir)\Resources\TabHeaderIcon.png" />
+    <Property Id="ARPPRODUCTICON" Value="TabHeaderIcon.png" />
 
     <!-- end of customized UI -->
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />

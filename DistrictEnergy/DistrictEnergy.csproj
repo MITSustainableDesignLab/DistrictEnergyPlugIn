@@ -118,6 +118,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\TabHeaderIcon.png" />
     <Content Include="Resources\banner.bmp" />
     <Content Include="Resources\WixUIDialogBmp.bmp" />
   </ItemGroup>
