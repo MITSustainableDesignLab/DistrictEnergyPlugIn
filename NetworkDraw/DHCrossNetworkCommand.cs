@@ -107,8 +107,8 @@ namespace NetworkDraw
             List<int> walkFromIndex;
 
             Result wasSuccessful = Result.Cancel;
-            List<Type31> Pipes = new List<Type31>();
-            List<Type11> Diverters = new List<Type11>();
+            List<Type31> pipes = new List<Type31>();
+            List<Type11> diverters = new List<Type11>();
             List<int> walked = new List<int>();
             if (ThermalPlantsOnTopology.GetThermalPlantsPointOnTopology(crvTopology, out walkFromIndex) != Result.Success)
             {
@@ -179,7 +179,7 @@ namespace NetworkDraw
                         if (j > 0)
                         {
                             int prev = j - 1;
-                            int prevUnit = Pipes.Find(p => p.EdgeId == eIndices[prev]).Unit_number;
+                            int prevUnit = pipes.Find(p => p.EdgeId == eIndices[prev]).Unit_number;
                             int[] fromUnit = { prevUnit, prevUnit, 0 };
 
                             // Test if need to create a diverter
@@ -214,15 +214,15 @@ namespace NetworkDraw
 
                                     // If that specific diverter ID has already been created, 
                                     // don't add it to the list but change the outputs, else add it to the list
-                                    if (Diverters.Exists(d => d.NodeId == diverter.NodeId))
+                                    if (diverters.Exists(d => d.NodeId == diverter.NodeId))
                                     {
-                                        fromUnit.SetValue(Diverters.Find(d => d.NodeId == start).Unit_number, 0); // resets the from unit number to the diverter
-                                        fromUnit.SetValue(Diverters.Find(d => d.NodeId == start).Unit_number, 1);
-                                        fromOutputs.SetValue(Diverters.Find(d => d.NodeId == start).OutUsed ? 3:1, 0); // sets the input of the next pipe to the availabe output of the diverter (since it has two)
-                                        fromOutputs.SetValue(Diverters.Find(d => d.NodeId == start).OutUsed ? 4:2, 1);
+                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).Unit_number, 0); // resets the from unit number to the diverter
+                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).Unit_number, 1);
+                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 3:1, 0); // sets the input of the next pipe to the availabe output of the diverter (since it has two)
+                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 4:2, 1);
                                     }
                                     else
-                                        Diverters.Add(diverter);
+                                        diverters.Add(diverter);
                                 }
                             }
 
@@ -231,7 +231,7 @@ namespace NetworkDraw
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
                             pipe.Position = new double[2] { bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue };
                             pipe.EdgeId = eIndices[j];
-                            contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
+                            contains = pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
                         else
                         {
@@ -239,11 +239,11 @@ namespace NetworkDraw
                             pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
                             pipe.Position = new double[2] { bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue };
                             pipe.EdgeId = eIndices[j];
-                            contains = Pipes.Exists(p => p.EdgeId == pipe.EdgeId);
+                            contains = pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
 
                         if (contains != true)
-                            Pipes.Add(pipe);
+                            pipes.Add(pipe);
                     }
                 }
                 else
@@ -253,7 +253,7 @@ namespace NetworkDraw
                 }
             }
             TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\UMI\temp");
-            WriteDckFile b = new WriteDckFile(model, Pipes, Diverters);
+            WriteDckFile b = new WriteDckFile(model, pipes, diverters);
 
             EndOperations(ids);
             return wasSuccessful;
