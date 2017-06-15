@@ -9,6 +9,9 @@ using Mit.Umi.RhinoServices;
 
 namespace DistrictEnergy
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Runtime.InteropServices.Guid("fcdf33a5-a428-490d-bf49-310dd3bab8d2")]
     public class CreateLoadProfilesFiles : Command
     {

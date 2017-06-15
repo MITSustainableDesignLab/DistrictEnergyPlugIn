@@ -31,9 +31,9 @@
       <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll" />
       <DocumentationSource sourceFile="..\ExportLoadsToFile\bin\ExportLoadsToFile.dll" />
       <DocumentationSource sourceFile="..\NetworkDraw\bin\NetworkDraw.dll" />
+      <DocumentationSource sourceFile="..\TrnsysUmiPlatform\TrnsysUmiPlatform.dll" />
     </DocumentationSources>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
@@ -65,6 +65,7 @@
     <PlugInConfigurations />
     <ProductTitle>DistrictEnergy PlugIn</ProductTitle>
     <VendorName>MIT Sustainable Design Lab</VendorName>
+    <MissingTags>Parameter, AutoDocumentCtors, AutoDocumentDispose</MissingTags>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

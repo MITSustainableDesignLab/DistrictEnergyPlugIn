@@ -11,11 +11,11 @@ namespace NetworkDraw
         public CurvesGetter(string prompt)
             : base()
         {
-            this.SetCommandPrompt(prompt);
-            this.GeometryFilter = ObjectType.Curve;
-            this.GeometryAttributeFilter = GeometryAttributeFilter.OpenCurve;
-            this.EnablePreSelect(true, true);
-            this.EnablePressEnterWhenDonePrompt(false);
+            SetCommandPrompt(prompt);
+            GeometryFilter = ObjectType.Curve;
+            GeometryAttributeFilter = GeometryAttributeFilter.OpenCurve;
+            EnablePreSelect(true, true);
+            EnablePressEnterWhenDonePrompt(false);
         }
 
         /// <summary>
@@ -29,20 +29,20 @@ namespace NetworkDraw
         {
             GetResult a;
             if (min == 1 && max == 1)
-                a = this.Get();
+                a = Get();
             else
-                a = this.GetMultiple(min, max);
+                a = GetMultiple(min, max);
 
             if (a == GetResult.Object)
             {
-                if (this.ObjectCount > 0)
+                if (ObjectCount > 0)
                 {
                     int realCount = 0;
 
-                    lines = new Curve[this.ObjectCount];
-                    for (int i = 0; i < this.ObjectCount; i++)
+                    lines = new Curve[ObjectCount];
+                    for (int i = 0; i < ObjectCount; i++)
                     {
-                        Curve c = this.Object(i).Curve();
+                        Curve c = Object(i).Curve();
                         if (c != null && c.IsValid)
                         {
                             lines[realCount++] = c;

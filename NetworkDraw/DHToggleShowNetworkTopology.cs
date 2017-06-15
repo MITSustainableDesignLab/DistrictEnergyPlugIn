@@ -42,7 +42,7 @@ namespace NetworkDraw
                 // just get an empty list back
                 Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername);
                 if (rhobjs == null || rhobjs.Length < 1)
-                    return Rhino.Commands.Result.Cancel;
+                    return Result.Cancel;
 
                 var curves = new Curve[rhobjs.Length];
 

@@ -610,7 +610,7 @@ namespace NetworkDraw.Geometry
 
             // Get all of the breps on the layer. If layername is bogus, you will
             // just get an empty list back
-            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername).Where(x=>x.ObjectType == ObjectType.Brep).ToArray();
+            RhinoObject[] rhobjs = RhinoDoc.ActiveDoc.Objects.FindByLayer(layername).Where(x=>x.ObjectType == ObjectType.Brep).ToArray();
             if (rhobjs == null || rhobjs.Length < 1)
             {
                 index = null;

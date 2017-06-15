@@ -58,7 +58,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
     <Reference Include="TrnsysUmiPlatform">
-      <HintPath>..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll</HintPath>
+      <HintPath>..\TrnsysUmiPlatform\TrnsysUmiPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
@@ -148,6 +148,7 @@
     </StartArguments>
     <StartAction>Program</StartAction>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\DistrictEnergyDocs.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
 </Project>

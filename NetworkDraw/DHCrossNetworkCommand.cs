@@ -9,8 +9,8 @@ using Rhino.Input.Custom;
 using NetworkDraw.Geometry;
 using Mit.Umi.RhinoServices;
 using System.Collections.Generic;
-using TrnsysUmiPlatform;
 using System.Linq;
+using TrnsysUmiPlatform;
 
 namespace NetworkDraw
 {
@@ -73,7 +73,7 @@ namespace NetworkDraw
                             string layername = "Heating Network";
                             Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername).Where(x=>x.ObjectType == Rhino.DocObjects.ObjectType.Curve).ToArray();
                             if (rhobjs == null || rhobjs.Length < 1)
-                                return Rhino.Commands.Result.Cancel;
+                                return Result.Cancel;
 
                             curves = new Curve[rhobjs.Length];
 
@@ -137,15 +137,15 @@ namespace NetworkDraw
 
             PathMethod pathSearch = PathMethod.FromMode(sm, crvTopology, distances);
 
-            int[] nIndices, eIndices;
-            bool[] eDirs;
-            double totLength;
+            int[] eIndices;
 
-            for (int i = 0; i < walkToIndex.Count; i++)
+            for (int i = walkToIndex.Count - 1; i >= 0; i--)
             {
-
+                double totLength;
+                bool[] eDirs;
+                int[] nIndices;
                 Curve c =
-                    pathSearch.Cross(walkFromIndex[0], walkToIndex[i], out nIndices, out eIndices, out eDirs, out totLength);
+                    pathSearch.Cross(walkFromIndex[0], i, out nIndices, out eIndices, out eDirs, out totLength);
 
 
                 if (c != null && c.IsValid)
@@ -157,19 +157,17 @@ namespace NetworkDraw
                     }
                     for (int j = 0; j < eIndices.Length; j++)
                     {
-                        int[,] inputs = { { 0, 0, 0 }, { 0, 0, 0 } };
-
                         Type31 pipe = new Type31(0.2, crvTopology.CurveAt(eIndices[j]).GetLength(), 1, 1000, 4.29, 20);
 
                         // Get the active view's construction plane
                         var view = doc.Views.ActiveView;
                         if (view == null)
-                            return Rhino.Commands.Result.Failure;
+                            return Result.Failure;
                         var plane = view.ActiveViewport.ConstructionPlane();
 
                         var bbox = crvTopology.CurveAt(eIndices[j]).GetBoundingBox(plane);
                         if (!bbox.IsValid)
-                            return Rhino.Commands.Result.Failure;
+                            return Result.Failure;
 
 
                         int[] fromOutputs = { 1, 2, 0 };
@@ -203,8 +201,8 @@ namespace NetworkDraw
                                     diverter.SetInputs(fromUnit, fromOutputs);
                                     diverter.Unit_name = "Diverter_" + start.ToString();
 
-                                    Plane worldPlane = Rhino.Geometry.Plane.WorldXY;
-                                    Transform xform = Rhino.Geometry.Transform.ChangeBasis(worldPlane, plane);
+                                    Plane worldPlane = Plane.WorldXY;
+                                    Transform xform = Transform.ChangeBasis(worldPlane, plane);
                                     Point3d pos = new Point3d(crvTopology.VertexAt(start).X, crvTopology.VertexAt(start).Y, 0);
                                     pos.Transform(xform);
                                     diverter.Position = new double[2] { pos.X * sclfct.CurrentValue, pos.Y * sclfct.CurrentValue };
