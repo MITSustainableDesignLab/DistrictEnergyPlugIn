@@ -84,6 +84,7 @@
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
     <Compile Include="Metrics\Metrics.cs" />
     <Compile Include="Metrics\DHNetworkListCommand.cs" />
+    <Compile Include="TrnExeConsole.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
@@ -120,6 +121,7 @@
   <ItemGroup>
     <Content Include="Resources\TabHeaderIcon.png" />
     <Content Include="Resources\banner.bmp" />
+    <Content Include="Resources\TRNExeConsole.f90" />
     <Content Include="Resources\WixUIDialogBmp.bmp" />
   </ItemGroup>
   <ItemGroup>
