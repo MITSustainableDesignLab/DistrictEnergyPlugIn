@@ -11,15 +11,16 @@ namespace TrnExeConsole
             stopWatch.Start();
 
             var silentMode = false;
+
             //Load library wrapper
             var trndll = new TrnDllWrapper(@"C:\Trnsys\17-2-Bee\Exe\TRNDll.dll");
 
             //Initialization call to Trnsys
             if (!silentMode)
                 Console.WriteLine(DateTime.Now + " - Initializing TRNSYS");
+
             var callNo = 1;
             var callType = 0;
-
             double[] parout;
             double[] plotout;
             var deckPath = @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck";
@@ -29,13 +30,15 @@ namespace TrnExeConsole
             var stopTime = parout[1];
             var timeStep = parout[2];
 
-            var nSteps = (stopTime - startTime) / timeStep + 1;
+            GetTrnsysCallOutputs linePerLineOutputs = LinePerLineCallMethod(trndll, silentMode, callNo, callType,
+                startTime, stopTime, timeStep, @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck");
+            parout = linePerLineOutputs.parOut;
+            plotout = linePerLineOutputs.plotOut;
 
-            LinePerLineCallMethod(trndll, silentMode, callNo, callType, parout, plotout, startTime, timeStep, nSteps,
+            GetTrnsysCallOutputs finalCallOutputs = FinalCall(trndll, silentMode, callNo, callType,
                 @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck");
-
-            FinalCall(trndll, silentMode, callNo, callType, out parout, out plotout,
-                @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck");
+            parout = finalCallOutputs.plotOut;
+            plotout = finalCallOutputs.parOut;
 
 
             stopWatch.Stop();
@@ -52,9 +55,13 @@ namespace TrnExeConsole
 #endif
         }
 
-        private static void LinePerLineCallMethod(TrnDllWrapper trndll, bool silentMode, int callNo, int callType,
-            double[] parout, double[] plotout, double startTime, double timeStep, double nSteps, string deckPath)
+        private static GetTrnsysCallOutputs LinePerLineCallMethod(TrnDllWrapper trndll, bool silentMode, int callNo,
+            int callType, double startTime, double stopTime, double timeStep, string deckPath)
         {
+            double[] parOut;
+            double[] plotOut;
+            var nSteps = (stopTime - startTime) / timeStep + 1;
+
             // Call trnsys once per time step
 
             var percentCompletedPrinted = 0.0;
@@ -72,17 +79,21 @@ namespace TrnExeConsole
                     if (percentCompleted > percentCompletedPrinted)
                         ProgressBar.DrawTextProgressBar(callNo, Convert.ToInt32(nSteps));
 
-                trndll.Trnsys(callType, out parout, out plotout, deckPath);
+                trndll.Trnsys(callType, out parOut, out plotOut, deckPath);
             }
 
             if (callType != 0)
                 Console.WriteLine("Fatal error at time = {0}" + " - check log file for details",
                     startTime + (callNo - 2) * timeStep);
+
+            return new GetTrnsysCallOutputs();
         }
 
-        private static void FinalCall(TrnDllWrapper trndll, bool silentMode, int callNo, int callType,
-            out double[] parout, out double[] plotout, string deckPath)
+        private static GetTrnsysCallOutputs FinalCall(TrnDllWrapper trndll, bool silentMode, int callNo, int callType,
+            string deckPath)
         {
+            double[] parout;
+            double[] plotout;
             // Final call
             if (!silentMode)
                 Console.WriteLine(DateTime.Now + " - Performing final call to Trnsys");
@@ -93,6 +104,13 @@ namespace TrnExeConsole
 
             if (callType != 1000)
                 Console.WriteLine("Fatal error during final call - check log file for details");
+            return new GetTrnsysCallOutputs();
+        }
+
+        private class GetTrnsysCallOutputs
+        {
+            public double[] parOut { get; set; }
+            public double[] plotOut { get; set; }
         }
     }
 }
