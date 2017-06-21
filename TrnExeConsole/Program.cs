@@ -1,138 +1,98 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace TrnExeConsole
 {
-    public static class NativeLibrary
+    internal class Program
     {
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr LoadLibrary(string dllToLoad);
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-        [DllImport("kernel32.dll")]
-        public static extern bool FreeLibrary(IntPtr hModule);
-
-        public static string GetLibraryPathname(string filename)
+        private static void Main(string[] args)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
 
-            var lib1 = filename;
+            var silentMode = false;
+            //Load library wrapper
+            var trndll = new TrnDllWrapper(@"C:\Trnsys\17-2-Bee\Exe\TRNDll.dll");
 
-            return lib1;
-        }
-    }
+            //Initialization call to Trnsys
+            if (!silentMode)
+                Console.WriteLine(DateTime.Now + " - Initializing TRNSYS");
+            var callNo = 1;
+            var callType = 0;
 
-    public class TrnDllWrapper
-    {
-        // Delegate with function signature for the Trnsys function
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.U4)]
-        delegate void TrnsysDelegate(
-            [OutAttribute] [InAttribute] ref int callType,
-            [OutAttribute] [InAttribute] ref double [] parout,
-            [OutAttribute] [InAttribute] ref int lpa,
-            [OutAttribute] [InAttribute] double []  plotout,
-            [OutAttribute] [InAttribute] ref int lpl,
-            [OutAttribute] [InAttribute] StringBuilder labels,
-            [OutAttribute] [InAttribute] int lengthLabels,
-            [OutAttribute] [InAttribute] StringBuilder titles,
-            [OutAttribute] [InAttribute] int lengthTitles,
-            [OutAttribute] [InAttribute] StringBuilder deckn,
-            [OutAttribute] [InAttribute] int lengthDeckn);
+            double[] parout;
+            double[] plotout;
+            var deckPath = @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck";
+            callType = trndll.Trnsys(callType, out parout, out plotout, deckPath);
 
-        public string Trnsys()
-        {
-            
-            if (_trnsys != null)
-            {
-                //Arguments used when calling TRNSYS in TRNDll
-                var lpa = 1000;
-                var lpl = 1000;
-                double[] _parout = new double[lpa];
-                double[] _plotout = new double[lpl];
-                var lengthLabels = 4000;
-                var lengthTitles = 1500;
-                var lengthDeckn = 300;
-                StringBuilder _labels = new StringBuilder(lengthLabels);
-                StringBuilder _titles = new StringBuilder(lengthTitles);
-                StringBuilder _deckn = new StringBuilder(lengthDeckn);
+            var startTime = parout[0];
+            var stopTime = parout[1];
+            var timeStep = parout[2];
 
-                var startTime = 0.0;
-                var stopTime = 0.0;
-                var timeStep = 0.0;
-                var _callType = 0;
-                //Trnsys string
-                _trnsys(ref _callType, ref _parout, ref lpa, _plotout, ref lpl, _labels, lengthLabels, _titles, lengthTitles, _deckn, lengthDeckn);
+            var nSteps = (stopTime - startTime) / timeStep + 1;
 
-                // Return string
-                return _callType.ToString();
-            }
-            return "";
-        }
+            LinePerLineCallMethod(trndll, silentMode, callNo, callType, parout, plotout, startTime, timeStep, nSteps,
+                @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck");
 
-        public TrnDllWrapper(string filename)
-        {
-            var trnDll = NativeLibrary.GetLibraryPathname(@"C:\Trnsys\17-2-Bee\Exe\TRNDll.dll");
-            _dllhandle = NativeLibrary.LoadLibrary(trnDll);
-
-            if (_dllhandle == IntPtr.Zero)
-            {
-                return;
-            }
-
-            var trnsysHandle = NativeLibrary.GetProcAddress(_dllhandle, "TRNSYS");
-
-            if (trnsysHandle != IntPtr.Zero)
-            {
-                _trnsys = (TrnsysDelegate) Marshal.GetDelegateForFunctionPointer(
-                    trnsysHandle,
-                    typeof(TrnsysDelegate));
-            }
-            else
-            {
-                Console.WriteLine("Fatal error. Trnsys routine not found in TRNDll");
-            }
-    }
-
-        ~TrnDllWrapper()
-        {
-            //Free ressources.
-            //Probably should use SafeHandle or some similar class
-            //But this will do for now.
-            NativeLibrary.FreeLibrary(_dllhandle);
-        }
-
-        // Handles and delegates
+            FinalCall(trndll, silentMode, callNo, callType, out parout, out plotout,
+                @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck");
 
 
-        readonly IntPtr _dllhandle = IntPtr.Zero;
-        readonly TrnsysDelegate _trnsys = null;
-    }
+            stopWatch.Stop();
+            Console.WriteLine(DateTime.Now + " - Trnsys simulation was completed successfully. Elapsed time : {0}",
+                stopWatch.Elapsed);
 
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            
-
-
-            // Load library wrapper
-            TrnDllWrapper trndll = new TrnDllWrapper(@"C:\Trnsys\17-2-Bee\Exe\TRNDll.dll");
-
-            // Initialization call to Trnsys
-            int callNo = 1;
-            int callType = 0;
-
-            trndll.Trnsys();
-
-            // Print
-
-            Console.WriteLine("handle:");
-            //Console.WriteLine(handle);
+            Console.WriteLine("CallType:");
+            Console.WriteLine(callType);
             Console.WriteLine("Done library test");
+
+#if DEBUG
+            Console.WriteLine("Press enter to close...");
+            Console.ReadLine();
+#endif
+        }
+
+        private static void LinePerLineCallMethod(TrnDllWrapper trndll, bool silentMode, int callNo, int callType,
+            double[] parout, double[] plotout, double startTime, double timeStep, double nSteps, string deckPath)
+        {
+            // Call trnsys once per time step
+
+            var percentCompletedPrinted = 0.0;
+            var percentCompleted = 0.0;
+
+            if (!silentMode)
+                Console.WriteLine(DateTime.Now + " - Running Trnsys Simulation");
+
+            while (callType == 0 && callNo < nSteps + 1)
+            {
+                callNo = callNo++;
+                callType = 1;
+
+                if (!silentMode)
+                    if (percentCompleted > percentCompletedPrinted)
+                        ProgressBar.DrawTextProgressBar(callNo, Convert.ToInt32(nSteps));
+
+                trndll.Trnsys(callType, out parout, out plotout, deckPath);
+            }
+
+            if (callType != 0)
+                Console.WriteLine("Fatal error at time = {0}" + " - check log file for details",
+                    startTime + (callNo - 2) * timeStep);
+        }
+
+        private static void FinalCall(TrnDllWrapper trndll, bool silentMode, int callNo, int callType,
+            out double[] parout, out double[] plotout, string deckPath)
+        {
+            // Final call
+            if (!silentMode)
+                Console.WriteLine(DateTime.Now + " - Performing final call to Trnsys");
+            callNo = callNo++;
+            callType = -1; // Final call
+
+            trndll.Trnsys(callType, out parout, out plotout, deckPath);
+
+            if (callType != 1000)
+                Console.WriteLine("Fatal error during final call - check log file for details");
         }
     }
 }
