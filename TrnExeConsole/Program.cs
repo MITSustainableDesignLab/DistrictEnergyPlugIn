@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using TrnsysConsoleApp;
 
 namespace TrnExeConsole
 {
@@ -23,22 +24,20 @@ namespace TrnExeConsole
             var callType = 0;
             double[] parout;
             double[] plotout;
-            var deckPath = @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck";
+            var deckPath = @"C:\Trnsys\17-2-Bee\Examples\Restaurant\Restaurant.dck";
+
             callType = trndll.Trnsys(callType, out parout, out plotout, deckPath);
 
             var startTime = parout[0];
             var stopTime = parout[1];
             var timeStep = parout[2];
 
-            GetTrnsysCallOutputs linePerLineOutputs = LinePerLineCallMethod(trndll, silentMode, callNo, callType,
-                startTime, stopTime, timeStep, @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck");
-            parout = linePerLineOutputs.parOut;
-            plotout = linePerLineOutputs.plotOut;
+            callType = LinePerLineCallMethod(trndll, silentMode, callNo, callType,
+                startTime, stopTime, timeStep, deckPath);
 
-            GetTrnsysCallOutputs finalCallOutputs = FinalCall(trndll, silentMode, callNo, callType,
-                @"C:\Trnsys\17-2-Bee\Examples\Photovoltaics\IVcurve.dck");
-            parout = finalCallOutputs.plotOut;
-            plotout = finalCallOutputs.parOut;
+            callNo = -1;
+            callType = FinalCall(trndll, silentMode,
+                deckPath);
 
 
             stopWatch.Stop();
@@ -55,62 +54,53 @@ namespace TrnExeConsole
 #endif
         }
 
-        private static GetTrnsysCallOutputs LinePerLineCallMethod(TrnDllWrapper trndll, bool silentMode, int callNo,
-            int callType, double startTime, double stopTime, double timeStep, string deckPath)
+        private static int LinePerLineCallMethod(TrnDllWrapper trndll, bool silentMode, int callNo, int callType, double startTime, double stopTime, double timeStep, string deckPath)
         {
-            double[] parOut;
-            double[] plotOut;
             var nSteps = (stopTime - startTime) / timeStep + 1;
 
             // Call trnsys once per time step
 
-            var percentCompletedPrinted = 0.0;
-            var percentCompleted = 0.0;
-
             if (!silentMode)
                 Console.WriteLine(DateTime.Now + " - Running Trnsys Simulation");
 
-            while (callType == 0 && callNo < nSteps + 1)
+            using (var progress = new ProgressBar())
             {
-                callNo = callNo++;
-                callType = 1;
+                while (callType == 0 && callNo < nSteps + 1)
+                {
+                    callNo++;
+                    callType = 1;
 
-                if (!silentMode)
-                    if (percentCompleted > percentCompletedPrinted)
-                        ProgressBar.DrawTextProgressBar(callNo, Convert.ToInt32(nSteps));
+                    if (!silentMode)
+                        progress.Report((double)callNo / nSteps);
 
-                trndll.Trnsys(callType, out parOut, out plotOut, deckPath);
+                    double[] parOut;
+                    double[] plotOut;
+                    callType = trndll.Trnsys(callType, out parOut, out plotOut, deckPath);
+                }
+
             }
 
             if (callType != 0)
                 Console.WriteLine("Fatal error at time = {0}" + " - check log file for details",
                     startTime + (callNo - 2) * timeStep);
 
-            return new GetTrnsysCallOutputs();
+            return callType;
         }
 
-        private static GetTrnsysCallOutputs FinalCall(TrnDllWrapper trndll, bool silentMode, int callNo, int callType,
-            string deckPath)
+        private static int FinalCall(TrnDllWrapper trndll, bool silentMode, string deckPath)
         {
             double[] parout;
             double[] plotout;
             // Final call
             if (!silentMode)
                 Console.WriteLine(DateTime.Now + " - Performing final call to Trnsys");
-            callNo = callNo++;
-            callType = -1; // Final call
+            var callType = -1; // Final call
 
-            trndll.Trnsys(callType, out parout, out plotout, deckPath);
+            callType = trndll.Trnsys(callType, out parout, out plotout, deckPath);
 
             if (callType != 1000)
                 Console.WriteLine("Fatal error during final call - check log file for details");
-            return new GetTrnsysCallOutputs();
-        }
-
-        private class GetTrnsysCallOutputs
-        {
-            public double[] parOut { get; set; }
-            public double[] plotOut { get; set; }
+            return callType;
         }
     }
 }

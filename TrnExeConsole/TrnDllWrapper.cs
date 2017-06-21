@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace TrnExeConsole
+namespace TrnsysConsoleApp
 {
     public class TrnDllWrapper
     {
@@ -10,15 +10,15 @@ namespace TrnExeConsole
         //[return: MarshalAs(UnmanagedType.FunctionPtr)]
         delegate void TrnsysDelegate(
             [Out] [In] ref int callType,
-            [Out] [In] double [] parout,
-            [Out] [In] double [] plotout,
-            [Out] [In] char [] labels,
-            [Out] [In] char [] titles,
+            [Out] [In] double[] parout,
+            [Out] [In] double[] plotout,
+            [Out] [In] char[] labels,
+            [Out] [In] char[] titles,
             [Out] [In] char[] deckn);
 
         public int Trnsys(int callType, out double[] parOut, out double[] plotOut, string deckn)
         {
-            
+
             if (_trnsys != null)
             {
                 //Arguments used when calling TRNSYS in TRNDll
@@ -54,7 +54,7 @@ namespace TrnExeConsole
 
         public TrnDllWrapper(string filename)
         {
-            var trnDll = NativeLibrary.GetLibraryPathname(@"C:\Trnsys\17-2-Bee\Exe\TRNDll.dll");
+            var trnDll = NativeLibrary.GetLibraryPathname(@"C:\Trnsys\17-2-Bee\Compilers\Ivf15 (Vs2013)\TRNDll\Debug\TRNDll.dll");
             _dllhandle = NativeLibrary.LoadLibrary(trnDll);
 
             if (_dllhandle == IntPtr.Zero)
@@ -66,7 +66,7 @@ namespace TrnExeConsole
 
             if (trnsysHandle != IntPtr.Zero)
             {
-                _trnsys = (TrnsysDelegate) Marshal.GetDelegateForFunctionPointer(
+                _trnsys = (TrnsysDelegate)Marshal.GetDelegateForFunctionPointer(
                     trnsysHandle,
                     typeof(TrnsysDelegate));
             }
@@ -89,5 +89,11 @@ namespace TrnExeConsole
 
         IntPtr _dllhandle = IntPtr.Zero;
         TrnsysDelegate _trnsys = null;
+
+        public class GetTrnsysCallOutputs
+        {
+            public double[] parOut { get; set; }
+            public double[] plotOut { get; set; }
+        }
     }
 }
