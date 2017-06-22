@@ -32,12 +32,10 @@ namespace TrnExeConsole
             var stopTime = parout[1];
             var timeStep = parout[2];
 
-            callType = LinePerLineCallMethod(trndll, silentMode, callNo, callType,
+            LinePerLineCallMethod(trndll, silentMode, callNo, callType,
                 startTime, stopTime, timeStep, deckPath);
 
-            callNo = -1;
-            callType = FinalCall(trndll, silentMode,
-                deckPath);
+            callType = FinalCall(trndll, silentMode, deckPath);
 
 
             stopWatch.Stop();
@@ -54,7 +52,8 @@ namespace TrnExeConsole
 #endif
         }
 
-        private static int LinePerLineCallMethod(TrnDllWrapper trndll, bool silentMode, int callNo, int callType, double startTime, double stopTime, double timeStep, string deckPath)
+        private static void LinePerLineCallMethod(TrnDllWrapper trndll, bool silentMode, int callNo, int callType,
+            double startTime, double stopTime, double timeStep, string deckPath)
         {
             var nSteps = (stopTime - startTime) / timeStep + 1;
 
@@ -71,30 +70,27 @@ namespace TrnExeConsole
                     callType = 1;
 
                     if (!silentMode)
-                        progress.Report((double)callNo / nSteps);
+                        progress.Report(callNo / nSteps);
 
                     double[] parOut;
                     double[] plotOut;
                     callType = trndll.Trnsys(callType, out parOut, out plotOut, deckPath);
                 }
-
             }
 
             if (callType != 0)
                 Console.WriteLine("Fatal error at time = {0}" + " - check log file for details",
                     startTime + (callNo - 2) * timeStep);
-
-            return callType;
         }
 
         private static int FinalCall(TrnDllWrapper trndll, bool silentMode, string deckPath)
         {
             double[] parout;
             double[] plotout;
-            // Final call
+
             if (!silentMode)
                 Console.WriteLine(DateTime.Now + " - Performing final call to Trnsys");
-            var callType = -1; // Final call
+            var callType = -1; //Final Call
 
             callType = trndll.Trnsys(callType, out parout, out plotout, deckPath);
 
