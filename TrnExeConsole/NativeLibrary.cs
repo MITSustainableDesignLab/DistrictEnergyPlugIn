@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TrnsysConsoleApp
+namespace TrnExeConsole
 {
     public static class NativeLibrary
     {
