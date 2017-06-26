@@ -1,103 +1,85 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
+using Mit.Umi.RhinoServices;
+using NetworkDraw.Geometry;
 using Rhino;
 using Rhino.Commands;
+using Rhino.Display;
+using Rhino.DocObjects;
 using Rhino.Geometry;
 using Rhino.Input;
 using Rhino.Input.Custom;
-using NetworkDraw.Geometry;
-using Mit.Umi.RhinoServices;
-using System.Collections.Generic;
-using System.Linq;
 using TrnsysUmiPlatform;
+using TrnsysUmiPlatform.Types;
 
 namespace NetworkDraw
 {
     public class NetworkDrawCommand : Command
     {
-        public override string EnglishName
-        {
-            get
-            {
-                return "DHCrossNetwork";
-            }
-        }
+        public override string EnglishName => "DHCrossNetwork";
 
-        public override Guid Id
-        {
-            get
-            {
-                return new Guid("{A98535DA-B2F5-477D-807D-28481965584B}");
-            }
-        }
+        public override Guid Id => new Guid("{A98535DA-B2F5-477D-807D-28481965584B}");
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            SearchMode sm = SearchMode.CurveLength;
+            var sm = SearchMode.CurveLength;
 
             Curve[] curves;
-            OptionToggle tog = new OptionToggle(false, "Hide", "Show");
-            OptionDouble tol = new OptionDouble(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance, true, 0.0);
-            OptionInteger sclfct = new OptionInteger(4, 1, 100);
-            using (CurvesGetter getLines = new CurvesGetter("Select curves meeting at endpoints. Press Enter when done"))
+            var tog = new OptionToggle(false, "Hide", "Show");
+            var tol = new OptionDouble(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance, true, 0.0);
+            var sclfct = new OptionInteger(4, 1, 100);
+            using (var getLines = new CurvesGetter("Select curves meeting at endpoints. Press Enter when done"))
             {
                 for (;;)
                 {
                     getLines.ClearCommandOptions();
                     getLines.EnableClearObjectsOnEntry(false);
-                    int showInt = getLines.AddOptionToggle("Topology", ref tog);
+                    var showInt = getLines.AddOptionToggle("Topology", ref tog);
                     //int begInt = getLines.AddOptionToggle("Starting Point", ref beg);
-                    int tolInt = getLines.AddOptionDouble("Tolerance", ref tol);
-                    int scalefactor = getLines.AddOptionInteger("ScaleFactor", ref sclfct);
-                    int modeInt = GetterExtension.AddEnumOptionList(getLines, sm);
+                    var tolInt = getLines.AddOptionDouble("Tolerance", ref tol);
+                    var scalefactor = getLines.AddOptionInteger("ScaleFactor", ref sclfct);
+                    var modeInt = GetterExtension.AddEnumOptionList(getLines, sm);
 
                     if (getLines.Curves(1, 0, out curves))
                         break;
+                    if (getLines.Result() == GetResult.Option)
+                    {
+                        if (getLines.Option().Index == modeInt)
+                            sm = GetterExtension.RetrieveEnumOptionValue<SearchMode>
+                                (getLines.Option().CurrentListOptionIndex);
+                    }
                     else
                     {
-                        if (getLines.Result() == GetResult.Option)
+                        // Get all of the objects on the layer. If layername is bogus, you will
+                        // just get an empty list back
+                        const string layername = "Heating Network";
+                        var rhobjs = doc.Objects.FindByLayer(layername).Where(x => x.ObjectType == ObjectType.Curve)
+                            .ToArray();
+                        if (rhobjs == null || rhobjs.Length < 1)
+                            return Result.Cancel;
+
+                        curves = new Curve[rhobjs.Length];
+
+                        for (var i = 0; i < rhobjs.Length; i++)
                         {
-                            if (getLines.Option().Index == modeInt)
-                            {
-                                sm = GetterExtension.RetrieveEnumOptionValue<SearchMode>
-                                    (getLines.Option().CurrentListOptionIndex);
-                            }
-                            continue;
+                            GeometryBase geom = rhobjs[i].Geometry;
+                            var x = geom as Curve;
+                            if (x != null && x.IsValid)
+                                curves[i] = x;
                         }
-                        else
+                        if (curves.Length == 0)
                         {
-
-                            // Get all of the objects on the layer. If layername is bogus, you will
-                            // just get an empty list back
-                            string layername = "Heating Network";
-                            Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(layername).Where(x=>x.ObjectType == Rhino.DocObjects.ObjectType.Curve).ToArray();
-                            if (rhobjs == null || rhobjs.Length < 1)
-                                return Result.Cancel;
-
-                            curves = new Curve[rhobjs.Length];
-
-                            for (int i = 0; i < rhobjs.Length; i++)
-                            {
-                                GeometryBase geom = rhobjs[i].Geometry;
-                                Curve x = geom as Curve;
-                                if (x != null && x.IsValid)
-                                {
-                                    curves[i] = x;
-                                }
-                            }
-                            if (curves.Length == 0)
-                            {
-                                RhinoApp.WriteLine("Less than three lines are on the layer");
-                                return Result.Cancel;
-                            }
-                            break;
+                            RhinoApp.WriteLine("Less than three lines are on the layer");
+                            return Result.Cancel;
                         }
+                        break;
                     }
                 }
             }
-            CurvesTopology crvTopology = new CurvesTopology(curves, tol.CurrentValue);
-
+            var crvTopology = new CurvesTopology(curves, tol.CurrentValue);
 
 
             Guid[] ids = null;
@@ -106,11 +88,12 @@ namespace NetworkDraw
 
             List<int> walkFromIndex;
 
-            Result wasSuccessful = Result.Cancel;
-            List<Type31> pipes = new List<Type31>();
-            List<Type11> diverters = new List<Type11>();
-            List<int> walked = new List<int>();
-            if (ThermalPlantsOnTopology.GetThermalPlantsPointOnTopology(crvTopology, out walkFromIndex) != Result.Success)
+            var wasSuccessful = Result.Cancel;
+            var pipes = new List<Type31>();
+            var diverters = new List<Type11>();
+            var walked = new List<int>();
+            if (ThermalPlantsOnTopology.GetThermalPlantsPointOnTopology(crvTopology, out walkFromIndex) !=
+                Result.Success)
             {
                 RhinoApp.WriteLine("Error: No Thermal plant is defined on layer Thermal Plants");
                 return Result.Failure;
@@ -122,9 +105,7 @@ namespace NetworkDraw
             using (var getEnd = new PointGetter(crvTopology, walkFromIndex[0], sm)) //Can only do 1 thermal plant
             {
                 if (getEnd.GetBuildingPointOnTopology(out walkToIndex, out bldId) != Result.Success)
-                {
                     return Result.Failure;
-                }
                 distances = getEnd.DistanceCache;
             }
 
@@ -139,7 +120,7 @@ namespace NetworkDraw
 
             int[] eIndices;
 
-            for (int i = walkToIndex.Count - 1; i >= 0; i--)
+            for (var i = walkToIndex.Count - 1; i >= 0; i--)
             {
                 double totLength;
                 bool[] eDirs;
@@ -155,87 +136,89 @@ namespace NetworkDraw
                         RhinoApp.WriteLine("Vertices: {0}", FormatNumbers(nIndices));
                         RhinoApp.WriteLine("Edges: {0}", FormatNumbers(eIndices));
                     }
-                    for (int j = 0; j < eIndices.Length; j++)
+                    for (var j = 0; j < eIndices.Length; j++)
                     {
-                        Type31 pipe = new Type31(0.2, crvTopology.CurveAt(eIndices[j]).GetLength(), 1, 1000, 4.29, 20);
+                        var pipe = new Type31(0.2, crvTopology.CurveAt(eIndices[j]).GetLength(), 1, 1000, 4.29, 20);
 
                         // Get the active view's construction plane
-                        var view = doc.Views.ActiveView;
+                        RhinoView view = doc.Views.ActiveView;
                         if (view == null)
                             return Result.Failure;
-                        var plane = view.ActiveViewport.ConstructionPlane();
+                        Plane plane = view.ActiveViewport.ConstructionPlane();
 
-                        var bbox = crvTopology.CurveAt(eIndices[j]).GetBoundingBox(plane);
+                        BoundingBox bbox = crvTopology.CurveAt(eIndices[j]).GetBoundingBox(plane);
                         if (!bbox.IsValid)
                             return Result.Failure;
 
 
-                        int[] fromOutputs = { 1, 2, 0 };
-                        bool contains = false;
+                        int[] fromOutputs = {1, 2, 0};
+                        var contains = false;
 
                         // If this is the first pipe, skip this part
                         if (j > 0)
                         {
-                            int prev = j - 1;
-                            int prevUnit = pipes.Find(p => p.EdgeId == eIndices[prev]).Unit_number;
-                            int[] fromUnit = { prevUnit, prevUnit, 0 };
+                            var prev = j - 1;
+                            var prevUnit = pipes.Find(p => p.EdgeId == eIndices[prev]).UnitNumber;
+                            int[] fromUnit = {prevUnit, prevUnit, 0};
 
                             // Test if need to create a diverter
                             int start;
                             if (eDirs[j])
-                            {
                                 start = crvTopology.EdgeAt(eIndices[j]).A;
-                            }
                             else
-                            {
                                 start = crvTopology.EdgeAt(eIndices[j]).B;
-                            }
 
                             // Only if the start nodeId of the pipe is an element of the List of Indices crossed by the curve
                             if (Array.Exists(nIndices, element => element.Equals(start)))
-                            {
-                                // If the nodeId is a diverter, then create a new diverter
                                 if (crvTopology.NodeAt(start).IsDiverter)
                                 {
-                                    Type11 diverter = new Type11();
+                                    var diverter = new Type11();
                                     diverter.SetInputs(fromUnit, fromOutputs);
-                                    diverter.Unit_name = "Diverter_" + start.ToString();
+                                    diverter.UnitName = "Diverter_" + start;
 
                                     Plane worldPlane = Plane.WorldXY;
                                     Transform xform = Transform.ChangeBasis(worldPlane, plane);
-                                    Point3d pos = new Point3d(crvTopology.VertexAt(start).X, crvTopology.VertexAt(start).Y, 0);
+                                    var pos = new Point3d(crvTopology.VertexAt(start).X, crvTopology.VertexAt(start).Y,
+                                        0);
                                     pos.Transform(xform);
-                                    diverter.Position = new double[2] { pos.X * sclfct.CurrentValue, pos.Y * sclfct.CurrentValue };
+                                    diverter.Position = new double[]
+                                        {pos.X * sclfct.CurrentValue, pos.Y * sclfct.CurrentValue};
                                     diverter.NodeId = start;
-                                    fromUnit.SetValue(diverter.Unit_number, 0); // resets the "from unit" number to the diverter's Unit_number
-                                    fromUnit.SetValue(diverter.Unit_number, 1); // Idem
+                                    fromUnit.SetValue(diverter.UnitNumber,
+                                        0); // resets the "from unit" number to the diverter's Unit_number
+                                    fromUnit.SetValue(diverter.UnitNumber, 1); // Idem
 
                                     // If that specific diverter ID has already been created, 
                                     // don't add it to the list but change the outputs, else add it to the list
                                     if (diverters.Exists(d => d.NodeId == diverter.NodeId))
                                     {
-                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).Unit_number, 0); // resets the from unit number to the diverter
-                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).Unit_number, 1);
-                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 3:1, 0); // sets the input of the next pipe to the availabe output of the diverter (since it has two)
-                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 4:2, 1);
+                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).UnitNumber,
+                                            0); // resets the from unit number to the diverter
+                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).UnitNumber, 1);
+                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 3 : 1,
+                                            0); // sets the input of the next pipe to the availabe output of the diverter (since it has two)
+                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 4 : 2, 1);
                                     }
                                     else
+                                    {
                                         diverters.Add(diverter);
+                                    }
                                 }
-                            }
 
                             // Create the pipe
                             pipe.SetInputs(fromUnit, fromOutputs);
-                            pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue };
+                            pipe.UnitName = "Pipe_" + eIndices[j];
+                            pipe.Position = new double[]
+                                {bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue};
                             pipe.EdgeId = eIndices[j];
                             contains = pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
                         else
                         {
-                            pipe.SetInputs(new int[3] { 0, 0, 0 }, fromOutputs);
-                            pipe.Unit_name = "Pipe_" + eIndices[j].ToString();
-                            pipe.Position = new double[2] { bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue };
+                            pipe.SetInputs(new int[] {0, 0, 0}, fromOutputs);
+                            pipe.UnitName = "Pipe_" + eIndices[j];
+                            pipe.Position = new double[]
+                                {bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue};
                             pipe.EdgeId = eIndices[j];
                             contains = pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
@@ -250,12 +233,12 @@ namespace NetworkDraw
                     wasSuccessful = Result.Nothing;
                 }
             }
-            TrnsysModel model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description", @"C:\UMI\temp");
-            WriteDckFile b = new WriteDckFile(model, pipes, diverters);
+            var model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description",
+                @"C:\UMI\temp");
+            var b = new WriteDckFile(model, pipes, diverters);
 
             EndOperations(ids);
             return wasSuccessful;
-
         }
 
         private static void EndOperations(Guid[] ids)
@@ -269,15 +252,13 @@ namespace NetworkDraw
             if (arr == null || arr.Length == 0)
                 return "(empty)";
 
-            StringBuilder s = new StringBuilder(arr[0].ToString());
-            for (int i = 1; i < arr.Length; i++)
+            var s = new StringBuilder(arr[0].ToString());
+            for (var i = 1; i < arr.Length; i++)
             {
                 s.Append(", ");
                 s.Append(arr[i].ToString());
             }
             return s.ToString();
         }
-
-
     }
 }

@@ -9,8 +9,6 @@ namespace DistrictEnergy.Metrics
     public class DHAverageDiameterCommand : Command
     {
         static DHAverageDiameterCommand _instance;
-        private Enum sm;
-
         public DHAverageDiameterCommand()
         {
             _instance = this;
@@ -30,33 +28,40 @@ namespace DistrictEnergy.Metrics
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
             DiamMode sm = DiamMode.SwedishEmpirical;
-            using (GetOption getOptions = new GetOption())
+            try
             {
-                for (;;)
+                using (GetOption getOptions = new GetOption())
                 {
-                    getOptions.SetCommandPrompt("Select an average diameter method.");
-                    getOptions.ClearCommandOptions();
-                    int modeInt = AddEnumOptionList(getOptions, sm);
+                    for (;;)
+                    {
+                        getOptions.SetCommandPrompt("Select an average diameter method.");
+                        getOptions.ClearCommandOptions();
+                        int modeInt = AddEnumOptionList(getOptions, sm);
 
-                    if (getOptions.Get() == Rhino.Input.GetResult.Option)
-                    {
-                        if(getOptions.Option().Index == modeInt)
+                        if (getOptions.Get() == Rhino.Input.GetResult.Option)
                         {
-                            sm = RetrieveEnumOptionValue<DiamMode>
-                                (getOptions.Option().CurrentListOptionIndex);
+                            if (getOptions.Option().Index == modeInt)
+                            {
+                                sm = RetrieveEnumOptionValue<DiamMode>
+                                    (getOptions.Option().CurrentListOptionIndex);
+                            }
+                            continue;
                         }
-                        continue;
-                    }
-                    else
-                    {
-                        var averageDiam = AverageDiameter(sm);
-                        RhinoApp.WriteLine("Average Diameter : {0:F2} [m]", averageDiam);
-                        return Result.Success;
+                        else
+                        {
+                            var averageDiam = AverageDiameter(sm);
+                            RhinoApp.WriteLine("Average Diameter : {0:F2} [m]", averageDiam);
+                            return Result.Success;
+                        }
                     }
                 }
             }
-            RhinoApp.WriteLine("error?");
-            return Result.Cancel;
+            catch
+            {
+                RhinoApp.WriteLine("error?");
+                return Result.Cancel;
+            }
+            
         }
 
         public static int AddEnumOptionList(GetOption getOptions, Enum enumerationCurrent)

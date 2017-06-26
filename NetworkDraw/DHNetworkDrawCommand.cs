@@ -10,6 +10,7 @@ using NetworkDraw.Geometry;
 using Mit.Umi.RhinoServices;
 using System.Collections.Generic;
 using TrnsysUmiPlatform;
+using TrnsysUmiPlatform.Types;
 
 namespace NetworkDraw
 {

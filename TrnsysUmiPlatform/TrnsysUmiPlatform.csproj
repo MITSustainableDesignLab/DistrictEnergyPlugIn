@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>.\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -52,7 +52,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrnsysFunctions.cs" />
-    <Compile Include="Types.cs" />
+    <Compile Include="TrnsysType.cs" />
+    <Compile Include="Types\Type11.cs" />
+    <Compile Include="Types\Type15_3.cs" />
+    <Compile Include="Types\Type25C.cs" />
+    <Compile Include="Types\Type31.cs" />
+    <Compile Include="Types\Type46.cs" />
+    <Compile Include="Types\Type659.cs" />
+    <Compile Include="Types\Type682.cs" />
+    <Compile Include="Types\Type741.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

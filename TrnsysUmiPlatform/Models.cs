@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace TrnsysUmiPlatform
 { 
@@ -19,8 +20,8 @@ namespace TrnsysUmiPlatform
             HourlyTimestep = hourlytimestep;
             WeatherFile = weather;
             ProjectCreator = projectcreator;
-            CreationDate = DateTime.Now.ToString();
-            ModifiedDate = DateTime.Now.ToString();
+            CreationDate = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            ModifiedDate = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             Description = description;
             WorkingDirectory = directory;
         }
