@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -125,11 +126,11 @@ namespace NetworkDraw
                 double totLength;
                 bool[] eDirs;
                 int[] nIndices;
-                Curve c =
+                Curve curve =
                     pathSearch.Cross(walkFromIndex[0], i, out nIndices, out eIndices, out eDirs, out totLength);
 
 
-                if (c != null && c.IsValid)
+                if (curve != null && curve.IsValid)
                 {
                     if (tog.CurrentValue)
                     {
@@ -140,11 +141,7 @@ namespace NetworkDraw
                     {
                         var pipe = new Type31(0.2, crvTopology.CurveAt(eIndices[j]).GetLength(), 1, 1000, 4.29, 20);
 
-                        // Get the active view's construction plane
-                        RhinoView view = doc.Views.ActiveView;
-                        if (view == null)
-                            return Result.Failure;
-                        Plane plane = view.ActiveViewport.ConstructionPlane();
+                        Plane plane = GetActivePlane(doc);
 
                         BoundingBox bbox = crvTopology.CurveAt(eIndices[j]).GetBoundingBox(plane);
                         if (!bbox.IsValid)
@@ -239,6 +236,16 @@ namespace NetworkDraw
 
             EndOperations(ids);
             return wasSuccessful;
+        }
+
+        private static Plane GetActivePlane(RhinoDoc doc)
+        {
+            // Get the active view's construction plane
+            RhinoView activeView = doc.Views.ActiveView;
+
+            Plane plane = activeView.ActiveViewport.ConstructionPlane();
+
+            return plane;
         }
 
         private static void EndOperations(Guid[] ids)
