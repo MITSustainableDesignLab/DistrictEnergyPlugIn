@@ -13,7 +13,6 @@
         ///     The external file associated to the type. The external file unit number is set
         ///     auomatically.
         /// </param>
-        /// <param name="nDerivatives"></param>
         protected TrnsysType(string unitName, string typeNumber, int nParameters, int nInputs, string externalFile)
         {
             UnitName = unitName;
