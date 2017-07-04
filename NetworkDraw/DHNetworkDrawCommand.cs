@@ -1,15 +1,13 @@
-﻿using System;
-using System.Drawing;
-using System.Text;
+﻿using NetworkDraw.Geometry;
 using Rhino;
 using Rhino.Commands;
 using Rhino.Geometry;
 using Rhino.Input;
 using Rhino.Input.Custom;
-using NetworkDraw.Geometry;
-using Mit.Umi.RhinoServices;
+using System;
 using System.Collections.Generic;
-using TrnsysUmiPlatform;
+using System.Drawing;
+using System.Text;
 using TrnsysUmiPlatform.Types;
 
 namespace NetworkDraw
@@ -42,7 +40,7 @@ namespace NetworkDraw
             OptionDouble tol = new OptionDouble(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance, true, 0.0);
             using (CurvesGetter getLines = new CurvesGetter("Select curves meeting at endpoints. Press Enter when done"))
             {
-                for( ; ;)
+                for (;;)
                 {
                     getLines.ClearCommandOptions();
                     getLines.EnableClearObjectsOnEntry(false);
@@ -74,7 +72,7 @@ namespace NetworkDraw
             }
             CurvesTopology crvTopology = new CurvesTopology(curves, tol.CurrentValue);
 
-            
+
 
             Guid[] ids = null;
             if (tog.CurrentValue)
@@ -92,7 +90,7 @@ namespace NetworkDraw
 
             Result wasSuccessful = Result.Cancel;
             List<Type31> Pipes = new List<Type31>();
-            for (; ; )
+            for (;;)
             {
 
                 int walkToIndex;
@@ -120,7 +118,7 @@ namespace NetworkDraw
                 double totLength;
                 Curve c =
                     pathSearch.Cross(walkFromIndex, walkToIndex, out nIndices, out eIndices, out eDirs, out totLength);
-                
+
                 if (c != null && c.IsValid)
                 {
                     if (tog.CurrentValue)
@@ -138,7 +136,7 @@ namespace NetworkDraw
                         obj.Select(true);
                         wasSuccessful = Result.Success;
                         //if (beg.CurrentValue) //Here we would allow a user to choose between WalkFromIndex or WalkToIndex
-                            //walkFromIndex = walkToIndex;
+                        //walkFromIndex = walkToIndex;
 
 
                     }

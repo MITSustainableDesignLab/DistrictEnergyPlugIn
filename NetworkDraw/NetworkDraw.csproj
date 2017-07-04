@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurvesGetter.cs" />
+    <Compile Include="DhCrosNetworkCommandV2.cs" />
     <Compile Include="Geometry\CurvesTopology.cs" />
     <Compile Include="Geometry\EdgeAddress.cs" />
     <Compile Include="Geometry\NodeAddress.cs" />

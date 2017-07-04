@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using Mit.Umi.RhinoServices;
+﻿using Mit.Umi.RhinoServices;
 using NetworkDraw.Geometry;
 using Rhino;
 using Rhino.Commands;
@@ -13,6 +7,11 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using Rhino.Input;
 using Rhino.Input.Custom;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using TrnsysUmiPlatform;
 using TrnsysUmiPlatform.Types;
 
@@ -31,7 +30,7 @@ namespace NetworkDraw
             Curve[] curves;
             var tog = new OptionToggle(false, "Hide", "Show");
             var tol = new OptionDouble(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance, true, 0.0);
-            var sclfct = new OptionInteger(4, 1, 100);
+            var scaleFactor = new OptionInteger(4, 1, 100);
             using (var getLines = new CurvesGetter("Select curves meeting at endpoints. Press Enter when done"))
             {
                 for (;;)
@@ -41,7 +40,7 @@ namespace NetworkDraw
                     var showInt = getLines.AddOptionToggle("Topology", ref tog);
                     //int begInt = getLines.AddOptionToggle("Starting Point", ref beg);
                     var tolInt = getLines.AddOptionDouble("Tolerance", ref tol);
-                    var scalefactor = getLines.AddOptionInteger("ScaleFactor", ref sclfct);
+                    var scalefactor = getLines.AddOptionInteger("ScaleFactor", ref scaleFactor);
                     var modeInt = GetterExtension.AddEnumOptionList(getLines, sm);
 
                     if (getLines.Curves(1, 0, out curves))
@@ -148,7 +147,7 @@ namespace NetworkDraw
                             return Result.Failure;
 
 
-                        int[] fromOutputs = {1, 2, 0};
+                        int[] fromOutputs = { 1, 2, 0 };
                         var contains = false;
 
                         // If this is the first pipe, skip this part
@@ -156,7 +155,7 @@ namespace NetworkDraw
                         {
                             var prev = j - 1;
                             var prevUnit = pipes.Find(p => p.EdgeId == eIndices[prev]).UnitNumber;
-                            int[] fromUnit = {prevUnit, prevUnit, 0};
+                            int[] fromUnit = { prevUnit, prevUnit, 0 };
 
                             // Test if need to create a diverter
                             int start;
@@ -179,7 +178,7 @@ namespace NetworkDraw
                                         0);
                                     pos.Transform(xform);
                                     diverter.Position = new double[]
-                                        {pos.X * sclfct.CurrentValue, pos.Y * sclfct.CurrentValue};
+                                        {pos.X * scaleFactor.CurrentValue, pos.Y * scaleFactor.CurrentValue};
                                     diverter.NodeId = start;
                                     fromUnit.SetValue(diverter.UnitNumber,
                                         0); // resets the "from unit" number to the diverter's Unit_number
@@ -206,16 +205,16 @@ namespace NetworkDraw
                             pipe.SetInputs(fromUnit, fromOutputs);
                             pipe.UnitName = "Pipe_" + eIndices[j];
                             pipe.Position = new double[]
-                                {bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue};
+                                {bbox.Center.X * scaleFactor.CurrentValue, bbox.Center.Y * scaleFactor.CurrentValue};
                             pipe.EdgeId = eIndices[j];
                             contains = pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }
                         else
                         {
-                            pipe.SetInputs(new int[] {0, 0, 0}, fromOutputs);
+                            pipe.SetInputs(new int[] { 0, 0, 0 }, fromOutputs);
                             pipe.UnitName = "Pipe_" + eIndices[j];
                             pipe.Position = new double[]
-                                {bbox.Center.X * sclfct.CurrentValue, bbox.Center.Y * sclfct.CurrentValue};
+                                {bbox.Center.X * scaleFactor.CurrentValue, bbox.Center.Y * scaleFactor.CurrentValue};
                             pipe.EdgeId = eIndices[j];
                             contains = pipes.Exists(p => p.EdgeId == pipe.EdgeId);
                         }

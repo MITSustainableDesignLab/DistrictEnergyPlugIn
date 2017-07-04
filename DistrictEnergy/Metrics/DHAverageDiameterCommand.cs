@@ -45,7 +45,6 @@ namespace DistrictEnergy.Metrics
                                 sm = RetrieveEnumOptionValue<DiamMode>
                                     (getOptions.Option().CurrentListOptionIndex);
                             }
-                            continue;
                         }
                         else
                         {
