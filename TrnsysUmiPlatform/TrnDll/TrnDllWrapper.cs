@@ -1,7 +1,9 @@
+using Rhino;
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace TrnExeConsole
+namespace TrnsysUmiPlatform.TrnDll
 {
     public class TrnDllWrapper
     {
@@ -9,11 +11,11 @@ namespace TrnExeConsole
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate void TrnsysDelegate(
             [Out] [In] ref int callType,
-            [Out] [In] double[] parout,
-            [Out] [In] double[] plotout,
-            [Out] [In] char[] labels,
-            [Out] [In] char[] titles,
-            [Out] [In] char[] deckn);
+            [Out] double[] parout,
+            [Out] double[] plotout,
+            [Out] char[] labels,
+            [Out] char[] titles,
+            [In] char[] deckn);
 
         public GetTrnsysCallOutputs Trnsys(int callType, string deckn)
         {
@@ -51,23 +53,29 @@ namespace TrnExeConsole
 
         public TrnDllWrapper()
         {
+            Environment.CurrentDirectory = @"C:\Trnsys\Trnsys18\Exe";
             var trnDll =
-                NativeLibrary.GetLibraryPathname(
-                    @"C:\Trnsys\17-2-Bee\Compilers\Ivf15 (Vs2013)\TRNDll\Debug\TRNDll.dll");
+                NativeLibrary.GetLibraryPathname("TRNDll64.dll");
+
             _dllhandle = NativeLibrary.LoadLibrary(trnDll);
 
             if (_dllhandle == IntPtr.Zero)
-                return;
+            {
+                string errorMessage = new Win32Exception(Marshal.GetLastWin32Error()).Message + "for Win" + IntPtr.Size;
+                RhinoApp.WriteLine(errorMessage);
+            }
 
             IntPtr trnsysHandle = NativeLibrary.GetProcAddress(_dllhandle, "TRNSYS");
 
             if (trnsysHandle != IntPtr.Zero)
-                _trnsys = (TrnsysDelegate) Marshal.GetDelegateForFunctionPointer(
+                _trnsys = (TrnsysDelegate)Marshal.GetDelegateForFunctionPointer(
                     trnsysHandle,
                     typeof(TrnsysDelegate));
             else
                 Console.WriteLine("Fatal error. Routine named Trnsys not found in TRNDll");
         }
+
+
 
         ~TrnDllWrapper()
         {
@@ -97,4 +105,7 @@ namespace TrnExeConsole
             }
         }
     }
+
+
+
 }

@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 namespace TrnExeConsole
 {
-    internal static class Program
+    public class Program
     {
-        private static void Main(string[] args)
+        public string Test()
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -18,7 +18,7 @@ namespace TrnExeConsole
             var deckPath = @"C:\Trnsys\17-2-Bee\Examples\Restaurant\Restaurant.dck";
 
             //Initialization call to Trnsys
-            GetTrnsysCallOutputs trnsysCallResult = InitialzingCallMethod(silentMode, trndll, deckPath);
+            TrnDllWrapper.GetTrnsysCallOutputs trnsysCallResult = InitialzingCallMethod(silentMode, trndll, deckPath);
 
             var callType = trnsysCallResult.CallType;
             var startTime = trnsysCallResult.ParOut[0];
@@ -40,10 +40,12 @@ namespace TrnExeConsole
 #if DEBUG
             Console.WriteLine("Press enter to close...");
             Console.ReadLine();
+
+            return deckPath;
 #endif
         }
 
-        private static GetTrnsysCallOutputs InitialzingCallMethod(bool silentMode, TrnDllWrapper trndll,
+        private static TrnDllWrapper.GetTrnsysCallOutputs InitialzingCallMethod(bool silentMode, TrnDllWrapper trndll,
             string deckPath)
         {
             if (!silentMode)
@@ -51,7 +53,7 @@ namespace TrnExeConsole
 
             var callType = 0;
 
-            GetTrnsysCallOutputs trnsysCallOutputs = trndll.Trnsys(callType, deckPath);
+            TrnDllWrapper.GetTrnsysCallOutputs trnsysCallOutputs = trndll.Trnsys(callType, deckPath);
 
             return trnsysCallOutputs;
         }
@@ -77,7 +79,7 @@ namespace TrnExeConsole
                     if (!silentMode)
                         progress.Report(callNo / nSteps);
 
-                    GetTrnsysCallOutputs trnsysCallOutputs = trndll.Trnsys(callType, deckPath);
+                    TrnDllWrapper.GetTrnsysCallOutputs trnsysCallOutputs = trndll.Trnsys(callType, deckPath);
 
                     callType = trnsysCallOutputs.CallType;
                 }
@@ -88,13 +90,13 @@ namespace TrnExeConsole
                     startTime + (callNo - 2) * timeStep);
         }
 
-        private static GetTrnsysCallOutputs FinalCallMethod(bool silentMode, TrnDllWrapper trndll, string deckPath)
+        private static TrnDllWrapper.GetTrnsysCallOutputs FinalCallMethod(bool silentMode, TrnDllWrapper trndll, string deckPath)
         {
             if (!silentMode)
                 Console.WriteLine(DateTime.Now + " - Performing final call to Trnsys");
             var callType = -1; //Final Call
 
-            GetTrnsysCallOutputs trnsysCallOutputs = trndll.Trnsys(callType, deckPath);
+            TrnDllWrapper.GetTrnsysCallOutputs trnsysCallOutputs = trndll.Trnsys(callType, deckPath);
             callType = trnsysCallOutputs.CallType;
 
             if (callType != 1000)

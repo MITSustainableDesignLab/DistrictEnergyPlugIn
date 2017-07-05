@@ -3,7 +3,6 @@ using Rhino;
 using Rhino.ApplicationSettings;
 using Rhino.Commands;
 using Rhino.DocObjects;
-using Rhino.Geometry;
 using System;
 using TrnsysUmiPlatform;
 
@@ -20,7 +19,7 @@ namespace DistrictEnergy
             _instance = this;
         }
 
-        ///<summary>The only instance of the RunTrnsys command.</summary>
+        ///<summary>The only instance of the RunTrnsysExe command.</summary>
         public static DHRunTrnsysCommand Instance
         {
             get { return _instance; }
@@ -33,7 +32,7 @@ namespace DistrictEnergy
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            
+
             try
             {
                 // Gather Rhino doc objects to be translated into Trnsys components
@@ -52,7 +51,7 @@ namespace DistrictEnergy
                     // Run
                     //var b = new TrnsysDckFile(trnsys_model, rhobjs);
 
-                    var c = new RunTrnsys(trnsys_model);
+                    trnsys_model.RunTrnsysExe();
                 }
                 else
                 {

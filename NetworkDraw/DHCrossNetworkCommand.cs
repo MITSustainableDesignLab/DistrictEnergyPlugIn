@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TrnsysUmiPlatform;
 using TrnsysUmiPlatform.Types;
 
@@ -150,7 +151,7 @@ namespace NetworkDraw
                         int[] fromOutputs = { 1, 2, 0 };
                         var contains = false;
 
-                        // If this is the first pipe, skip this part
+                        // If this is the first pipe, skip the diverter creation
                         if (j > 0)
                         {
                             var prev = j - 1;
@@ -159,49 +160,44 @@ namespace NetworkDraw
 
                             // Test if need to create a diverter
                             int start;
-                            if (eDirs[j])
-                                start = crvTopology.EdgeAt(eIndices[j]).A;
-                            else
-                                start = crvTopology.EdgeAt(eIndices[j]).B;
+                            start = eDirs[j] ? crvTopology.EdgeAt(eIndices[j]).A : crvTopology.EdgeAt(eIndices[j]).B;
 
                             // Only if the start nodeId of the pipe is an element of the List of Indices crossed by the curve
-                            if (Array.Exists(nIndices, element => element.Equals(start)))
-                                if (crvTopology.NodeAt(start).IsDiverter)
+                            if (Array.Exists(nIndices, element => element.Equals(start)) &&
+                                crvTopology.NodeAt(start).IsDiverter)
+                            {
+                                var diverter = new Type11();
+                                diverter.SetInputs(fromUnit, fromOutputs);
+                                diverter.UnitName = "Diverter_" + start;
+
+                                Point3d position = GetPosition(crvTopology, start, plane);
+                                diverter.Position = new double[]
+                                    {position.X * scaleFactor.CurrentValue, position.Y * scaleFactor.CurrentValue};
+
+                                diverter.NodeId = start;
+                                fromUnit.SetValue(diverter.UnitNumber,
+                                    0); // resets the "from unit" number to the diverter's Unit_number
+                                fromUnit.SetValue(diverter.UnitNumber, 1); // Idem
+
+                                // If that specific diverter ID has already been created, 
+                                // don't add it to the list but change the outputs, else add it to the list
+                                if (diverters.Exists(d => d.NodeId == diverter.NodeId))
                                 {
-                                    var diverter = new Type11();
-                                    diverter.SetInputs(fromUnit, fromOutputs);
-                                    diverter.UnitName = "Diverter_" + start;
-
-                                    Plane worldPlane = Plane.WorldXY;
-                                    Transform xform = Transform.ChangeBasis(worldPlane, plane);
-                                    var pos = new Point3d(crvTopology.VertexAt(start).X, crvTopology.VertexAt(start).Y,
-                                        0);
-                                    pos.Transform(xform);
-                                    diverter.Position = new double[]
-                                        {pos.X * scaleFactor.CurrentValue, pos.Y * scaleFactor.CurrentValue};
-                                    diverter.NodeId = start;
-                                    fromUnit.SetValue(diverter.UnitNumber,
-                                        0); // resets the "from unit" number to the diverter's Unit_number
-                                    fromUnit.SetValue(diverter.UnitNumber, 1); // Idem
-
-                                    // If that specific diverter ID has already been created, 
-                                    // don't add it to the list but change the outputs, else add it to the list
-                                    if (diverters.Exists(d => d.NodeId == diverter.NodeId))
-                                    {
-                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).UnitNumber,
-                                            0); // resets the from unit number to the diverter
-                                        fromUnit.SetValue(diverters.Find(d => d.NodeId == start).UnitNumber, 1);
-                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 3 : 1,
-                                            0); // sets the input of the next pipe to the availabe output of the diverter (since it has two)
-                                        fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 4 : 2, 1);
-                                    }
-                                    else
-                                    {
-                                        diverters.Add(diverter);
-                                    }
+                                    fromUnit.SetValue(diverters.Find(d => d.NodeId == start).UnitNumber,
+                                        0); // resets the from unit number to the diverter
+                                    fromUnit.SetValue(diverters.Find(d => d.NodeId == start).UnitNumber, 1);
+                                    fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 3 : 1,
+                                        0); // sets the input of the next pipe to the availabe output of the diverter (since it has two)
+                                    fromOutputs.SetValue(diverters.Find(d => d.NodeId == start).OutUsed ? 4 : 2, 1);
                                 }
+                                else
+                                {
+                                    diverters.Add(diverter);
+                                }
+                            }
 
                             // Create the pipe
+
                             pipe.SetInputs(fromUnit, fromOutputs);
                             pipe.UnitName = "Pipe_" + eIndices[j];
                             pipe.Position = new double[]
@@ -231,10 +227,22 @@ namespace NetworkDraw
             }
             var model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description",
                 @"C:\UMI\temp");
-            var b = new WriteDckFile(model, pipes, diverters);
-
+            model.WriteDckFile(pipes, diverters);
+            Task.Factory.StartNew(() => { model.RunTrnsys(false); });
+                
             EndOperations(ids);
             return wasSuccessful;
+        }
+
+        private static Point3d GetPosition(CurvesTopology crvTopology, int start, Plane plane)
+        {
+            Plane localPlane = plane;
+            Plane worldPlane = Plane.WorldXY;
+            Transform xform = Transform.ChangeBasis(worldPlane, localPlane);
+            var pos = new Point3d(crvTopology.VertexAt(start).X, crvTopology.VertexAt(start).Y,
+                0);
+            pos.Transform(xform);
+            return pos;
         }
 
         private static Plane GetActivePlane(RhinoDoc doc)

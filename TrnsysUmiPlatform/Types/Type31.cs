@@ -10,6 +10,7 @@
         private double _fluidSpecificHeat;
         private double _initialFluidTemp;
 
+
         /// <summary>
         ///     This component models the thermal behavior of fluid flow in a pipe or duct using variable size segments of fluid.
         ///     Entering fluid shifts the position of existing segments. The mass of the new segment is equal to the flow rate
@@ -55,7 +56,9 @@
 
             ProformaPath = ".\\Hydronics\\Pipe_Duct\\Type31.tmf";
 
-            InitialInputs = new[] {initialFluidTemp, 100, 10};
+            InitialInputs = new[] { initialFluidTemp, 100, 10 };
+
+
         }
 
         public void SetInputs(int[] fromUnit, int[] fromOutput)
@@ -79,5 +82,6 @@
         }
 
         public int EdgeId { get; set; }
+
     }
 }
