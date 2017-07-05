@@ -66,7 +66,7 @@ namespace TrnsysUmiPlatform
                 file.WriteLine(weather2.WriteType());
 
 
-                var pump = new Type741(0, 0, 0, 0) { Position = new double[] { 315, 596 } };
+                var pump = new Type741(10, 4.19, 1000, 0) { Position = new double[] { 315, 596 } };
                 file.WriteLine(pump.WriteType());
 
                 // Write Type31 (pipes)
@@ -125,8 +125,8 @@ namespace TrnsysUmiPlatform
             //Load library wrapper
             var trndll = new TrnDllWrapper();
 
-            //var deckPath = Path.Combine(WorkingDirectory, ModelName + ".dck");
-            var deckPath = @"C:\Trnsys\Trnsys18\Examples\Restaurant\Restaurant.dck";
+            var deckPath = Path.Combine(WorkingDirectory, ModelName + ".dck");
+            //var deckPath = @"C:\Trnsys\Trnsys18\Examples\Restaurant\Restaurant.dck";
 
 
             //Initialization call to Trnsys

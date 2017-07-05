@@ -18,14 +18,29 @@ using TrnsysUmiPlatform.Types;
 
 namespace NetworkDraw
 {
-    public class NetworkDrawCommand : Command
+    [System.Runtime.InteropServices.Guid("9bd7c1b2-79ed-46a9-a281-f1744d3eaab7")]
+    public class DHCrossNetworkCommand : Command
     {
-        public override string EnglishName => "DHCrossNetwork";
+        static DHCrossNetworkCommand _instance;
+        public DHCrossNetworkCommand()
+        {
+            _instance = this;
+        }
 
-        public override Guid Id => new Guid("{A98535DA-B2F5-477D-807D-28481965584B}");
+        ///<summary>The only instance of the DHCrossNetworkCommand command.</summary>
+        public static DHCrossNetworkCommand Instance
+        {
+            get { return _instance; }
+        }
+
+        public override string EnglishName
+        {
+            get { return "DHCrossNetworkCommand"; }
+        }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
+
             var sm = SearchMode.CurveLength;
 
             Curve[] curves;
@@ -82,7 +97,6 @@ namespace NetworkDraw
             }
             var crvTopology = new CurvesTopology(curves, tol.CurrentValue);
 
-
             Guid[] ids = null;
             if (tog.CurrentValue)
                 ids = CurvesTopologyPreview.Mark(crvTopology, Color.LightBlue, Color.LightCoral, Color.GreenYellow);
@@ -93,6 +107,7 @@ namespace NetworkDraw
             var pipes = new List<Type31>();
             var diverters = new List<Type11>();
             var walked = new List<int>();
+
             if (ThermalPlantsOnTopology.GetThermalPlantsPointOnTopology(crvTopology, out walkFromIndex) !=
                 Result.Success)
             {
@@ -103,7 +118,8 @@ namespace NetworkDraw
             List<int> walkToIndex;
             List<Guid> bldId;
             double[] distances;
-            using (var getEnd = new PointGetter(crvTopology, walkFromIndex[0], sm)) //Can only do 1 thermal plant
+
+            using (var getEnd = new PointGetter(crvTopology, walkFromIndex[0], sm)) //Can only di 1 thermal plant
             {
                 if (getEnd.GetBuildingPointOnTopology(out walkToIndex, out bldId) != Result.Success)
                     return Result.Failure;
@@ -225,34 +241,15 @@ namespace NetworkDraw
                     wasSuccessful = Result.Nothing;
                 }
             }
+
+
             var model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description",
                 @"C:\UMI\temp");
             model.WriteDckFile(pipes, diverters);
             Task.Factory.StartNew(() => { model.RunTrnsys(false); });
-                
+
             EndOperations(ids);
             return wasSuccessful;
-        }
-
-        private static Point3d GetPosition(CurvesTopology crvTopology, int start, Plane plane)
-        {
-            Plane localPlane = plane;
-            Plane worldPlane = Plane.WorldXY;
-            Transform xform = Transform.ChangeBasis(worldPlane, localPlane);
-            var pos = new Point3d(crvTopology.VertexAt(start).X, crvTopology.VertexAt(start).Y,
-                0);
-            pos.Transform(xform);
-            return pos;
-        }
-
-        private static Plane GetActivePlane(RhinoDoc doc)
-        {
-            // Get the active view's construction plane
-            RhinoView activeView = doc.Views.ActiveView;
-
-            Plane plane = activeView.ActiveViewport.ConstructionPlane();
-
-            return plane;
         }
 
         private static void EndOperations(Guid[] ids)
@@ -273,6 +270,27 @@ namespace NetworkDraw
                 s.Append(arr[i].ToString());
             }
             return s.ToString();
+        }
+
+        private static Plane GetActivePlane(RhinoDoc doc)
+        {
+            // Get the active view's construction plane
+            RhinoView activeView = doc.Views.ActiveView;
+
+            Plane plane = activeView.ActiveViewport.ConstructionPlane();
+
+            return plane;
+        }
+
+        private static Point3d GetPosition(CurvesTopology crvTopology, int start, Plane plane)
+        {
+            Plane localPlane = plane;
+            Plane worldPlane = Plane.WorldXY;
+            Transform xform = Transform.ChangeBasis(worldPlane, localPlane);
+            var pos = new Point3d(crvTopology.VertexAt(start).X, crvTopology.VertexAt(start).Y,
+                0);
+            pos.Transform(xform);
+            return pos;
         }
     }
 }
