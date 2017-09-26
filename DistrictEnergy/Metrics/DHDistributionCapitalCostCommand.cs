@@ -43,7 +43,7 @@ namespace DistrictEnergy.Metrics
 
             double da = Metrics.AveragePipeDiamSwedish(heatDemand * 0.0036 / length);
 
-            double capitalCost = Metrics.DistributionCapitalCost(far, specificHeat,effectiveWidth,annuity,c1,c2, da);
+            double capitalCost = Metrics.DistributionCapitalCost(far, specificHeat, effectiveWidth, annuity, c1, c2, da);
 
             RhinoApp.WriteLine("Specific capital Cost : {0:F3} [$/kWh]", capitalCost);
 #if DEBUG
