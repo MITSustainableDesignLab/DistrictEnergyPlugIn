@@ -3,6 +3,20 @@ using System.Runtime.InteropServices;
 
 namespace TrnExeConsole
 {
+    public class GetTrnsysCallOutputs
+    {
+        public GetTrnsysCallOutputs(double[] parOut, double[] plotOut, int callType)
+        {
+            ParOut = parOut;
+            PlotOut = plotOut;
+            CallType = callType;
+        }
+
+        public double[] ParOut { get; }
+        public double[] PlotOut { get; }
+        public int CallType { get; }
+    }
+
     public class TrnDllWrapper
     {
         // Delegate with function signature for the Trnsys function
@@ -77,24 +91,10 @@ namespace TrnExeConsole
             NativeLibrary.FreeLibrary(_dllhandle);
         }
 
-        // Handles and delegates values
+        // Handles and delegates
 
 
         private readonly IntPtr _dllhandle;
         private readonly TrnsysDelegate _trnsys;
-
-        public class GetTrnsysCallOutputs
-        {
-            public int CallType;
-            public double[] ParOut;
-            public double[] plotOut;
-
-            public GetTrnsysCallOutputs(double[] parOut, double[] plotOut, int callType)
-            {
-                this.ParOut = parOut;
-                this.plotOut = plotOut;
-                this.CallType = callType;
-            }
-        }
     }
 }

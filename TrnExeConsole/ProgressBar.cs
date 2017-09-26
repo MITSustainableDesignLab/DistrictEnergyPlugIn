@@ -5,8 +5,7 @@ using System.Threading;
 namespace TrnExeConsole
 {
     /// <summary>
-    ///     An ASCII progress bar. Talen from https://gist.github.com/DanielSWolf/0ab6a96899cc5377bf54
-    ///     under MIT License.
+    ///     An ASCII progress bar
     /// </summary>
     public class ProgressBar : IDisposable, IProgress<double>
     {
