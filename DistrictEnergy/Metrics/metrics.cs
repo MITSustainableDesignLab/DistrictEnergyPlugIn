@@ -158,7 +158,7 @@ namespace DistrictEnergy.Metrics
         /// <param name="effWidth">Effective width</param>
         /// <param name="annuity">Annuity payment</param>
         /// <param name="C1">Construction cost constant (pipe)</param>
-        /// <param name="C2">Construction cost coefficient (pip)</param>
+        /// <param name="C2">Construction cost coefficient (pipe)</param>
         /// <param name="avgDiameter">Average pipe diameter</param>
         /// <returns></returns>
         public static double DistributionCapitalCost(double FAR, double specificHeatDemand, double effWidth, double annuity, double C1, double C2, double avgDiameter)
