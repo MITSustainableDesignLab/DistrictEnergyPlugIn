@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.dll
 TempInstallFiles.wxs
 
 # User-specific files (MonoDevelop/Xamarin Studio)
