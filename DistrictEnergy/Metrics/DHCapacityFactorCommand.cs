@@ -37,7 +37,16 @@ namespace DistrictEnergy.Metrics
             List<double> cap = new List<double>();
             foreach(var a in MaxHeatinLoadQuery)
             {
-                cap.Add(Metrics.CalcCapacityFactor(a.AverageLoad, a.MaxLoad));
+                try
+                {
+                    cap.Add(Metrics.CalcCapacityFactor(a.AverageLoad, a.MaxLoad));
+                }
+                catch (DivideByZeroException e)
+                {
+                    Console.WriteLine("Attempted divide by zero");
+                    throw;
+                }
+                
             }
 
 

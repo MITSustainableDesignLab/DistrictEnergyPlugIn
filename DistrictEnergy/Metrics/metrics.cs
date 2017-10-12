@@ -20,13 +20,9 @@ namespace DistrictEnergy.Metrics
         /// <returns>The capacity factor. -1 if maximumLoad is lowerOrequal to zero.=</returns>
         public static double CalcCapacityFactor(double averageLoad, double maximimLoad)
         {
-            if (maximimLoad > 0)
-            {
-                double cap = averageLoad / maximimLoad;
-                return cap;
-            }
-            else
-                return -1;
+            if (maximimLoad <= 0)
+                throw new System.DivideByZeroException();
+            return averageLoad / maximimLoad;
         }
 
         /// <summary>
