@@ -51,7 +51,7 @@ namespace DistrictEnergy
                     // Run
                     //var b = new TrnsysDckFile(trnsys_model, rhobjs);
 
-                    trnsys_model.RunTrnsysExe();
+                    trnsys_model.RunTrnsys(false);
                 }
                 else
                 {

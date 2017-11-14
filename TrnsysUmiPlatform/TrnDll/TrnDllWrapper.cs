@@ -53,9 +53,9 @@ namespace TrnsysUmiPlatform.TrnDll
 
         public TrnDllWrapper()
         {
-            Environment.CurrentDirectory = @"C:\Trnsys\Trnsys18\Exe";
+            Environment.CurrentDirectory = @"C:\Trnsys\17-2-Bee\Exe";
             var trnDll =
-                NativeLibrary.GetLibraryPathname("TRNDll64.dll");
+                NativeLibrary.GetLibraryPathname("TRNDll.dll");
 
             _dllhandle = NativeLibrary.LoadLibrary(trnDll);
 
