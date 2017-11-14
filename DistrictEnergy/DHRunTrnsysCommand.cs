@@ -27,7 +27,7 @@ namespace DistrictEnergy
 
         public override string EnglishName
         {
-            get { return "DERunTrnsysCommand"; }
+            get { return "DHRunTrnsysCommand"; }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
