@@ -95,12 +95,12 @@ namespace TrnsysUmiPlatform.TrnDll
         {
             public int CallType;
             public double[] ParOut;
-            public double[] plotOut;
+            public double[] PlotOut;
 
             public GetTrnsysCallOutputs(double[] parOut, double[] plotOut, int callType)
             {
                 this.ParOut = parOut;
-                this.plotOut = plotOut;
+                this.PlotOut = plotOut;
                 this.CallType = callType;
             }
         }
