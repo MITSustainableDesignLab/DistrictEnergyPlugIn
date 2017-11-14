@@ -58,8 +58,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
     <Reference Include="TrnsysUmiPlatform">
-      <HintPath>..\TrnsysUmiPlatform\TrnsysUmiPlatform.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\TrnsysUmiPlatform\obj\Debug\TrnsysUmiPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
