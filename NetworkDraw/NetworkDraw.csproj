@@ -65,7 +65,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="TrnsysUmiPlatform">
-      <HintPath>..\TrnsysUmiPlatform\TrnsysUmiPlatform.dll</HintPath>
+      <HintPath>..\TrnsysUmiPlatform\obj\Debug\TrnsysUmiPlatform.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Core">
