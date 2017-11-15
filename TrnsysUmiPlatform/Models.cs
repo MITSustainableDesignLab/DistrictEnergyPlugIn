@@ -118,7 +118,7 @@ namespace TrnsysUmiPlatform
 
         public void RunTrnsys(bool silentMode)
         {
-            Environment.CurrentDirectory = @"C:\Trnsys\17-2-Bee\Exe\"; //This hardcoded path will need to be changed
+            Directory.SetCurrentDirectory(@"C:\Trnsys\Trnsys18\Exe\"); //This hardcoded path will need to be changed
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
@@ -126,7 +126,7 @@ namespace TrnsysUmiPlatform
             var trndll = new TrnDllWrapper();
 
             //var deckPath = Path.Combine(WorkingDirectory, ModelName + ".dck");
-            var deckPath = @"C:\Trnsys\17-2-Bee\Examples\Restaurant\Restaurant.dck";
+            var deckPath = @"C:\Trnsys\Trnsys18\Examples\Restaurant\Restaurant.dck";
 
 
             //Initialization call to Trnsys
