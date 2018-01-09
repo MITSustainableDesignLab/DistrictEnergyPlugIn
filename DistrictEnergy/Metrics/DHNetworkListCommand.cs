@@ -248,7 +248,11 @@ namespace DistrictEnergy.Metrics
         /// </summary>
         /// <param name="nodeId"></param>
         /// <returns></returns>
-        public double MaxLoadAt(int nodeId) => dic.ContainsKey(nodeId) ? dic[nodeId].Sum(n => MaxLoadAt(n)) : BuildingLoads.Where(y => y.Key == nodeId).Select(x => x.Value).Sum();
-
+        public double MaxLoadAt(int nodeId)
+        {
+            return dic.ContainsKey(nodeId)
+                ? dic[nodeId].Sum(n => MaxLoadAt(n))
+                : BuildingLoads.Where(y => y.Key == nodeId).Select(x => x.Value).Sum();
+        }
     }
 }
