@@ -16,7 +16,7 @@ namespace DistrictEnergy.ViewModels
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
-        public static DistrictSettings _districtSettings = new DistrictSettings();
+        public static DistrictSettings DistrictSettings = new DistrictSettings();
 
         private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
         {
@@ -37,12 +37,7 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                DistrictEnergyPlugIn.Instance.DistrictSettings = JsonConvert.DeserializeObject<DistrictSettings>(json);
-                _districtSettings = DistrictEnergyPlugIn.Instance.DistrictSettings;
-            }
-            else
-            {
-                DistrictEnergyPlugIn.Instance.DistrictSettings = _districtSettings;
+                DistrictSettings = JsonConvert.DeserializeObject<DistrictSettings>(json);
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
         }
@@ -56,67 +51,67 @@ namespace DistrictEnergy.ViewModels
                 return;
             }
 
-            var dSjson = JsonConvert.SerializeObject(_districtSettings);
+            var dSjson = JsonConvert.SerializeObject(DistrictSettings);
             context.AuxiliaryFiles.StoreText("districtSettings.json", dSjson);
 
         }
 
         public double ElectricityGenerationCost
         {
-            get { return _districtSettings.ElectricityGenerationCost; }
+            get { return DistrictSettings.ElectricityGenerationCost; }
             set
             {
-                _districtSettings.ElectricityGenerationCost = value;
+                DistrictSettings.ElectricityGenerationCost = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectricityGenerationCost)));
             }
         }
 
         public double PriceNaturalGas
         {
-            get { return _districtSettings.PriceNaturalGas; }
+            get { return DistrictSettings.PriceNaturalGas; }
             set
             {
-                _districtSettings.PriceNaturalGas = value;
+                DistrictSettings.PriceNaturalGas = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PriceNaturalGas)));
             }
         }
 
         public double EmissionsElectricGeneration
         {
-            get { return _districtSettings.EmissionsElectricGeneration; }
+            get { return DistrictSettings.EmissionsElectricGeneration; }
             set
             {
-                _districtSettings.EmissionsElectricGeneration = value;
+                DistrictSettings.EmissionsElectricGeneration = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EmissionsElectricGeneration)));
             }
         }
 
         public double LossesTransmission
         {
-            get { return _districtSettings.LossesTransmission; }
+            get { return DistrictSettings.LossesTransmission; }
             set
             {
-                _districtSettings.LossesTransmission = value;
+                DistrictSettings.LossesTransmission = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossesTransmission)));
             }
         }
 
         public double LossesHeatHydronic
         {
-            get { return _districtSettings.LossesHeatHydronic; }
+            get { return DistrictSettings.LossesHeatHydronic; }
             set
             {
-                _districtSettings.LossesHeatHydronic = value;
+                DistrictSettings.LossesHeatHydronic = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossesHeatHydronic)));
             }
         }
 
         public double EfficPowerGen
         {
-            get { return _districtSettings.EfficPowerGen; }
+            get { return DistrictSettings.EfficPowerGen; }
             set
             {
-                _districtSettings.EfficPowerGen = value;
+                DistrictSettings.EfficPowerGen = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EfficPowerGen)));
             }
         }

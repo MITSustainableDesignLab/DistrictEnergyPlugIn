@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Controls;
+using DistrictEnergy.ViewModels;
 using Rhino.PlugIns;
 using Mit.Umi.RhinoServices;
 
@@ -31,21 +32,8 @@ namespace DistrictEnergy
         // You can override methods here to change the plug-in behavior on
         // loading and shut down, add options pages to the Rhino _Option command
         // and mantain plug-in wide options in a document.
-        public DistrictSettings DistrictSettings { get; set; } = new DistrictSettings();
-
-        public PlanningSettings PlanningSettings { get; set; } = new PlanningSettings();
 
         public DistrictControl SimualtePanel { get; set; } = new DistrictControl();
-
-        /// <summary>
-        /// What happens when Rhino loads the plugIn. +OnActiveProjectSwitched
-        /// </summary>
-        /// <param name="errorMessage"></param>
-        /// <returns></returns>
-        protected override LoadReturnCode OnLoad(ref string errorMessage)
-        {
-            return base.OnLoad(ref errorMessage);
-        }
 
         /// <summary>Gets the GUI</summary>
         protected override UserControl ModuleControl

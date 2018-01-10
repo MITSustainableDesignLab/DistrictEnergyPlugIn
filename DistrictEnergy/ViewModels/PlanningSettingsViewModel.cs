@@ -10,13 +10,12 @@ namespace DistrictEnergy.ViewModels
 {
     public class PlanningSettingsViewModel : INotifyPropertyChanged
     {
+        public static PlanningSettings PlanningSettings = new PlanningSettings();
         public PlanningSettingsViewModel()
         {
             RhinoDoc.EndSaveDocument += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
-
-        private PlanningSettings _planningSettings = new PlanningSettings();
 
         private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
         {
@@ -36,12 +35,7 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                DistrictEnergyPlugIn.Instance.PlanningSettings = JsonConvert.DeserializeObject<PlanningSettings>(json);
-                _planningSettings = DistrictEnergyPlugIn.Instance.PlanningSettings;
-            }
-            else
-            {
-                DistrictEnergyPlugIn.Instance.PlanningSettings = new PlanningSettings();
+                PlanningSettings = JsonConvert.DeserializeObject<PlanningSettings>(json);
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
         }
@@ -55,37 +49,37 @@ namespace DistrictEnergy.ViewModels
                 return;
             }
 
-            var pSjson = JsonConvert.SerializeObject(DistrictEnergyPlugIn.Instance.PlanningSettings);
+            var pSjson = JsonConvert.SerializeObject(PlanningSettings);
             context.AuxiliaryFiles.StoreText("planningSettings.json", pSjson);
 
         }
 
         public double C1
         {
-            get { return _planningSettings.C1; }
+            get { return PlanningSettings.C1; }
             set
             {
-                _planningSettings.C1 = value;
+                PlanningSettings.C1 = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(C1)));
             }
         }
 
         public double C2
         {
-            get { return _planningSettings.C2; }
+            get { return PlanningSettings.C2; }
             set
             {
-                _planningSettings.C2 = value;
+                PlanningSettings.C2 = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(C2)));
             }
         }
 
         public double Rate
         {
-            get { return _planningSettings.Rate; }
+            get { return PlanningSettings.Rate; }
             set
             {
-                _planningSettings.Rate = value;
+                PlanningSettings.Rate = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rate)));
                 
             }
@@ -93,10 +87,10 @@ namespace DistrictEnergy.ViewModels
 
         public double Periods
         {
-            get { return _planningSettings.Periods; }
+            get { return PlanningSettings.Periods; }
             set
             {
-                _planningSettings.Periods = value;
+                PlanningSettings.Periods = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Periods)));
                 
             }
@@ -104,15 +98,15 @@ namespace DistrictEnergy.ViewModels
 
         public double Annuity
         {
-            get { return Metrics.Metrics.AnnuityPayment(_planningSettings.Rate, _planningSettings.Periods); }
+            get { return Metrics.Metrics.AnnuityPayment(PlanningSettings.Rate, PlanningSettings.Periods); }
         }
 
         public double PumpEfficiency
         {
-            get { return _planningSettings.PumpEfficiency; }
+            get { return PlanningSettings.PumpEfficiency; }
             set
             {
-                _planningSettings.PumpEfficiency = value;
+                PlanningSettings.PumpEfficiency = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PumpEfficiency)));
             }
         }
