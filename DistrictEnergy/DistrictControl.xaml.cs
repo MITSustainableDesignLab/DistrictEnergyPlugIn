@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System;
+using DistrictEnergy.ViewModels;
 
 namespace DistrictEnergy
 {
@@ -110,7 +111,7 @@ namespace DistrictEnergy
         private void Cost_Electricity_TextChanged(object sender, TextChangedEventArgs e)
         {
 
-            //GlobalContext.StoreSettings("Cost_Electricity", Cost_Electricity);
+            //UmiContext.Current.StoreSettings("Cost_Electricity", Cost_Electricity);
         }
 
         private void Price_NaturalGas_TextChanged(object sender, TextChangedEventArgs e)

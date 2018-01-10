@@ -1,9 +1,6 @@
-﻿using System;
-using Rhino;
+﻿using Rhino;
 using Rhino.Commands;
-using Mit.Umi.RhinoServices;
 using System.Linq;
-using DistrictEnergy.ViewModels;
 using Mit.Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
@@ -30,8 +27,8 @@ namespace DistrictEnergy.Metrics
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            var heatDemand = GlobalContext.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum()).Sum();
-            var bldFloor = GlobalContext.GetObjects().Select(b => b.Data["SDL/Gross Floor Area"].Data.Sum()).Sum();
+            var heatDemand = UmiContext.Current.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum()).Sum();
+            var bldFloor = UmiContext.Current.GetObjects().Select(b => b.Data["SDL/Gross Floor Area"].Data.Sum()).Sum();
             var landArea = Metrics.LandArea();
             var length = Metrics.TotalRouteLength();
             var far = Metrics.FAR(bldFloor, landArea);

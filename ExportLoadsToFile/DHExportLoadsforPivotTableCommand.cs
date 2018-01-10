@@ -1,12 +1,12 @@
 ﻿using System;
 using Rhino.Commands;
-using Mit.Umi.RhinoServices;
 using Rhino;
 using System.Windows.Forms;
 using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using Mit.Umi.RhinoServices.Context;
 
 namespace ExportLoadsToFile
 {
@@ -43,7 +43,7 @@ namespace ExportLoadsToFile
             Form1 formData = new Form1();
 
             // This command generates csv files for hourly simulated loads
-            if (GlobalContext.ActiveProjectSettings.GenerateHourlyEnergyResults != false)
+            if (UmiContext.Current.ProjectSettings.GenerateHourlyEnergyResults != false)
             {
                 
                 var file_name = "";
@@ -98,7 +98,7 @@ namespace ExportLoadsToFile
                 string firstline = "Building ID" + delimiter + "Building Name" + delimiter + "Series Name" + delimiter + "Time" + delimiter + "Values";
                 line1.Add(firstline);
                 File.AppendAllLines(file_name, line1);
-                foreach (var o in GlobalContext.GetObjects())
+                foreach (var o in UmiContext.Current.GetObjects())
                 {
                     var series = o.Data.Select(kvp => kvp.Value);
 

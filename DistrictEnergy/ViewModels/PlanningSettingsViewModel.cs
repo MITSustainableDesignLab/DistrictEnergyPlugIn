@@ -86,7 +86,6 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 _planningSettings.Rate = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Annuity)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rate)));
                 
             }
@@ -98,7 +97,6 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 _planningSettings.Periods = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Annuity)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Periods)));
                 
             }

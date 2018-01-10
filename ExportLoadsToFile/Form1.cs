@@ -1,8 +1,8 @@
-﻿using Mit.Umi.RhinoServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Mit.Umi.RhinoServices.Context;
 
 namespace ExportLoadsToFile
 {
@@ -22,7 +22,7 @@ namespace ExportLoadsToFile
             count = 1;
             // Command list options
             //sList<string> optionList = new List<string>();
-            foreach (var o in GlobalContext.GetObjects())
+            foreach (var o in UmiContext.Current.GetObjects())
             {
                 var series = o.Data.Select(kvp => kvp.Value);
                 foreach (var m in series)

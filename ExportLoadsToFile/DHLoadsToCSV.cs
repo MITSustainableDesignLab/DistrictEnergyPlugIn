@@ -1,11 +1,11 @@
 ﻿using System;
 using Rhino;
 using Rhino.Commands;
-using Mit.Umi.RhinoServices;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using CsvHelper;
+using Mit.Umi.RhinoServices.Context;
 
 namespace ExportLoadsToFile
 {
@@ -45,7 +45,7 @@ namespace ExportLoadsToFile
                 filterList.Add("SDL/Domestic Hot Water");
 
                 int count = 0;
-                foreach (var o in GlobalContext.GetObjects())
+                foreach (var o in UmiContext.Current.GetObjects())
                 {
                     DateTime t = new DateTime(2017, 1, 1, 0, 0, 0);
                     var series = o.Data.Select(kvp => kvp.Value)

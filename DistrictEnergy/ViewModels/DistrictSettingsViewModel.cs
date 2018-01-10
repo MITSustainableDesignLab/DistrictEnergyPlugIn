@@ -10,14 +10,13 @@ namespace DistrictEnergy.ViewModels
 {
     public class DistrictSettingsViewModel : INotifyPropertyChanged
     {
-
         public DistrictSettingsViewModel()
         {
             RhinoDoc.EndSaveDocument += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
-        private DistrictSettings _districtSettings = new DistrictSettings();
+        public static DistrictSettings _districtSettings = new DistrictSettings();
 
         private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
         {
@@ -43,7 +42,7 @@ namespace DistrictEnergy.ViewModels
             }
             else
             {
-                DistrictEnergyPlugIn.Instance.DistrictSettings = new DistrictSettings();
+                DistrictEnergyPlugIn.Instance.DistrictSettings = _districtSettings;
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
         }

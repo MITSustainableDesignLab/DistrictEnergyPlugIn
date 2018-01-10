@@ -4,10 +4,10 @@ using Rhino.Commands;
 using Rhino.Geometry;
 using NetworkDraw.Geometry;
 using System.Collections.Generic;
-using Mit.Umi.RhinoServices;
 using System.Linq;
 using NetworkDraw;
 using System.Collections;
+using Mit.Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
 {
@@ -133,7 +133,7 @@ namespace DistrictEnergy.Metrics
                     continue;
             }
 
-            var MaxHeatinLoadQuery = GlobalContext.GetObjects().
+            var MaxHeatinLoadQuery = UmiContext.Current.GetObjects().
                 Select(b => new
                 { BuildingId = b.Id, MaxLoad = MaxHeatingLoad(b), BldNode = bldIndex.FirstOrDefault(x => x.Value.ToString() == b.Id).Key });
 
