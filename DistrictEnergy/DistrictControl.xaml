@@ -4,98 +4,182 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
-             xmlns:vm="clr-namespace:DistrictEnergy.ViewModels" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True">
+             xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
+             VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" d:DesignWidth="384.964">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="0" VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto" MinHeight="187"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <GroupBox x:Name="Parameters" Header="Parameters" Margin="10,10,10,0" VerticalAlignment="Top" Height="176" Grid.Row="0">
-                <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="2">
-                        <StackPanel.DataContext>
-                            <vm:DistrictSettingsViewModel />
-                        </StackPanel.DataContext>
-                        <TextBox x:Name="ElectricityGenerationCost" Height="21" Text="{Binding ElectricityGenerationCost}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Cost to generate electricity" TextChanged="CostElectricity_TextChanged" Width="35"/>
-                        <TextBox x:Name="PriceNaturalGas" Height="21" Text="{Binding PriceNaturalGas}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Price of natural gas" TextChanged="Price_NaturalGas_TextChanged" Width="35"/>
-                        <TextBox x:Name="EmissionsElectricGeneration" Height="21" Text="{Binding EmissionsElectricGeneration}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="[MTCO2/kWh for grid -produced electricity" TextChanged="Emissions_ElectricGeneration_TextChanged" Width="35"/>
-                        <TextBox x:Name="LossesTransmission" Height="21" Text="{Binding LossesTransmission}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="% of electricity lost as heat during transmission" TextChanged="Transmission_Losses_TextChanged" Width="35"/>
-                        <TextBox x:Name="LossesHeatHydronic" Height="21" Text="{Binding LossesHeatHydronic}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="% of heat loss/gain dor scenarios 03 and 04" TextChanged="Hydronic_Losses_TextChanged" Width="35"/>
-                        <TextBox x:Name="EfficPowerGen" Height="21" Text="{Binding EfficPowerGen}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Average thermal efficiency of the grid's electricity generation" TextChanged="Effic_PowerGen_TextChanged" Width="35"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Margin="0">
-                        <Label x:Name="label1" Content="USD/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-                        <Label x:Name="label2" Content="USD/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-                        <Label x:Name="label3" Content="kgCO2/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-                        <Label x:Name="label4" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
-                        <Label x:Name="label4_Copy1" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
-                        <Label x:Name="label4_Copy" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel Margin="0">
-                        <Label x:Name="label5" Content="Electricity Generation" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                        <Label x:Name="label6" Content="Natural Gas" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                        <Label x:Name="label7" Content="Electric Generation Emissions" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                        <Label x:Name="label8" Content="Electrical Transmission Losses" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                        <Label x:Name="label8_Copy" Content="Distribution Heat Losses" Height="21" Margin="39,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                        <Label x:Name="label9" Content="Grid Power Generation Efficiency" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                    </StackPanel>
-                </Grid>
-            </GroupBox>
-            <GroupBox x:Name="SupplyScheme" Header="Choose an Energy Supply Scheme" Margin="10,11,10,0" Height="176" Grid.Row="1" VerticalAlignment="Top" Grid.RowSpan="1">
-                <Grid Margin="0,0,0,-13">
+        <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.501,0.507">
+            <TabItem Header="Simulation">
+                <Grid Margin="0" VerticalAlignment="Top">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="89"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="187"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <RadioButton x:Name="radioButton1" Content="Strategy 1: All-electric Grid" HorizontalAlignment="Left" Margin="0,7,0,0" VerticalAlignment="Top" ToolTip="This is a tooltip" Checked="radioButton1_Checked" Height="15" Width="160"/>
-                    <RadioButton x:Name="radioButton2" Content="Strategy 2: Electric + Natural Gas Grid" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Height="15" Width="218"/>
-                    <RadioButton x:Name="radioButton3" Content="Strategy 3: Electric Grid + District Heating and Cooling Plant" HorizontalAlignment="Left" Margin="0,47,0,0" VerticalAlignment="Top" Checked="radioButton2_Copy_Checked" Height="15" Width="336"/>
-                    <RadioButton x:Name="radioButton4" Content="Strategy 4: Combined Cooling, Heat, and Power (CCHP)" HorizontalAlignment="Left" Margin="0,67,0,0" VerticalAlignment="Top" Height="15" Width="310"/>
-                    <Button x:Name="button" Content="Run" HorizontalAlignment="Right" Width="89" Margin="0,10,10,0" Click="button_Click_2" Grid.Row="1" Padding="1" Height="21" VerticalAlignment="Top"/>
-                    <Button x:Name="button2" Content="Open Directory" Margin="0,37,10,0" Grid.Row="1" Click="button2_Click" HorizontalAlignment="Right" Padding="3,1" Height="21" VerticalAlignment="Top" Width="89"/>
+                    <GroupBox x:Name="Parameters" Header="Parameters" Margin="10,10,10,0" VerticalAlignment="Top" Height="176" Grid.Row="0">
+                        <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="2">
+                                <StackPanel.DataContext>
+                                    <vm:DistrictSettingsViewModel />
+                                </StackPanel.DataContext>
+                                <TextBox x:Name="ElectricityGenerationCost" Height="21" Text="{Binding ElectricityGenerationCost}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Cost to generate electricity" TextChanged="CostElectricity_TextChanged" Width="35"/>
+                                <TextBox x:Name="PriceNaturalGas" Height="21" Text="{Binding PriceNaturalGas}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Price of natural gas" TextChanged="Price_NaturalGas_TextChanged" Width="35"/>
+                                <TextBox x:Name="EmissionsElectricGeneration" Height="21" Text="{Binding EmissionsElectricGeneration}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="[MTCO2/kWh for grid -produced electricity" TextChanged="Emissions_ElectricGeneration_TextChanged" Width="35"/>
+                                <TextBox x:Name="LossesTransmission" Height="21" Text="{Binding LossesTransmission}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="% of electricity lost as heat during transmission" TextChanged="Transmission_Losses_TextChanged" Width="35"/>
+                                <TextBox x:Name="LossesHeatHydronic" Height="21" Text="{Binding LossesHeatHydronic}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="% of heat loss/gain dor scenarios 03 and 04" TextChanged="Hydronic_Losses_TextChanged" Width="35"/>
+                                <TextBox x:Name="EfficPowerGen" Height="21" Text="{Binding EfficPowerGen}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="Average thermal efficiency of the grid's electricity generation" TextChanged="Effic_PowerGen_TextChanged" Width="35"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="0">
+                                <Label x:Name="label1" Content="USD/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                                <Label x:Name="label2" Content="USD/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                                <Label x:Name="label3" Content="kgCO2/kWh: " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                                <Label x:Name="label4" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
+                                <Label x:Name="label4_Copy1" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
+                                <Label x:Name="label4_Copy" Content="[-]" Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Margin="0">
+                                <Label x:Name="label5" Content="Electricity Generation" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                                <Label x:Name="label6" Content="Natural Gas" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                                <Label x:Name="label7" Content="Electric Generation Emissions" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                                <Label x:Name="label8" Content="Electrical Transmission Losses" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                                <Label x:Name="label8_Copy" Content="Distribution Heat Losses" Height="21" Margin="39,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                                <Label x:Name="label9" Content="Grid Power Generation Efficiency" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox x:Name="SupplyScheme" Header="Choose an Energy Supply Scheme" Margin="10,11,10,0" Height="176" Grid.Row="1" VerticalAlignment="Top" Grid.RowSpan="1">
+                        <Grid Margin="0,0,0,-13">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="89"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <RadioButton x:Name="radioButton1" Content="Strategy 1: All-electric Grid" HorizontalAlignment="Left" Margin="0,7,0,0" VerticalAlignment="Top" ToolTip="This is a tooltip" Checked="radioButton1_Checked" Height="15" Width="160"/>
+                            <RadioButton x:Name="radioButton2" Content="Strategy 2: Electric + Natural Gas Grid" HorizontalAlignment="Left" Margin="0,27,0,0" VerticalAlignment="Top" Height="15" Width="218"/>
+                            <RadioButton x:Name="radioButton3" Content="Strategy 3: Electric Grid + District Heating and Cooling Plant" HorizontalAlignment="Left" Margin="0,47,0,0" VerticalAlignment="Top" Checked="radioButton2_Copy_Checked" Height="15" Width="336"/>
+                            <RadioButton x:Name="radioButton4" Content="Strategy 4: Combined Cooling, Heat, and Power (CCHP)" HorizontalAlignment="Left" Margin="0,67,0,0" VerticalAlignment="Top" Height="15" Width="310"/>
+                            <Button x:Name="button" Content="Run" HorizontalAlignment="Right" Width="89" Margin="0,10,10,0" Click="button_Click_2" Grid.Row="1" Padding="1" Height="21" VerticalAlignment="Top"/>
+                            <Button x:Name="button2" Content="Open Directory" Margin="0,37,10,0" Grid.Row="1" Click="button2_Click" HorizontalAlignment="Right" Padding="3,1" Height="21" VerticalAlignment="Top" Width="89"/>
+
+                        </Grid>
+                    </GroupBox>
+                    <Expander x:Name="expander" Header="Trnsys commands" Margin="10,10,10,0" Grid.Row="2" VerticalAlignment="Top">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="37*"/>
+                                <RowDefinition Height="8*"/>
+                            </Grid.RowDefinitions>
+                            <GroupBox x:Name="Advanced" Header="More advanced stuff" Margin="0,10,0,0" Grid.RowSpan="1">
+                                <StackPanel Margin="0" Orientation="Vertical" VerticalAlignment="Bottom" Height="50">
+                                    <Label x:Name="label" Content="Still in development..." HorizontalAlignment="Left" Margin="-4,0,0,0" FontSize="8"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" HorizontalAlignment="Left" Padding="3,1" Height="21"/>
+                                        <Button x:Name="RunTrnsys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Left" Grid.Column="2" Padding="3,1" Height="21"/>
+                                        <Button x:Name="Export_to_Studio" Content="Export to Studio" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" Padding="3,1" Height="21"/>
+
+                                    </Grid>
+
+
+
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox x:Name="Network_Topology" Header="Network Topology" Margin="0,10,0,0" Grid.Row="4" VerticalAlignment="Top">
+                                <Button x:Name="button1" HorizontalAlignment="Left" Margin="0,5,0,0" Height="21" VerticalAlignment="Top" Padding="3,1" Content="Show Topology" Click="button1_Click">
+                                </Button>
+                            </GroupBox>
+                        </Grid>
+                    </Expander>
 
                 </Grid>
-            </GroupBox>
-            <Expander x:Name="expander" Header="Trnsys commands" Margin="10,10,10,0" Grid.Row="2" VerticalAlignment="Top">
-                <Grid>
+            </TabItem>
+            <TabItem Header="Planning">
+                <Grid Margin="0" VerticalAlignment="Top" Width="Auto">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="37*"/>
-                        <RowDefinition Height="8*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <GroupBox x:Name="Advanced" Header="More advanced stuff" Margin="0,10,0,0" Grid.RowSpan="1">
-                        <StackPanel Margin="0" Orientation="Vertical" VerticalAlignment="Bottom" Height="50">
-                            <Label x:Name="label" Content="Still in development..." HorizontalAlignment="Left" Margin="-4,0,0,0" FontSize="8"/>
-                            <Grid>
+                    <GroupBox x:Name="Planing" Header="Parameters" Margin="10,10,10,0" VerticalAlignment="Top" Height="Auto" Grid.Row="0">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlanningSettingsViewModel></vm:PlanningSettingsViewModel>
+                                </Grid.DataContext>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto" MinWidth="50"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="35"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="50"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="35"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label x:Name="ConstructionCost" Content="Construction Cost" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Left" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Height="21"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Right" Margin="0">
+                                    <Label x:Name="C1label" Content="USD/m" Margin="0,2,3,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1"/>
+                                    <TextBox x:Name="C1" Text="{Binding C1}" Margin="0,2" MaxLines="1" ToolTip="Cost to generate electricity" TextChanged="CostElectricity_TextChanged" Grid.Column="2" VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"/>
+                                    <Label x:Name="C2label" Content="USD/m2" Margin="0,2,3,2" Padding="3,0,0,0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center"/>
+                                    <TextBox x:Name="C2" Text="{Binding C2}" Margin="0,2" MaxLines="1" ToolTip="Price of natural gas" TextChanged="Price_NaturalGas_TextChanged" Grid.Column="4" VerticalContentAlignment="Center" Width="35"/>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlanningSettingsViewModel/>
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto" MinWidth="50"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="35"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="50"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="35"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                    <Label x:Name="ConstructionCost1" Content="Annuity factor" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Left" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Height="21"/>
+                                    <TextBlock Text="{Binding Annuity, Mode=OneWay, StringFormat=F3}" FontStyle="Italic" Margin="3,2,0,2" HorizontalAlignment="Left" Foreground="Gray" VerticalAlignment="Center" FontSize="11"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Right" Margin="0">
+                                    <Label x:Name="C1label1" Content="Rate" Margin="0,2,3,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1"/>
+                                    <TextBox x:Name="C11" Text="{Binding Rate}" Margin="0,2" MaxLines="1" ToolTip="Cost to generate electricity" TextChanged="CostElectricity_TextChanged" Grid.Column="2" VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"/>
+                                    <Label x:Name="C2label1" Content="# Periods" Margin="0,2,3,2" Padding="3,0,0,0" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center"/>
+                                    <TextBox x:Name="C21" Text="{Binding Periods}" Margin="0,2" MaxLines="1" ToolTip="Price of natural gas" TextChanged="Price_NaturalGas_TextChanged" Grid.Column="4" VerticalContentAlignment="Center" Width="35"/>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="13*"/>
+                                    <RowDefinition Height="37*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="CreateNetworkLayer" Content="Create Network Layers" Click="Button_Click" HorizontalAlignment="Left" Padding="3,1" Height="21"/>
-                                <Button x:Name="RunTrnsys" Content="Run Trnsys" Click="button_Click_1" HorizontalAlignment="Left" Grid.Column="2" Padding="3,1" Height="21"/>
-                                <Button x:Name="Export_to_Studio" Content="Export to Studio" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" Padding="3,1" Height="21"/>
-
+                                <StackPanel Grid.Column="2" Grid.Row="1">
+                                    <StackPanel.DataContext>
+                                        <vm:PlanningSettingsViewModel />
+                                    </StackPanel.DataContext>
+                                    <TextBox x:Name="PumpEfficiency" Height="21" Text="{Binding PumpEfficiency}" Margin="0,2" MaxLines="1" VerticalContentAlignment="Center" ToolTip="% of electricity lost as heat during transmission" TextChanged="Transmission_Losses_TextChanged" Width="35"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0" Grid.Row="1">
+                                    <Label x:Name="PumpEffLabel" Content="[-] " Height="21" Margin="0,2" Padding="3,0,0,0" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="0" Margin="0" Grid.Row="1" HorizontalAlignment="Left">
+                                    <Label x:Name="label10" Content="Pump Efficiency" Height="21" Margin="0,2" FontWeight="Bold" HorizontalAlignment="Left" Padding="0" VerticalContentAlignment="Center"/>
+                                </StackPanel>
                             </Grid>
-
-
-
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox x:Name="Network_Topology" Header="Network Topology" Margin="0,10,0,0" Grid.Row="4" VerticalAlignment="Top">
-                        <Button x:Name="button1" HorizontalAlignment="Left" Margin="0,5,0,0" Height="21" VerticalAlignment="Top" Padding="3,1" Content="Show Topology" Click="button1_Click">
-                        </Button>
-                    </GroupBox>
+
                 </Grid>
-            </Expander>
-        </Grid>
+            </TabItem>
+        </TabControl>
     </ScrollViewer>
 
 

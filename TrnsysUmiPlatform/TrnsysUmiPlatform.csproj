@@ -16,18 +16,22 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>.\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>.\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RhinoCommon">
@@ -36,15 +40,15 @@
     </Reference>
     <Reference Include="ShortestWalk">
       <HintPath>..\..\ShortestWalk\ShortestWalk\bin\ShortestWalk.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Reference Include="TrnExeConsole">
+      <HintPath>..\TrnExeConsole\bin\Debug\TrnExeConsole.dll</HintPath>
+    </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Core.dll</HintPath>
       <Private>False</Private>
@@ -53,10 +57,22 @@
   <ItemGroup>
     <Compile Include="CreateDckFile.cs" />
     <Compile Include="Models.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="TrnDll\NativeLibrary.cs" />
+    <Compile Include="ProgressBar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TrnsysFunctions.cs" />
-    <Compile Include="Types.cs" />
+    <Compile Include="TrnDll\TrnDllWrapper.cs" />
+    <Compile Include="TrnsysType.cs" />
+    <Compile Include="Types\Type11.cs" />
+    <Compile Include="Types\Type15_3.cs" />
+    <Compile Include="Types\Type25C.cs" />
+    <Compile Include="Types\Type31.cs" />
+    <Compile Include="Types\Type46.cs" />
+    <Compile Include="Types\Type659.cs" />
+    <Compile Include="Types\Type682.cs" />
+    <Compile Include="Types\Type741.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

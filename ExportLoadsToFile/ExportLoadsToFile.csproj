@@ -15,7 +15,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -42,16 +42,15 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RhinoCommon, Version=5.1.30000.17, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DistrictEnergy\Resources\RhinoCommon.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="RhinoCommon">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DistrictEnergy\Resources\RhinoCommon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Core.dll</HintPath>
       <Private>False</Private>
@@ -64,9 +63,9 @@
   <ItemGroup>
     <Compile Include="DHDryBulbCSV.cs" />
     <Compile Include="DHLoadsToCSV.cs" />
-    <Compile Include="ExportLoadColumns.cs" />
-    <Compile Include="ExportLoadsforPivotTable.cs" />
-    <Compile Include="ExportLoadsToFileCommand.cs" />
+    <Compile Include="DHExportLoadColumns.cs" />
+    <Compile Include="DHExportLoadsforPivotTableCommand.cs" />
+    <Compile Include="DHExportLoadsToFileCommand.cs" />
     <Compile Include="ExportLoadsToFilePlugIn.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -90,13 +89,12 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).rhp"
-Erase "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).rhp"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartProgram>c:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe</StartProgram>
     <StartArguments>
     </StartArguments>

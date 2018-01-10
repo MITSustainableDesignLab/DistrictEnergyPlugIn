@@ -61,7 +61,13 @@ namespace DistrictEnergy
         }
 
         /// <summary></summary>
-        public static DistrictSettings activeSettings
+        public static DistrictSettings districtActiveSettings
+        {
+            get; set;
+        }
+
+        /// <summary></summary>
+        public static PlanningSettings planningActiveSettings
         {
             get; set;
         }
@@ -85,9 +91,13 @@ namespace DistrictEnergy
         // The thing to do when a project is saved
         private void OnDocumentSaved(object sender, DocumentSaveEventArgs e)
         {
-            DistrictSettings settings = DistrictSettingsViewModel.backing;
-            var serialized = JsonConvert.SerializeObject(settings);
-            GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, serialized);
+            DistrictSettings districtSettings = DistrictSettingsViewModel.backing;
+            var districtSerialized = JsonConvert.SerializeObject(districtSettings);
+            GlobalContext.AuxiliaryFileStore.StoreText(DistrictSettingsPath.SettingsFilePathInBundle, districtSerialized);
+
+            PlanningSettings planningSettings = PlanningSettingsViewModel.backing;
+            var planningSerialized = JsonConvert.SerializeObject(planningSettings);
+            GlobalContext.AuxiliaryFileStore.StoreText(PlanningSettingsPath.SettingsFilePathInBundle, planningSerialized);
         }
 
 
@@ -96,13 +106,20 @@ namespace DistrictEnergy
         {
             if (e.NewProject != null)
             {
-                var settingsPath = e.NewProject.AuxiliaryFiles.SingleOrDefault(aux => Path.GetFileName(aux) == "districtSettings.json");
-                activeSettings = File.Exists(settingsPath) != false
-                                    ? JsonConvert.DeserializeObject<DistrictSettings>(File.ReadAllText(settingsPath))
+                var districtSettingsPath = e.NewProject.AuxiliaryFiles.SingleOrDefault(aux => Path.GetFileName(aux) == "districtSettings.json");
+                districtActiveSettings = File.Exists(districtSettingsPath) != false
+                                    ? JsonConvert.DeserializeObject<DistrictSettings>(File.ReadAllText(districtSettingsPath))
                                     : new DistrictSettings();
 
-                DistrictSettingsViewModel.backing = activeSettings;
-                
+                DistrictSettingsViewModel.backing = districtActiveSettings;
+
+                var planningSettingsPath = e.NewProject.AuxiliaryFiles.SingleOrDefault(aux => Path.GetFileName(aux) == "planningSettings.json");
+                planningActiveSettings = File.Exists(planningSettingsPath) != false
+                                    ? JsonConvert.DeserializeObject<PlanningSettings>(File.ReadAllText(planningSettingsPath))
+                                    : new PlanningSettings();
+
+                PlanningSettingsViewModel.backing = planningActiveSettings;
+
 
                 // If OldProject is null, then we need to register the save handler so
                 // our settings actually get saved

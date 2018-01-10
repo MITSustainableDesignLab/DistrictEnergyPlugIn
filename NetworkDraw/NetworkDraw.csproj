@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug64</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4BD0987C-02DD-40F9-ABA9-D93190F32D17}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NetworkDraw</RootNamespace>
+    <AssemblyName>NetworkDraw</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LINQPad">
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\LINQPad4\LINQPad.exe</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QuickGraph.Data, Version=3.6.61114.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QuickGraph.Graphviz, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Graphviz.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="QuickGraph.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Serialization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RhinoCommon, Version=5.1.30000.17, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DistrictEnergy\Resources\RhinoCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="TrnsysUmiPlatform">
+      <HintPath>..\TrnsysUmiPlatform\obj\Debug\TrnsysUmiPlatform.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Umi.Core">
+      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Umi.Rhino">
+      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Umi.Rhino.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CurvesGetter.cs" />
+    <Compile Include="DHCrossNetworkCommand.cs" />
+    <Compile Include="Geometry\CurvesTopology.cs" />
+    <Compile Include="Geometry\EdgeAddress.cs" />
+    <Compile Include="Geometry\NodeAddress.cs" />
+    <Compile Include="Geometry\PathMethods.cs" />
+    <Compile Include="GetterExtension.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DHNetworkDrawCommand.cs" />
+    <Compile Include="NetworkDrawPlugIn.cs" />
+    <Compile Include="DHToggleShowNetworkTopology.cs" />
+    <Compile Include="PointGetter.cs" />
+    <Compile Include="TrackingPointGetter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\legalstuff.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).rhp"
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <FallbackCulture>en-US</FallbackCulture>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartProgram>c:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe</StartProgram>
+    <StartArguments>
+    </StartArguments>
+    <StartAction>Program</StartAction>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+</Project>

@@ -17,7 +17,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -57,9 +57,8 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
-    <Reference Include="TrnsysUmiPlatform, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\TrnsysUmiPlatform\bin\TrnsysUmiPlatform.dll</HintPath>
+    <Reference Include="TrnsysUmiPlatform">
+      <HintPath>..\TrnsysUmiPlatform\obj\Debug\TrnsysUmiPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
@@ -78,10 +77,19 @@
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
+    <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
+    <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
+    <Compile Include="PlanningSettings.cs" />
+    <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
+    <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
+    <Compile Include="Metrics\Metrics.cs" />
+    <Compile Include="Metrics\DHNetworkListCommand.cs" />
+    <Compile Include="TrnExeConsole.cs" />
+    <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
     <Compile Include="OrderNetwork.cs" />
-    <Compile Include="RunTrnsysCommand.cs" />
+    <Compile Include="DHRunTrnsysCommand.cs" />
     <Compile Include="CreateNetworkLayer.cs" />
     <Compile Include="DistrictEnergyPlugIn.cs" />
     <Compile Include="DistrictControl.xaml.cs">
@@ -111,8 +119,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\TabHeaderIcon.png" />
     <Content Include="Resources\banner.bmp" />
+    <Content Include="Resources\TRNExeConsole.f90" />
     <Content Include="Resources\WixUIDialogBmp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NetworkDraw\NetworkDraw.csproj">
+      <Project>{4BD0987C-02DD-40F9-ABA9-D93190F32D17}</Project>
+      <Name>NetworkDraw</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -128,12 +144,13 @@
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartProgram>c:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe</StartProgram>
     <StartArguments>
     </StartArguments>
     <StartAction>Program</StartAction>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\DistrictEnergyDocs.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
 </Project>

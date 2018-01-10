@@ -6,6 +6,30 @@ import errno
 from tqdm import tqdm
 
 # ...................................................................
+# v04: Cleanup of file
+# v05: More cleanup: Removed the electrical transmission losses from the electricity loads on scenario 04
+# v06: Updated the column reassignment
+# v07: Simplified change to different cities
+# v08: Correcting boiler-related calcs and set condition on PLR for heat pump in cooling mode to prevent NaN
+# v09: Set min PLRs, added COP calc for heat pump in heating mode, added max COPs and limiting of heat pump values
+# v10: Add COP to dist boiler, removed 1.5x factor on the CCHP boiler size, prevent inf COP on chiller when denom = 0
+# v11: Fix NaN for Lisbon file on heat pump cooling COP
+# v12: Absorption chiller implementation work
+# v13: Updated CCHP PLR for the elec chiller to use Supp Cooling / denom vs. Cooling load /denom to get min # chillers
+# v14: The above update was actually wrong. Reverted code. Imp. iterations to solve for COP and PLR of the abs chiller
+# v15: Cleanup of old absorption chiller code
+# v16: Updating static efficiency Abs Chiller Code
+# v17: Switch back to Kuwait. Absorption chiller runs with one NaN value on Hour 8 for COP and PLR
+# v21: Correcting the COP calculation for the CCHP chiller and updated output files to be location-specific
+# v22: Code clean. Set min PLRs, COPs for boilers and heat pumps, correct NaN potential for HP_Cooling division by 0 COP
+# v23: Add emissions by type of equipment, corrected heat pump heating COP floor to 1 and fixed need for 8761-row weather data
+# v24: Reformat structure of the parameter sections to match single file
+# v25: Code cleanup | Removed Cost_Generation_Kuwait variable
+# v26: Modify staging for heat pumps and boilers so that min number needed are enabled for each hour
+# v27: Additional cleanup 
+# v28: Minor code cleanup, add two additionl chiller models
+# v29: Rename Cost_Natural gas to Price_Natural Gas, added comments to iloc, updated supp elec. value calc, updated effic grid
+# ...................................................................
 
 # > > > Load Input Data [DYNAMIC INPUTS] < < <
 LoadData = pd.read_csv('C:/UMI/temp/Loads.csv')
@@ -15,7 +39,7 @@ WeatherData = pd.read_csv('C:/UMI/temp/DryBulbData.csv', delimiter=',', encoding
 # > > > User-specified Parameters [DYNAMIC INPUTS] < < < 
 Cost_Electricity = float(sys.argv[2]) #Generation cost per kWh Source: https://www.oxfordenergy.org/wpcms/wp-content/uploads/2014/04/MEP-9.pdf
 Price_NaturalGas = float(sys.argv[3]) #Dollars per kWh
-Emissions_ElectricGeneration = float(sys.argv[4])*1000 #Metric ton CO2 per kWh produced (kgCO2eq/kWh as an input)
+Emissions_ElectricGeneration = float(sys.argv[4])/1000 #Metric ton CO2 per kWh produced (kgCO2eq/kWh as an input)
 Effic_PowerGen = float(sys.argv[7]) #Average thermal efficiency of electrical generation in Kuwait
 Losses_Transmission = float(sys.argv[5]) #Electrical transmission losses https://www.eia.gov/tools/faqs/faq.php?id=105&t=3
 Losses_Heat_Hydronic = float(sys.argv[6]) #Heat transfer losses from hydronic distribution systemission losses https://www.eia.gov/tools/faqs/faq.php?id=105&t=3
@@ -36,6 +60,9 @@ kWhPerTherm = 29.3 #kwh/therm
 Emissions_NG_Combustion_therm = 0.005302 #Metric ton CO2 per therm of NG
 Emissions_NG_Combustion_kWh = Emissions_NG_Combustion_therm / kWhPerTherm
 FanPwrCoolRatio = 0 # 34.0/27.0 removed because assuming fan energy ~constant for all cases
+
+CoolThreshold = 0.1 # v26
+HeatThreshold = 0.1 # v26 
 
 # CWR Calculation Coefficients 
 c1_CWR = 28.27
@@ -67,7 +94,7 @@ c4 = 0.047468326
 Size_HeatPump_Heating = 3.516825 #Nominal rated capacity of the heat pump in heating mode [kW]
 Power_Max_Heating = 2.164 #Max work by compressor in kW
 MinPLR_HP_Heating = 0.28
-MinCOP_Heating = 1
+MinCOP_Heating = 0.8
 
 THot_Heating = 308.15 #35C in Kelvin
 TCold_Heating = 253.15 #-20C in Kelvin
@@ -90,7 +117,7 @@ MinPLR_HP_Cooling = 0.1 # Set this to 0, because a min PLR of 10% results in odd
 COP_Nominal_Cooling = 3.81
 
 THot_Cooling =  313.15 #12.5C in Kelvin based on the assumption of the constant evaporator temperature at 12.5C from Tea's work
-TCold_Cooling = 285.65 #40C in Kelvin
+TCold_Cooling = 285.65  #40C in Kelvin
 
 MinCOP_Cooling = 0.0
 MaxCOP_Cooling = TCold_Cooling / (THot_Cooling - TCold_Cooling)
@@ -108,37 +135,133 @@ c10_hp = 4.25E-6
 
 # District Equipment Parameters 
 Size_DistrictBoiler = 2500 # kw Based on 8400 MBH boiler at MP
-Size_ElectricCentrifugalChiller_Nominal = 2567.1 #nominal size of the chiller in kW
-MinPLR_CentrifugalChiller = 0.11 
-CoP_Chiller_Centrifugal = 11.77
+
+# Chiller Option 01 from EnergyPlus Chillers.idf (Reformulated EIR Chiller Trance CVHF 2567kW/11.77COP/VSD)
+# Size_ElectricCentrifugalChiller_Nominal = 2567.1 #nominal size of the chiller in kW
+# MinPLR_CentrifugalChiller = 0.11 
+# CoP_Chiller_Centrifugal = 11.77
+# CHWS_T = 4.44 #C (40 F)
+
+# c1_ECC_CapFunT = 3.15E-01
+# c2_ECC_CapFunT = 7.67E-03
+# c3_ECC_CapFunT = -4.35E-03
+# c4_ECC_CapFunT = 5.00E-02
+# c5_ECC_CapFunT = -1.24E-03
+# c6_ECC_CapFunT = 3.16E-03
+
+# c1_ECC_EIRFunT = 3.65E-01
+# c2_ECC_EIRFunT = -3.71E-02
+# c3_ECC_EIRFunT = -7.45E-04
+# c4_ECC_EIRFunT = 4.59E-02
+# c5_ECC_EIRFunT = 1.72E-04
+# c6_ECC_EIRFunT = -3.52E-04
+
+# c1_ECC_EIRFPLR = -2.96E-01
+# c2_ECC_EIRFPLR = 2.59E-02
+# c3_ECC_EIRFPLR = 3.92E-05
+# c4_ECC_EIRFPLR = 7.44E-01
+# c5_ECC_EIRFPLR = 3.53E-01
+# c6_ECC_EIRFPLR = -2.80E-02
+# c7_ECC_EIRFPLR = 0.00E+00
+# c8_ECC_EIRFPLR = 2.25E-01
+# c9_ECC_EIRFPLR = 0.00E+00
+# c10_ECC_EIRFPLR = 0.00E+00
+
+# Chiller Option 02 from EnergyPlus Chillers.idf (Reformulated EIR Chiller Trace CVHE 1484kW/9.96COP/VSD)
+# Size_ElectricCentrifugalChiller_Nominal = 1484 #nominal size of the chiller in kW
+# MinPLR_CentrifugalChiller = 0.24 
+# CoP_Chiller_Centrifugal = 9.96
+# CHWS_T = 4.44 #C (40 F)
+
+# c1_ECC_CapFunT = -9.759100E-01
+# c2_ECC_CapFunT = -1.446866E-01
+# c3_ECC_CapFunT = -4.694254E-03
+# c4_ECC_CapFunT = 1.963005E-01
+# c5_ECC_CapFunT = -4.543768E-03
+# c6_ECC_CapFunT = 8.998114E-03
+
+# c1_ECC_EIRFunT = -6.183288E-01
+# c2_ECC_EIRFunT = -1.151565E-01
+# c3_ECC_EIRFunT = -1.663662E-04
+# c4_ECC_EIRFunT = 1.539757E-01
+# c5_ECC_EIRFunT = -2.390058E-03
+# c6_ECC_EIRFunT = 2.818373E-03
+
+# c1_ECC_EIRFPLR = 2.203029E-01
+# c2_ECC_EIRFPLR = 9.195177E-02
+# c3_ECC_EIRFPLR = 1.943558E-05
+# c4_ECC_EIRFPLR = -5.815422E+00
+# c5_ECC_EIRFPLR = 9.366237E+00
+# c6_ECC_EIRFPLR = -9.299721E-02
+# c7_ECC_EIRFPLR = 0.00E+00
+# c8_ECC_EIRFPLR = -2.757689E+00
+# c9_ECC_EIRFPLR = 0.00E+00
+# c10_ECC_EIRFPLR = 0.00E+00
+
+# Chiller Option 03 from EnergyPlus Chillers.idf (Reformulated EIR Chiller McQuay PEH 819kW/8.11COP/Vanes)
+Size_ElectricCentrifugalChiller_Nominal = 819 #nominal size of the chiller in kW
+MinPLR_CentrifugalChiller = 0.09 
+CoP_Chiller_Centrifugal = 8.11
 CHWS_T = 4.44 #C (40 F)
-Power_CentrifugalChiller_Nominal = Size_ElectricCentrifugalChiller_Nominal/CoP_Chiller_Centrifugal
 
-c1_ECC_CapFunT = 3.15E-01
-c2_ECC_CapFunT = 7.67E-03
-c3_ECC_CapFunT = -4.35E-03
-c4_ECC_CapFunT = 5.00E-02
-c5_ECC_CapFunT = -1.24E-03
-c6_ECC_CapFunT = 3.16E-03
+c1_ECC_CapFunT = 5.519141E-01
+c2_ECC_CapFunT = 1.393287E-02
+c3_ECC_CapFunT = -4.818082E-03
+c4_ECC_CapFunT = 3.705684E-02
+c5_ECC_CapFunT = -1.429769E-03
+c6_ECC_CapFunT = 3.473993E-03
 
-c1_ECC_EIRFunT = 3.65E-01
-c2_ECC_EIRFunT = -3.71E-02
-c3_ECC_EIRFunT = -7.45E-04
-c4_ECC_EIRFunT = 4.59E-02
-c5_ECC_EIRFunT = 1.72E-04
-c6_ECC_EIRFunT = -3.52E-04
+c1_ECC_EIRFunT = 4.447588E-01
+c2_ECC_EIRFunT = -3.185710E-02
+c3_ECC_EIRFunT = -8.260575E-04
+c4_ECC_EIRFunT = 3.712567E-02
+c5_ECC_EIRFunT = -4.887950E-05
+c6_ECC_EIRFunT = 4.978770E-04
 
-c1_ECC_EIRFPLR = -2.96E-01
-c2_ECC_EIRFPLR = 2.59E-02
-c3_ECC_EIRFPLR = 3.92E-05
-c4_ECC_EIRFPLR = 7.44E-01
-c5_ECC_EIRFPLR = 3.53E-01
-c6_ECC_EIRFPLR = -2.80E-02
+c1_ECC_EIRFPLR = 1.038400E-01
+c2_ECC_EIRFPLR = 1.702895E-02
+c3_ECC_EIRFPLR = -1.399515E-05
+c4_ECC_EIRFPLR = -9.140769E-03
+c5_ECC_EIRFPLR = 1.077987E+00
+c6_ECC_EIRFPLR = -1.633517E-02
 c7_ECC_EIRFPLR = 0.00E+00
-c8_ECC_EIRFPLR = 2.25E-01
+c8_ECC_EIRFPLR = -1.811897E-01
 c9_ECC_EIRFPLR = 0.00E+00
 c10_ECC_EIRFPLR = 0.00E+00
 
+# Chiller Option 04 from EnergyPlus Chillers.idf (Reformulated EIR Chiller York YT 563kW/10.61COP/Vanes)
+# Size_ElectricCentrifugalChiller_Nominal = 563 #nominal size of the chiller in kW
+# MinPLR_CentrifugalChiller = 0.09 
+# CoP_Chiller_Centrifugal = 10.61
+# CHWS_T = 4.44 #C (40 F)
+
+# c1_ECC_CapFunT = -2.841837E-01
+# c2_ECC_CapFunT = -1.006253E-01
+# c3_ECC_CapFunT = -3.157589E-03
+# c4_ECC_CapFunT = 1.221758E-01
+# c5_ECC_CapFunT = -3.003466E-03
+# c6_ECC_CapFunT = 6.704017E-03
+
+# c1_ECC_EIRFunT = -5.308783E-01
+# c2_ECC_EIRFunT = -8.364102E-02
+# c3_ECC_EIRFunT = -4.054970E-03
+# c4_ECC_EIRFunT = 1.347115E-01
+# c5_ECC_EIRFunT = -1.805617E-03
+# c6_ECC_EIRFunT = 3.054789E-03
+
+# c1_ECC_EIRFPLR = 4.931998E+00
+# c2_ECC_EIRFPLR = -2.128161E-01
+# c3_ECC_EIRFPLR = 3.520769E-04
+# c4_ECC_EIRFPLR =  -8.586753E+00
+# c5_ECC_EIRFPLR = 1.375722E+01
+# c6_ECC_EIRFPLR = 1.940510E-01
+# c7_ECC_EIRFPLR = 0.00E+00
+# c8_ECC_EIRFPLR = -8.859038E+00
+# c9_ECC_EIRFPLR = 0.00E+00
+# c10_ECC_EIRFPLR = 0.00E+00
+
+
+Power_CentrifugalChiller_Nominal = Size_ElectricCentrifugalChiller_Nominal/CoP_Chiller_Centrifugal
 Size_CT_Nominal = 0.011 * Size_ElectricCentrifugalChiller_Nominal
 
 # Cooling Tower Coefficients
@@ -209,8 +332,12 @@ print 'Cooling max :', CoolingMax[:1]
 HeatingMax = Output.groupby('Building')['TotalHeating'].max()
 Output = Output.join(HeatingMax, on='Building', rsuffix='Max')
 
+print 'Heating max :', HeatingMax[:1]
+
 ElectricMax = Output.groupby('Building')['Electricity'].max()
 Output = Output.join(ElectricMax, on='Building', rsuffix='Max')
+
+print 'Electricity max :', ElectricMax[:1]
 
 # Make directory for saving files
 def mkdir_p(path):
@@ -223,27 +350,38 @@ def mkdir_p(path):
             raise
 
 def sc01():
-	    # ...................................................................
+	# ...................................................................
     print "Scenario 01: Grid Supplied Electricity Satisfies All Heating, Cooling, and Electric loads"
 
-    # Calculate total heating energy needed
-
-    Output['NumHeatPumps_Heat'] = Output['TotalHeatingMax']/Size_HeatPump_Heating 
+    # Determine the number of heat pumps (heating) needed for each hour, for each building
+    Output['NumHeatPumps_Heat'] = Output['TotalHeating']/Size_HeatPump_Heating # v26 running heat pumps
     Output['NumHeatPumps_Heat'] = np.ceil(Output['NumHeatPumps_Heat'])
-    Output['PLR_HeatPump_Heating'] = np.where(Output['TotalHeating']<=0, 0, (Output['TotalHeating']/Output['NumHeatPumps_Heat'])/Size_HeatPump_Heating)
-    Output['PLR_HeatPump_Heating'] = np.where(Output['PLR_HeatPump_Heating']<=MinPLR_HP_Heating, MinPLR_HP_Heating, (Output['TotalHeating']/Output['NumHeatPumps_Heat'])/Size_HeatPump_Heating)
+
+    # Calculate PLR by dividing hourly heating load by number of operational heat pumps.
+    Output['PLR_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= HeatThreshold, 0, (Output['TotalHeating']/Output['NumHeatPumps_Heat'])/Size_HeatPump_Heating)
+    Output['PLR_HeatPump_Heating'] = np.where(Output['PLR_HeatPump_Heating'] <= MinPLR_HP_Heating, MinPLR_HP_Heating, Output['PLR_HeatPump_Heating'])
+    
+    # Calculate the heat pump modifier and energy consumed by the heat pump on an hourly basis
     Output['HP_Heat_Modifier'] = a1 + a2 * Output['PLR_HeatPump_Heating'] + a3 * Output['PLR_HeatPump_Heating']**2 + a4 * Output['PLR_HeatPump_Heating'] + a5 * Output['PLR_HeatPump_Heating']**3 + a6 * Output['PLR_HeatPump_Heating'] + a7 * Output['PLR_HeatPump_Heating']
+    
     Output['Energy_HeatPump_Heating'] = Output['HP_Heat_Modifier'] * Power_Max_Heating * Output['NumHeatPumps_Heat']
-    Output['COP_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= 0, 0, Output['TotalHeating'] / Output['Energy_HeatPump_Heating']) # v23
-    Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] < MinCOP_Heating,MinCOP_Heating, Output['TotalHeating'] / Output['Energy_HeatPump_Heating'])
+    
+    # Calculate the COP of the heat pump, bounded by the min and max COPs
+    Output['COP_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= HeatThreshold, 0, Output['TotalHeating'] / Output['Energy_HeatPump_Heating']) # v23
+    Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] < MinCOP_Heating, MinCOP_Heating, Output['COP_HeatPump_Heating'])
     Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] > MaxCOP_Heating, MaxCOP_Heating, Output['COP_HeatPump_Heating'])
  
-    Output['Energy_HeatPump_Heating'] = np.where(Output['TotalHeating']<=0 , 0, Output['TotalHeating']/Output['COP_HeatPump_Heating']) # added v23       # ...................................................................
+    # Line below ensures that the energy of the heat pump is zero, when the total heating load is below the heating threshold
+    Output['Energy_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= HeatThreshold , 0, Output['TotalHeating']/Output['COP_HeatPump_Heating']) # added v23
 
-    # Calculate total cooling energy needed
-    Output['NumHeatPumps_Cool'] = Output['SDL/CoolingMax']/Size_HeatPump_Cooling
+    # .........................................................................
+
+    # Determine the number of heat pumps (cooling) needed for each hour, for each building
+    Output['NumHeatPumps_Cool'] = Output['SDL/Cooling']/Size_HeatPump_Cooling # v26 update staging
     Output['NumHeatPumps_Cool'] = np.ceil(Output['NumHeatPumps_Cool'])
-    Output['PLR_HeatPump_Cooling'] = np.where(Output['NumHeatPumps_Cool']<=0.0,0.0, Output['SDL/Cooling'] / (Output['NumHeatPumps_Cool']*Size_HeatPump_Cooling))
+
+    # Calculate PLR by dividing hourly cooling load by number of operational heat pumps.
+    Output['PLR_HeatPump_Cooling'] = np.where(Output['NumHeatPumps_Cool'] <= 0, 0, Output['SDL/Cooling'] / (Output['NumHeatPumps_Cool']*Size_HeatPump_Cooling))
     Output['PLR_HeatPump_Cooling'] = np.where(Output['PLR_HeatPump_Cooling'] < MinPLR_HP_Cooling, MinPLR_HP_Cooling, Output['PLR_HeatPump_Cooling'])
 
     Output['COP_HeatPump_Cooling'] = ((c1_hp + c2_hp*Output['PLR_HeatPump_Cooling'] + c3_hp*Output['DB'] + 
@@ -251,16 +389,18 @@ def sc01():
 	    c6_hp*Output['DB']**2 + c7_hp*Output['PLR_HeatPump_Cooling']**3 + c8_hp*Output['PLR_HeatPump_Cooling']**2*Output['DB'] + 
 	    c9_hp*Output['PLR_HeatPump_Cooling']*Output['DB']**2 + c10_hp*Output['DB']**3)**-1)
 
-    Output['COP_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling']>MaxCOP_Cooling, MaxCOP_Cooling,Output['COP_HeatPump_Cooling'])
+    Output['COP_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling'] > MaxCOP_Cooling, MaxCOP_Cooling, Output['COP_HeatPump_Cooling'])
     Output['COP_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling'] > MinCOP_Cooling, Output['COP_HeatPump_Cooling'], MinCOP_Cooling) # Added in v22 to set minimum COP to prevent negative values
 
-    Output['Energy_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling']<=0,0, Output['SDL/Cooling'] / Output['COP_HeatPump_Cooling'])
+    Output['Energy_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling'] <= CoolThreshold, 0, Output['SDL/Cooling'] / Output['COP_HeatPump_Cooling'])
     Output['FanPowerSC01'] = Output['Energy_HeatPump_Cooling'] * FanPwrCoolRatio
 
     # ...................................................................
 
     NonHVAC_Electricity = Output['Electricity']
-    Load_CitySC01 = sum(NonHVAC_Electricity+Output['Energy_HeatPump_Heating']+Output['Energy_HeatPump_Cooling']+Output['FanPowerSC01'] )
+
+    Load_CitySC01 = sum(NonHVAC_Electricity + Output['Energy_HeatPump_Heating'] + Output['Energy_HeatPump_Cooling']+Output['FanPowerSC01'] )
+
     Load_Grid_SC01 = Load_CitySC01 * (1 + Losses_Transmission)
     Energy_SC01 = Load_Grid_SC01/Effic_PowerGen
 
@@ -271,13 +411,15 @@ def sc01():
     SC01_FanEnergy = sum(Output['FanPowerSC01']) * (1+Losses_Transmission) / Effic_PowerGen
 
     SC01_AvgCoolingCOP = sum(Output['SDL/Cooling']) / SC01_CoolingEnergy # This version of COP represents the true input energy needed to meet cooling demands
-    SC01_AvgHeatingCOP = sum(Output['TotalHeating']) / SC01_HeatingEnergy 
+    SC01_AvgHeatingCOP = sum(Output['TotalHeating']) / SC01_HeatingEnergy
 
     print "Annual input energy for non-HVAC electricity loads:", SC01_NonHVACEnergy
     print "Annual input energy for heating:", SC01_HeatingEnergy
     print "Annual input energy for cooling:", SC01_CoolingEnergy
     print "Annual input energy for fans:", SC01_FanEnergy
+
     print "Annual input energy required (kWh):", Energy_SC01
+
     print "Average Cooling COP:", SC01_AvgCoolingCOP
     print "Average Heating COP:", SC01_AvgHeatingCOP
 
@@ -287,16 +429,16 @@ def sc01():
 
     # Calculate CO2 Emissions Associated to Using Electricity from the Grid to Satisfy Loads
     Emissions_SC01 = Load_Grid_SC01 * Emissions_ElectricGeneration
+    print "Annual non-HVAC carbon emissions (Metric Tons):", sum(NonHVAC_Electricity) * (1+Losses_Transmission) * Emissions_ElectricGeneration
+    print "Annual heating carbon emissions (Metric Tons):", sum(Output['Energy_HeatPump_Heating']) * (1+Losses_Transmission) * Emissions_ElectricGeneration
+    print "Annual cooling carbon emissions (Metric Tons):", sum(Output['Energy_HeatPump_Cooling']) * (1+Losses_Transmission) * Emissions_ElectricGeneration
     print "Annual carbon emissions (Metric Tons):", Emissions_SC01
 
     Output['ElectricityConsumption01'] = (NonHVAC_Electricity + Output['Energy_HeatPump_Heating'] + Output['Energy_HeatPump_Cooling']+Output['FanPowerSC01']) * (1 + Losses_Transmission)
     Output['NaturalGasConsumption01'] = 0.0
 
     Results = pd.DataFrame()
-    Results['ElectricityConsumption01'] = Output.groupby('Hour')['ElectricityConsumption01'].sum()
-    Results['NaturalGasConsumption01'] = Output.groupby('Hour')['NaturalGasConsumption01'].sum()
-
-    # Results['Scenario01'] = SC01_NonHVACEnergy, SC01_HeatingEnergy, SC01_CoolingEnergy, Energy_SC01, SC01_AvgCoolingCOP, SC01_AvgHeatingCOP, Cost_SC01, Emissions_SC01
+    Results['Scenario01'] = SC01_NonHVACEnergy, SC01_HeatingEnergy, SC01_CoolingEnergy, Energy_SC01, SC01_AvgCoolingCOP, SC01_AvgHeatingCOP, Cost_SC01, Emissions_SC01
 
     # Export Data
     mkdir_p('C:/UMI/temp/DHSimulationResults')
@@ -307,37 +449,86 @@ def sc01():
 def sc02():
 
     print "\nScenario 02: Grid-supplied Electricity Satisfies Cooling and Electric Loads and Buildings Use NG Onsite for Heating"
+
+    # ..................
+    # Begining of SC01() repeat
+
+    # Determine the number of heat pumps (heating) needed for each hour, for each building
+    Output['NumHeatPumps_Heat'] = Output['TotalHeating']/Size_HeatPump_Heating # v26 running heat pumps
+    Output['NumHeatPumps_Heat'] = np.ceil(Output['NumHeatPumps_Heat'])
+
+    # Calculate PLR by dividing hourly heating load by number of operational heat pumps.
+    Output['PLR_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= HeatThreshold, 0, (Output['TotalHeating']/Output['NumHeatPumps_Heat'])/Size_HeatPump_Heating)
+    Output['PLR_HeatPump_Heating'] = np.where(Output['PLR_HeatPump_Heating'] <= MinPLR_HP_Heating, MinPLR_HP_Heating, Output['PLR_HeatPump_Heating'])
     
-    # Calculate total cooling energy needed
-    Output['NumHeatPumps_Cool'] = Output['SDL/CoolingMax']/Size_HeatPump_Cooling
+    # Calculate the heat pump modifier and energy consumed by the heat pump on an hourly basis
+    Output['HP_Heat_Modifier'] = a1 + a2 * Output['PLR_HeatPump_Heating'] + a3 * Output['PLR_HeatPump_Heating']**2 + a4 * Output['PLR_HeatPump_Heating'] + a5 * Output['PLR_HeatPump_Heating']**3 + a6 * Output['PLR_HeatPump_Heating'] + a7 * Output['PLR_HeatPump_Heating']
+    
+    Output['Energy_HeatPump_Heating'] = Output['HP_Heat_Modifier'] * Power_Max_Heating * Output['NumHeatPumps_Heat']
+    
+    # Calculate the COP of the heat pump, bounded by the min and max COPs
+    Output['COP_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= HeatThreshold, 0, Output['TotalHeating'] / Output['Energy_HeatPump_Heating']) # v23
+    Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] < MinCOP_Heating, MinCOP_Heating, Output['COP_HeatPump_Heating'])
+    Output['COP_HeatPump_Heating'] = np.where(Output['COP_HeatPump_Heating'] > MaxCOP_Heating, MaxCOP_Heating, Output['COP_HeatPump_Heating'])
+ 
+    # Line below ensures that the energy of the heat pump is zero, when the total heating load is below the heating threshold
+    Output['Energy_HeatPump_Heating'] = np.where(Output['TotalHeating'] <= HeatThreshold , 0, Output['TotalHeating']/Output['COP_HeatPump_Heating']) # added v23
+
+    # .........................................................................
+
+    # Determine the number of heat pumps (cooling) needed for each hour, for each building
+    Output['NumHeatPumps_Cool'] = Output['SDL/Cooling']/Size_HeatPump_Cooling # v26 update staging
     Output['NumHeatPumps_Cool'] = np.ceil(Output['NumHeatPumps_Cool'])
-    Output['PLR_HeatPump_Cooling'] = np.where(Output['NumHeatPumps_Cool']<=0.0,0.0, Output['SDL/Cooling'] / (Output['NumHeatPumps_Cool']*Size_HeatPump_Cooling))
+
+    # Calculate PLR by dividing hourly cooling load by number of operational heat pumps.
+    Output['PLR_HeatPump_Cooling'] = np.where(Output['NumHeatPumps_Cool'] <= 0, 0, Output['SDL/Cooling'] / (Output['NumHeatPumps_Cool']*Size_HeatPump_Cooling))
     Output['PLR_HeatPump_Cooling'] = np.where(Output['PLR_HeatPump_Cooling'] < MinPLR_HP_Cooling, MinPLR_HP_Cooling, Output['PLR_HeatPump_Cooling'])
 
     Output['COP_HeatPump_Cooling'] = ((c1_hp + c2_hp*Output['PLR_HeatPump_Cooling'] + c3_hp*Output['DB'] + 
-    c4_hp*Output['PLR_HeatPump_Cooling']**2 + c5_hp*Output['PLR_HeatPump_Cooling']*Output['DB'] + 
-    c6_hp*Output['DB']**2 + c7_hp*Output['PLR_HeatPump_Cooling']**3 + c8_hp*Output['PLR_HeatPump_Cooling']**2*Output['DB'] + 
-    c9_hp*Output['PLR_HeatPump_Cooling']*Output['DB']**2 + c10_hp*Output['DB']**3)**-1)
+	    c4_hp*Output['PLR_HeatPump_Cooling']**2 + c5_hp*Output['PLR_HeatPump_Cooling']*Output['DB'] + 
+	    c6_hp*Output['DB']**2 + c7_hp*Output['PLR_HeatPump_Cooling']**3 + c8_hp*Output['PLR_HeatPump_Cooling']**2*Output['DB'] + 
+	    c9_hp*Output['PLR_HeatPump_Cooling']*Output['DB']**2 + c10_hp*Output['DB']**3)**-1)
 
-    Output['COP_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling']>MaxCOP_Cooling, MaxCOP_Cooling,Output['COP_HeatPump_Cooling'])
+    Output['COP_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling'] > MaxCOP_Cooling, MaxCOP_Cooling, Output['COP_HeatPump_Cooling'])
     Output['COP_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling'] > MinCOP_Cooling, Output['COP_HeatPump_Cooling'], MinCOP_Cooling) # Added in v22 to set minimum COP to prevent negative values
 
-    Output['Energy_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling']<=0,0, Output['SDL/Cooling'] / Output['COP_HeatPump_Cooling'])
+    Output['Energy_HeatPump_Cooling'] = np.where(Output['COP_HeatPump_Cooling'] <= CoolThreshold, 0, Output['SDL/Cooling'] / Output['COP_HeatPump_Cooling'])
     Output['FanPowerSC01'] = Output['Energy_HeatPump_Cooling'] * FanPwrCoolRatio
-    
+
+    # ...................................................................
+
     NonHVAC_Electricity = Output['Electricity']
 
+    Load_CitySC01 = sum(NonHVAC_Electricity + Output['Energy_HeatPump_Heating'] + Output['Energy_HeatPump_Cooling']+Output['FanPowerSC01'] )
+
+    Load_Grid_SC01 = Load_CitySC01 * (1 + Losses_Transmission)
+    Energy_SC01 = Load_Grid_SC01/Effic_PowerGen
+
     SC01_NonHVACEnergy = sum(NonHVAC_Electricity) * (1+Losses_Transmission) / Effic_PowerGen
+    SC01_HeatingEnergy = sum(Output['Energy_HeatPump_Heating']) * (1+Losses_Transmission) / Effic_PowerGen
+    Output['SourceHeatingEnergy'] = Output['Energy_HeatPump_Heating'] * (1+Losses_Transmission) / Effic_PowerGen
     SC01_CoolingEnergy = sum(Output['Energy_HeatPump_Cooling']) * (1+Losses_Transmission) / Effic_PowerGen
     SC01_FanEnergy = sum(Output['FanPowerSC01']) * (1+Losses_Transmission) / Effic_PowerGen
 
     SC01_AvgCoolingCOP = sum(Output['SDL/Cooling']) / SC01_CoolingEnergy # This version of COP represents the true input energy needed to meet cooling demands
+    SC01_AvgHeatingCOP = sum(Output['TotalHeating']) / SC01_HeatingEnergy
+
+    # Cost to Generate Electricity
+    Cost_SC01 = Load_Grid_SC01 * Cost_Electricity
+
+    # Calculate CO2 Emissions Associated to Using Electricity from the Grid to Satisfy Loads
+    Emissions_SC01 = Load_Grid_SC01 * Emissions_ElectricGeneration
+    Output['ElectricityConsumption01'] = (NonHVAC_Electricity + Output['Energy_HeatPump_Heating'] + Output['Energy_HeatPump_Cooling']+Output['FanPowerSC01']) * (1 + Losses_Transmission)
+    Output['NaturalGasConsumption01'] = 0.0
+
+    # End of SC01() repeat
+    # ..................
 
     Load_CitySC02 = sum(NonHVAC_Electricity + Output['Energy_HeatPump_Cooling'] + Output['FanPowerSC01'])
     Load_Grid_SC02 = Load_CitySC02 * (1 + Losses_Transmission)
     Energy_Grid_SC02 = Load_Grid_SC02/Effic_PowerGen
 
-    Output['NumBoilers'] = Output['TotalHeatingMax']/Size_Boiler
+    Output['NumBoilers'] = Output['TotalHeating']/Size_Boiler
     Output['NumBoilers'] = np.ceil(Output['NumBoilers'])
 
     # For every hour, calculate the PLR, Efficiency Boiler Modifier, and Energy Boiler
@@ -395,50 +586,61 @@ def sc03():
     print "\nScenario 03: Grid + District Heating and Cooling Plant"
 
     NonHVAC_Electricity = Output['Electricity']
+
     Load_City_SC03 = sum(NonHVAC_Electricity)
     Load_Grid_SC03 = Load_City_SC03 * (1 + Losses_Transmission)
     Energy_Grid_SC03 = Load_Grid_SC03 / Effic_PowerGen
 
-    NumDistrictBoilers = np.ceil(max(PeakHeating) * (1 + Losses_Heat_Hydronic) /Size_DistrictBoiler) 
-
     DHC = pd.DataFrame()
     DHC['Hour'] = WeatherData.iloc[:,0].values
     DHC = DHC.set_index(['Hour'])
+
     DHC['Load_HourlyHeating'] = Output.groupby('Hour')['TotalHeating'].sum()
+    DHC['Load_HourlyHeating'] = np.where(DHC['Load_HourlyHeating'] <= HeatThreshold, 0, DHC['Load_HourlyHeating']) #v27
+
+    DHC['Load_HourlyCooling'] = (Output.groupby('Hour')['SDL/Cooling'].sum()) * (1 + Losses_Heat_Hydronic)
+    DHC['Load_HourlyCooling'] = np.where(DHC['Load_HourlyCooling'] <= CoolThreshold, 0, DHC['Load_HourlyCooling']) #v26 
+
     DHC['Drybulb'] = WeatherData.iloc[:,1].values
 
-    DHC['PLR_DistrictBoiler'] = np.where(DHC['Load_HourlyHeating']<=0, 0, (DHC['Load_HourlyHeating']/NumDistrictBoilers)/Size_DistrictBoiler)
+    # Calculate the number of district boilers that should be enabled for each hour
+    DHC['NumDistBoilers'] = np.ceil(DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic) / Size_DistrictBoiler) # added v27
+
+    # Calculate the PLR of the boilers using the fewest number of boilers needed to meet load for the hour
+    DHC['PLR_DistrictBoiler'] = np.where(DHC['Load_HourlyHeating'] <= CoolThreshold, 0, (DHC['Load_HourlyHeating'] / DHC['NumDistBoilers']) / Size_DistrictBoiler)
     DHC['PLR_DistrictBoiler'] = np.where(DHC['PLR_DistrictBoiler'] < MinPLR_Boiler, MinPLR_Boiler, DHC['PLR_DistrictBoiler']) # Added in v22
+
+    # Caclulate the energy consumed by the boilers and their COP
     DHC['Efficiency_DistrictBoiler_Modifier'] = c1 + c2 * DHC['PLR_DistrictBoiler'] + c3 * DHC['PLR_DistrictBoiler']**2 + c4 * DHC['PLR_DistrictBoiler']**3
     DHC['Energy_DistrictBoiler'] = DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic) /(Efficiency_Boiler_Nominal * DHC['Efficiency_DistrictBoiler_Modifier'])
+    DHC['COP_DistrictBoiler'] = np.where(DHC['Energy_DistrictBoiler'] <= 0, 0, Efficiency_Boiler_Nominal * DHC['Efficiency_DistrictBoiler_Modifier']) #v28 updated equation so that it is more clear (same results)
 
     Energy_NaturalGas_SC03 = sum(DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic) /(Efficiency_Boiler_Nominal * DHC['Efficiency_DistrictBoiler_Modifier']))
 
-    DHC['COP_DistrictBoiler'] = np.where(DHC['Energy_DistrictBoiler']<=0,0,(DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic)) / DHC['Energy_DistrictBoiler'])
-
-    NumChillers = np.ceil(max(PeakCooling) * (1+ Losses_Heat_Hydronic) /Size_ElectricCentrifugalChiller_Nominal)
-    DHC['Load_HourlyCooling'] = (Output.groupby('Hour')['SDL/Cooling'].sum()) * (1 + Losses_Heat_Hydronic)
-    DHC['CoolingLoad/ChillerSize'] = DHC['Load_HourlyCooling']/Size_ElectricCentrifugalChiller_Nominal
-    DHC['MinNumChillers'] = np.ceil(DHC['CoolingLoad/ChillerSize'])
-    DHC['PLR'] = np.where(DHC['Load_HourlyCooling']<=0, 0, (DHC['Load_HourlyCooling']/DHC['MinNumChillers'])/Size_ElectricCentrifugalChiller_Nominal) 
-    DHC['PLR'] = np.where(DHC['PLR']<MinPLR_CentrifugalChiller, MinPLR_CentrifugalChiller, (DHC['Load_HourlyCooling']/DHC['MinNumChillers'])/Size_ElectricCentrifugalChiller_Nominal)
-
+    # Calculate the mininum number of chillers needed to meet demands per hours
+    DHC['NumChillers'] = np.ceil(DHC['Load_HourlyCooling'] / Size_ElectricCentrifugalChiller_Nominal)
+    DHC['PLR'] = np.where(DHC['Load_HourlyCooling'] <= CoolThreshold, 0, (DHC['Load_HourlyCooling']/DHC['NumChillers'])/Size_ElectricCentrifugalChiller_Nominal) 
+    DHC['PLR'] = np.where(DHC['PLR'] < MinPLR_CentrifugalChiller, MinPLR_CentrifugalChiller, (DHC['Load_HourlyCooling']/DHC['NumChillers'])/Size_ElectricCentrifugalChiller_Nominal)
+    
     DHC['CWR_T'] = c1_CWR+c2_CWR*DHC['Drybulb']**2+c3_CWR*DHC['Drybulb'] * DHC['PLR']
 
+    # Calculate the coefficients necessary to estimate chiller power
     DHC['CapFunT'] = c1_ECC_CapFunT+c2_ECC_CapFunT*CHWS_T + c3_ECC_CapFunT*CHWS_T**2 + c4_ECC_CapFunT*DHC['CWR_T']+c5_ECC_CapFunT*DHC['CWR_T']**2 + c6_ECC_CapFunT*CHWS_T*DHC['CWR_T']
     DHC['EIRFunT'] = c1_ECC_EIRFunT+c2_ECC_EIRFunT*CHWS_T + c3_ECC_EIRFunT*CHWS_T**2 + c4_ECC_EIRFunT*DHC['CWR_T']+c5_ECC_EIRFunT*DHC['CWR_T']**2 + c6_ECC_EIRFunT*CHWS_T*DHC['CWR_T']
     DHC['EIRFunPLR'] = c1_ECC_EIRFPLR+c2_ECC_EIRFPLR*DHC['CWR_T'] + c3_ECC_EIRFPLR*DHC['CWR_T']**2 + c4_ECC_EIRFPLR*DHC['PLR']+c5_ECC_EIRFPLR*DHC['PLR']**2 + c6_ECC_EIRFPLR*DHC['CWR_T']*DHC['PLR']+c7_ECC_EIRFPLR*DHC['CWR_T']**3+c8_ECC_EIRFPLR*DHC['PLR']**3+c9_ECC_EIRFPLR*DHC['CWR_T']**2*DHC['PLR']+c10_ECC_EIRFPLR*DHC['CWR_T']*DHC['PLR']**2
 
-    DHC['Energy_CentrifugalChiller'] = Power_CentrifugalChiller_Nominal * DHC['CapFunT'] * DHC['EIRFunT'] * DHC['EIRFunPLR'] * DHC['MinNumChillers']
-    DHC['COP_CentrifugalChiller'] = np.where(DHC['Energy_CentrifugalChiller']<=0,0, DHC['Load_HourlyCooling']/DHC['Energy_CentrifugalChiller'])
+    # Calculate the energy consumed by the chiller and its COP
+    DHC['Energy_CentrifugalChiller'] = Power_CentrifugalChiller_Nominal * DHC['CapFunT'] * DHC['EIRFunT'] * DHC['EIRFunPLR'] * DHC['NumChillers']
+    DHC['COP_CentrifugalChiller'] = np.where(DHC['Energy_CentrifugalChiller'] <= 0, 0, DHC['Load_HourlyCooling']/DHC['Energy_CentrifugalChiller'])
 
-    DHC['CoolingTowerPower'] = np.where(DHC['Load_HourlyCooling']<=0,0, Size_CT_Nominal * DHC['MinNumChillers'] * a1_ct * DHC['PLR']**3 + a2_ct * DHC['PLR']**2 -a3_ct * DHC['PLR'] + a4_ct)
+    DHC['CoolingTowerPower'] = np.where(DHC['Load_HourlyCooling'] <= CoolThreshold, 0, Size_CT_Nominal * DHC['NumChillers'] * a1_ct * DHC['PLR']**3 + a2_ct * DHC['PLR']**2 -a3_ct * DHC['PLR'] + a4_ct)
     Energy_CoolingTowers_SC03 = sum(DHC['CoolingTowerPower']) * (1 + Losses_Transmission) / Effic_PowerGen
 
     DHC['FanPower'] = DHC['Energy_CentrifugalChiller'] * FanPwrCoolRatio
     Energy_Fans_SC03 = sum(DHC['FanPower']) * (1 + Losses_Transmission) / Effic_PowerGen
 
-    DHC['PumpPower'] = DHC['Load_HourlyCooling'] * PumpCoolFraction + DHC['Load_HourlyHeating'] * (1+Losses_Heat_Hydronic) * PumpHeatFraction
+    # DHC['PumpPower'] = DHC['Load_HourlyCooling'] * PumpCoolFraction + DHC['Load_HourlyHeating'] * (1+Losses_Heat_Hydronic) * PumpHeatFraction
+    DHC['PumpPower'] = DHC['Load_HourlyCooling'] * 0.02 + DHC['Load_HourlyHeating'] * (1+Losses_Heat_Hydronic) * 0.005
     Energy_Pumps_SC03 = sum(DHC['PumpPower']) * (1 + Losses_Transmission) / Effic_PowerGen
 
     Energy_CoolingElectricity_SC03 = sum(DHC['Energy_CentrifugalChiller']) * (1 + Losses_Transmission) / Effic_PowerGen
@@ -461,11 +663,18 @@ def sc03():
     Cost_Electricity_SC03 = (Load_Grid_SC03 + (Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03) * Effic_PowerGen)* Cost_Electricity
     Cost_NG_SC03 = Energy_NaturalGas_SC03 * Price_NaturalGas
     Cost_SC03 = Cost_Electricity_SC03 + Cost_NG_SC03
-    print "Annual cost of generating electricity for Non-HVAC loads and to run\nelectric centrifugal chillers and purchasing NG from grid (USD):" , Cost_SC03
+
+    print "Annual cost of purchasing electricity (USD):" , Cost_Electricity_SC03
+    print "Annual cost of purchasing NG(USD):" , Cost_NG_SC03
+    print "Annual cost of purchasing electricity and NG from grid:" , Cost_SC03
 
     Emissions_Electricity_SC03 = (Load_Grid_SC03 + (Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03) * Effic_PowerGen) * Emissions_ElectricGeneration
     Emissions_NG_SC03 = Energy_NaturalGas_SC03 * Emissions_NG_Combustion_kWh
     Emissions_SC03 = Emissions_Electricity_SC03 + Emissions_NG_SC03
+
+    print "Annual non-HVAC carbon emissions (Metric Tons):", Load_Grid_SC03 * Emissions_ElectricGeneration
+    print "Annual heating carbon emissions (Metric Tons):", Emissions_NG_SC03 + Energy_Pumps_SC03/2 * (1+Losses_Transmission) * Emissions_ElectricGeneration
+    print "Annual cooling carbon emissions (Metric Tons):", ((Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03/2) * Effic_PowerGen) * Emissions_ElectricGeneration
     print "Annual carbon emissions (Metric Tons):", Emissions_SC03
 
     Results = pd.DataFrame()
@@ -484,60 +693,81 @@ def sc04():
 
     print "\nScenario 04: CCHP Satisfies Electricity, Heating, and Cooling Demands"
 
-    NumDistrictBoilers = np.ceil(max(PeakHeating) * (1 + Losses_Heat_Hydronic) /Size_DistrictBoiler) 
+    NonHVAC_Electricity = Output['Electricity']
+
+    Load_City_SC03 = sum(NonHVAC_Electricity)
+    Load_Grid_SC03 = Load_City_SC03 * (1 + Losses_Transmission)
+    Energy_Grid_SC03 = Load_Grid_SC03 / Effic_PowerGen
 
     DHC = pd.DataFrame()
     DHC['Hour'] = WeatherData.iloc[:,0].values
     DHC = DHC.set_index(['Hour'])
+
     DHC['Load_HourlyHeating'] = Output.groupby('Hour')['TotalHeating'].sum()
+    DHC['Load_HourlyHeating'] = np.where(DHC['Load_HourlyHeating'] <= HeatThreshold, 0, DHC['Load_HourlyHeating']) #v27
+
+    DHC['Load_HourlyCooling'] = (Output.groupby('Hour')['SDL/Cooling'].sum()) * (1 + Losses_Heat_Hydronic)
+    DHC['Load_HourlyCooling'] = np.where(DHC['Load_HourlyCooling'] <= CoolThreshold, 0, DHC['Load_HourlyCooling']) #v26 
+
     DHC['Drybulb'] = WeatherData.iloc[:,1].values
 
-    DHC['PLR_DistrictBoiler'] = np.where(DHC['Load_HourlyHeating']<=0, 0, (DHC['Load_HourlyHeating']/NumDistrictBoilers)/Size_DistrictBoiler)
+    # Calculate the number of district boilers that should be enabled for each hour
+    DHC['NumDistBoilers'] = np.ceil(DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic) / Size_DistrictBoiler) # added v27
+
+    # Calculate the PLR of the boilers using the fewest number of boilers needed to meet load for the hour
+    DHC['PLR_DistrictBoiler'] = np.where(DHC['Load_HourlyHeating'] <= CoolThreshold, 0, (DHC['Load_HourlyHeating'] / DHC['NumDistBoilers']) / Size_DistrictBoiler)
     DHC['PLR_DistrictBoiler'] = np.where(DHC['PLR_DistrictBoiler'] < MinPLR_Boiler, MinPLR_Boiler, DHC['PLR_DistrictBoiler']) # Added in v22
+
+    # Caclulate the energy consumed by the boilers and their COP
     DHC['Efficiency_DistrictBoiler_Modifier'] = c1 + c2 * DHC['PLR_DistrictBoiler'] + c3 * DHC['PLR_DistrictBoiler']**2 + c4 * DHC['PLR_DistrictBoiler']**3
     DHC['Energy_DistrictBoiler'] = DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic) /(Efficiency_Boiler_Nominal * DHC['Efficiency_DistrictBoiler_Modifier'])
+    DHC['COP_DistrictBoiler'] = np.where(DHC['Energy_DistrictBoiler'] <= 0, 0, Efficiency_Boiler_Nominal * DHC['Efficiency_DistrictBoiler_Modifier']) #v28 updated equation so that it is more clear (same results)
 
     Energy_NaturalGas_SC03 = sum(DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic) /(Efficiency_Boiler_Nominal * DHC['Efficiency_DistrictBoiler_Modifier']))
 
-    DHC['COP_DistrictBoiler'] = np.where(DHC['Energy_DistrictBoiler']<=0,0,(DHC['Load_HourlyHeating'] * (1 + Losses_Heat_Hydronic)) / DHC['Energy_DistrictBoiler'])
-
-    NumChillers = np.ceil(max(PeakCooling) * (1+ Losses_Heat_Hydronic) /Size_ElectricCentrifugalChiller_Nominal)
-    DHC['Load_HourlyCooling'] = (Output.groupby('Hour')['SDL/Cooling'].sum()) * (1 + Losses_Heat_Hydronic)
-    DHC['CoolingLoad/ChillerSize'] = DHC['Load_HourlyCooling']/Size_ElectricCentrifugalChiller_Nominal
-    DHC['MinNumChillers'] = np.ceil(DHC['CoolingLoad/ChillerSize'])
-    DHC['PLR'] = np.where(DHC['Load_HourlyCooling']<=0, 0, (DHC['Load_HourlyCooling']/DHC['MinNumChillers'])/Size_ElectricCentrifugalChiller_Nominal) 
-    DHC['PLR'] = np.where(DHC['PLR']<MinPLR_CentrifugalChiller, MinPLR_CentrifugalChiller, (DHC['Load_HourlyCooling']/DHC['MinNumChillers'])/Size_ElectricCentrifugalChiller_Nominal)
-
+    # Calculate the mininum number of chillers needed to meet demands per hours
+    DHC['NumChillers'] = np.ceil(DHC['Load_HourlyCooling'] / Size_ElectricCentrifugalChiller_Nominal)
+    DHC['PLR'] = np.where(DHC['Load_HourlyCooling'] <= CoolThreshold, 0, (DHC['Load_HourlyCooling']/DHC['NumChillers'])/Size_ElectricCentrifugalChiller_Nominal) 
+    DHC['PLR'] = np.where(DHC['PLR'] < MinPLR_CentrifugalChiller, MinPLR_CentrifugalChiller, (DHC['Load_HourlyCooling']/DHC['NumChillers'])/Size_ElectricCentrifugalChiller_Nominal)
+    
     DHC['CWR_T'] = c1_CWR+c2_CWR*DHC['Drybulb']**2+c3_CWR*DHC['Drybulb'] * DHC['PLR']
 
+    # Calculate the coefficients necessary to estimate chiller power
     DHC['CapFunT'] = c1_ECC_CapFunT+c2_ECC_CapFunT*CHWS_T + c3_ECC_CapFunT*CHWS_T**2 + c4_ECC_CapFunT*DHC['CWR_T']+c5_ECC_CapFunT*DHC['CWR_T']**2 + c6_ECC_CapFunT*CHWS_T*DHC['CWR_T']
     DHC['EIRFunT'] = c1_ECC_EIRFunT+c2_ECC_EIRFunT*CHWS_T + c3_ECC_EIRFunT*CHWS_T**2 + c4_ECC_EIRFunT*DHC['CWR_T']+c5_ECC_EIRFunT*DHC['CWR_T']**2 + c6_ECC_EIRFunT*CHWS_T*DHC['CWR_T']
     DHC['EIRFunPLR'] = c1_ECC_EIRFPLR+c2_ECC_EIRFPLR*DHC['CWR_T'] + c3_ECC_EIRFPLR*DHC['CWR_T']**2 + c4_ECC_EIRFPLR*DHC['PLR']+c5_ECC_EIRFPLR*DHC['PLR']**2 + c6_ECC_EIRFPLR*DHC['CWR_T']*DHC['PLR']+c7_ECC_EIRFPLR*DHC['CWR_T']**3+c8_ECC_EIRFPLR*DHC['PLR']**3+c9_ECC_EIRFPLR*DHC['CWR_T']**2*DHC['PLR']+c10_ECC_EIRFPLR*DHC['CWR_T']*DHC['PLR']**2
 
-    DHC['Energy_CentrifugalChiller'] = Power_CentrifugalChiller_Nominal * DHC['CapFunT'] * DHC['EIRFunT'] * DHC['EIRFunPLR'] * DHC['MinNumChillers']
-    DHC['COP_CentrifugalChiller'] = np.where(DHC['Energy_CentrifugalChiller']<=0,0, DHC['Load_HourlyCooling']/DHC['Energy_CentrifugalChiller'])
+    # Calculate the energy consumed by the chiller and its COP
+    DHC['Energy_CentrifugalChiller'] = Power_CentrifugalChiller_Nominal * DHC['CapFunT'] * DHC['EIRFunT'] * DHC['EIRFunPLR'] * DHC['NumChillers']
+    DHC['COP_CentrifugalChiller'] = np.where(DHC['Energy_CentrifugalChiller'] <= 0, 0, DHC['Load_HourlyCooling']/DHC['Energy_CentrifugalChiller'])
 
-    DHC['CoolingTowerPower'] = np.where(DHC['Load_HourlyCooling']<=0,0, Size_CT_Nominal * DHC['MinNumChillers'] * a1_ct * DHC['PLR']**3 + a2_ct * DHC['PLR']**2 -a3_ct * DHC['PLR'] + a4_ct)
+    DHC['CoolingTowerPower'] = np.where(DHC['Load_HourlyCooling'] <= CoolThreshold, 0, Size_CT_Nominal * DHC['NumChillers'] * a1_ct * DHC['PLR']**3 + a2_ct * DHC['PLR']**2 -a3_ct * DHC['PLR'] + a4_ct)
     Energy_CoolingTowers_SC03 = sum(DHC['CoolingTowerPower']) * (1 + Losses_Transmission) / Effic_PowerGen
 
     DHC['FanPower'] = DHC['Energy_CentrifugalChiller'] * FanPwrCoolRatio
     Energy_Fans_SC03 = sum(DHC['FanPower']) * (1 + Losses_Transmission) / Effic_PowerGen
 
-    DHC['PumpPower'] = DHC['Load_HourlyCooling'] * PumpCoolFraction + DHC['Load_HourlyHeating'] * (1+Losses_Heat_Hydronic) * PumpHeatFraction
+    # DHC['PumpPower'] = DHC['Load_HourlyCooling'] * PumpCoolFraction + DHC['Load_HourlyHeating'] * (1+Losses_Heat_Hydronic) * PumpHeatFraction
+    DHC['PumpPower'] = DHC['Load_HourlyCooling'] * 0.02 + DHC['Load_HourlyHeating'] * (1+Losses_Heat_Hydronic) * 0.005
     Energy_Pumps_SC03 = sum(DHC['PumpPower']) * (1 + Losses_Transmission) / Effic_PowerGen
 
     Energy_CoolingElectricity_SC03 = sum(DHC['Energy_CentrifugalChiller']) * (1 + Losses_Transmission) / Effic_PowerGen
+    Energy_SC03 = Energy_Grid_SC03 + Energy_NaturalGas_SC03 + Energy_CoolingElectricity_SC03 + Energy_Fans_SC03 + Energy_Pumps_SC03 + Energy_CoolingTowers_SC03
 
     SC03_AvgCoolingCOP = sum(Output['SDL/Cooling']) / ((Energy_CoolingElectricity_SC03 * (1 + Losses_Heat_Hydronic)) + Energy_CoolingTowers_SC03) # Includes chiller and CT energy in denom
     SC03_AvgHeatingCOP = sum(Output['TotalHeating']) / Energy_NaturalGas_SC03
 
-
     CCHP = pd.DataFrame()
     CCHP['Hour'] = WeatherData.iloc[:,0].values
     CCHP = CCHP.set_index(['Hour'])
+
     CCHP['Load_HourlyElectricity'] = (Output.groupby('Hour')['Electricity'].sum())
     CCHP['Load_HourlyHeating'] = Output.groupby('Hour')['TotalHeating'].sum()
+    CCHP['Load_HourlyHeating'] = np.where(CCHP['Load_HourlyHeating'] <= HeatThreshold, 0, CCHP['Load_HourlyHeating']) #v26 
+
     CCHP['Load_HourlyCooling'] = (Output.groupby('Hour')['SDL/Cooling'].sum()) * (1 + Losses_Heat_Hydronic)
+    CCHP['Load_HourlyCooling'] = np.where(CCHP['Load_HourlyCooling'] <= CoolThreshold, 0, CCHP['Load_HourlyCooling']) #v26
+
     CCHP['Drybulb'] = WeatherData.iloc[:,1].values
     CCHP['CWR_T'] = DHC['CWR_T']
     CCHP['CHWS_T'] = CHWS_T
@@ -545,7 +775,7 @@ def sc04():
     Size_GasTurbine = max(CCHP['Load_HourlyElectricity']) #Rated electrical output of gas turbine based on the peak loads of the city
 
     CCHP['GT_PLR'] = CCHP['Load_HourlyElectricity'] / Size_GasTurbine
-    CCHP['ModGT_PLR'] = np.where(CCHP['GT_PLR']<MinimumLoad_GasTurbine, MinimumLoad_GasTurbine, CCHP['Load_HourlyElectricity'] / Size_GasTurbine)
+    CCHP['ModGT_PLR'] = np.where(CCHP['GT_PLR']<MinimumLoad_GasTurbine, MinimumLoad_GasTurbine, CCHP['GT_PLR']) #v28 Updated form
 
     CCHP['GT_Efficiency'] = (c1_GT*(CCHP['ModGT_PLR']*100)**2+c2_GT*(CCHP['ModGT_PLR']*100)+c3_GT)*Effic_CCHP_Electrical
     CCHP['Heat/Power'] = (1 - CCHP['GT_Efficiency'])*0.8 / CCHP['GT_Efficiency']
@@ -554,7 +784,7 @@ def sc04():
 
     CCHP['GT_InputFuelOptimal'] = CCHP['Load_HourlyElectricity'] / CCHP['GT_Efficiency']
     CCHP['ExcessElectricity'] = (CCHP['GT_InputFuelActual'] - CCHP['GT_InputFuelOptimal']) * CCHP['GT_Efficiency']
-    ExcessElecValue = sum(CCHP['ExcessElectricity']) * Cost_Electricity # added in v22
+    ExcessElecValue = sum(CCHP['ExcessElectricity']) * Cost_Electricity # updated in v29
 
     CCHP['UseableHeat'] = CCHP['ModGT_PLR'] * CCHP['GT_Efficiency'] * Size_GasTurbine * CCHP['Heat/Power']
 
@@ -577,19 +807,20 @@ def sc04():
 
     # 00 Initialization of COP and while loop set up for absorption chiller ---
     CCHP['COP_AbsChiller'] = CoP_Chiller_Absorption * 0.75 #Initial guess for COP
-    CCHP['PLR_AbsChiller'] = 0.7 
+    CCHP['PLR_AbsChiller'] = 0.7
+
     CCHP['COP_threshold'] = 0.01
     CCHP['PLR_threshold'] = 0.01
+
     CCHP['COP_delta'] = 0.4
     CCHP['PLR_delta']  = 0.3
+
     CCHP['COP_old'] = 0.1
     CCHP['PLR_old'] = 0.1
 
     #--------------------------
-
-
     
-    for index, row in tqdm(CCHP.iterrows(),total=len(CCHP.index),dynamic_ncols=True):
+    for index, row in tqdm(CCHP.iterrows(),total=len(CCHP.index), ncols=80):
         while row['COP_delta'] > row['COP_threshold'] and row['PLR_delta'] > row['PLR_threshold']:
 
             # Calculate cooling capacity based on COP and heat remaining
@@ -607,6 +838,8 @@ def sc04():
             row['TeFIRfPLR'] = c1_ac + c2_ac*row['PLR_AbsChiller'] + c3_ac*row['PLR_AbsChiller']**2 
             row['X_AbsChiller'] = row['CapFunT'] * row['TeFIRFt']  * row['TeFIRfPLR'] 
             row['Energy_AbsChiller'] = Size_AbsorptionChiller_Nominal * row['X_AbsChiller'] * row['NumAbsChillers']
+
+            # 02 COP cacluated based on PLR and the equations above
             row['COP_AbsChiller'] = row['Load_AbsChiller'] / row['Energy_AbsChiller']
             row['CoolingSupp'] = np.where(row['AbsCoolingCapacity'] >= row['Load_HourlyCooling'], 0, row['Load_HourlyCooling'] - row['AbsCoolingCapacity']) # Move outside of loop
 
@@ -673,6 +906,8 @@ def sc04():
     Cost_NG_SC04 = (Energy_GT + Energy_CCHPBoiler) * Price_NaturalGas
     Cost_SC04 = Cost_Electricity_SC04 + Cost_NG_SC04
 
+    print "Annual cost of purchasing electricity (USD):" , Cost_Electricity_SC04
+    print "Annual cost of purchasing NG(USD):" , Cost_NG_SC04
     print "Annual cost (USD):" , Cost_SC04
     print "Surplus electricity value (USD):" , ExcessElecValue # added v22
     print "Updated annual cost (USD):" , Cost_SC04 - ExcessElecValue # added v22
@@ -680,6 +915,8 @@ def sc04():
     Emissions_Electricity_SC04 = (Energy_CoolingSuppElectricity_SC04 * Effic_PowerGen) * Emissions_ElectricGeneration
     Emissions_NG_SC04 = (Energy_GT + Energy_CCHPBoiler) * Emissions_NG_Combustion_kWh
     Emissions_SC04 = Emissions_Electricity_SC04 + Emissions_NG_SC04
+
+    print "Annual gas turbine carbon emissions (Metric Tons):", sum(CCHP['GT_InputFuelActual']) * Emissions_NG_Combustion_kWh
     print "Annual carbon emissions (Metric Tons):", Emissions_SC04
 
     # Results = pd.DataFrame()

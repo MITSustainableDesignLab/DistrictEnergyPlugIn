@@ -35,17 +35,23 @@ namespace DistrictEnergy
             {
                 string layerPath_h = "umi::District Energy::Heating Network";
                 string layerPath_c = "umi::District Energy::Cooling Nerwork";
+                string layerPath_p = "umi::District Energy::Thermal Plant";
                 Color color_h = Color.FromArgb(0, 255, 79, 0);
                 Color color_c = Color.FromArgb(0, 23, 85, 153);
+                Color color_p = Color.FromArgb(0, 77, 59, 232);
 
                 Layer target_h = EnsureFullPath(layerPath_h, RhinoDocument);
                 Layer target_c = EnsureFullPath(layerPath_c, RhinoDocument);
+                Layer target_p = EnsureFullPath(layerPath_p, RhinoDocument);
                 target_h.Color = color_h;
                 target_h.CommitChanges();
                 target_c.Color = color_c;
                 target_c.CommitChanges();
+                target_p.Color = color_p;
+                target_p.CommitChanges();
                 var Index_h = target_h.LayerIndex;
                 var Index_c = target_c.LayerIndex;
+                var Index_p = target_p.LayerIndex;
                 RhinoDoc.ActiveDoc.Layers.SetCurrentLayerIndex(Index_h, true);
 
 
@@ -57,42 +63,7 @@ namespace DistrictEnergy
                 return Result.Failure;
             }
 
-            // Prompt for a layer name
-            string layername = RhinoDocument.Layers.CurrentLayer.Name;
-            Result rc = Rhino.Input.RhinoGet.GetString("Name of layer to select objects", true, ref layername);
-            if (rc != Result.Success)
-                return rc;
-
-            // Get all of the objects on the layer. If layername is bogus, you will
-            // just get an empty list back
-            Rhino.DocObjects.RhinoObject[] rhobjs = RhinoDocument.Objects.FindByLayer(layername);
-            if (rhobjs == null)
-            {
-                RhinoApp.WriteLine($"Error: Couldn't Find Layer");
-                return Result.Cancel;
-            }
-
-            else if (rhobjs.Length < 1)
-            {
-                RhinoApp.WriteLine($"Error: The Layer is Empty");
-                return Result.Cancel;
-            }
-
-            else RhinoApp.WriteLine($"{rhobjs.Length.ToString()} objects selected");
-
-            for (int i = 0; i < rhobjs.Length; i++)
-            {
-                rhobjs[i].Select(true);
-                // Duplicate objects
-                var geometry_base = rhobjs[i].DuplicateGeometry();
-                if (geometry_base != null)
-                    if (RhinoDocument.Objects.Add(geometry_base) != Guid.Empty)
-                        RhinoDocument.Views.Redraw();
-            }
-            RhinoDocument.Views.Redraw();
-            
-            // Ofset Curves
-
+            RhinoApp.WriteLine("Successfully created district energy layers.");
             return Result.Success;
 
         }
@@ -110,9 +81,13 @@ namespace DistrictEnergy
         }
 
         /// <summary>
+        /// /// <summary>
         /// Find a layer by name
         /// </summary>
+        /// </summary>
+        /// <param name="RhinoDocument"></param>
         /// <param name="name"></param>
+        /// <param name="isRoot"></param>
         /// <returns></returns>
         Layer FindLayer(RhinoDoc RhinoDocument, string name, bool isRoot)
         {
@@ -135,6 +110,7 @@ namespace DistrictEnergy
         /// <summary>
         /// Make sure layer "name" exists, find it, or create a new one.
         /// </summary>
+        /// <param name="RhinoDocument"></param>
         /// <param name="name"></param>
         /// <param name="isRoot">Make sure the layer is not a sublayer</param>
         /// <returns></returns>
@@ -156,6 +132,7 @@ namespace DistrictEnergy
         /// EnsureFullPath: Make sure the full path exists.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="RhinoDocument"></param>
         /// <returns></returns>
         Layer EnsureFullPath(string name, RhinoDoc RhinoDocument)
         {
@@ -177,6 +154,7 @@ namespace DistrictEnergy
         /// <summary>
         /// Find layer by full path
         /// </summary>
+        /// <param name="RhinoDocument"></param>
         /// <param name="name"></param>
         /// <returns></returns>
         Layer FindLayerByFullPath(RhinoDoc RhinoDocument, string name)
@@ -235,6 +213,7 @@ namespace DistrictEnergy
         /// <summary>
         /// Make sure all child layers exist
         /// </summary>
+        /// <param name="RhinoDocument"></param>
         /// <param name="parent"></param>
         /// <param name="names"></param>
         /// <returns></returns>
@@ -251,6 +230,7 @@ namespace DistrictEnergy
         /// <summary>
         /// Make sure one child layer exists
         /// </summary>
+        /// <param name="RhinoDocument"></param>
         /// <param name="parent"></param>
         /// <param name="name"></param>
         /// <returns></returns>
