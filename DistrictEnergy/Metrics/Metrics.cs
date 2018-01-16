@@ -1,11 +1,8 @@
-﻿using Mit.Umi.RhinoServices;
-using Rhino;
+﻿using Rhino;
 using Rhino.Geometry;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Mit.Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
 {
@@ -188,7 +185,7 @@ namespace DistrictEnergy.Metrics
         /// <returns>GJ</returns>
         public static double HeatSoldPerAnnum()
         {
-            var heatDemand = GlobalContext.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum());
+            var heatDemand = UmiContext.Current.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum());
             var heatDemand2 = heatDemand.Sum() * 0.0036;
             return heatDemand2;
         }

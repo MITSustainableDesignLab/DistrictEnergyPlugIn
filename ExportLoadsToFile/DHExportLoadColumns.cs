@@ -1,16 +1,12 @@
 ﻿using System;
 using Rhino;
 using Rhino.Commands;
-using Rhino.Input.Custom;
-using Rhino.DocObjects;
-using Rhino.Geometry;
-using Rhino.Input;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using Mit.Umi.RhinoServices;
 using System.Windows.Forms;
 using System.Linq;
+using Mit.Umi.RhinoServices.Context;
 
 namespace ExportLoadsToFile
 {
@@ -40,7 +36,7 @@ namespace ExportLoadsToFile
         {
             Form1 formData = new Form1();
 
-            if (GlobalContext.ActiveProjectSettings.GenerateHourlyEnergyResults)
+            if (UmiContext.Current.ProjectSettings.GenerateHourlyEnergyResults)
             {
                 var file_name = "";
                 SaveFileDialog save_file_dialog = new SaveFileDialog();
@@ -91,7 +87,7 @@ namespace ExportLoadsToFile
 
                 StringBuilder sbline = new StringBuilder();
                 string firstline = "" + delimiter + "Hour" + delimiter + "Building Name" + delimiter;
-                foreach (var o in GlobalContext.GetObjects())
+                foreach (var o in UmiContext.Current.GetObjects())
                 {
                     var series = o.Data.Select(kvp => kvp.Value);
                     DateTime t = new DateTime(2017, 1, 1, 0, 0, 0);

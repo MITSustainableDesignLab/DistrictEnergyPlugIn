@@ -20,9 +20,4 @@ namespace DistrictEnergy
         [DefaultValue(0.9)]
         public double PumpEfficiency { get; set; } = 0.9;
     }
-
-    internal class PlanningSettingsPath
-    {
-        public const string SettingsFilePathInBundle = "planningSettings.json";
-    }
 }

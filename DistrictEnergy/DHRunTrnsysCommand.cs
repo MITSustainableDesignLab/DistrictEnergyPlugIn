@@ -1,9 +1,9 @@
-﻿using Mit.Umi.RhinoServices;
-using Rhino;
+﻿using Rhino;
 using Rhino.ApplicationSettings;
 using Rhino.Commands;
 using Rhino.DocObjects;
 using System;
+using Mit.Umi.RhinoServices.Context;
 using TrnsysUmiPlatform;
 
 namespace DistrictEnergy
@@ -42,7 +42,7 @@ namespace DistrictEnergy
                 Rhino.DocObjects.RhinoObject[] rhobjs = doc.Objects.FindByLayer(lay);
                 if (rhobjs.Length > 0)
                 {
-                    string weather = GlobalContext.ActiveEpwPath.ToString();
+                    string weather = UmiContext.Current.WeatherFilePath.ToString();
                     TrnsysModel trnsys_model = new TrnsysModel(doc.Name, 1, weather, "Samuel Letellier-Duchesne", "No Description", FileSettings.WorkingFolder);
                     RhinoApp.WriteLine("The working Trnsys folder is : " + FileSettings.WorkingFolder);
 

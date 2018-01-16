@@ -1,5 +1,4 @@
-﻿using Mit.Umi.RhinoServices;
-using NetworkDraw.Geometry;
+﻿using NetworkDraw.Geometry;
 using Rhino;
 using Rhino.Commands;
 using Rhino.Display;
@@ -13,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mit.Umi.RhinoServices.Context;
 using TrnsysUmiPlatform;
 using TrnsysUmiPlatform.Types;
 
@@ -243,7 +243,7 @@ namespace NetworkDraw
             }
 
 
-            var model = new TrnsysModel("name", 1, GlobalContext.ActiveEpwPath, "Sam {i}", "description",
+            var model = new TrnsysModel("name", 1, UmiContext.Current.WeatherFileName, "Sam {i}", "description",
                 @"C:\UMI\temp");
             model.WriteDckFile(pipes, diverters);
             Task.Factory.StartNew(() => { model.RunTrnsys(false); });

@@ -1,10 +1,9 @@
 ﻿using System;
 using Rhino;
 using Rhino.Commands;
-using Mit.Umi.RhinoServices;
 using System.Linq;
-using Mit.Umi.Core;
 using System.Collections.Generic;
+using Mit.Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
 {
@@ -30,7 +29,7 @@ namespace DistrictEnergy.Metrics
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            var MaxHeatinLoadQuery = GlobalContext.GetObjects().
+            var MaxHeatinLoadQuery = UmiContext.Current.GetObjects().
                 Select(b => new
                 { BuildingId = b.Id, MaxLoad = MaxHeatingLoad(b), AverageLoad = AverageHeatingLoad(b) });
 

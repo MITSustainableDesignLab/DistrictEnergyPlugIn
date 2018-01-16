@@ -1,92 +1,117 @@
-﻿using Mit.Umi.RhinoServices;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
+using Mit.Umi.RhinoServices.Context;
+using Mit.Umi.RhinoServices.UmiEvents;
+using Rhino;
 
 namespace DistrictEnergy.ViewModels
 {
     public class DistrictSettingsViewModel : INotifyPropertyChanged
     {
-
-        public static DistrictSettings backing = new DistrictSettings();
-
-
         public DistrictSettingsViewModel()
         {
-            GlobalContext.ActiveProjectSwitched += (s, e) => PopulateFrom(e.NewProject);
+            RhinoDoc.EndSaveDocument += RhinoDoc_EndSaveDocument;
+            UmiEventSource.Instance.ProjectOpened += PopulateFrom;
+        }
+
+        public static DistrictSettings DistrictSettings = new DistrictSettings();
+
+        private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
+        {
+            SaveSettings();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-
-        public void PopulateFrom(RhinoProject panel)
+        private void PopulateFrom(object sender, UmiContext e)
         {
-            if (panel == null) { return; }
-            var settingsPath = panel.AuxiliaryFiles.SingleOrDefault(aux => Path.GetFileName(aux) == "districtSettings.json");
-            backing = File.Exists(settingsPath) != false
-                                ? JsonConvert.DeserializeObject<DistrictSettings>(File.ReadAllText(settingsPath))
-                                : new DistrictSettings();
-            PropertyChanged(this, new PropertyChangedEventArgs(String.Empty));
+            LoadSettings(e);
+        }
+
+        private void LoadSettings(UmiContext context)
+        {
+            if (context == null) { return; }
+            var path = context.AuxiliaryFiles.GetFullPath("districtSettings.json");
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                DistrictSettings = JsonConvert.DeserializeObject<DistrictSettings>(json);
+            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
+        }
+
+        private void SaveSettings()
+        {
+            var context = UmiContext.Current;
+
+            if (context == null)
+            {
+                return;
+            }
+
+            var dSjson = JsonConvert.SerializeObject(DistrictSettings);
+            context.AuxiliaryFiles.StoreText("districtSettings.json", dSjson);
+
         }
 
         public double ElectricityGenerationCost
         {
-            get { return backing.ElectricityGenerationCost; }
+            get { return DistrictSettings.ElectricityGenerationCost; }
             set
             {
-                backing.ElectricityGenerationCost = value;
+                DistrictSettings.ElectricityGenerationCost = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectricityGenerationCost)));
             }
         }
 
         public double PriceNaturalGas
         {
-            get { return backing.PriceNaturalGas; }
+            get { return DistrictSettings.PriceNaturalGas; }
             set
             {
-                backing.PriceNaturalGas = value;
+                DistrictSettings.PriceNaturalGas = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PriceNaturalGas)));
             }
         }
 
         public double EmissionsElectricGeneration
         {
-            get { return backing.EmissionsElectricGeneration; }
+            get { return DistrictSettings.EmissionsElectricGeneration; }
             set
             {
-                backing.EmissionsElectricGeneration = value;
+                DistrictSettings.EmissionsElectricGeneration = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EmissionsElectricGeneration)));
             }
         }
 
         public double LossesTransmission
         {
-            get { return backing.LossesTransmission; }
+            get { return DistrictSettings.LossesTransmission; }
             set
             {
-                backing.LossesTransmission = value;
+                DistrictSettings.LossesTransmission = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossesTransmission)));
             }
         }
 
         public double LossesHeatHydronic
         {
-            get { return backing.LossesHeatHydronic; }
+            get { return DistrictSettings.LossesHeatHydronic; }
             set
             {
-                backing.LossesHeatHydronic = value;
+                DistrictSettings.LossesHeatHydronic = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossesHeatHydronic)));
             }
         }
 
         public double EfficPowerGen
         {
-            get { return backing.EfficPowerGen; }
+            get { return DistrictSettings.EfficPowerGen; }
             set
             {
-                backing.EfficPowerGen = value;
+                DistrictSettings.EfficPowerGen = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EfficPowerGen)));
             }
         }

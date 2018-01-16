@@ -24,9 +24,4 @@ namespace DistrictEnergy
         public double EfficPowerGen { get; set; } = 0.40;
 
     }
-
-    internal class DistrictSettingsPath
-    {
-        public const string SettingsFilePathInBundle = "districtSettings.json";
-    }
 }

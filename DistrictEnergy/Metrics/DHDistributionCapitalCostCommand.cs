@@ -1,9 +1,8 @@
-﻿using System;
-using Rhino;
+﻿using Rhino;
 using Rhino.Commands;
-using Mit.Umi.RhinoServices;
 using System.Linq;
 using DistrictEnergy.ViewModels;
+using Mit.Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
 {
@@ -29,17 +28,17 @@ namespace DistrictEnergy.Metrics
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            var heatDemand = GlobalContext.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum()).Sum();
-            var bldFloor = GlobalContext.GetObjects().Select(b => b.Data["SDL/Gross Floor Area"].Data.Sum()).Sum();
+            var heatDemand = UmiContext.Current.GetObjects().Select(b => b.Data["SDL/Heating"].Data.Zip(b.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Sum()).Sum();
+            var bldFloor = UmiContext.Current.GetObjects().Select(b => b.Data["SDL/Gross Floor Area"].Data.Sum()).Sum();
             var landArea = Metrics.LandArea();
             var length = Metrics.TotalRouteLength();
             var far = Metrics.FAR(bldFloor, landArea);
             var specificHeat = heatDemand / bldFloor;
             var effectiveWidth = Metrics.EffThermalWidth(landArea, length);
 
-            double annuity = Metrics.AnnuityPayment(PlanningSettingsViewModel.backing.Rate,PlanningSettingsViewModel.backing.Periods);
-            double c1 = PlanningSettingsViewModel.backing.C1;
-            double c2 = PlanningSettingsViewModel.backing.C2;
+            double annuity = Metrics.AnnuityPayment(PlanningSettingsViewModel.PlanningSettings.Rate, PlanningSettingsViewModel.PlanningSettings.Periods);
+            double c1 = PlanningSettingsViewModel.PlanningSettings.C1;
+            double c2 = PlanningSettingsViewModel.PlanningSettings.C2;
 
             double da = Metrics.AveragePipeDiamSwedish(heatDemand * 0.0036 / length);
 

@@ -1,11 +1,11 @@
 ﻿using System;
 using Rhino;
 using Rhino.Commands;
-using Mit.Umi.RhinoServices;
 using EnergyPlusWeather;
 using System.IO;
 using CsvHelper;
 using System.Linq;
+using Mit.Umi.RhinoServices.Context;
 
 namespace ExportLoadsToFile
 {
@@ -31,7 +31,7 @@ namespace ExportLoadsToFile
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            string filepath = GlobalContext.ActiveEpwPath;
+            string filepath = UmiContext.Current.WeatherFilePath;
             EPWeatherData epw = new EPWeatherData();
             epw.GetRawData(filepath);
             string[] paramsOfInterest = new string[1];

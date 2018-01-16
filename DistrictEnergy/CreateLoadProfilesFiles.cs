@@ -5,7 +5,7 @@ using System.Text;
 using Rhino.ApplicationSettings;
 using System.Linq;
 using System.IO;
-using Mit.Umi.RhinoServices;
+using Mit.Umi.RhinoServices.Context;
 
 namespace DistrictEnergy
 {
@@ -54,7 +54,7 @@ namespace DistrictEnergy
                 // The first column is the simulation timestep and the second column is the the values 
                 // of the selected output
 
-                foreach (var o in GlobalContext.GetObjects())
+                foreach (var o in UmiContext.Current.GetObjects())
                 {
                     // Create and Save File
                     string csvFileName = o.Id.ToString();
