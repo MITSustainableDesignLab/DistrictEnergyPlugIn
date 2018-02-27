@@ -84,12 +84,9 @@
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
     <Compile Include="Metrics\Metrics.cs" />
     <Compile Include="Metrics\DHNetworkListCommand.cs" />
-    <Compile Include="TrnExeConsole.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
-    <Compile Include="OrderNetwork.cs" />
-    <Compile Include="DHRunTrnsysCommand.cs" />
     <Compile Include="CreateNetworkLayer.cs" />
     <Compile Include="DistrictEnergyPlugIn.cs" />
     <Compile Include="DistrictControl.xaml.cs">

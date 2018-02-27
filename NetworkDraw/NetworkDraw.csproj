@@ -81,14 +81,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CurvesGetter.cs" />
-    <Compile Include="DHCrossNetworkCommand.cs" />
     <Compile Include="Geometry\CurvesTopology.cs" />
     <Compile Include="Geometry\EdgeAddress.cs" />
     <Compile Include="Geometry\NodeAddress.cs" />
     <Compile Include="Geometry\PathMethods.cs" />
     <Compile Include="GetterExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DHNetworkDrawCommand.cs" />
     <Compile Include="NetworkDrawPlugIn.cs" />
     <Compile Include="DHToggleShowNetworkTopology.cs" />
     <Compile Include="PointGetter.cs" />
