@@ -2,7 +2,7 @@
 using Rhino.DocObjects;
 using Rhino.Geometry;
 
-namespace DistrictEnergy.Networks
+namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class ThermalPlant : IThermalPlant
     {

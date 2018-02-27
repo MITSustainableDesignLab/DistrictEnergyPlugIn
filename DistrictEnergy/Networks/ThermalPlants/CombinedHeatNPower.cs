@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.Serialization;
 
-namespace DistrictEnergy.Networks
+namespace DistrictEnergy.Networks.ThermalPlants
 {
     public class CombinedHeatNPower
     {

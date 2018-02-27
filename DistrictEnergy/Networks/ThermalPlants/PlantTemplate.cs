@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-
-namespace DistrictEnergy.Networks
+namespace DistrictEnergy.Networks.ThermalPlants
 {
     public class PlantTemplate : LibraryComponent
     {

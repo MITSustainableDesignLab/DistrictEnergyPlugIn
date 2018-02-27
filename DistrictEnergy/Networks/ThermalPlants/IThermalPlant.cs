@@ -1,7 +1,7 @@
 ﻿using System;
 using Rhino.Geometry;
 
-namespace DistrictEnergy.Networks
+namespace DistrictEnergy.Networks.ThermalPlants
 {
     public interface IThermalPlant
     {
