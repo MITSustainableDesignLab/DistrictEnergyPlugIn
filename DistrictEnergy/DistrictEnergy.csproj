@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
@@ -79,6 +80,27 @@
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
     <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
+    <Compile Include="NetworkSettings\IPipeSettingsCache.cs" />
+    <Compile Include="NetworkSettings\NetworkSettingsUpdater.cs" />
+    <Compile Include="NetworkSettings\PipeSettingsCache.cs" />
+    <Compile Include="Networks\CombinedHeatNPower.cs" />
+    <Compile Include="Networks\ElectricHeatPump.cs" />
+    <Compile Include="Networks\HotWaterStorage.cs" />
+    <Compile Include="Networks\IPipe.cs" />
+    <Compile Include="Networks\IThermalPlant.cs" />
+    <Compile Include="Networks\LibraryComponent.cs" />
+    <Compile Include="Networks\NatGasBoiler.cs" />
+    <Compile Include="Networks\PipeEventDispatcher.cs" />
+    <Compile Include="Networks\PipeEventSource.cs" />
+    <Compile Include="Networks\PlantTemplate.cs" />
+    <Compile Include="Networks\PlugInEventSource.cs" />
+    <Compile Include="Networks\PipesAddedEventArgs.cs" />
+    <Compile Include="Networks\IPipeEventSource.cs" />
+    <Compile Include="Networks\Pipe.cs" />
+    <Compile Include="Networks\PipeResolver.cs" />
+    <Compile Include="Networks\PipesRemovedEventArgs.cs" />
+    <Compile Include="Networks\SolarThermalCollector.cs" />
+    <Compile Include="Networks\ThermalPlant.cs" />
     <Compile Include="PlanningSettings.cs" />
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
