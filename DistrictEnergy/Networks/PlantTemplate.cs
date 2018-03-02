@@ -2,7 +2,7 @@
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class PlantTemplate : LibraryComponent
+    public class PlantTemplate
     {
         [DataContract]
         public class BuildingTemplate

@@ -3,12 +3,12 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class NatGasBoiler
+    internal class ElectricChiller
     {
         /// <summary>
-        ///     Heating efficiency (%)
+        ///     Cooling coefficient of performance
         /// </summary>
         [DataMember]
-        [DefaultValue(0.7)] public double EFF_NGB { get; set; } = 0.7;
+        [DefaultValue(4.40)] public double CCOP_ECH { get; set; } = 4.40;
     }
 }

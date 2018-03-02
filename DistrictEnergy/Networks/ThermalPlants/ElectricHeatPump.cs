@@ -5,14 +5,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     public class ElectricHeatPump
     {
-
+        /// <summary>
+        ///     Capacity as percent of peak heating load (%)
+        /// </summary>
         [DataMember]
-        [DefaultValue(0)]
-        public double CapacityAsPeakLoad { get; set; } = 0;
+        [DefaultValue(0)] public double OFF_EHP { get; set; }
 
+        /// <summary>
+        ///     Heating coefficient of performance
+        /// </summary>
         [DataMember]
-        [DefaultValue(3.2)]
-        public double HeatingCOP { get; set; } = 3.2;
-
+        [DefaultValue(3.2)] public double HeatingCOP { get; set; } = 3.2;
     }
 }

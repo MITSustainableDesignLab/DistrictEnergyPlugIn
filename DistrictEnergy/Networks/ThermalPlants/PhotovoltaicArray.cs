@@ -3,30 +3,30 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class SolarThermalCollector
+    internal class PhotovoltaicArray
     {
         /// <summary>
         ///     Target offset as percent of annual energy (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.1)] public double OFF_SHW { get; set; } = 0.1;
+        [DefaultValue(0.05)] public double OFF_PV { get; set; } = 0.05;
 
         /// <summary>
-        ///     Collector efficiency (%)
+        ///     Cell efficiency (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.45)] public double EFF_SHW { get; set; } = 0.45;
+        [DefaultValue(0.15)] public double EFF_PV { get; set; } = 0.15;
 
         /// <summary>
         ///     Area utilization factor (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.75)] public double UTIL_SHW { get; set; } = 0.75;
+        [DefaultValue(0.75)] public double UTIL_PV { get; set; } = 0.75;
 
         /// <summary>
         ///     Miscellaneous losses (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.15)] public double LOSS_SHW { get; set; } = 0.15;
+        [DefaultValue(0.15)] public double LOSS_PV { get; set; } = 0.15;
     }
 }
