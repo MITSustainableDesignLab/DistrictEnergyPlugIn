@@ -38,9 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -86,7 +84,7 @@
     <Compile Include="Networks\ThermalPlants\ElectricChiller.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricHeatPump.cs" />
     <Compile Include="Networks\ThermalPlants\HotWaterStorage.cs" />
-    <Compile Include="Networks\ThermalPlants\HotWaterTank.cs" />
+    <Compile Include="Networks\ThermalPlants\IThermalPlantSettings.cs" />
     <Compile Include="Networks\ThermalPlants\NatGasBoiler.cs" />
     <Compile Include="Networks\PlantTemplate.cs" />
     <Compile Include="Networks\ThermalPlants\PhotovoltaicArray.cs" />
