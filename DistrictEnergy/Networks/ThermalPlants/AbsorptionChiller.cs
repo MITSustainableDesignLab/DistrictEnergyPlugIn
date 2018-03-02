@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class AbsorptionChiller
+    internal class AbsorptionChiller : IThermalPlantSettings
     {
         /// <summary>
         ///     Capacity as percent of peak cooling load (%)

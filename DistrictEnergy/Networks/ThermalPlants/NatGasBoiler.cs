@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class NatGasBoiler
+    public class NatGasBoiler : IThermalPlantSettings
     {
         /// <summary>
         ///     Heating efficiency (%)

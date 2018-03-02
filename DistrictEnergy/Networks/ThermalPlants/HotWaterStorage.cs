@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class HotWaterStorage
+    public class HotWaterStorage : IThermalPlantSettings
     {
         /// <summary>
         /// Capacity as number of days of autonomy (#)

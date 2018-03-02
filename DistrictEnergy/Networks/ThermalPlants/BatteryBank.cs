@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    class BatteryBank
+    class BatteryBank : IThermalPlantSettings
     {
         /// <summary>
         ///     Capacity as number of days of autonomy (#)

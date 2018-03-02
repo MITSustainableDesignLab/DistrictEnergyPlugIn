@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class SolarThermalCollector
+    public class SolarThermalCollector : IThermalPlantSettings
     {
         /// <summary>
         ///     Target offset as percent of annual energy (%)
