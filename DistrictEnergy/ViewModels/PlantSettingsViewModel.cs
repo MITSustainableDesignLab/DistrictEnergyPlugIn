@@ -1,113 +1,107 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using DistrictEnergy.Context;
-using DistrictEnergy.Networks;
-using DistrictEnergy.NetworkSettings;
-using DistrictEnergy.Services;
-using Rhino;
-using Rhino.DocObjects;
+using System.IO;
+using DistrictEnergy.Networks.ThermalPlants;
+using Mit.Umi.RhinoServices.Context;
+using Mit.Umi.RhinoServices.UmiEvents;
+using Newtonsoft.Json;
 
 namespace DistrictEnergy.ViewModels
 {
     public class PlantSettingsViewModel : INotifyPropertyChanged
     {
-        private readonly HashSet<Guid> _selectedObjectIds;
+        private CombinedHeatNPower backingCombinedHeatNPower = new CombinedHeatNPower();
+        private ElectricHeatPump backingElectricHeatPump = new ElectricHeatPump();
+        private HotWaterStorage backingHotWaterStorage = new HotWaterStorage();
+        private NatGasBoiler backingNatGasBoiler = new NatGasBoiler();
+        private SolarThermalCollector backingSolarThermalCollector = new SolarThermalCollector();
 
         public PlantSettingsViewModel()
         {
-            if (ServiceContainer.Instance != null)
-            {
-                ConnectToServices(ServiceContainer.Instance);
-            }
-            else
-            {
-                ServiceContainer.Init();
-                ConnectToServices(ServiceContainer.Instance);
-            }
-
-            PropertyChanged += PlantSettingsViewModel_PropertyChanged;
+            UmiEventSource.Instance.ProjectClosed += (EventHandler) ((s, e) => this.PopulateFrom((UmiContext) null));
+            UmiEventSource.Instance.ProjectOpened += (EventHandler<UmiContext>) ((s, e) => this.PopulateFrom(e));
         }
 
-        private IEnumerable<RhinoObject> SelectedObjects
-        {
-            get
-            {
-                if (CurrentContext == null)
-                    return Enumerable.Empty<RhinoObject>();
-                var selectedObjectIds = _selectedObjectIds;
-                var objects = RhinoDoc.ActiveDoc.Objects;
-                Func<Guid, Guid>
-                    func1 = id => id;
-                var func2 = (Func<RhinoObject, Guid>) (o => o.Id);
-                var outerKeySelector = func1;
-                var innerKeySelector = func2;
-                return selectedObjectIds.Join(objects, outerKeySelector, innerKeySelector, (_, o) => o);
-            }
-        }
-
-        private PluginContext CurrentContext
-        {
-            get
-            {
-                var contextService = ContextService;
-                if (contextService != null)
-                    return contextService.Context;
-                return contextService.Context;
-            }
-        }
-
-        internal IPluginContextService ContextService { get; set; }
-        internal PlugInEventSource PlugInEventSource { get; private set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void PlantSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void PopulateFrom(object sender, UmiContext e)
         {
-            if (string.IsNullOrEmpty(e.PropertyName) || CurrentContext == null)
-                return;
-            OnSettingChangedByUser();
-        }
-
-        private void OnSettingChangedByUser()
-        {
-            CurrentContext.UpdatePlants(SelectedObjects);
-        }
-
-        public void ConnectToServices(ServiceContainer container)
-        {
-            ContextService = container.ContextService;
-            PlugInEventSource = container.EventSource;
-            if (PlugInEventSource == null)
-                return;
-            PlugInEventSource.ProjectOpened +=
-                (EventHandler<PluginContext>) ((s, e) => PropertyChanged(this, new PropertyChangedEventArgs(null)));
-            PlugInEventSource.ProjectClosed +=
-                (EventHandler) ((s, e) => PropertyChanged(this, new PropertyChangedEventArgs(null)));
-        }
-
-        public DisplaySetting<double> Capacity
-        {
-            get
+            try
             {
-                var currentContext = CurrentContext;
-                return DisplaySetting<double>.Get(currentContext !=null ? currentContext.PlantSettings : null, 
-                    s => s.Capacity, _selectedObjectIds);
+                LoadSettings(e);
             }
-            set
+            catch (Exception exception)
             {
-                SetSettings(s => s.Capacity = value.CurrentValue);
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Capacity)));
+                Console.WriteLine(exception);
+                throw new ArgumentException("A project settings viewmodel cannot be instantiated from a project with no instantiated settings object");
             }
         }
 
-        // TODO : This one is also is temporary and should have a template in the future
-        private void SetSettings(Action<PlugInPlantSettings> setter)
+        private void LoadSettings(UmiContext context)
         {
-            if (CurrentContext == null)
-                return;
-            new NetworkSettingsUpdater().ApplyUpdateIfMissing(setter, SelectedObjects, CurrentContext.PlantSettings, CurrentContext.ThermalPlants);
+            if (context == null) return;
+            var path = context.AuxiliaryFiles.GetFullPath("CombinedHeatNPower.json");
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                backingCombinedHeatNPower = JsonConvert.DeserializeObject<CombinedHeatNPower>(json);
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+
+            path = context.AuxiliaryFiles.GetFullPath("ElectricHeatPump.json");
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                backingElectricHeatPump = JsonConvert.DeserializeObject<ElectricHeatPump>(json);
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+
+            path = context.AuxiliaryFiles.GetFullPath("HotWaterStorage.json");
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                backingHotWaterStorage = JsonConvert.DeserializeObject<HotWaterStorage>(json);
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+
+            path = context.AuxiliaryFiles.GetFullPath("NatGasBoiler.json");
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                backingNatGasBoiler = JsonConvert.DeserializeObject<NatGasBoiler>(json);
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+
+            path = context.AuxiliaryFiles.GetFullPath("SolarThermalCollector.json");
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                backingSolarThermalCollector = JsonConvert.DeserializeObject<SolarThermalCollector>(json);
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+        }
+
+        private void SaveSettings()
+        {
+            var context = UmiContext.Current;
+
+            if (context == null) return;
+
+            var dSjson = JsonConvert.SerializeObject(backingCombinedHeatNPower);
+            context.AuxiliaryFiles.StoreText("CombinedHeatNPower.json", dSjson);
+            dSjson = JsonConvert.SerializeObject(backingElectricHeatPump);
+            context.AuxiliaryFiles.StoreText("ElectricHeatPump.json", dSjson);
+            dSjson = JsonConvert.SerializeObject(backingHotWaterStorage);
+            context.AuxiliaryFiles.StoreText("HotWaterStorage.json", dSjson);
+            dSjson = JsonConvert.SerializeObject(backingNatGasBoiler);
+            context.AuxiliaryFiles.StoreText("NatGasBoiler.json", dSjson);
+            dSjson = JsonConvert.SerializeObject(backingSolarThermalCollector);
+            context.AuxiliaryFiles.StoreText("SolarThermalCollector.json", dSjson);
         }
     }
 }
