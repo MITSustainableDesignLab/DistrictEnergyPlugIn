@@ -76,6 +76,7 @@
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
+    <Compile Include="DHSimulateDistrictEnergy.cs" />
     <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
     <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
     <Compile Include="Networks\ThermalPlants\AbsorptionChiller.cs" />
@@ -134,6 +135,10 @@
     <Content Include="Resources\WixUIDialogBmp.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\EnergyPlusWeather.csproj">
+      <Project>{d8d748d7-aedf-4c88-9aa9-95498fcf87b8}</Project>
+      <Name>EnergyPlusWeather</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NetworkDraw\NetworkDraw.csproj">
       <Project>{4BD0987C-02DD-40F9-ABA9-D93190F32D17}</Project>
       <Name>NetworkDraw</Name>

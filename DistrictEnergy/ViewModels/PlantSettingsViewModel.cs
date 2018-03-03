@@ -194,7 +194,14 @@ namespace DistrictEnergy.ViewModels
         #endregion
 
         #region CombinedHeatNPower
-
+        public IList<TrakingModeEnum> PosibleTrackingModes
+        {
+            get
+            {
+                // Will result in a list like {"Electric", "Thermal"}
+                return Enum.GetValues(typeof(TrakingModeEnum)).Cast<TrakingModeEnum>().ToList<TrakingModeEnum>();
+            }
+        }
         public TrakingModeEnum TMOD_CHP
         {
             get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP;
