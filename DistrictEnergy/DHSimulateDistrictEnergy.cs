@@ -21,6 +21,13 @@ namespace DistrictEnergy
 
         public override string EnglishName => "DHSimulateDistrictEnergy";
 
+        private double[] CHW_n { get; set; }
+        private double[] HW_n { get; set; }
+        private double[] ELEC_n { get; set; }
+        private decimal[] RAD_n { get; set; }
+        private decimal[] WIND_n { get; set; }
+
+
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
             var umiContext = UmiContext.Current;
@@ -32,14 +39,14 @@ namespace DistrictEnergy
 
             // Getting the Load Curve for all buildings
 
-            var CHW_n = GetHourlyChilledWaterProfile(umiContext);
-            var HW_n = GetHourlyHotWaterLoadProfile(umiContext);
-            var ELEC_n = GetHourlyElectricalLoadProfile(umiContext);
-            var RAD_n = GetHourlyLocationSolarRadiation(umiContext);
-            var WIND_n = GetHourlyLocationWind(umiContext);
+            CHW_n = GetHourlyChilledWaterProfile(umiContext).ToArray();
+            HW_n = GetHourlyHotWaterLoadProfile(umiContext).ToArray();
+            ELEC_n = GetHourlyElectricalLoadProfile(umiContext).ToArray();
+            RAD_n = GetHourlyLocationSolarRadiation(umiContext).ToArray();
+            WIND_n = GetHourlyLocationWind(umiContext).ToArray();
 
             RhinoApp.WriteLine(
-                $"Calculated...\n{CHW_n.Count()} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
+                $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
 
             return Result.Success;
         }
@@ -91,6 +98,17 @@ namespace DistrictEnergy
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
             return a.HourlyWeatherDataRawList.Select(b => b.WindSpeed);
+        }
+
+        private double[] HW_ABS()
+        {
+            if (CHW_n.Length > 0)
+                for (var i = 0; 0 < CHW_n.Length; i++)
+                {
+                    //Math.Min(CHW_n[i], AbsorptionChiller.CCOP_ABS);
+                }
+
+            return null;
         }
     }
 }
