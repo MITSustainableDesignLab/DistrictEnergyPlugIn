@@ -37,10 +37,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\UMI\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -78,6 +76,7 @@
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
+    <Compile Include="DHSimulateDistrictEnergy.cs" />
     <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
     <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
     <Compile Include="Networks\ThermalPlants\AbsorptionChiller.cs" />
@@ -86,7 +85,7 @@
     <Compile Include="Networks\ThermalPlants\ElectricChiller.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricHeatPump.cs" />
     <Compile Include="Networks\ThermalPlants\HotWaterStorage.cs" />
-    <Compile Include="Networks\ThermalPlants\HotWaterTank.cs" />
+    <Compile Include="Networks\ThermalPlants\IThermalPlantSettings.cs" />
     <Compile Include="Networks\ThermalPlants\NatGasBoiler.cs" />
     <Compile Include="Networks\PlantTemplate.cs" />
     <Compile Include="Networks\ThermalPlants\PhotovoltaicArray.cs" />
@@ -136,6 +135,10 @@
     <Content Include="Resources\WixUIDialogBmp.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\EnergyPlusWeather.csproj">
+      <Project>{d8d748d7-aedf-4c88-9aa9-95498fcf87b8}</Project>
+      <Name>EnergyPlusWeather</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NetworkDraw\NetworkDraw.csproj">
       <Project>{4BD0987C-02DD-40F9-ABA9-D93190F32D17}</Project>
       <Name>NetworkDraw</Name>

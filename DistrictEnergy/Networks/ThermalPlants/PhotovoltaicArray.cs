@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class PhotovoltaicArray
+    internal class PhotovoltaicArray : IThermalPlantSettings
     {
         /// <summary>
         ///     Target offset as percent of annual energy (%)

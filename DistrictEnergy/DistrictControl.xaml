@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
-             VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" d:DesignWidth="384.964">
+             xmlns:namespace="clr-namespace:DistrictEnergy.Networks.ThermalPlants"
+             VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" d:DesignWidth="299.911" d:DesignHeight="1120">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top"
                     RenderTransformOrigin="0.501,0.507">
@@ -277,6 +278,779 @@
 
                 </Grid>
             </TabItem>
+            <TabItem Header="Thermal Plant">
+                <Grid Margin="0" VerticalAlignment="Top" Width="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Absorption Chiller" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="0">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Capacity as percent of peak cooling load (%)" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding OFF_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top"> 
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Cooling coefficient of performance" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Electric chillers" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="1">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Cooling coefficient of performance" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding CCOP_ECH, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Electric Heat Pump" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="2">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Heating efficiency" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding OFF_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Heating coefficient of performance" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding HCOP_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Natural Gas Boiler" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="3">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Heating efficiency" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding EFF_NGB, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Solar Thermal Collectors" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="4">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Target offset as percent of annual energy " Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding OFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Collector efficiency" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding EFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Area utilization factor " Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Miscellaneous losses" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding LOSS_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Hot Water Storage Tank" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="5">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Capacity as number of days of autonomy" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="n days" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding AUT_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Miscellaneous losses" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding LOSS_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Photovoltaic Array" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="6">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Target offset as percent of annual energy" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding OFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Cell efficiency" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding EFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Area utilization factor" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Miscellaneous losses" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding LOSS_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Wind Turbines" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="7">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Target offset as percent of annual energy" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding OFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Turbine coefficient of performance" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding COP_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Cut-in speed " Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="m/s" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding CIN_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Cut-out speed" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="m/s" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding COUT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Rotor area per turbine" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="m²" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding ROT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Battery Bank" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="8">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="50" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Capacity as number of days of autonomy" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="n days" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Miscellaneous losses" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding LOSS_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+
+                    </GroupBox>
+                    <GroupBox Header="Combined Heating and Power" Margin="10,10,10,0" VerticalAlignment="Top"
+                              Height="Auto" Grid.Row="9">
+                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" Margin="0">
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Tracking mode" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <ComboBox SelectedValue="{Binding TMOD_CHP, Mode=TwoWay}" ItemsSource="{Binding PosibleTrackingModes}"/>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Capacity as percent of peak electric load" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="4"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Electrical efficiency" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="4"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding EFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Waste heat recovery effectiveness" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="4"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding HREC_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
+
+                        </StackPanel>
+
+                    </GroupBox>
+
+
+                </Grid>
+            </TabItem>
+
         </TabControl>
     </ScrollViewer>
 

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class WindTurbine
+    internal class WindTurbine : IThermalPlantSettings
     {
         /// <summary>
         ///     Target offset as percent of annual energy (%)

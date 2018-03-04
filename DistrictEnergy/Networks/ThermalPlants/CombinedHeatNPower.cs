@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class CombinedHeatNPower
+    public class CombinedHeatNPower : IThermalPlantSettings
     {
         /// <summary>
         ///     Tracking Mode

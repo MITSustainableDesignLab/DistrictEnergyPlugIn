@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class ElectricChiller
+    internal class ElectricChiller : IThermalPlantSettings
     {
         /// <summary>
         ///     Cooling coefficient of performance
