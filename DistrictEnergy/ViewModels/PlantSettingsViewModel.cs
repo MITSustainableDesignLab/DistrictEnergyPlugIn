@@ -47,37 +47,15 @@ namespace DistrictEnergy.ViewModels
 
         public PlantSettingsViewModel()
         {
+            Instance = this;
             RhinoDoc.EndSaveDocument += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
-        #region ElectricChiller
-
-        public double CCOP_ECH
+        public static PlantSettingsViewModel Instance
         {
-            get => ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH;
-            set
-            {
-                ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CCOP_ECH)));
-            }
+            get; private set;
         }
-
-        #endregion
-
-        #region NatGasBoiler
-
-        public double EFF_NGB
-        {
-            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB;
-            set
-            {
-                ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_NGB)));
-            }
-        }
-
-        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -144,6 +122,34 @@ namespace DistrictEnergy.ViewModels
                 typeName = serializedType.Name;
             }
         }
+
+        #region ElectricChiller
+
+        public double CCOP_ECH
+        {
+            get => ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH;
+            set
+            {
+                ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CCOP_ECH)));
+            }
+        }
+
+        #endregion
+
+        #region NatGasBoiler
+
+        public double EFF_NGB
+        {
+            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB;
+            set
+            {
+                ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_NGB)));
+            }
+        }
+
+        #endregion
 
         #region AbsorptionChiller
 

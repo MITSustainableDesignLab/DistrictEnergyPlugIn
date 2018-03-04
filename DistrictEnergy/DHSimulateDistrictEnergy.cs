@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
 using Mit.Umi.RhinoServices.Context;
 using Rhino;
@@ -47,7 +49,8 @@ namespace DistrictEnergy
 
             RhinoApp.WriteLine(
                 $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
-
+            CalculateHW_ABS();
+            RhinoApp.WriteLine($"HW_ABS = {HW_ABS}");
             return Result.Success;
         }
 
@@ -100,15 +103,54 @@ namespace DistrictEnergy
             return a.HourlyWeatherDataRawList.Select(b => b.WindSpeed);
         }
 
-        private double[] HW_ABS()
+        private void CalculateHW_ABS()
         {
             if (CHW_n.Length > 0)
+            {
+                var CAP_ABS = CHW_n.Max() * OFF_ABS;
                 for (var i = 0; 0 < CHW_n.Length; i++)
                 {
-                    //Math.Min(CHW_n[i], AbsorptionChiller.CCOP_ABS);
+                    HW_ABS[i] = Math.Min(CHW_n[i], CAP_ABS) / CCOP_ABS;
                 }
-
-            return null;
+            }
         }
+
+        private readonly double[] HW_ABS = new double[8760];
+
+        #region AvailableSettings
+
+        private double CCOP_ECH { get; } = PlantSettingsViewModel.Instance.CCOP_ECH;
+        private double EFF_NGB { get; } = PlantSettingsViewModel.Instance.EFF_NGB;
+        private double OFF_ABS { get; } = PlantSettingsViewModel.Instance.OFF_ABS;
+        private double CCOP_ABS { get; } = PlantSettingsViewModel.Instance.CCOP_ABS;
+        private double AUT_BAT { get; } = PlantSettingsViewModel.Instance.AUT_BAT;
+        private double LOSS_BAT { get; } = PlantSettingsViewModel.Instance.LOSS_BAT;
+        private string TMOD_CHP { get; } = PlantSettingsViewModel.Instance.TMOD_CHP.ToString();
+        private double OFF_CHP { get; } = PlantSettingsViewModel.Instance.OFF_CHP;
+        private double EFF_CHP { get; } = PlantSettingsViewModel.Instance.EFF_CHP;
+        private double HREC_CHP { get; } = PlantSettingsViewModel.Instance.HREC_CHP;
+        private double OFF_EHP { get; } = PlantSettingsViewModel.Instance.OFF_EHP;
+        private double HCOP_EHP { get; } = PlantSettingsViewModel.Instance.HCOP_EHP;
+        private double AUT_HWT { get; } = PlantSettingsViewModel.Instance.AUT_HWT;
+        private double LOSS_HWT { get; } = PlantSettingsViewModel.Instance.LOSS_HWT;
+        private double OFF_PV { get; } = PlantSettingsViewModel.Instance.OFF_PV;
+        private double UTIL_PV { get; } = PlantSettingsViewModel.Instance.UTIL_PV;
+        private double LOSS_PV { get; } = PlantSettingsViewModel.Instance.LOSS_PV;
+        private double EFF_SHW { get; } = PlantSettingsViewModel.Instance.EFF_SHW;
+        private double LOSS_SHW { get; } = PlantSettingsViewModel.Instance.LOSS_SHW;
+        private double OFF_SHW { get; } = PlantSettingsViewModel.Instance.OFF_SHW;
+        private double UTIL_SHW { get; } = PlantSettingsViewModel.Instance.UTIL_SHW;
+        private double CIN_WND { get; } = PlantSettingsViewModel.Instance.CIN_WND;
+        private double COP_WND { get; } = PlantSettingsViewModel.Instance.COP_WND;
+        private double COUT_WND { get; } = PlantSettingsViewModel.Instance.COUT_WND;
+        private double OFF_WND { get; } = PlantSettingsViewModel.Instance.OFF_WND;
+        private double ROT_WND { get; } = PlantSettingsViewModel.Instance.ROT_WND;
+
+
+        #endregion
+
+
+
+
     }
 }
