@@ -13,6 +13,8 @@ namespace DistrictEnergy
     [Guid("929185AA-DB2C-4AA5-B1C0-E89C93F0704D")]
     public class DHSimulateDistrictEnergy : Command
     {
+        private readonly double[] HW_ABS = new double[8760];
+
         public DHSimulateDistrictEnergy()
         {
             Instance = this;
@@ -41,7 +43,7 @@ namespace DistrictEnergy
 
             // Getting the Load Curve for all buildings
 
-            CHW_n = GetHourlyChilledWaterProfile(umiContext).ToArray();
+            CHW_n = GetHourlyChilledWaterProfile(umiContext);
             HW_n = GetHourlyHotWaterLoadProfile(umiContext).ToArray();
             ELEC_n = GetHourlyElectricalLoadProfile(umiContext).ToArray();
             RAD_n = GetHourlyLocationSolarRadiation(umiContext).ToArray();
@@ -54,14 +56,19 @@ namespace DistrictEnergy
             return Result.Success;
         }
 
-        private IEnumerable<double> GetHourlyChilledWaterProfile(UmiContext context)
+        private double[] GetHourlyChilledWaterProfile(UmiContext context)
         {
             RhinoApp.WriteLine("Getting all Buildings and aggregating cooling loads");
             var nbDataPoint = context.GetObjects().Select(b => b.Data["SDL/Cooling"].Data.Count).ToList()[0];
-            return Enumerable.Range(0, nbDataPoint)
-                .Select(i => context.GetObjects().Select(
-                    b => b.Data["SDL/Cooling"].Data[i]
-                ).Sum());
+            var a = new double[nbDataPoint];
+            foreach (var umiObject in context.GetObjects())
+                for (var i = 0; i < nbDataPoint; i++)
+                {
+                    var d = umiObject.Data["SDL/Cooling"].Data[i];
+                    a[i] += d;
+                }
+
+            return a;
         }
 
         private IEnumerable<double> GetHourlyHotWaterLoadProfile(UmiContext context)
@@ -108,14 +115,9 @@ namespace DistrictEnergy
             if (CHW_n.Length > 0)
             {
                 var CAP_ABS = CHW_n.Max() * OFF_ABS;
-                for (var i = 0; 0 < CHW_n.Length; i++)
-                {
-                    HW_ABS[i] = Math.Min(CHW_n[i], CAP_ABS) / CCOP_ABS;
-                }
+                for (var i = 0; 0 < CHW_n.Length; i++) HW_ABS[i] = Math.Min(CHW_n[i], CAP_ABS) / CCOP_ABS;
             }
         }
-
-        private readonly double[] HW_ABS = new double[8760];
 
         #region AvailableSettings
 
@@ -146,11 +148,6 @@ namespace DistrictEnergy
         private double OFF_WND { get; } = PlantSettingsViewModel.Instance.OFF_WND;
         private double ROT_WND { get; } = PlantSettingsViewModel.Instance.ROT_WND;
 
-
         #endregion
-
-
-
-
     }
 }
