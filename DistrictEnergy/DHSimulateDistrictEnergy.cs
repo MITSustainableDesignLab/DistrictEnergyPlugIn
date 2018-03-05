@@ -385,17 +385,29 @@ namespace DistrictEnergy
         /// <summary>
         ///     Equation 6 : The tank charge for each hour
         /// </summary>
-        /// <param name="timestep"></param>
         /// <param name="previousTankChgN"></param>
         /// <param name="shwBal"></param>
         /// <param name="tankChgN"></param>
-        private void eqTANK_CHG_n(int timestep, double previousTankChgN,
-            double shwBal,
-            out double tankChgN)
+        private void eqTANK_CHG_n(double previousTankChgN, double shwBal, out double tankChgN)
         {
-            if (timestep == 0)
-                tankChgN = 0; // todo Assumed tank is empty at beginning of sumulation
-            tankChgN = Math.Min(previousTankChgN + shwBal, CAP_HWT);
+            tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal, CAP_HWT);
+        }
+
+        /// <summary>
+        /// Gets the smallest non-negative of two variables
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private static double GetSmallestNonNegative(double a, double b)
+        {
+            if (a >= 0 && b >= 0)
+                return Math.Min(a, b);
+            if (a >= 0 && b < 0)
+                return a;
+            if (a < 0 && b >= 0)
+                return b;
+            return 0;
         }
 
         /// <summary>
@@ -445,16 +457,13 @@ namespace DistrictEnergy
         /// <summary>
         ///     Equation 11 : The battery charge for each hour
         /// </summary>
-        /// <param name="timestep"></param>
         /// <param name="previousBatChgN"></param>
         /// <param name="elecBalance"></param>
         /// <param name="batChgN"></param>
-        private void eqBAT_CHG_n(int timestep, double previousBatChgN,
+        private void eqBAT_CHG_n(double previousBatChgN,
             double elecBalance, out double batChgN)
         {
-            if (timestep == 0)
-                batChgN = 0; // todo Assumped Battery is empty at beginning of simulation?
-            batChgN = Math.Min(previousBatChgN + elecBalance, CAP_BAT);
+            batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance, CAP_BAT);
         }
 
         /// <summary>
