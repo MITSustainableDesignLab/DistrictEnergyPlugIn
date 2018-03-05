@@ -781,6 +781,16 @@ namespace DistrictEnergy
             get { return PlantSettingsViewModel.Instance.LOSS_WND; }
         }
 
+        private static double LOSS_HWNET
+        {
+            get { return 0; } // todo Should a Hot Water network loss be added as a User Parameter
+        }
+
+        private static double LOSS_CHWNET
+        {
+            get { return 0; } // todo Should a Chilled Water network loss be added as a User Parameter
+        }
+
         #endregion
     }
 }
