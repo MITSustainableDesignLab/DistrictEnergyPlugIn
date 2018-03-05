@@ -102,7 +102,7 @@ namespace DistrictEnergy
         {
             StatusBar.HideProgressMeter();
             StatusBar.ShowProgressMeter(0, chwN.Length, "Solving Thermal Plant Components", true, true);
-            for (var i = 0; i < chwN.Length; i++)
+            for (; i < chwN.Length; i++)
             {
                 eqHW_ABS(CHW_n[i], out HW_ABS[i]); //OK
                 eqELEC_ECH(CHW_n[i], out ELEC_ECH[i]); //OK
@@ -110,12 +110,17 @@ namespace DistrictEnergy
                 eqHW_SHW((double) RAD_n[i], HW_n[i], HW_EHP[i], out HW_SHW[i], out SHW_BAL[i]); // OK
                 eqELEC_PV((double) RAD_n[i], out ELEC_PV[i]); // OK
                 eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
-
-                eqTANK_CHG_n(i, TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
+                if (i == 0)
+                    TANK_CHG_n[i] = 0; // todo Assumed tank is empty at beginning of simulation
+                if (i > 0)
+                    eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
                 eqHW_HWT(TANK_CHG_n[i], out HW_HWT[i]); // OK             
 
                 eqELEC_REN(ELEC_PV[i], ELEC_WND[i], ELEC_n[i], out ELEC_REN[i], out ELEC_BAL[i]); // OK
-                eqBAT_CHG_n(i, BAT_CHG_n[i - 1], ELEC_BAL[i], out BAT_CHG_n[i]); // OK
+                if (i == 0)
+                    BAT_CHG_n[0] = 0; // todo Assumed Battery is empty at beginning of simulation?
+                if (i > 0)
+                    eqBAT_CHG_n(BAT_CHG_n[i - 1], ELEC_BAL[i], out BAT_CHG_n[i]); // OK
                 eqELEC_BAT(BAT_CHG_n[i], out ELEC_BAT[i]); // OK
 
                 if (string.Equals(TMOD_CHP, "Thermal"))
@@ -617,6 +622,11 @@ namespace DistrictEnergy
         ///     Hourly purchased natural gas
         /// </summary>
         private readonly double[] NGAS_proj = new double[8760];
+
+        /// <summary>
+        ///     Simulation Timestep
+        /// </summary>
+        private static int i;
 
         #endregion
 
