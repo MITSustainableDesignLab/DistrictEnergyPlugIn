@@ -13,7 +13,7 @@ using Rhino.UI;
 
 namespace DistrictEnergy
 {
-    [Guid("5EDFFAE6-598C-4DA6-8664-FBDFF52AB1E0")]
+    [Guid("929185AA-DB2C-4AA5-B1C0-E89C93F0704D")]
     public class DHSimulateDistrictEnergy : Command
     {
         // ReSharper disable once ArrangeTypeMemberModifiers
