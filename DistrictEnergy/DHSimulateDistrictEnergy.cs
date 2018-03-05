@@ -251,53 +251,59 @@ namespace DistrictEnergy
         /// <summary>
         ///     Cooling capacity of absorption chillers (kW)
         /// </summary>
-        private double CAP_ABS { get; } = CHW_n.Max() * OFF_ABS;
+        private static double CAP_ABS
+        {
+            get { return CHW_n.Max() * OFF_ABS; }
+        }
 
         /// <summary>
         ///     Capacity of Electrical Heat Pumps
         /// </summary>
-        private double CAP_EHP { get; } = HW_n.Max() * OFF_EHP;
+        private static double CAP_EHP
+        {
+            get { return HW_n.Max() * OFF_EHP; }
+        }
 
         /// <summary>
         ///     Capacity of Battery
         /// </summary>
-        private double CAP_BAT { get; } = 0; // todo CAP_BAT eqaution
+        private static double CAP_BAT { get; } = 0; // todo CAP_BAT eqaution
 
         /// <summary>
         ///     Tank capacity
         /// </summary>
-        private double CAP_HWT { get; } = 0; // todo : CAP_HWT equation
+        private static double CAP_HWT { get; } = 0; // todo : CAP_HWT equation
 
         /// <summary>
         ///     Capacity of CHP plant
         /// </summary>
-        private double CAP_CHP { get; } = 0; // todo : CAP_CHP equation
+        private static double CAP_CHP { get; } = 0; // todo : CAP_CHP equation
 
         /// <summary>
         ///     Calculated required area of solar thermal collector
         /// </summary>
-        private double AREA_SHW { get; } = 0; // todo : Area equation
+        private static double AREA_SHW { get; } = 0; // todo : Area equation
 
         /// <summary>
         ///     Calculated required area of PV collectors
         /// </summary>
-        private double AREA_PV { get; } = 0; // todo : Area equation
+        private static double AREA_PV { get; } = 0; // todo : Area equation
 
         /// <summary>
         ///     Number of turbines needed
         /// </summary>
-        private double NUM_WND { get; } = 0; // todo : Number of wind turbines needed
+        private static double NUM_WND { get; } = 0; // todo : Number of wind turbines needed
 
         /// <summary>
         ///     Dischrage rate of thermal tank
         /// </summary>
-        private double DCHG_HWT { get; } =
+        private static double DCHG_HWT { get; } =
             0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD)
 
         /// <summary>
         ///     Discharge rate of battery
         /// </summary>
-        private double DCHG_BAT { get; } =
+        private static double DCHG_BAT { get; } =
             0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD)
 
         #endregion
@@ -616,34 +622,145 @@ namespace DistrictEnergy
 
         #region AvailableSettings
 
-        private double CCOP_ECH { get; } = PlantSettingsViewModel.Instance.CCOP_ECH;
-        private double EFF_NGB { get; } = PlantSettingsViewModel.Instance.EFF_NGB;
-        private static double OFF_ABS { get; } = PlantSettingsViewModel.Instance.OFF_ABS;
-        private double CCOP_ABS { get; } = PlantSettingsViewModel.Instance.CCOP_ABS;
-        private double AUT_BAT { get; } = PlantSettingsViewModel.Instance.AUT_BAT;
-        private double LOSS_BAT { get; } = PlantSettingsViewModel.Instance.LOSS_BAT;
-        private string TMOD_CHP { get; } = PlantSettingsViewModel.Instance.TMOD_CHP.ToString();
-        private double OFF_CHP { get; } = PlantSettingsViewModel.Instance.OFF_CHP;
-        private double EFF_CHP { get; } = PlantSettingsViewModel.Instance.EFF_CHP;
-        private double HREC_CHP { get; } = PlantSettingsViewModel.Instance.HREC_CHP;
-        private static double OFF_EHP { get; } = PlantSettingsViewModel.Instance.OFF_EHP;
-        private double HCOP_EHP { get; } = PlantSettingsViewModel.Instance.HCOP_EHP;
-        private double AUT_HWT { get; } = PlantSettingsViewModel.Instance.AUT_HWT;
-        private double LOSS_HWT { get; } = PlantSettingsViewModel.Instance.LOSS_HWT;
-        private double OFF_PV { get; } = PlantSettingsViewModel.Instance.OFF_PV;
-        private double UTIL_PV { get; } = PlantSettingsViewModel.Instance.UTIL_PV;
-        private double LOSS_PV { get; } = PlantSettingsViewModel.Instance.LOSS_PV;
-        private double EFF_PV { get; } = PlantSettingsViewModel.Instance.EFF_PV;
-        private double EFF_SHW { get; } = PlantSettingsViewModel.Instance.EFF_SHW;
-        private double LOSS_SHW { get; } = PlantSettingsViewModel.Instance.LOSS_SHW;
-        private double OFF_SHW { get; } = PlantSettingsViewModel.Instance.OFF_SHW;
-        private double UTIL_SHW { get; } = PlantSettingsViewModel.Instance.UTIL_SHW;
-        private double CIN_WND { get; } = PlantSettingsViewModel.Instance.CIN_WND;
-        private double COP_WND { get; } = PlantSettingsViewModel.Instance.COP_WND;
-        private double COUT_WND { get; } = PlantSettingsViewModel.Instance.COUT_WND;
-        private double OFF_WND { get; } = PlantSettingsViewModel.Instance.OFF_WND;
-        private double ROT_WND { get; } = PlantSettingsViewModel.Instance.ROT_WND;
-        private double LOSS_WND { get; } = PlantSettingsViewModel.Instance.LOSS_WND;
+        private static double CCOP_ECH
+        {
+            get { return PlantSettingsViewModel.Instance.CCOP_ECH; }
+        }
+
+        private static double EFF_NGB
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_NGB; }
+        }
+
+        private static double OFF_ABS
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_ABS; }
+        }
+
+        private static double CCOP_ABS
+        {
+            get { return PlantSettingsViewModel.Instance.CCOP_ABS; }
+        }
+
+        private static double AUT_BAT
+        {
+            get { return PlantSettingsViewModel.Instance.AUT_BAT; }
+        }
+
+        private static double LOSS_BAT
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_BAT; }
+        }
+
+        private static string TMOD_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.TMOD_CHP.ToString(); }
+        }
+
+        private static double OFF_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_CHP; }
+        }
+
+        private static double EFF_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_CHP; }
+        }
+
+        private static double HREC_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.HREC_CHP; }
+        }
+
+        private static double OFF_EHP
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_EHP; }
+        }
+
+        private static double HCOP_EHP
+        {
+            get { return PlantSettingsViewModel.Instance.HCOP_EHP; }
+        }
+
+        private static double AUT_HWT
+        {
+            get { return PlantSettingsViewModel.Instance.AUT_HWT; }
+        }
+
+        private static double LOSS_HWT
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_HWT; }
+        }
+
+        private static double OFF_PV
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_PV; }
+        }
+
+        private static double UTIL_PV
+        {
+            get { return PlantSettingsViewModel.Instance.UTIL_PV; }
+        }
+
+        private static double LOSS_PV
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_PV; }
+        }
+
+        private static double EFF_PV
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_PV; }
+        }
+
+        private static double EFF_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_SHW; }
+        }
+
+        private static double LOSS_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_SHW; }
+        }
+
+        private static double OFF_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_SHW; }
+        }
+
+        private static double UTIL_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.UTIL_SHW; }
+        }
+
+        private static double CIN_WND
+        {
+            get { return PlantSettingsViewModel.Instance.CIN_WND; }
+        }
+
+        private static double COP_WND
+        {
+            get { return PlantSettingsViewModel.Instance.COP_WND; }
+        }
+
+        private static double COUT_WND
+        {
+            get { return PlantSettingsViewModel.Instance.COUT_WND; }
+        }
+
+        private static double OFF_WND
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_WND; }
+        }
+
+        private static double ROT_WND
+        {
+            get { return PlantSettingsViewModel.Instance.ROT_WND; }
+        }
+
+        private static double LOSS_WND
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_WND; }
+        }
 
         #endregion
     }
