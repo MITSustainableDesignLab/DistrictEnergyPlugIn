@@ -34,5 +34,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(15)] public double ROT_WND { get; set; } = 15;
+
+        /// <summary>
+        ///     Miscellaneous losses (%)
+        /// </summary>
+        [DataMember]
+        [DefaultValue(0.15)] public double LOSS_WND { get; set; } = 0.15;
     }
 }

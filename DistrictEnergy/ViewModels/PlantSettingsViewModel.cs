@@ -438,6 +438,16 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public double LOSS_WND
+        {
+            get => ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND;
+            set
+            {
+                ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_WND)));
+            }
+        }
+
         #endregion
     }
 }

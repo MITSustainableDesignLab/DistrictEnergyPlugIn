@@ -879,6 +879,32 @@
                                              AllowDrop="True" />
                                 </StackPanel>
                             </Grid>
+                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                <Grid.DataContext>
+                                    <vm:PlantSettingsViewModel />
+                                </Grid.DataContext>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Left">
+                                    <Label Content="Miscellaneous losses" Margin="0,2"
+                                           FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
+                                           Height="21" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Right" Margin="0">
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center" HorizontalAlignment="Center" Grid.Row="0"
+                                           Grid.Column="1" />
+                                    <TextBox Margin="0,2" MaxLines="1"
+                                             VerticalContentAlignment="Center" HorizontalAlignment="Center" Width="35"
+                                             Text="{Binding LOSS_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowDrop="True" />
+                                </StackPanel>
+                            </Grid>
 
                         </StackPanel>
                     </GroupBox>
