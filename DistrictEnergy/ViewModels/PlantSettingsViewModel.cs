@@ -52,76 +52,7 @@ namespace DistrictEnergy.ViewModels
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
-        public static PlantSettingsViewModel Instance
-        {
-            get; private set;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
-        {
-            SaveSettings();
-        }
-
-        private void PopulateFrom(object sender, UmiContext e)
-        {
-            try
-            {
-                LoadSettings(e);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                //throw new ArgumentException("A project settings viewmodel cannot be instantiated from a project with no instantiated settings object");
-            }
-        }
-
-        private void LoadSettings(UmiContext context)
-        {
-            if (context == null) return;
-            var path = context.AuxiliaryFiles.GetFullPath("ThermalPlantSettings.json");
-            if (File.Exists(path))
-            {
-                var json = File.ReadAllText(path);
-                ListOfPlantSettings = JsonConvert.DeserializeObject<List<IThermalPlantSettings>>(json, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Objects,
-                    SerializationBinder = _knownTypesBinder
-                });
-            }
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
-        }
-
-        private void SaveSettings()
-        {
-            var context = UmiContext.Current;
-
-            if (context == null) return;
-            var dSjson = JsonConvert.SerializeObject(ListOfPlantSettings, Formatting.Indented, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Objects,
-                SerializationBinder = _knownTypesBinder
-            });
-            context.AuxiliaryFiles.StoreText("ThermalPlantSettings.json", dSjson);
-        }
-
-        public class KnownTypesBinder : ISerializationBinder
-        {
-            public IList<Type> KnownTypes { get; set; }
-
-            public Type BindToType(string assemblyName, string typeName)
-            {
-                return KnownTypes.SingleOrDefault(t => t.Name == typeName);
-            }
-
-            public void BindToName(Type serializedType, out string assemblyName, out string typeName)
-            {
-                assemblyName = null;
-                typeName = serializedType.Name;
-            }
-        }
+        public static PlantSettingsViewModel Instance { get; private set; }
 
         #region ElectricChiller
 
@@ -150,6 +81,74 @@ namespace DistrictEnergy.ViewModels
         }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void PopulateFrom(object sender, UmiContext e)
+        {
+            try
+            {
+                LoadSettings(e);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                //throw new ArgumentException("A project settings viewmodel cannot be instantiated from a project with no instantiated settings object");
+            }
+        }
+
+        private void LoadSettings(UmiContext context)
+        {
+            if (context == null) return;
+            var path = context.AuxiliaryFiles.GetFullPath("ThermalPlantSettings.json");
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                ListOfPlantSettings = JsonConvert.DeserializeObject<List<IThermalPlantSettings>>(json,
+                    new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.Objects,
+                        SerializationBinder = _knownTypesBinder
+                    });
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+        }
+
+        private void SaveSettings()
+        {
+            var context = UmiContext.Current;
+
+            if (context == null) return;
+            var dSjson = JsonConvert.SerializeObject(ListOfPlantSettings, Formatting.Indented,
+                new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Objects,
+                    SerializationBinder = _knownTypesBinder
+                });
+            context.AuxiliaryFiles.StoreText("ThermalPlantSettings.json", dSjson);
+        }
+
+        public class KnownTypesBinder : ISerializationBinder
+        {
+            public IList<Type> KnownTypes { get; set; }
+
+            public Type BindToType(string assemblyName, string typeName)
+            {
+                return KnownTypes.SingleOrDefault(t => t.Name == typeName);
+            }
+
+            public void BindToName(Type serializedType, out string assemblyName, out string typeName)
+            {
+                assemblyName = null;
+                typeName = serializedType.Name;
+            }
+        }
 
         #region AbsorptionChiller
 
@@ -200,14 +199,10 @@ namespace DistrictEnergy.ViewModels
         #endregion
 
         #region CombinedHeatNPower
-        public IList<TrakingModeEnum> PosibleTrackingModes
-        {
-            get
-            {
-                // Will result in a list like {"Electric", "Thermal"}
-                return Enum.GetValues(typeof(TrakingModeEnum)).Cast<TrakingModeEnum>().ToList<TrakingModeEnum>();
-            }
-        }
+
+        public IList<TrakingModeEnum> PosibleTrackingModes =>
+            Enum.GetValues(typeof(TrakingModeEnum)).Cast<TrakingModeEnum>().ToList();
+
         public TrakingModeEnum TMOD_CHP
         {
             get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP;
