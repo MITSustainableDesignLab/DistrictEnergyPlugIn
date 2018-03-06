@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using DistrictEnergy.ViewModels;
@@ -106,10 +107,12 @@ namespace DistrictEnergy
             StatusBar.ShowProgressMeter(0, chwN.Length, "Solving Thermal Plant Components", true, true);
             for (; i < chwN.Length; i++)
             {
+                if (CHW_n[i] > 0)
+                    Debugger.Break();
                 eqHW_ABS(CHW_n[i], out HW_ABS[i]); //OK
                 eqELEC_ECH(CHW_n[i], out ELEC_ECH[i]); //OK
                 eqELEC_EHP(HW_n[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
-                eqHW_SHW((double) RAD_n[i], HW_n[i], HW_EHP[i], out HW_SHW[i], out SHW_BAL[i]); // OK
+                eqHW_SHW((double) RAD_n[i], HW_n[i], HW_EHP[i], HW_ABS[i], out HW_SHW[i], out SHW_BAL[i]); // OK
                 eqELEC_PV((double) RAD_n[i], out ELEC_PV[i]); // OK
                 eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
                 if (i == 0)
@@ -394,12 +397,14 @@ namespace DistrictEnergy
         /// <param name="radN">Hourly location solar radiation data (kWh/m2)</param>
         /// <param name="hwN">Hourly hot water load profile (kWh)</param>
         /// <param name="hwEhp">hot water load met by electric heat pumps</param>
+        /// <param name="hwAbs">Hot water load needed by the Absorption chiller</param>
         /// <param name="hwShw">hot water load met by solar thermal collectors</param>
         /// <param name="solarBalance">If + goes to tank, If - comes from tank</param>
-        private void eqHW_SHW(double radN, double hwN, double hwEhp, out double hwShw, out double solarBalance)
+        private void eqHW_SHW(double radN, double hwN, double hwEhp, double hwAbs, out double hwShw,
+            out double solarBalance)
         {
-            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW, hwN - hwEhp);
-            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW - hwN + hwEhp;
+            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW, hwN - hwEhp + hwAbs);
+            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW - hwN + hwEhp - hwAbs;
         }
 
         /// <summary>
