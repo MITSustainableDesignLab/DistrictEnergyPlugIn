@@ -110,8 +110,8 @@ namespace DistrictEnergy
                 eqHW_ABS(CHW_n[i], out HW_ABS[i]); //OK
                 eqELEC_ECH(CHW_n[i], out ELEC_ECH[i]); //OK
                 eqELEC_EHP(HW_n[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
-                eqHW_SHW((double) RAD_n[i], HW_n[i], HW_EHP[i], HW_ABS[i], out HW_SHW[i], out SHW_BAL[i]); // OK
-                eqELEC_PV((double) RAD_n[i], out ELEC_PV[i]); // OK
+                eqHW_SHW(RAD_n[i], HW_n[i], HW_EHP[i], HW_ABS[i], out HW_SHW[i], out SHW_BAL[i]); // OK
+                eqELEC_PV(RAD_n[i], out ELEC_PV[i]); // OK
                 eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
                 if (i == 0)
                     TANK_CHG_n[i] = CAP_HWT * TANK_START;
@@ -218,20 +218,20 @@ namespace DistrictEnergy
             return aggreagationArray;
         }
 
-        private IEnumerable<decimal> GetHourlyLocationSolarRadiation(UmiContext context)
+        private IEnumerable<double> GetHourlyLocationSolarRadiation(UmiContext context)
         {
             RhinoApp.WriteLine("Calculating Solar Radiation on horizontal surface");
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
-            return a.HourlyWeatherDataRawList.Select(b => b.GHorRadiation);
+            return a.HourlyWeatherDataRawList.Select(b => (double) b.GHorRadiation / 1000.0); // from Wh to kWh
         }
 
-        private IEnumerable<decimal> GetHourlyLocationWind(UmiContext context)
+        private IEnumerable<double> GetHourlyLocationWind(UmiContext context)
         {
             RhinoApp.WriteLine("Calculating wind for location");
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
-            return a.HourlyWeatherDataRawList.Select(b => b.WindSpeed);
+            return a.HourlyWeatherDataRawList.Select(b => (double) b.WindSpeed); // m/s
         }
 
         /// <summary>
