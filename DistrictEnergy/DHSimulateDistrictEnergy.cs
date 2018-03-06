@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using DistrictEnergy.ViewModels;
@@ -52,17 +53,17 @@ namespace DistrictEnergy
         /// <summary>
         ///     Hourly electricity load profile (kWh)
         /// </summary>
-        private double[] ELEC_n { get; set; }
+        private static double[] ELEC_n { get; set; }
 
         /// <summary>
-        ///     Hourly location solar radiation data (kWh/m2)
+        ///     Hourly Global Solar Radiation from EPW file (kWh/m2)
         /// </summary>
-        private decimal[] RAD_n { get; set; }
+        private static double[] RAD_n { get; set; }
 
         /// <summary>
         ///     Hourly location wind speed data (m/s)
         /// </summary>
-        private decimal[] WIND_n { get; set; }
+        private static double[] WIND_n { get; set; }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
@@ -84,11 +85,14 @@ namespace DistrictEnergy
             WIND_n = GetHourlyLocationWind(umiContext).ToArray();
             StatusBar.HideProgressMeter();
 
+            timesteps = HW_n.Length;
+
             RhinoApp.WriteLine(
                 $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
 
             // Go Hour by hour and parse through the simulation routine
-            MainSimulation(CHW_n, HW_n, ELEC_n, RAD_n, WIND_n);
+            GetConstants();
+            MainSimulation();
 
             return Result.Success;
         }
@@ -96,31 +100,28 @@ namespace DistrictEnergy
         /// <summary>
         ///     This is the routine that goeas though all the eqautions one timestep at a time
         /// </summary>
-        /// <param name="chwN"></param>
-        /// <param name="hwN"></param>
-        /// <param name="elecN"></param>
-        /// <param name="radN"></param>
-        /// <param name="windN"></param>
-        private void MainSimulation(double[] chwN, double[] hwN, double[] elecN, decimal[] radN, decimal[] windN)
+        private void MainSimulation()
         {
-            StatusBar.ShowProgressMeter(0, chwN.Length, "Solving Thermal Plant Components", true, true);
-            for (; i < chwN.Length; i++)
+            StatusBar.ShowProgressMeter(0, timesteps, "Solving Thermal Plant Components", true, true);
+            for (; i < timesteps; i++)
             {
+                //if (CHW_n[i] > 0)
+                //    Debugger.Break();
                 eqHW_ABS(CHW_n[i], out HW_ABS[i]); //OK
                 eqELEC_ECH(CHW_n[i], out ELEC_ECH[i]); //OK
                 eqELEC_EHP(HW_n[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
-                eqHW_SHW((double) RAD_n[i], HW_n[i], HW_EHP[i], out HW_SHW[i], out SHW_BAL[i]); // OK
-                eqELEC_PV((double) RAD_n[i], out ELEC_PV[i]); // OK
+                eqHW_SHW(RAD_n[i], HW_n[i], HW_EHP[i], HW_ABS[i], out HW_SHW[i], out SHW_BAL[i]); // OK
+                eqELEC_PV(RAD_n[i], out ELEC_PV[i]); // OK
                 eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
                 if (i == 0)
-                    TANK_CHG_n[i] = 0; // todo Assumed tank is empty at beginning of simulation : (User defined input : Start at 0.80)
+                    TANK_CHG_n[i] = CAP_HWT * TANK_START;
                 if (i > 0)
                     eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
                 eqHW_HWT(TANK_CHG_n[i], out HW_HWT[i]); // OK             
 
                 eqELEC_REN(ELEC_PV[i], ELEC_WND[i], ELEC_n[i], out ELEC_REN[i], out ELEC_BAL[i]); // OK
                 if (i == 0)
-                    BAT_CHG_n[0] = 0; // todo Assumed Battery is empty at beginning of simulation?
+                    BAT_CHG_n[0] = CAP_BAT * BAT_START;
                 if (i > 0)
                     eqBAT_CHG_n(BAT_CHG_n[i - 1], ELEC_BAL[i], out BAT_CHG_n[i]); // OK
                 eqELEC_BAT(BAT_CHG_n[i], out ELEC_BAT[i]); // OK
@@ -149,9 +150,12 @@ namespace DistrictEnergy
                     out HW_NGB[i]);
                 StatusBar.UpdateProgressMeter(i, true);
             }
+
             RhinoApp.WriteLine("Distric Energy Simulation complete");
             StatusBar.HideProgressMeter();
         }
+
+        private int timesteps { get; set; }
 
         private double[] GetHourlyChilledWaterProfile(List<UmiObject> contextObjects)
         {
@@ -201,7 +205,7 @@ namespace DistrictEnergy
             var aggreagationArray = new double[nbDataPoint];
             StatusBar.HideProgressMeter();
             StatusBar.ShowProgressMeter(0, nbDataPoint * contextObjects.Count * 3,
-                "Aggregating Hot Water Loads", true, true);
+                "Aggregating Electrical Loads", true, true);
             foreach (var umiObject in contextObjects)
                 for (var i = 0; i < nbDataPoint; i++)
                 {
@@ -214,20 +218,20 @@ namespace DistrictEnergy
             return aggreagationArray;
         }
 
-        private IEnumerable<decimal> GetHourlyLocationSolarRadiation(UmiContext context)
+        private IEnumerable<double> GetHourlyLocationSolarRadiation(UmiContext context)
         {
             RhinoApp.WriteLine("Calculating Solar Radiation on horizontal surface");
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
-            return a.HourlyWeatherDataRawList.Select(b => b.GHorRadiation);
+            return a.HourlyWeatherDataRawList.Select(b => (double) b.GHorRadiation / 1000.0); // from Wh to kWh
         }
 
-        private IEnumerable<decimal> GetHourlyLocationWind(UmiContext context)
+        private IEnumerable<double> GetHourlyLocationWind(UmiContext context)
         {
             RhinoApp.WriteLine("Calculating wind for location");
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
-            return a.HourlyWeatherDataRawList.Select(b => b.WindSpeed);
+            return a.HourlyWeatherDataRawList.Select(b => (double) b.WindSpeed); // m/s
         }
 
         /// <summary>
@@ -247,71 +251,82 @@ namespace DistrictEnergy
         }
 
         #region Constants
+        /// <summary>
+        /// Calculates the necessary constants used in different equations
+        /// </summary>
+        private void GetConstants()
+        {
+            CAP_ABS = CHW_n.Max() * OFF_ABS;
+            CAP_EHP = HW_n.Max() * OFF_EHP;
+            CAP_BAT = ELEC_n.Average() * AUT_BAT;
+            CAP_HWT = HW_n.Average() * AUT_HWT;
+            CAP_CHP = ELEC_n.Max();
+            AREA_SHW = HW_n.Sum() * OFF_SHW / (RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
+            AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
+            var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
+            NUM_WND = ELEC_n.Sum() * OFF_WND / (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND / 1000); // Divide by 1000 because equation spits out Wh
+            DCHG_HWT = double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
+            DCHG_BAT = double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
+        }
 
         /// <summary>
         ///     Cooling capacity of absorption chillers (kW)
         /// </summary>
-        private static double CAP_ABS
-        {
-            get { return CHW_n.Max() * OFF_ABS; }
-        }
+        private static double CAP_ABS { get; set; }
 
         /// <summary>
         ///     Capacity of Electrical Heat Pumps
         /// </summary>
-        private static double CAP_EHP
-        {
-            get { return HW_n.Max() * OFF_EHP; }
-        }
+        private static double CAP_EHP { get; set; }
 
         /// <summary>
-        ///     Capacity of Battery
+        ///     Capacity of Battery, defined as the everage demand times the desired autonomy
         /// </summary>
-        private static double CAP_BAT { get; } = 0; // todo CAP_BAT eqaution : (SN) "Use the daily average demand * #days of autonomy"
+        private static double CAP_BAT { get; set; }
 
         /// <summary>
-        ///     Tank capacity
+        ///     Capacity of Hot Water Tank, defined as the everage demand times the desired autonomy
         /// </summary>
-        private static double CAP_HWT { get; } = 0; // todo : CAP_HWT equation
+        private static double CAP_HWT { get; set; }
 
         /// <summary>
         ///     Capacity of CHP plant
         /// </summary>
-        private static double CAP_CHP { get; } = 0; // todo : CAP_CHP equation : (SN) "Peak electrical capacity * OFF_CHP"
+        private static double CAP_CHP { get; set; }
 
         /// <summary>
-        ///     Calculated required area of solar thermal collector
+        ///     Calculated required area of solar thermal collector (m^2)
         /// </summary>
-        private static double AREA_SHW { get; } = 0; // todo : Area equation
+        private static double AREA_SHW { get; set; }
 
         /// <summary>
         ///     Calculated required area of PV collectors
         /// </summary>
-        private static double AREA_PV { get; } = 0; // todo : Area equation
+        private static double AREA_PV { get; set; }
 
         /// <summary>
-        ///     Number of turbines needed
+        ///     Number of turbines needed: Annual electricity needed divided by how much one turbine generates.
+        ///     [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and
+        ///     cut-out speeds x COP)]
         /// </summary>
-        private static double NUM_WND { get; } = 0; // todo : Number of wind turbines needed
+        private static double NUM_WND { get; set; }
 
         /// <summary>
         ///     Dischrage rate of thermal tank
         /// </summary>
-        private static double DCHG_HWT { get; } =
-            0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD) (ignore)
+        private static double DCHG_HWT { get; set; }
 
         /// <summary>
         ///     Discharge rate of battery
         /// </summary>
-        private static double DCHG_BAT { get; } =
-            0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD)
+        private static double DCHG_BAT { get; set; }
 
         #endregion
 
         #region Equation 1 to 18
 
         /// <summary>
-        ///     Equation 1
+        ///     Equation 1 : The hot water required to generate project chilled water
         /// </summary>
         /// <param name="chwN">Hourly chilled water load profile (kWh)</param>
         /// <param name="hwAbs">Hot water required for Absorption Chiller</param>
@@ -369,12 +384,14 @@ namespace DistrictEnergy
         /// <param name="radN">Hourly location solar radiation data (kWh/m2)</param>
         /// <param name="hwN">Hourly hot water load profile (kWh)</param>
         /// <param name="hwEhp">hot water load met by electric heat pumps</param>
+        /// <param name="hwAbs">Hot water load needed by the Absorption chiller</param>
         /// <param name="hwShw">hot water load met by solar thermal collectors</param>
         /// <param name="solarBalance">If + goes to tank, If - comes from tank</param>
-        private void eqHW_SHW(double radN, double hwN, double hwEhp, out double hwShw, out double solarBalance)
+        private void eqHW_SHW(double radN, double hwN, double hwEhp, double hwAbs, out double hwShw,
+            out double solarBalance)
         {
-            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW, hwN - hwEhp);
-            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW - hwN + hwEhp;
+            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW), hwN - hwEhp + hwAbs);
+            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW) - hwN + hwEhp - hwAbs;
         }
 
         /// <summary>
@@ -422,7 +439,7 @@ namespace DistrictEnergy
         /// <param name="elecPv"></param>
         private void eqELEC_PV(double radN, out double elecPv)
         {
-            elecPv = radN * AREA_PV * EFF_PV * UTIL_PV * LOSS_PV;
+            elecPv = radN * AREA_PV * EFF_PV * UTIL_PV * (1-LOSS_PV);
         }
 
         /// <summary>
@@ -432,7 +449,7 @@ namespace DistrictEnergy
         /// <param name="elecWnd"></param>
         private void eqELEC_WND(double windN, out double elecWnd)
         {
-            elecWnd = 0.6375 * Math.Pow(windN, 3) * ROT_WND * NUM_WND * COP_WND * LOSS_WND;
+            elecWnd = 0.6375 * Math.Pow(windN, 3) * ROT_WND * NUM_WND * COP_WND * (1-LOSS_WND);
         }
 
         /// <summary>
@@ -724,21 +741,33 @@ namespace DistrictEnergy
             get { return PlantSettingsViewModel.Instance.EFF_PV; }
         }
 
+        /// <summary>
+        ///     Collector efficiency (%)
+        /// </summary>
         private static double EFF_SHW
         {
             get { return PlantSettingsViewModel.Instance.EFF_SHW; }
         }
 
+        /// <summary>
+        ///     Miscellaneous losses (%)
+        /// </summary>
         private static double LOSS_SHW
         {
             get { return PlantSettingsViewModel.Instance.LOSS_SHW; }
         }
 
+        /// <summary>
+        ///     Target offset as percent of annual energy (%)
+        /// </summary>
         private static double OFF_SHW
         {
             get { return PlantSettingsViewModel.Instance.OFF_SHW; }
         }
 
+        /// <summary>
+        ///     Area utilization factor (%)
+        /// </summary>
         private static double UTIL_SHW
         {
             get { return PlantSettingsViewModel.Instance.UTIL_SHW; }
@@ -774,14 +803,36 @@ namespace DistrictEnergy
             get { return PlantSettingsViewModel.Instance.LOSS_WND; }
         }
 
+        /// <summary>
+        ///     The Tank charged state at the begining of the simulation
+        /// </summary>
+        private static double TANK_START
+        {
+            get { return PlantSettingsViewModel.Instance.TANK_START; }
+        }
+
+        /// <summary>
+        ///     The Battery charged state at the begining of the simulation
+        /// </summary>
+        private static double BAT_START
+        {
+            get { return PlantSettingsViewModel.Instance.BAT_START; }
+        }
+
         private static double LOSS_HWNET
         {
-            get { return 0; } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
+            get
+            {
+                return 0;
+            } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
         }
 
         private static double LOSS_CHWNET
         {
-            get { return 0; } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
+            get
+            {
+                return 0;
+            } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
         }
 
         #endregion
