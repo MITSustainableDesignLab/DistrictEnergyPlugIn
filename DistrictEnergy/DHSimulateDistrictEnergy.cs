@@ -113,14 +113,14 @@ namespace DistrictEnergy
                 eqELEC_PV((double) RAD_n[i], out ELEC_PV[i]); // OK
                 eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
                 if (i == 0)
-                    TANK_CHG_n[i] = 0; // todo Assumed tank is empty at beginning of simulation : (User defined input : Start at 0.80)
+                    TANK_CHG_n[i] = CAP_HWT * TANK_START;
                 if (i > 0)
                     eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
                 eqHW_HWT(TANK_CHG_n[i], out HW_HWT[i]); // OK             
 
                 eqELEC_REN(ELEC_PV[i], ELEC_WND[i], ELEC_n[i], out ELEC_REN[i], out ELEC_BAL[i]); // OK
                 if (i == 0)
-                    BAT_CHG_n[0] = 0; // todo Assumed Battery is empty at beginning of simulation?
+                    BAT_CHG_n[0] = CAP_BAT * BAT_START;
                 if (i > 0)
                     eqBAT_CHG_n(BAT_CHG_n[i - 1], ELEC_BAL[i], out BAT_CHG_n[i]); // OK
                 eqELEC_BAT(BAT_CHG_n[i], out ELEC_BAT[i]); // OK
@@ -772,6 +772,20 @@ namespace DistrictEnergy
         private static double LOSS_WND
         {
             get { return PlantSettingsViewModel.Instance.LOSS_WND; }
+        }
+        /// <summary>
+        /// The Tank charged state at the begining of the simulation
+        /// </summary>
+        private static double TANK_START
+        {
+            get { return PlantSettingsViewModel.Instance.TANK_START; }
+        }
+        /// <summary>
+        /// The Battery charged state at the begining of the simulation
+        /// </summary>
+        private static double BAT_START
+        {
+            get { return PlantSettingsViewModel.Instance.BAT_START; }
         }
 
         private static double LOSS_HWNET

@@ -6,17 +6,21 @@ namespace DistrictEnergy.Networks.ThermalPlants
     public class HotWaterStorage : IThermalPlantSettings
     {
         /// <summary>
-        /// Capacity as number of days of autonomy (#)
+        ///     Capacity as number of days of autonomy (#)
         /// </summary>
         [DataMember]
-        [DefaultValue(1.0)]
-        public double AUT_HWT { get; set; } = 1.0;
+        [DefaultValue(1.0)] public double AUT_HWT { get; set; } = 1.0;
 
         /// <summary>
-        /// Miscellaneous losses (%)
+        ///     Miscellaneous losses (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.15)]
-        public double LOSS_HWT { get; set; } = 0.15;
+        [DefaultValue(0.15)] public double LOSS_HWT { get; set; } = 0.15;
+
+        /// <summary>
+        ///     The Tank charged state at the begining of the simulation. Assumed at 80%.
+        /// </summary>
+        [DataMember]
+        [DefaultValue(0.8)] public double TANK_START { get; set; } = 0.8;
     }
 }

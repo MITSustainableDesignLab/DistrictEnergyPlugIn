@@ -196,6 +196,16 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public double BAT_START
+        {
+            get => ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START;
+            set
+            {
+                ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BAT_START)));
+            }
+        }
+
         #endregion
 
         #region CombinedHeatNPower
@@ -288,6 +298,16 @@ namespace DistrictEnergy.ViewModels
             {
                 ListOfPlantSettings.OfType<HotWaterStorage>().First().LOSS_HWT = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_HWT)));
+            }
+        }
+
+        public double TANK_START
+        {
+            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START;
+            set
+            {
+                ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TANK_START)));
             }
         }
 
