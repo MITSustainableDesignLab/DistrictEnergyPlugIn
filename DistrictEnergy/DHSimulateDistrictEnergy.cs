@@ -57,12 +57,12 @@ namespace DistrictEnergy
         /// <summary>
         ///     Hourly location solar radiation data (kWh/m2)
         /// </summary>
-        private decimal[] RAD_n { get; set; }
+        private static decimal[] RAD_n { get; set; }
 
         /// <summary>
         ///     Hourly location wind speed data (m/s)
         /// </summary>
-        private decimal[] WIND_n { get; set; }
+        private static decimal[] WIND_n { get; set; }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
@@ -149,6 +149,7 @@ namespace DistrictEnergy
                     out HW_NGB[i]);
                 StatusBar.UpdateProgressMeter(i, true);
             }
+
             RhinoApp.WriteLine("Distric Energy Simulation complete");
             StatusBar.HideProgressMeter();
         }
@@ -283,34 +284,52 @@ namespace DistrictEnergy
         /// <summary>
         ///     Capacity of CHP plant
         /// </summary>
-        private static double CAP_CHP { get; } = 0; // todo : CAP_CHP equation : (SN) "Peak electrical capacity * OFF_CHP"
+        private static double CAP_CHP
+        {
+            get { return ELEC_n.Sum(); }
+        }
 
         /// <summary>
         ///     Calculated required area of solar thermal collector
         /// </summary>
-        private static double AREA_SHW { get; } = 0; // todo : Area equation
+        private static double AREA_SHW
+        {
+            get { return HW_n.Sum() * OFF_SHW / ((double) RAD_n.Sum() * EFF_SHW * LOSS_SHW * UTIL_SHW); }
+        }
 
         /// <summary>
         ///     Calculated required area of PV collectors
         /// </summary>
-        private static double AREA_PV { get; } = 0; // todo : Area equation
+        private static double AREA_PV
+        {
+            get { return ELEC_n.Sum() * OFF_PV / ((double) RAD_n.Sum() * EFF_PV * LOSS_PV * UTIL_PV); }
+        }
 
         /// <summary>
-        ///     Number of turbines needed
+        ///     Number of turbines needed: Annual electricity needed divided by how much one turbine generates.
+        ///     [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and
+        ///     cut-out speeds x COP)]
         /// </summary>
-        private static double NUM_WND { get; } = 0; // todo : Number of wind turbines needed
+        private static double NUM_WND
+        {
+            get
+            {
+                return ELEC_n.Sum() * OFF_WND / (WIND_n.Where(w => (double) w > CIN_WND && (double) w < COUT_WND)
+                                                     .Select(w => Math.Pow((double) w, 3)).Sum() * COP_WND);
+            }
+        }
 
         /// <summary>
         ///     Dischrage rate of thermal tank
         /// </summary>
         private static double DCHG_HWT { get; } =
-            0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD) (ignore)
+            double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
 
         /// <summary>
         ///     Discharge rate of battery
         /// </summary>
         private static double DCHG_BAT { get; } =
-            0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD)
+            double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
 
         #endregion
 
@@ -730,21 +749,33 @@ namespace DistrictEnergy
             get { return PlantSettingsViewModel.Instance.EFF_PV; }
         }
 
+        /// <summary>
+        ///     Collector efficiency (%)
+        /// </summary>
         private static double EFF_SHW
         {
             get { return PlantSettingsViewModel.Instance.EFF_SHW; }
         }
 
+        /// <summary>
+        ///     Miscellaneous losses (%)
+        /// </summary>
         private static double LOSS_SHW
         {
             get { return PlantSettingsViewModel.Instance.LOSS_SHW; }
         }
 
+        /// <summary>
+        ///     Target offset as percent of annual energy (%)
+        /// </summary>
         private static double OFF_SHW
         {
             get { return PlantSettingsViewModel.Instance.OFF_SHW; }
         }
 
+        /// <summary>
+        ///     Area utilization factor (%)
+        /// </summary>
         private static double UTIL_SHW
         {
             get { return PlantSettingsViewModel.Instance.UTIL_SHW; }
@@ -779,15 +810,17 @@ namespace DistrictEnergy
         {
             get { return PlantSettingsViewModel.Instance.LOSS_WND; }
         }
+
         /// <summary>
-        /// The Tank charged state at the begining of the simulation
+        ///     The Tank charged state at the begining of the simulation
         /// </summary>
         private static double TANK_START
         {
             get { return PlantSettingsViewModel.Instance.TANK_START; }
         }
+
         /// <summary>
-        /// The Battery charged state at the begining of the simulation
+        ///     The Battery charged state at the begining of the simulation
         /// </summary>
         private static double BAT_START
         {
@@ -796,12 +829,18 @@ namespace DistrictEnergy
 
         private static double LOSS_HWNET
         {
-            get { return 0; } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
+            get
+            {
+                return 0;
+            } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
         }
 
         private static double LOSS_CHWNET
         {
-            get { return 0; } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
+            get
+            {
+                return 0;
+            } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
         }
 
         #endregion
