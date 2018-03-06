@@ -201,7 +201,7 @@ namespace DistrictEnergy
             var aggreagationArray = new double[nbDataPoint];
             StatusBar.HideProgressMeter();
             StatusBar.ShowProgressMeter(0, nbDataPoint * contextObjects.Count * 3,
-                "Aggregating Hot Water Loads", true, true);
+                "Aggregating Electrical Loads", true, true);
             foreach (var umiObject in contextObjects)
                 for (var i = 0; i < nbDataPoint; i++)
                 {
