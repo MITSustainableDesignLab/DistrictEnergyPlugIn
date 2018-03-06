@@ -85,12 +85,14 @@ namespace DistrictEnergy
             WIND_n = GetHourlyLocationWind(umiContext).ToArray();
             StatusBar.HideProgressMeter();
 
+            timesteps = HW_n.Length;
+
             RhinoApp.WriteLine(
                 $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
 
             // Go Hour by hour and parse through the simulation routine
-            MainSimulation(CHW_n, HW_n, ELEC_n, RAD_n, WIND_n);
             GetConstants();
+            MainSimulation();
 
             return Result.Success;
         }
@@ -98,18 +100,13 @@ namespace DistrictEnergy
         /// <summary>
         ///     This is the routine that goeas though all the eqautions one timestep at a time
         /// </summary>
-        /// <param name="chwN"></param>
-        /// <param name="hwN"></param>
-        /// <param name="elecN"></param>
-        /// <param name="radN"></param>
-        /// <param name="windN"></param>
-        private void MainSimulation(double[] chwN, double[] hwN, double[] elecN, decimal[] radN, decimal[] windN)
+        private void MainSimulation()
         {
-            StatusBar.ShowProgressMeter(0, chwN.Length, "Solving Thermal Plant Components", true, true);
-            for (; i < chwN.Length; i++)
+            StatusBar.ShowProgressMeter(0, timesteps, "Solving Thermal Plant Components", true, true);
+            for (; i < timesteps; i++)
             {
-                if (CHW_n[i] > 0)
-                    Debugger.Break();
+                //if (CHW_n[i] > 0)
+                //    Debugger.Break();
                 eqHW_ABS(CHW_n[i], out HW_ABS[i]); //OK
                 eqELEC_ECH(CHW_n[i], out ELEC_ECH[i]); //OK
                 eqELEC_EHP(HW_n[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
@@ -157,6 +154,8 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Distric Energy Simulation complete");
             StatusBar.HideProgressMeter();
         }
+
+        private int timesteps { get; set; }
 
         private double[] GetHourlyChilledWaterProfile(List<UmiObject> contextObjects)
         {
