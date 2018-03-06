@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
+using Mit.Umi.Core;
 using Mit.Umi.RhinoServices.Context;
 using Rhino;
 using Rhino.Commands;
@@ -73,10 +74,12 @@ namespace DistrictEnergy
             }
 
             _progressBarPos = 0;
-            // Getting the Load Curve for all buildings
-            CHW_n = GetHourlyChilledWaterProfile(umiContext);
-            HW_n = GetHourlyHotWaterLoadProfile(umiContext);
-            ELEC_n = GetHourlyElectricalLoadProfile(umiContext).ToArray();
+            // Getting the Aggregated Load Curve for all buildings
+            var contextBuildings =
+                umiContext.GetObjects().Where(o => o.Data["SDL/Cooling"].Data.Count == 8760).ToList();
+            CHW_n = GetHourlyChilledWaterProfile(contextBuildings);
+            HW_n = GetHourlyHotWaterLoadProfile(contextBuildings);
+            ELEC_n = GetHourlyElectricalLoadProfile(contextBuildings);
             RAD_n = GetHourlyLocationSolarRadiation(umiContext).ToArray();
             WIND_n = GetHourlyLocationWind(umiContext).ToArray();
             StatusBar.HideProgressMeter();
@@ -100,7 +103,6 @@ namespace DistrictEnergy
         /// <param name="windN"></param>
         private void MainSimulation(double[] chwN, double[] hwN, double[] elecN, decimal[] radN, decimal[] windN)
         {
-            StatusBar.HideProgressMeter();
             StatusBar.ShowProgressMeter(0, chwN.Length, "Solving Thermal Plant Components", true, true);
             for (; i < chwN.Length; i++)
             {
@@ -147,76 +149,69 @@ namespace DistrictEnergy
                     out HW_NGB[i]);
                 StatusBar.UpdateProgressMeter(i, true);
             }
+            RhinoApp.WriteLine("Distric Energy Simulation complete");
+            StatusBar.HideProgressMeter();
         }
 
-        private double[] GetHourlyChilledWaterProfile(UmiContext context)
+        private double[] GetHourlyChilledWaterProfile(List<UmiObject> contextObjects)
         {
             RhinoApp.WriteLine("Getting all Buildings and aggregating cooling loads");
-            var nbDataPoint = context.GetObjects().Select(b => b.Data["SDL/Cooling"].Data.Count).Max();
-            var a = new double[nbDataPoint];
+            var nbDataPoint = 8760;
+            var aggregationArray = new double[nbDataPoint];
             StatusBar.HideProgressMeter();
-            StatusBar.ShowProgressMeter(0, nbDataPoint * context.GetObjects().Count * 3,
+            StatusBar.ShowProgressMeter(0, nbDataPoint * contextObjects.Count * 3,
                 "Aggregating Cooling Loads", true, true);
 
-            foreach (var umiObject in context.GetObjects())
-            {
-                if (umiObject.Data["SDL/Cooling"].Data.Count != 8760) continue;
+            foreach (var umiObject in contextObjects)
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     var d = umiObject.Data["SDL/Cooling"].Data[i];
-                    a[i] += d;
+                    aggregationArray[i] += d;
                     _progressBarPos += 1;
                     StatusBar.UpdateProgressMeter(_progressBarPos, true);
                 }
-            }
 
-            return a;
+            return aggregationArray;
         }
 
-        private double[] GetHourlyHotWaterLoadProfile(UmiContext context)
+        private double[] GetHourlyHotWaterLoadProfile(List<UmiObject> contextObjects)
         {
             RhinoApp.WriteLine("Getting all Buildings and aggregating hot water loads");
-            var nbDataPoint = context.GetObjects().Select(b => b.Data["SDL/Cooling"].Data.Count).Max();
-            var a = new double[nbDataPoint];
+            var nbDataPoint = 8760;
+            var aggregationArray = new double[nbDataPoint];
             StatusBar.HideProgressMeter();
-            StatusBar.ShowProgressMeter(0, nbDataPoint * context.GetObjects().Count * 3,
+            StatusBar.ShowProgressMeter(0, nbDataPoint * contextObjects.Count * 3,
                 "Aggregating Hot Water Loads", true, true);
-            foreach (var umiObject in context.GetObjects())
-            {
-                if (umiObject.Data["SDL/Heating"].Data.Count != 8760) continue;
+            foreach (var umiObject in contextObjects)
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     var d = umiObject.Data["SDL/Heating"].Data[i] + umiObject.Data["SDL/Domestic Hot Water"].Data[i];
-                    a[i] += d;
+                    aggregationArray[i] += d;
                     _progressBarPos += 1;
                     StatusBar.UpdateProgressMeter(_progressBarPos, true);
                 }
-            }
 
-            return a;
+            return aggregationArray;
         }
 
-        private double[] GetHourlyElectricalLoadProfile(UmiContext context)
+        private double[] GetHourlyElectricalLoadProfile(List<UmiObject> contextObjects)
         {
             RhinoApp.WriteLine("Getting all Buildings and aggregating electrical loads: SDL/Equipment + SDL/Lighting");
-            var nbDataPoint = context.GetObjects().Select(b => b.Data["SDL/Cooling"].Data.Count).Max();
-            var a = new double[nbDataPoint];
+            var nbDataPoint = 8760;
+            var aggreagationArray = new double[nbDataPoint];
             StatusBar.HideProgressMeter();
-            StatusBar.ShowProgressMeter(0, nbDataPoint * context.GetObjects().Count * 3,
+            StatusBar.ShowProgressMeter(0, nbDataPoint * contextObjects.Count * 3,
                 "Aggregating Hot Water Loads", true, true);
-            foreach (var umiObject in context.GetObjects())
-            {
-                if (umiObject.Data["SDL/Equipment"].Data.Count != 8760) continue;
+            foreach (var umiObject in contextObjects)
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     var d = umiObject.Data["SDL/Equipment"].Data[i] + umiObject.Data["SDL/Lighting"].Data[i];
-                    a[i] += d;
+                    aggreagationArray[i] += d;
                     _progressBarPos += 1;
                     StatusBar.UpdateProgressMeter(_progressBarPos, true);
                 }
-            }
 
-            return a;
+            return aggreagationArray;
         }
 
         private IEnumerable<decimal> GetHourlyLocationSolarRadiation(UmiContext context)
@@ -394,7 +389,7 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        /// Gets the smallest non-negative of two variables
+        ///     Gets the smallest non-negative of two variables
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
