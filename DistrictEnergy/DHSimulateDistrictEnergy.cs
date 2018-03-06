@@ -52,7 +52,7 @@ namespace DistrictEnergy
         /// <summary>
         ///     Hourly electricity load profile (kWh)
         /// </summary>
-        private double[] ELEC_n { get; set; }
+        private static double[] ELEC_n { get; set; }
 
         /// <summary>
         ///     Hourly location solar radiation data (kWh/m2)
@@ -265,14 +265,20 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        ///     Capacity of Battery
+        ///     Capacity of Battery, defined as the everage demand times the desired autonomy
         /// </summary>
-        private static double CAP_BAT { get; } = 0; // todo CAP_BAT eqaution : (SN) "Use the daily average demand * #days of autonomy"
+        private static double CAP_BAT
+        {
+            get { return ELEC_n.Average() * AUT_BAT; }
+        }
 
         /// <summary>
-        ///     Tank capacity
+        ///     Capacity of Hot Water Tank, defined as the everage demand times the desired autonomy
         /// </summary>
-        private static double CAP_HWT { get; } = 0; // todo : CAP_HWT equation
+        private static double CAP_HWT
+        {
+            get { return HW_n.Average() * AUT_HWT; }
+        }
 
         /// <summary>
         ///     Capacity of CHP plant
