@@ -56,14 +56,14 @@ namespace DistrictEnergy
         private static double[] ELEC_n { get; set; }
 
         /// <summary>
-        ///     Hourly location solar radiation data (kWh/m2)
+        ///     Hourly Global Solar Radiation from EPW file (kWh/m2)
         /// </summary>
-        private static decimal[] RAD_n { get; set; }
+        private static double[] RAD_n { get; set; }
 
         /// <summary>
         ///     Hourly location wind speed data (m/s)
         /// </summary>
-        private static decimal[] WIND_n { get; set; }
+        private static double[] WIND_n { get; set; }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
@@ -90,6 +90,7 @@ namespace DistrictEnergy
 
             // Go Hour by hour and parse through the simulation routine
             MainSimulation(CHW_n, HW_n, ELEC_n, RAD_n, WIND_n);
+            GetConstants();
 
             return Result.Success;
         }
@@ -251,95 +252,82 @@ namespace DistrictEnergy
         }
 
         #region Constants
+        /// <summary>
+        /// Calculates the necessary constants used in different equations
+        /// </summary>
+        private void GetConstants()
+        {
+            CAP_ABS = CHW_n.Max() * OFF_ABS;
+            CAP_EHP = HW_n.Max() * OFF_EHP;
+            CAP_BAT = ELEC_n.Average() * AUT_BAT;
+            CAP_HWT = HW_n.Average() * AUT_HWT;
+            CAP_CHP = ELEC_n.Max();
+            AREA_SHW = HW_n.Sum() * OFF_SHW / (RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
+            AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
+            var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
+            NUM_WND = ELEC_n.Sum() * OFF_WND / (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND / 1000); // Divide by 1000 because equation spits out Wh
+            DCHG_HWT = double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
+            DCHG_BAT = double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
+        }
 
         /// <summary>
         ///     Cooling capacity of absorption chillers (kW)
         /// </summary>
-        private static double CAP_ABS
-        {
-            get { return CHW_n.Max() * OFF_ABS; }
-        }
+        private static double CAP_ABS { get; set; }
 
         /// <summary>
         ///     Capacity of Electrical Heat Pumps
         /// </summary>
-        private static double CAP_EHP
-        {
-            get { return HW_n.Max() * OFF_EHP; }
-        }
+        private static double CAP_EHP { get; set; }
 
         /// <summary>
         ///     Capacity of Battery, defined as the everage demand times the desired autonomy
         /// </summary>
-        private static double CAP_BAT
-        {
-            get { return ELEC_n.Average() * AUT_BAT; }
-        }
+        private static double CAP_BAT { get; set; }
 
         /// <summary>
         ///     Capacity of Hot Water Tank, defined as the everage demand times the desired autonomy
         /// </summary>
-        private static double CAP_HWT
-        {
-            get { return HW_n.Average() * AUT_HWT; }
-        }
+        private static double CAP_HWT { get; set; }
 
         /// <summary>
         ///     Capacity of CHP plant
         /// </summary>
-        private static double CAP_CHP
-        {
-            get { return ELEC_n.Sum(); }
-        }
+        private static double CAP_CHP { get; set; }
 
         /// <summary>
-        ///     Calculated required area of solar thermal collector
+        ///     Calculated required area of solar thermal collector (m^2)
         /// </summary>
-        private static double AREA_SHW
-        {
-            get { return HW_n.Sum() * OFF_SHW / ((double) RAD_n.Sum() * EFF_SHW * LOSS_SHW * UTIL_SHW); }
-        }
+        private static double AREA_SHW { get; set; }
 
         /// <summary>
         ///     Calculated required area of PV collectors
         /// </summary>
-        private static double AREA_PV
-        {
-            get { return ELEC_n.Sum() * OFF_PV / ((double) RAD_n.Sum() * EFF_PV * LOSS_PV * UTIL_PV); }
-        }
+        private static double AREA_PV { get; set; }
 
         /// <summary>
         ///     Number of turbines needed: Annual electricity needed divided by how much one turbine generates.
         ///     [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and
         ///     cut-out speeds x COP)]
         /// </summary>
-        private static double NUM_WND
-        {
-            get
-            {
-                return ELEC_n.Sum() * OFF_WND / (WIND_n.Where(w => (double) w > CIN_WND && (double) w < COUT_WND)
-                                                     .Select(w => Math.Pow((double) w, 3)).Sum() * COP_WND);
-            }
-        }
+        private static double NUM_WND { get; set; }
 
         /// <summary>
         ///     Dischrage rate of thermal tank
         /// </summary>
-        private static double DCHG_HWT { get; } =
-            double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
+        private static double DCHG_HWT { get; set; }
 
         /// <summary>
         ///     Discharge rate of battery
         /// </summary>
-        private static double DCHG_BAT { get; } =
-            double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
+        private static double DCHG_BAT { get; set; }
 
         #endregion
 
         #region Equation 1 to 18
 
         /// <summary>
-        ///     Equation 1
+        ///     Equation 1 : The hot water required to generate project chilled water
         /// </summary>
         /// <param name="chwN">Hourly chilled water load profile (kWh)</param>
         /// <param name="hwAbs">Hot water required for Absorption Chiller</param>
