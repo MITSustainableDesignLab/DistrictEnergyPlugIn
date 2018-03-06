@@ -113,7 +113,7 @@ namespace DistrictEnergy
                 eqELEC_PV((double) RAD_n[i], out ELEC_PV[i]); // OK
                 eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
                 if (i == 0)
-                    TANK_CHG_n[i] = 0; // todo Assumed tank is empty at beginning of simulation
+                    TANK_CHG_n[i] = 0; // todo Assumed tank is empty at beginning of simulation : (User defined input : Start at 0.80)
                 if (i > 0)
                     eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
                 eqHW_HWT(TANK_CHG_n[i], out HW_HWT[i]); // OK             
@@ -267,7 +267,7 @@ namespace DistrictEnergy
         /// <summary>
         ///     Capacity of Battery
         /// </summary>
-        private static double CAP_BAT { get; } = 0; // todo CAP_BAT eqaution
+        private static double CAP_BAT { get; } = 0; // todo CAP_BAT eqaution : (SN) "Use the daily average demand * #days of autonomy"
 
         /// <summary>
         ///     Tank capacity
@@ -277,7 +277,7 @@ namespace DistrictEnergy
         /// <summary>
         ///     Capacity of CHP plant
         /// </summary>
-        private static double CAP_CHP { get; } = 0; // todo : CAP_CHP equation
+        private static double CAP_CHP { get; } = 0; // todo : CAP_CHP equation : (SN) "Peak electrical capacity * OFF_CHP"
 
         /// <summary>
         ///     Calculated required area of solar thermal collector
@@ -298,7 +298,7 @@ namespace DistrictEnergy
         ///     Dischrage rate of thermal tank
         /// </summary>
         private static double DCHG_HWT { get; } =
-            0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD)
+            0; // todo Discharge rate is said to be a user defined parameter but I think it should be calculated from the number of days of autonomy (SLD) (ignore)
 
         /// <summary>
         ///     Discharge rate of battery
@@ -525,8 +525,6 @@ namespace DistrictEnergy
         /// </summary>
         private readonly double[] BAT_CHG_n = new double[8760];
 
-        // todo Shouldn't there be an ELEC_ABS? Small electric pump of the Absorption chiller...
-
         /// <summary>
         ///     eq12 Demand met by the battery bank
         /// </summary>
@@ -613,7 +611,7 @@ namespace DistrictEnergy
         private readonly double[] TANK_CHG_n = new double[8760];
 
         /// <summary>
-        ///     Hour Surplus todo What's the equation ?
+        ///     Hour Surplus
         /// </summary>
         private readonly double[] SHW_BAL = new double[8760];
 
@@ -778,12 +776,12 @@ namespace DistrictEnergy
 
         private static double LOSS_HWNET
         {
-            get { return 0; } // todo Should a Hot Water network loss be added as a User Parameter
+            get { return 0; } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
         }
 
         private static double LOSS_CHWNET
         {
-            get { return 0; } // todo Should a Chilled Water network loss be added as a User Parameter
+            get { return 0; } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
         }
 
         #endregion
