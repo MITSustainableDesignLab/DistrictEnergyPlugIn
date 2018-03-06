@@ -390,8 +390,8 @@ namespace DistrictEnergy
         private void eqHW_SHW(double radN, double hwN, double hwEhp, double hwAbs, out double hwShw,
             out double solarBalance)
         {
-            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW, hwN - hwEhp + hwAbs);
-            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * LOSS_SHW - hwN + hwEhp - hwAbs;
+            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW), hwN - hwEhp + hwAbs);
+            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW) - hwN + hwEhp - hwAbs;
         }
 
         /// <summary>
@@ -439,7 +439,7 @@ namespace DistrictEnergy
         /// <param name="elecPv"></param>
         private void eqELEC_PV(double radN, out double elecPv)
         {
-            elecPv = radN * AREA_PV * EFF_PV * UTIL_PV * LOSS_PV;
+            elecPv = radN * AREA_PV * EFF_PV * UTIL_PV * (1-LOSS_PV);
         }
 
         /// <summary>
@@ -449,7 +449,7 @@ namespace DistrictEnergy
         /// <param name="elecWnd"></param>
         private void eqELEC_WND(double windN, out double elecWnd)
         {
-            elecWnd = 0.6375 * Math.Pow(windN, 3) * ROT_WND * NUM_WND * COP_WND * LOSS_WND;
+            elecWnd = 0.6375 * Math.Pow(windN, 3) * ROT_WND * NUM_WND * COP_WND * (1-LOSS_WND);
         }
 
         /// <summary>
