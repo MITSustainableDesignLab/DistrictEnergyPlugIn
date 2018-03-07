@@ -365,7 +365,7 @@ namespace DistrictEnergy
         /// <summary>
         ///     Equation 3 : The electricity consumption required to generate hot water from heat pumps
         /// </summary>
-        /// <param name="hwN"></param>
+        /// <param name="hwN">Hourly hot water load profile (kWh)</param>
         /// <param name="elecEhp"></param>
         /// <param name="hwEhp"></param>
         private void eqELEC_EHP(double hwN, out double elecEhp, out double hwEhp)
@@ -375,16 +375,16 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        ///     Equation 4 : The annual boiler natural gas consumption to generate project hot water
+        ///     Equation 4 : The boiler natural gas consumption to generate project hot water
         /// </summary>
-        /// <param name="hwN"></param>
-        /// <param name="hwEhp"></param>
-        /// <param name="hwAbs"></param>
-        /// <param name="hwShw"></param>
-        /// <param name="hwHwt"></param>
-        /// <param name="hwChp"></param>
-        /// <param name="ngasNgb"></param>
-        /// <param name="hwNgb"></param>
+        /// <param name="hwN">Hourly hot water load profile (kWh)</param>
+        /// <param name="hwEhp">hot water load met by electric heat pumps</param>
+        /// <param name="hwAbs">Hot water load needed by the Absorption chiller</param>
+        /// <param name="hwShw">hot water load met by solar thermal collectors</param>
+        /// <param name="hwHwt">Hot water Demand met by hot water tanks</param>
+        /// <param name="hwChp">Hot Water Demand met by CHP plant</param>
+        /// <param name="ngasNgb">Natural gas consumption to generate project hot water</param>
+        /// <param name="hwNgb">Hot Water produced by Natural Gas Boilers</param>
         private void eqNGAS_NGB(double hwN, double hwEhp, double hwAbs, double hwShw, double hwHwt, double hwChp,
             out double ngasNgb, out double hwNgb)
         {
@@ -490,16 +490,23 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        ///     Equation  13/18 : The annual heating energy recovered from the combined heat and power plant and supplied to the
-        ///     project
+        /// Equation  13/18 : The annual heating energy recovered from the combined heat and power plant and supplied to the
+        /// project
         /// </summary>
+        /// <param name="tracking">The tracking mode of the CHP plant (converted to a string : eg "Thermal" of "Electrical")</param>
+        /// <param name="hWn"></param>
+        /// <param name="hwEhp"></param>
+        /// <param name="hwAbs"></param>
+        /// <param name="hwShw"></param>
+        /// <param name="hwHwt"></param>
+        /// <param name="ngasChp"></param>
+        /// <param name="hwChp"></param>
         private void eqHW_CHP(string tracking, double hWn, double hwEhp, double hwAbs, double hwShw, double hwHwt,
             double ngasChp,
             out double hwChp)
         {
             if (string.Equals(tracking, "Thermal"))
-                hwChp = Math.Min(CAP_CHP / EFF_CHP * HREC_CHP,
-                    hWn - hwEhp + hwAbs - hwShw - hwHwt);
+                hwChp = Math.Min(CAP_CHP / EFF_CHP * HREC_CHP, hWn - hwEhp + hwAbs - hwShw - hwHwt);
             hwChp = ngasChp * HREC_CHP;
         }
 
