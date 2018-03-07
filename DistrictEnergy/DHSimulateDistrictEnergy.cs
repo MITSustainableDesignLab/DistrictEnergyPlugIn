@@ -112,15 +112,16 @@ namespace DistrictEnergy
                 //    Debugger.Break();
                 eqHW_ABS(CHW_n[i], out HW_ABS[i]); //OK
                 eqELEC_ECH(CHW_n[i], out ELEC_ECH[i]); //OK
-                eqELEC_EHP(HW_n[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
-                eqHW_SHW(RAD_n[i], HW_n[i], HW_EHP[i], HW_ABS[i], out HW_SHW[i], out SHW_BAL[i]); // OK
+                eqHW_SHW(RAD_n[i], HW_n[i], HW_ABS[i], out HW_SHW[i], out SHW_BAL[i]); // OK
                 eqELEC_PV(RAD_n[i], out ELEC_PV[i]); // OK
                 eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
                 if (i == 0)
                     TANK_CHG_n[i] = CAP_HWT * TANK_START;
                 if (i > 0)
                     eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
-                eqHW_HWT(TANK_CHG_n[i], HW_n[i], HW_ABS[i], HW_EHP[i], HW_SHW[i], out HW_HWT[i]); // OK             
+                eqHW_HWT(TANK_CHG_n[i], HW_n[i], HW_ABS[i], HW_SHW[i], out HW_HWT[i]); // OK
+                eqELEC_EHP(HW_n[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
+
 
                 eqELEC_REN(ELEC_PV[i], ELEC_WND[i], ELEC_n[i], out ELEC_REN[i], out ELEC_BAL[i]); // OK
                 if (i == 0)
@@ -366,12 +367,16 @@ namespace DistrictEnergy
         ///     Equation 3 : The electricity consumption required to generate hot water from heat pumps
         /// </summary>
         /// <param name="hwN">Hourly hot water load profile (kWh)</param>
+        /// <param name="hwAbs"></param>
+        /// <param name="hwShw"></param>
+        /// <param name="hwHwt"></param>
         /// <param name="elecEhp"></param>
         /// <param name="hwEhp"></param>
-        private void eqELEC_EHP(double hwN, out double elecEhp, out double hwEhp)
+        private void eqELEC_EHP(double hwN, double hwAbs, double hwShw,
+            double hwHwt, out double elecEhp, out double hwEhp)
         {
-            elecEhp = Math.Min(hwN, CAP_EHP) / HCOP_EHP;
-            hwEhp = Math.Min(hwN, CAP_EHP);
+            elecEhp = Math.Min(hwN + hwAbs - hwShw - hwHwt, CAP_EHP) / HCOP_EHP;
+            hwEhp = Math.Min(hwN + hwAbs - hwShw - hwHwt, CAP_EHP);
         }
 
         /// <summary>
@@ -397,15 +402,14 @@ namespace DistrictEnergy
         /// </summary>
         /// <param name="radN">Hourly location solar radiation data (kWh/m2)</param>
         /// <param name="hwN">Hourly hot water load profile (kWh)</param>
-        /// <param name="hwEhp">hot water load met by electric heat pumps</param>
         /// <param name="hwAbs">Hot water load needed by the Absorption chiller</param>
         /// <param name="hwShw">hot water load met by solar thermal collectors</param>
         /// <param name="solarBalance">If + goes to tank, If - comes from tank</param>
-        private void eqHW_SHW(double radN, double hwN, double hwEhp, double hwAbs, out double hwShw,
+        private void eqHW_SHW(double radN, double hwN, double hwAbs, out double hwShw,
             out double solarBalance)
         {
-            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW), hwN - hwEhp + hwAbs);
-            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW) - hwN + hwEhp - hwAbs;
+            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW), hwN + hwAbs);
+            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW) - hwN - hwAbs;
         }
 
         /// <summary>
@@ -425,12 +429,11 @@ namespace DistrictEnergy
         /// <param name="tankChgN"></param>
         /// <param name="hwN"></param>
         /// <param name="hwAbs"></param>
-        /// <param name="hwEhp"></param>
         /// <param name="hwShw"></param>
         /// <param name="hwHwt">Demand met by hot water tank</param>
-        private void eqHW_HWT(double tankChgN, double hwN, double hwAbs, double hwEhp, double hwShw, out double hwHwt)
+        private void eqHW_HWT(double tankChgN, double hwN, double hwAbs, double hwShw, out double hwHwt)
         {
-            hwHwt = GetSmallestNonNegative((hwN + hwAbs - hwEhp - hwShw), GetSmallestNonNegative(tankChgN, DCHGR_HWT));
+            hwHwt = GetSmallestNonNegative((hwN + hwAbs - hwShw), GetSmallestNonNegative(tankChgN, DCHGR_HWT));
         }
 
         /// <summary>
