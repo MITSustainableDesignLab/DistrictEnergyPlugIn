@@ -409,23 +409,6 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        ///     Gets the smallest non-negative of two variables
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        private static double GetSmallestNonNegative(double a, double b)
-        {
-            if (a >= 0 && b >= 0)
-                return Math.Min(a, b);
-            if (a >= 0 && b < 0)
-                return a;
-            if (a < 0 && b >= 0)
-                return b;
-            return 0;
-        }
-
-        /// <summary>
         ///     Equation 7 : Demand met by hot water tanks
         /// </summary>
         /// <param name="tankChgN"></param>
@@ -478,7 +461,7 @@ namespace DistrictEnergy
         private void eqBAT_CHG_n(double previousBatChgN,
             double elecBalance, out double batChgN)
         {
-            batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance, CAP_BAT);
+            batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance, previousBatChgN + CHGR_BAT);
         }
 
         /// <summary>
@@ -534,6 +517,23 @@ namespace DistrictEnergy
             if (string.Equals(tracking, "Thermal"))
                 elecChp = ngasChp * EFF_CHP;
             elecChp = Math.Min(CAP_CHP, elecN - elecRen - elecBat);
+        }
+
+        /// <summary>
+        ///     Gets the smallest non-negative of two variables
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private static double GetSmallestNonNegative(double a, double b)
+        {
+            if (a >= 0 && b >= 0)
+                return Math.Min(a, b);
+            if (a >= 0 && b < 0)
+                return a;
+            if (a < 0 && b >= 0)
+                return b;
+            return 0;
         }
 
         #endregion
