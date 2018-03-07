@@ -95,6 +95,7 @@ namespace DistrictEnergy
             // Go Hour by hour and parse through the simulation routine
             GetConstants();
             MainSimulation();
+            SimulationResultsToCsv();
 
             return Result.Success;
         }
@@ -151,7 +152,6 @@ namespace DistrictEnergy
                 eqNGAS_NGB(HW_n[i], HW_EHP[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], HW_CHP[i], out NGAS_NGB[i],
                     out HW_NGB[i]);
                 StatusBar.UpdateProgressMeter(i, true);
-                SimulationResultsToCsv();
             }
 
             RhinoApp.WriteLine("Distric Energy Simulation complete");
