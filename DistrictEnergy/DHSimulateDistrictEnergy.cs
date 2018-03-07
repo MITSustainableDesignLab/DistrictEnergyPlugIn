@@ -268,8 +268,8 @@ namespace DistrictEnergy
             AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
             var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
             NUM_WND = ELEC_n.Sum() * OFF_WND / (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND / 1000); // Divide by 1000 because equation spits out Wh
-            DCHG_HWT = double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
-            DCHG_BAT = double.MaxValue; // todo Discharge rate is set to infinity but should be defined in the future
+            DCHG_HWT = 1/3 * CAP_HWT; // todo Discharge rate is set to 1/3 if the capacity
+            DCHG_BAT = 1/3 * CAP_BAT; // todo Discharge rate is set to infinity but should be defined in the future
         }
 
         /// <summary>
