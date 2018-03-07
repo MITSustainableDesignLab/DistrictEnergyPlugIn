@@ -870,6 +870,9 @@ namespace DistrictEnergy
                 Headers.Add("SHW_BAL");
                 Headers.Add("ELEC_PROJ");
                 Headers.Add("NGAS_PROJ");
+                Headers.Add("CHW_n");
+                Headers.Add("HW_n");
+                Headers.Add("ELEC_n");
 
                 foreach (var header in Headers)
                 {
@@ -889,7 +892,6 @@ namespace DistrictEnergy
                     csvWriter.WriteField(BAT_CHG_n[i]);
                     csvWriter.WriteField(ELEC_BAT[i]);
                     csvWriter.WriteField(ELEC_CHP[i]);
-                    csvWriter.WriteField(ELEC_CHP[i]);
                     csvWriter.WriteField(ELEC_ECH[i]);
                     csvWriter.WriteField(ELEC_EHP[i]);
                     csvWriter.WriteField(ELEC_PV[i]);
@@ -908,6 +910,9 @@ namespace DistrictEnergy
                     csvWriter.WriteField(SHW_BAL[i]);
                     csvWriter.WriteField(ELEC_PROJ[i]);
                     csvWriter.WriteField(NGAS_PROJ[i]);
+                    csvWriter.WriteField(CHW_n[i]);
+                    csvWriter.WriteField(HW_n[i]);
+                    csvWriter.WriteField(ELEC_n[i]);
 
                     csvWriter.NextRecord();
                     dateTime = dateTime.AddHours(1);
