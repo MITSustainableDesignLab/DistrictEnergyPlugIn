@@ -120,7 +120,7 @@ namespace DistrictEnergy
                     TANK_CHG_n[i] = CAP_HWT * TANK_START;
                 if (i > 0)
                     eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
-                eqHW_HWT(TANK_CHG_n[i], out HW_HWT[i]); // OK             
+                eqHW_HWT(TANK_CHG_n[i], HW_n[i], HW_ABS[i], HW_EHP[i], HW_SHW[i], out HW_HWT[i]); // OK             
 
                 eqELEC_REN(ELEC_PV[i], ELEC_WND[i], ELEC_n[i], out ELEC_REN[i], out ELEC_BAL[i]); // OK
                 if (i == 0)
@@ -268,8 +268,10 @@ namespace DistrictEnergy
             AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
             var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
             NUM_WND = ELEC_n.Sum() * OFF_WND / (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND / 1000); // Divide by 1000 because equation spits out Wh
-            DCHG_HWT = 1/3 * CAP_HWT; // todo Discharge rate is set to 1/3 if the capacity
-            DCHG_BAT = 1/3 * CAP_BAT; // todo Discharge rate is set to infinity but should be defined in the future
+            CHGR_HWT = CAP_HWT / AUT_HWT;
+            CHGR_BAT = CAP_BAT / AUT_BAT;
+            DCHGR_HWT = CAP_HWT / AUT_HWT; // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+            DCHG_BAT = CAP_BAT / AUT_BAT; // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
         }
 
         /// <summary>
@@ -313,11 +315,20 @@ namespace DistrictEnergy
         ///     cut-out speeds x COP)]
         /// </summary>
         private static double NUM_WND { get; set; }
+        /// <summary>
+        /// The Hot Water Tank Charge Rate (kWh / h)
+        /// </summary>
+        public static double CHGR_HWT { get; set; }
 
         /// <summary>
-        ///     Dischrage rate of thermal tank
+        /// The Battery Charge Rate (kWh / h)
         /// </summary>
-        private static double DCHG_HWT { get; set; }
+        public static double CHGR_BAT { get; set; }
+
+        /// <summary>
+        ///     Discharge rate of Hot Water Tank
+        /// </summary>
+        private static double DCHGR_HWT { get; set; }
 
         /// <summary>
         ///     Discharge rate of battery
@@ -400,22 +411,26 @@ namespace DistrictEnergy
         /// <summary>
         ///     Equation 6 : The tank charge for each hour
         /// </summary>
-        /// <param name="previousTankChgN"></param>
-        /// <param name="shwBal"></param>
-        /// <param name="tankChgN"></param>
+        /// <param name="previousTankChgN">Previous timestep Hot Water Tank charge (kWh)</param>
+        /// <param name="shwBal">Solar balance</param>
+        /// <param name="tankChgN">This timestep's Hot Water Tank charge (kWh)</param>
         private void eqTANK_CHG_n(double previousTankChgN, double shwBal, out double tankChgN)
         {
-            tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal, CAP_HWT);
+            tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal, previousTankChgN + CHGR_HWT);
         }
 
         /// <summary>
         ///     Equation 7 : Demand met by hot water tanks
         /// </summary>
         /// <param name="tankChgN"></param>
-        /// <param name="hwHwt"></param>
-        private void eqHW_HWT(double tankChgN, out double hwHwt)
+        /// <param name="hwN"></param>
+        /// <param name="hwAbs"></param>
+        /// <param name="hwEhp"></param>
+        /// <param name="hwShw"></param>
+        /// <param name="hwHwt">Demand met by hot water tank</param>
+        private void eqHW_HWT(double tankChgN, double hwN, double hwAbs, double hwEhp, double hwShw, out double hwHwt)
         {
-            hwHwt = Math.Min(tankChgN, DCHG_HWT);
+            hwHwt = GetSmallestNonNegative((hwN + hwAbs - hwEhp - hwShw), GetSmallestNonNegative(tankChgN, DCHGR_HWT));
         }
 
         /// <summary>
