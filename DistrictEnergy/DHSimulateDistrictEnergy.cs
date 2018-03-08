@@ -70,43 +70,10 @@ namespace DistrictEnergy
         ///     Hourly location wind speed data (m/s)
         /// </summary>
         private static double[] WIND_n { get; set; }
-
-        private int numberTimesteps { get; set; }
-
-        protected override Result RunCommand(RhinoDoc doc, RunMode mode)
-        {
-            var umiContext = UmiContext.Current;
-            if (umiContext == null)
-            {
-                RhinoApp.WriteLine("Problem getting the umi context");
-                return Result.Failure;
-            }
-
-            _progressBarPos = 0;
-            // Getting the Aggregated Load Curve for all buildings
-            var contextBuildings =
-                umiContext.GetObjects().Where(o => o.Data["SDL/Cooling"].Data.Count == 8760).ToList();
-            CHW_n = GetHourlyChilledWaterProfile(contextBuildings);
-            HW_n = GetHourlyHotWaterLoadProfile(contextBuildings);
-            ELEC_n = GetHourlyElectricalLoadProfile(contextBuildings);
-            RAD_n = GetHourlyLocationSolarRadiation(umiContext).ToArray();
-            WIND_n = GetHourlyLocationWind(umiContext).ToArray();
-            StatusBar.HideProgressMeter();
-
-            numberTimesteps = HW_n.Length;
-
-            RhinoApp.WriteLine(
-                $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
-
-            // Go Hour by hour and parse through the simulation routine
-            SetResultsArraystoZero();
-            DeleteLogFile();
-            GetConstants();
-            MainSimulation();
-            SimulationResultsToCsv();
-
-            return Result.Success;
-        }
+        /// <summary>
+        ///     Hourly Ambiant temperature (C)
+        /// </summary>
+        private static double[] T_AMB_n { get; set; }
 
         /// <summary>
         ///     This is the routine that goeas though all the eqautions one timestep at a time
@@ -166,6 +133,45 @@ namespace DistrictEnergy
 
             RhinoApp.WriteLine("Distric Energy Simulation complete");
             StatusBar.HideProgressMeter();
+        }
+
+        private int numberTimesteps { get; set; }
+
+        protected override Result RunCommand(RhinoDoc doc, RunMode mode)
+        {
+            var umiContext = UmiContext.Current;
+            if (umiContext == null)
+            {
+                RhinoApp.WriteLine("Problem getting the umi context");
+                return Result.Failure;
+            }
+
+            _progressBarPos = 0;
+            // Getting the Aggregated Load Curve for all buildings
+            var contextBuildings =
+                umiContext.GetObjects().Where(o => o.Data["SDL/Cooling"].Data.Count == 8760).ToList();
+            CHW_n = GetHourlyChilledWaterProfile(contextBuildings);
+            HW_n = GetHourlyHotWaterLoadProfile(contextBuildings);
+            ELEC_n = GetHourlyElectricalLoadProfile(contextBuildings);
+            StatusBar.HideProgressMeter();
+            RAD_n = GetHourlyLocationSolarRadiation(umiContext).ToArray();
+            WIND_n = GetHourlyLocationWind(umiContext).ToArray();
+            T_AMB_n = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
+            
+
+            numberTimesteps = HW_n.Length;
+
+            RhinoApp.WriteLine(
+                $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
+
+            // Go Hour by hour and parse through the simulation routine
+            SetResultsArraystoZero();
+            DeleteLogFile();
+            CalculateConstants();
+            MainSimulation();
+            SimulationResultsToCsv();
+
+            return Result.Success;
         }
 
         private double[] GetHourlyChilledWaterProfile(List<UmiObject> contextObjects)
@@ -243,6 +249,14 @@ namespace DistrictEnergy
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
             return a.HourlyWeatherDataRawList.Select(b => (double) b.WindSpeed); // m/s
+        }
+
+        private IEnumerable<double> GetHourlyLocationAmbiantTemp(UmiContext context)
+        {
+            RhinoApp.WriteLine("Calculating temp for location");
+            var a = new EPWeatherData();
+            a.GetRawData(context.WeatherFilePath);
+            return a.HourlyWeatherDataRawList.Select(b => (double)b.DB); // C
         }
 
         /// <summary>
