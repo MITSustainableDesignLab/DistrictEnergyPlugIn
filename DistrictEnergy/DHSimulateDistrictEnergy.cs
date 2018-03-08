@@ -747,6 +747,17 @@ namespace DistrictEnergy
             return 0;
         }
 
+        private static double GetHighestNonNegative(double a, double b)
+        {
+            if (a >= 0 && b >= 0)
+                return Math.Max(a, b);
+            if (a >= 0 && b < 0)
+                return a;
+            if (a < 0 && b >= 0)
+                return b;
+            return 0;
+        }
+
         #endregion
 
         #region Results Array
