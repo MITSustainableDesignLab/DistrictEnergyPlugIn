@@ -645,9 +645,9 @@ namespace DistrictEnergy
             if (a >= 0 && b >= 0)
                 return Math.Min(a, b);
             if (a >= 0 && b < 0)
-                return a;
+                return 0;
             if (a < 0 && b >= 0)
-                return b;
+                return 0;
             return 0;
         }
 
