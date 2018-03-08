@@ -87,12 +87,13 @@ namespace DistrictEnergy
             WIND_n = GetHourlyLocationWind(umiContext).ToArray();
             StatusBar.HideProgressMeter();
 
-            timesteps = HW_n.Length;
+            numberTimesteps = HW_n.Length;
 
             RhinoApp.WriteLine(
                 $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
 
             // Go Hour by hour and parse through the simulation routine
+            SetResultsArraystoZero();
             GetConstants();
             MainSimulation();
             SimulationResultsToCsv();
@@ -159,7 +160,12 @@ namespace DistrictEnergy
             StatusBar.HideProgressMeter();
         }
 
-        private int timesteps { get; set; }
+        private int numberTimesteps { get; set; }
+
+        /// <summary>
+        ///     Simulation Timestep
+        /// </summary>
+        private static int i;
 
         private double[] GetHourlyChilledWaterProfile(List<UmiObject> contextObjects)
         {
@@ -670,10 +676,31 @@ namespace DistrictEnergy
         /// </summary>
         private readonly double[] NGAS_PROJ = new double[8760];
 
-        /// <summary>
-        ///     Simulation Timestep
-        /// </summary>
-        private static int i;
+        private void SetResultsArraystoZero()
+        {
+            Array.Clear(BAT_CHG_n, 0, BAT_CHG_n.Length);
+            Array.Clear(ELEC_BAT, 0, ELEC_BAT.Length);
+            Array.Clear(ELEC_CHP, 0, ELEC_CHP.Length);
+            Array.Clear(ELEC_ECH, 0, ELEC_ECH.Length);
+            Array.Clear(ELEC_EHP, 0, ELEC_EHP.Length);
+            Array.Clear(ELEC_PV, 0, ELEC_PV.Length);
+            Array.Clear(ELEC_REN, 0, ELEC_REN.Length);
+            Array.Clear(ELEC_WND, 0, ELEC_WND.Length);
+            Array.Clear(ELEC_BAL, 0, ELEC_BAL.Length);
+            Array.Clear(HW_ABS, 0, HW_ABS.Length);
+            Array.Clear(HW_EHP, 0, HW_EHP.Length);
+            Array.Clear(HW_CHP, 0, HW_CHP.Length);
+            Array.Clear(HW_HWT, 0, HW_HWT.Length);
+            Array.Clear(HW_SHW, 0, HW_SHW.Length);
+            Array.Clear(HW_NGB, 0, HW_NGB.Length);
+            Array.Clear(NGAS_CHP, 0, NGAS_CHP.Length);
+            Array.Clear(NGAS_NGB, 0, NGAS_NGB.Length);
+            Array.Clear(TANK_CHG_n, 0, TANK_CHG_n.Length);
+            Array.Clear(SHW_BAL, 0, SHW_BAL.Length);
+            Array.Clear(ELEC_PROJ, 0, ELEC_PROJ.Length);
+            Array.Clear(NGAS_PROJ, 0, NGAS_PROJ.Length);
+
+        }
 
         #endregion
 
