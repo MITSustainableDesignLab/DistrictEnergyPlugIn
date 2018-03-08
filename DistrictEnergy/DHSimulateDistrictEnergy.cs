@@ -106,7 +106,7 @@ namespace DistrictEnergy
                     BAT_CHG_n[0] = CAP_BAT * BAT_START;
                 if (i > 0)
                     eqBAT_CHG_n(BAT_CHG_n[i - 1], ELEC_BAL[i], out BAT_CHG_n[i]); // OK
-                eqELEC_BAT(BAT_CHG_n[i], out ELEC_BAT[i]); // OK
+                eqELEC_BAT(BAT_CHG_n[i], ELEC_n[i], ELEC_ECH[i], ELEC_EHP[i], out ELEC_BAT[i]); // OK
 
                 if (string.Equals(TMOD_CHP, "Thermal"))
                 {
@@ -646,23 +646,34 @@ namespace DistrictEnergy
         /// <summary>
         ///     Equation 11 : The battery charge for each hour
         /// </summary>
-        /// <param name="previousBatChgN"></param>
-        /// <param name="elecBalance"></param>
-        /// <param name="batChgN"></param>
+        /// <param name="previousBatChgN">Previous timestep Battery charge (kWh)</param>
+        /// <param name="elecBalance">Renewable Energy Balance</param>
+        /// <param name="batChgN">This timestep's Battery charge (kWh)</param>
         private void eqBAT_CHG_n(double previousBatChgN,
             double elecBalance, out double batChgN)
         {
-            batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance, previousBatChgN + CHGR_BAT);
+            if (elecBalance < 0
+            ) // We are discharging the battery; Not all the elecBalance can be fed to the batt because of the LOSS_BAT parameter.
+                batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance * (1 - LOSS_BAT),
+                    previousBatChgN - DCHG_BAT);
+            else if (elecBalance > 0) // We are charging the battery
+                batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance * (1 - LOSS_BAT),
+                    previousBatChgN + CHGR_BAT);
+            else
+                batChgN = previousBatChgN;
         }
 
         /// <summary>
         ///     Equation 12 : Demand met by the battery bank
         /// </summary>
         /// <param name="batChgN"></param>
+        /// <param name="elecN"></param>
+        /// <param name="elecEch"></param>
+        /// <param name="elecEhp"></param>
         /// <param name="elecBat"></param>
-        private void eqELEC_BAT(double batChgN, out double elecBat)
+        private void eqELEC_BAT(double batChgN, double elecN, double elecEch, double elecEhp, out double elecBat)
         {
-            elecBat = Math.Min(batChgN, DCHG_BAT);
+            elecBat = GetSmallestNonNegative(elecN + elecEch + elecEhp, GetSmallestNonNegative(batChgN, DCHG_BAT));
         }
 
         /// <summary>
