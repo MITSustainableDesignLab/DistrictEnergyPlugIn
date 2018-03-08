@@ -260,9 +260,93 @@ namespace DistrictEnergy
             for (var i = 0; i < ELEC_n.Length; i++) NGAS_PROJ[i] = NGAS_NGB[i] + NGAS_CHP[i];
         }
 
+        private void SimulationResultsToCsv()
+        {
+            var file_name = @"C:\UMI\temp\DHSimulationResults.csv";
+            using (var writer = new StreamWriter(file_name))
+            using (var csvWriter = new CsvWriter(writer))
+            {
+                var Headers = new List<string>();
+                Headers.Add("DateTime");
+                Headers.Add("Hour");
+                Headers.Add("BAT_CHG_n");
+                Headers.Add("ELEC_BAT");
+                Headers.Add("ELEC_CHP");
+                Headers.Add("ELEC_ECH");
+                Headers.Add("ELEC_EHP");
+                Headers.Add("ELEC_PV");
+                Headers.Add("ELEC_REN");
+                Headers.Add("ELEC_WND");
+                Headers.Add("ELEC_BAL");
+                Headers.Add("HW_ABS");
+                Headers.Add("HW_EHP");
+                Headers.Add("HW_CHP");
+                Headers.Add("HW_HWT");
+                Headers.Add("HW_SHW");
+                Headers.Add("HW_NGB");
+                Headers.Add("NGAS_CHP");
+                Headers.Add("NGAS_NGB");
+                Headers.Add("TANK_CHG_n");
+                Headers.Add("SHW_BAL");
+                Headers.Add("ELEC_PROJ");
+                Headers.Add("NGAS_PROJ");
+                Headers.Add("CHW_n");
+                Headers.Add("HW_n");
+                Headers.Add("ELEC_n");
+
+                foreach (var header in Headers) csvWriter.WriteField(header);
+
+                csvWriter.NextRecord();
+
+                StatusBar.HideProgressMeter();
+                StatusBar.ShowProgressMeter(0, 8760, "Saving Results to CSV", true, true);
+                var dateTime = new DateTime(2017, 1, 1, 0, 0, 0);
+
+                for (var i = 0; i < 8760; i++)
+                {
+                    csvWriter.WriteField(dateTime);
+                    csvWriter.WriteField(i);
+                    csvWriter.WriteField(BAT_CHG_n[i]);
+                    csvWriter.WriteField(ELEC_BAT[i]);
+                    csvWriter.WriteField(ELEC_CHP[i]);
+                    csvWriter.WriteField(ELEC_ECH[i]);
+                    csvWriter.WriteField(ELEC_EHP[i]);
+                    csvWriter.WriteField(ELEC_PV[i]);
+                    csvWriter.WriteField(ELEC_REN[i]);
+                    csvWriter.WriteField(ELEC_WND[i]);
+                    csvWriter.WriteField(ELEC_BAL[i]);
+                    csvWriter.WriteField(HW_ABS[i]);
+                    csvWriter.WriteField(HW_EHP[i]);
+                    csvWriter.WriteField(HW_CHP[i]);
+                    csvWriter.WriteField(HW_HWT[i]);
+                    csvWriter.WriteField(HW_SHW[i]);
+                    csvWriter.WriteField(HW_NGB[i]);
+                    csvWriter.WriteField(NGAS_CHP[i]);
+                    csvWriter.WriteField(NGAS_NGB[i]);
+                    csvWriter.WriteField(TANK_CHG_n[i]);
+                    csvWriter.WriteField(SHW_BAL[i]);
+                    csvWriter.WriteField(ELEC_PROJ[i]);
+                    csvWriter.WriteField(NGAS_PROJ[i]);
+                    csvWriter.WriteField(CHW_n[i]);
+                    csvWriter.WriteField(HW_n[i]);
+                    csvWriter.WriteField(ELEC_n[i]);
+
+                    csvWriter.NextRecord();
+                    dateTime = dateTime.AddHours(1);
+                    StatusBar.UpdateProgressMeter(i, true);
+                }
+
+                StatusBar.HideProgressMeter();
+                writer.Close();
+            }
+
+            RhinoApp.WriteLine(string.Format("CSV file successfully written to {}", file_name));
+        }
+
         #region Constants
+
         /// <summary>
-        /// Calculates the necessary constants used in different equations
+        ///     Calculates the necessary constants used in different equations
         /// </summary>
         private void GetConstants()
         {
@@ -699,7 +783,6 @@ namespace DistrictEnergy
             Array.Clear(SHW_BAL, 0, SHW_BAL.Length);
             Array.Clear(ELEC_PROJ, 0, ELEC_PROJ.Length);
             Array.Clear(NGAS_PROJ, 0, NGAS_PROJ.Length);
-
         }
 
         #endregion
@@ -891,90 +974,5 @@ namespace DistrictEnergy
         }
 
         #endregion
-
-        private void SimulationResultsToCsv()
-        {
-            string file_name = @"C:\UMI\temp\DHSimulationResults.csv";
-            using (var writer = new StreamWriter(file_name))
-            using (var csvWriter = new CsvWriter(writer))
-            {
-                var Headers = new List<string>();
-                Headers.Add("DateTime");
-                Headers.Add("Hour");
-                Headers.Add("BAT_CHG_n");
-                Headers.Add("ELEC_BAT");
-                Headers.Add("ELEC_CHP");
-                Headers.Add("ELEC_ECH");
-                Headers.Add("ELEC_EHP");
-                Headers.Add("ELEC_PV");
-                Headers.Add("ELEC_REN");
-                Headers.Add("ELEC_WND");
-                Headers.Add("ELEC_BAL");
-                Headers.Add("HW_ABS");
-                Headers.Add("HW_EHP");
-                Headers.Add("HW_CHP");
-                Headers.Add("HW_HWT");
-                Headers.Add("HW_SHW");
-                Headers.Add("HW_NGB");
-                Headers.Add("NGAS_CHP");
-                Headers.Add("NGAS_NGB");
-                Headers.Add("TANK_CHG_n");
-                Headers.Add("SHW_BAL");
-                Headers.Add("ELEC_PROJ");
-                Headers.Add("NGAS_PROJ");
-                Headers.Add("CHW_n");
-                Headers.Add("HW_n");
-                Headers.Add("ELEC_n");
-
-                foreach (var header in Headers)
-                {
-                    csvWriter.WriteField(header);
-                }
-
-                csvWriter.NextRecord();
-
-                StatusBar.HideProgressMeter();
-                StatusBar.ShowProgressMeter(0, 8760, "Saving Results to CSV", true, true);
-                DateTime dateTime = new DateTime(2017, 1, 1, 0, 0, 0);
-
-                for (int i = 0; i < 8760; i++)
-                {
-                    csvWriter.WriteField(dateTime);
-                    csvWriter.WriteField(i);
-                    csvWriter.WriteField(BAT_CHG_n[i]);
-                    csvWriter.WriteField(ELEC_BAT[i]);
-                    csvWriter.WriteField(ELEC_CHP[i]);
-                    csvWriter.WriteField(ELEC_ECH[i]);
-                    csvWriter.WriteField(ELEC_EHP[i]);
-                    csvWriter.WriteField(ELEC_PV[i]);
-                    csvWriter.WriteField(ELEC_REN[i]);
-                    csvWriter.WriteField(ELEC_WND[i]);
-                    csvWriter.WriteField(ELEC_BAL[i]);
-                    csvWriter.WriteField(HW_ABS[i]);
-                    csvWriter.WriteField(HW_EHP[i]);
-                    csvWriter.WriteField(HW_CHP[i]);
-                    csvWriter.WriteField(HW_HWT[i]);
-                    csvWriter.WriteField(HW_SHW[i]);
-                    csvWriter.WriteField(HW_NGB[i]);
-                    csvWriter.WriteField(NGAS_CHP[i]);
-                    csvWriter.WriteField(NGAS_NGB[i]);
-                    csvWriter.WriteField(TANK_CHG_n[i]);
-                    csvWriter.WriteField(SHW_BAL[i]);
-                    csvWriter.WriteField(ELEC_PROJ[i]);
-                    csvWriter.WriteField(NGAS_PROJ[i]);
-                    csvWriter.WriteField(CHW_n[i]);
-                    csvWriter.WriteField(HW_n[i]);
-                    csvWriter.WriteField(ELEC_n[i]);
-
-                    csvWriter.NextRecord();
-                    dateTime = dateTime.AddHours(1);
-                    StatusBar.UpdateProgressMeter(i, true);
-                }
-                StatusBar.HideProgressMeter();
-                writer.Close();
-            }
-            RhinoApp.WriteLine(string.Format("CSV file successfully written to {}",file_name));
-
-        }
     }
 }
