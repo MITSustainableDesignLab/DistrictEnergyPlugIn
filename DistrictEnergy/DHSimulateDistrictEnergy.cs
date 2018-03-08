@@ -136,6 +136,8 @@ namespace DistrictEnergy
 
                 eqNGAS_NGB(HW_n[i], HW_EHP[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], HW_CHP[i], out NGAS_NGB[i],
                     out HW_NGB[i]);
+                eqELEC_proj(HW_n[i], ELEC_REN[i], ELEC_BAT[i], ELEC_CHP[i], out ELEC_PROJ[i]);
+                eqNGAS_proj(NGAS_NGB[i], NGAS_CHP[i], out NGAS_PROJ[i]);
                 StatusBar.UpdateProgressMeter(i, true);
             }
 
@@ -270,17 +272,25 @@ namespace DistrictEnergy
         /// <summary>
         ///     Equation 19 : Hourly purchased grid Wlectricity for whole site
         /// </summary>
-        private void eqELEC_proj()
+        /// <param name="elecN"></param>
+        /// <param name="elecRen"></param>
+        /// <param name="elecBat"></param>
+        /// <param name="elecChp"></param>
+        /// <param name="elecProj"></param>
+        private void eqELEC_proj(double elecN, double elecRen, double elecBat, double elecChp, out double elecProj)
         {
-            for (var i = 0; i < ELEC_n.Length; i++) ELEC_PROJ[i] = ELEC_n[i] - ELEC_REN[i] - ELEC_BAT[i] - ELEC_CHP[i];
+            elecProj = elecN - elecRen - elecBat - elecChp;
         }
 
         /// <summary>
         ///     Equation 20 : Hourly purchased Natural Gas for whole site
         /// </summary>
-        private void eqNGAS_proj()
+        /// <param name="ngasNgb"></param>
+        /// <param name="ngasChp"></param>
+        /// <param name="ngasProj"></param>
+        private void eqNGAS_proj(double ngasNgb, double ngasChp, out double ngasProj)
         {
-            for (var i = 0; i < ELEC_n.Length; i++) NGAS_PROJ[i] = NGAS_NGB[i] + NGAS_CHP[i];
+            ngasProj = ngasNgb + ngasChp;
         }
 
         private void SimulationResultsToCsv()
