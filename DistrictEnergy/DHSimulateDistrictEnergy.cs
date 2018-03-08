@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -84,13 +85,13 @@ namespace DistrictEnergy
             StatusBar.ShowProgressMeter(0, numberTimesteps, "Solving Thermal Plant Components", true, true);
             for (; i < numberTimesteps; i++)
             {
-                //if (CHW_n[i] > 0)
-                //    Debugger.Break();
+                if (i == 327)
+                    Debugger.Break();
                 eqHW_ABS(CHW_n[i], out HW_ABS[i]); //OK
                 eqELEC_ECH(CHW_n[i], out ELEC_ECH[i]); //OK
                 eqHW_SHW(RAD_n[i], HW_n[i], HW_ABS[i], out HW_SHW[i], out SHW_BAL[i]); // OK
                 eqELEC_PV(RAD_n[i], out ELEC_PV[i]); // OK
-                eqELEC_WND((double) WIND_n[i], out ELEC_WND[i]); // OK
+                eqELEC_WND(WIND_n[i], out ELEC_WND[i]); // OK
                 if (i == 0)
                     TANK_CHG_n[i] = CAP_HWT * TANK_START;
                 if (i > 0)
@@ -392,7 +393,7 @@ namespace DistrictEnergy
         /// <summary>
         ///     Calculates the necessary constants used in different equations
         /// </summary>
-        private void GetConstants()
+        private void CalculateConstants()
         {
             CAP_ABS = CHW_n.Max() * OFF_ABS;
             CAP_EHP = HW_n.Max() * OFF_EHP;
@@ -402,11 +403,13 @@ namespace DistrictEnergy
             AREA_SHW = HW_n.Sum() * OFF_SHW / (RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
             AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
             var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
-            NUM_WND = ELEC_n.Sum() * OFF_WND / (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND / 1000); // Divide by 1000 because equation spits out Wh
             CHGR_HWT = CAP_HWT / AUT_HWT;
             CHGR_BAT = CAP_BAT / AUT_BAT;
             DCHGR_HWT = CAP_HWT / AUT_HWT; // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
             DCHG_BAT = CAP_BAT / AUT_BAT; // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+            NUM_WND = ELEC_n.Sum() * OFF_WND /
+                      (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND /
+                       1000); // Divide by 1000 because equation spits out Wh
         }
 
         /// <summary>
@@ -450,13 +453,14 @@ namespace DistrictEnergy
         ///     cut-out speeds x COP)]
         /// </summary>
         private static double NUM_WND { get; set; }
+
         /// <summary>
-        /// The Hot Water Tank Charge Rate (kWh / h)
+        ///     The Hot Water Tank Charge Rate (kWh / h)
         /// </summary>
         public static double CHGR_HWT { get; set; }
 
         /// <summary>
-        /// The Battery Charge Rate (kWh / h)
+        ///     The Battery Charge Rate (kWh / h)
         /// </summary>
         public static double CHGR_BAT { get; set; }
 
@@ -546,8 +550,8 @@ namespace DistrictEnergy
         private void eqHW_SHW(double radN, double hwN, double hwAbs, out double hwShw,
             out double solarBalance)
         {
-            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW), hwN + hwAbs);
-            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1-LOSS_SHW) - hwN - hwAbs;
+            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1 - LOSS_SHW), hwN + hwAbs);
+            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1 - LOSS_SHW) - hwN - hwAbs;
         }
 
         /// <summary>
@@ -589,7 +593,7 @@ namespace DistrictEnergy
         /// <param name="hwHwt">Demand met by hot water tank</param>
         private void eqHW_HWT(double tankChgN, double hwN, double hwAbs, double hwShw, out double hwHwt)
         {
-            hwHwt = GetSmallestNonNegative((hwN + hwAbs - hwShw), GetSmallestNonNegative(tankChgN, DCHGR_HWT));
+            hwHwt = GetSmallestNonNegative(hwN + hwAbs - hwShw, GetSmallestNonNegative(tankChgN, DCHGR_HWT));
         }
 
         /// <summary>
@@ -599,7 +603,7 @@ namespace DistrictEnergy
         /// <param name="elecPv"></param>
         private void eqELEC_PV(double radN, out double elecPv)
         {
-            elecPv = radN * AREA_PV * EFF_PV * UTIL_PV * (1-LOSS_PV);
+            elecPv = radN * AREA_PV * EFF_PV * UTIL_PV * (1 - LOSS_PV);
         }
 
         /// <summary>
@@ -609,7 +613,8 @@ namespace DistrictEnergy
         /// <param name="elecWnd"></param>
         private void eqELEC_WND(double windN, out double elecWnd)
         {
-            elecWnd = 0.6375 * Math.Pow(windN, 3) * ROT_WND * NUM_WND * COP_WND * (1-LOSS_WND) / 1000; // Equation spits out Wh
+            elecWnd = 0.6375 * Math.Pow(windN, 3) * ROT_WND * NUM_WND * COP_WND * (1 - LOSS_WND) /
+                      1000; // Equation spits out Wh
         }
 
         /// <summary>
@@ -649,8 +654,8 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        /// Equation  13/18 : The annual heating energy recovered from the combined heat and power plant and supplied to the
-        /// project
+        ///     Equation  13/18 : The annual heating energy recovered from the combined heat and power plant and supplied to the
+        ///     project
         /// </summary>
         /// <param name="tracking">The tracking mode of the CHP plant (converted to a string : eg "Thermal" of "Electrical")</param>
         /// <param name="hWn"></param>
