@@ -410,13 +410,17 @@ namespace DistrictEnergy
             AREA_SHW = HW_n.Sum() * OFF_SHW / (RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
             AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
             var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
-            CHGR_HWT = CAP_HWT / AUT_HWT;
-            CHGR_BAT = CAP_BAT / AUT_BAT;
-            DCHGR_HWT = CAP_HWT / AUT_HWT; // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
-            DCHG_BAT = CAP_BAT / AUT_BAT; // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
             NUM_WND = ELEC_n.Sum() * OFF_WND /
                       (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND /
                        1000); // Divide by 1000 because equation spits out Wh
+            CHGR_HWT = CAP_HWT == 0 ? 0 : CAP_HWT / 12; // 12 hours // (AUT_HWT * 12);
+            CHGR_BAT = CAP_BAT == 0 ? 0 : CAP_BAT / (AUT_BAT);
+            DCHGR_HWT = CAP_HWT == 0
+                ? 0
+                : CAP_HWT / 12; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+            DCHG_BAT = CAP_BAT == 0
+                ? 0
+                : CAP_BAT / 12; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
         }
 
         /// <summary>
