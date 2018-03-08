@@ -598,9 +598,15 @@ namespace DistrictEnergy
             double ngasChp,
             out double hwChp)
         {
+            double temp = 0;
             if (string.Equals(tracking, "Thermal"))
-                hwChp = Math.Min(CAP_CHP / EFF_CHP * HREC_CHP, hWn - hwEhp + hwAbs - hwShw - hwHwt);
-            hwChp = ngasChp * HREC_CHP;
+                temp = Math.Min(CAP_CHP / EFF_CHP * HREC_CHP,
+                    hWn + hwAbs - hwShw - hwHwt - hwEhp); //hwN - hwEhp + hwAbs - hwShw - hwHwt
+            if (string.Equals(tracking, "Electrical"))
+                temp = ngasChp * HREC_CHP;
+            //if (temp > hWn + hwAbs - hwShw - hwHwt - hwEhp) // CHP is forced to produce more energy than
+            //    LogMessageToFile("The CHP plant was forced to produce more energy than needed.", i);
+            hwChp = temp;
         }
 
         /// <summary>
@@ -612,9 +618,12 @@ namespace DistrictEnergy
         /// <param name="ngasChp"></param>
         private void eqNGAS_CHP(string tracking, double hwChp, double elecChp, out double ngasChp)
         {
+            double temp = 0;
             if (string.Equals(tracking, "Thermal"))
-                ngasChp = hwChp / HREC_CHP;
-            ngasChp = elecChp / EFF_CHP;
+                temp = hwChp / HREC_CHP;
+            if (string.Equals(tracking, "Electrical"))
+                temp = elecChp / EFF_CHP;
+            ngasChp = temp;
         }
 
         /// <summary>
@@ -625,13 +634,21 @@ namespace DistrictEnergy
         /// <param name="elecN"></param>
         /// <param name="elecRen"></param>
         /// <param name="elecBat"></param>
+        /// <param name="elecEch"></param>
+        /// <param name="elecEhp"></param>
         /// <param name="elecChp"></param>
         private void eqELEC_CHP(string tracking, double ngasChp, double elecN, double elecRen, double elecBat,
+            double elecEch, double elecEhp,
             out double elecChp)
         {
+            double temp = 0;
             if (string.Equals(tracking, "Thermal"))
-                elecChp = ngasChp * EFF_CHP;
-            elecChp = Math.Min(CAP_CHP, elecN - elecRen - elecBat);
+                temp = ngasChp * EFF_CHP;
+            if (string.Equals(tracking, "Electrical"))
+                temp = Math.Min(CAP_CHP,
+                    elecN + elecEch + elecEhp - elecRen -
+                    elecBat); // todo CHP should cover all electrical loads, if it can.
+            elecChp = temp;
         }
 
         /// <summary>
