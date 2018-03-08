@@ -406,7 +406,7 @@ namespace DistrictEnergy
             CAP_EHP = HW_n.Max() * OFF_EHP;
             CAP_BAT = ELEC_n.Average() * AUT_BAT;
             CAP_HWT = HW_n.Average() * AUT_HWT;
-            CAP_CHP = ELEC_n.Max();
+            CAP_CHP = ELEC_n.Max() * OFF_CHP;
             AREA_SHW = HW_n.Sum() * OFF_SHW / (RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
             AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
             var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
