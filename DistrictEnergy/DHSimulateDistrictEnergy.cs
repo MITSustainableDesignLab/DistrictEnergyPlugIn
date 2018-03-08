@@ -94,7 +94,7 @@ namespace DistrictEnergy
                 if (i == 0)
                     TANK_CHG_n[i] = CAP_HWT * TANK_START;
                 if (i > 0)
-                    eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], out TANK_CHG_n[i]); // OK
+                    eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], T_AMB_n[i], out TANK_CHG_n[i]); // OK
                 eqHW_HWT(TANK_CHG_n[i], HW_n[i], HW_ABS[i], HW_SHW[i], out HW_HWT[i]); // OK
                 eqELEC_EHP(HW_n[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
 
@@ -469,6 +469,10 @@ namespace DistrictEnergy
         ///     Discharge rate of battery
         /// </summary>
         private static double DCHG_BAT { get; set; }
+        /// <summary>
+        ///  Hot Water Tank Losses (dependant of the outdoor temperature)
+        /// </summary>
+        private static double LOSS_HWT { get; set; }
 
         #endregion
 
@@ -547,14 +551,32 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        ///     Equation 6 : The tank charge for each hour
+        ///     Equation 6 : The tank charge for each hour. Limited by it's charging/discharging rate.
         /// </summary>
         /// <param name="previousTankChgN">Previous timestep Hot Water Tank charge (kWh)</param>
         /// <param name="shwBal">Solar balance</param>
+        /// <param name="tAmb"></param>
         /// <param name="tankChgN">This timestep's Hot Water Tank charge (kWh)</param>
-        private void eqTANK_CHG_n(double previousTankChgN, double shwBal, out double tankChgN)
+        private void eqTANK_CHG_n(double previousTankChgN, double shwBal, double tAmb, out double tankChgN)
         {
-            tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal, previousTankChgN + CHGR_HWT);
+            
+            if (shwBal < 0) // We are discharging the tank; Loss applies to the newly calculated charge
+            {
+                tankChgN = Math.Max(previousTankChgN + shwBal, GetHighestNonNegative(previousTankChgN - DCHGR_HWT, 0));
+                LOSS_HWT = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
+                tankChgN = tankChgN * (1 - LOSS_HWT);
+            }
+            else if (shwBal > 0) // We are charging the tank
+            {
+                tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal, GetSmallestNonNegative(previousTankChgN + CHGR_HWT, CAP_HWT));
+                LOSS_HWT = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
+                tankChgN = tankChgN * (1 - LOSS_HWT);
+            }
+            else // We are not doing anything, but losses still occur
+            {
+                tankChgN = previousTankChgN *
+                           (1 - LOSS_HWT); // Contrary to the Grasshopper code, the tank loses energy to the environnement even when not used.
+            }
         }
 
         /// <summary>
@@ -913,11 +935,6 @@ namespace DistrictEnergy
         private static double AUT_HWT
         {
             get { return PlantSettingsViewModel.Instance.AUT_HWT; }
-        }
-
-        private static double LOSS_HWT
-        {
-            get { return PlantSettingsViewModel.Instance.LOSS_HWT; }
         }
 
         private static double OFF_PV
