@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -22,6 +21,11 @@ namespace DistrictEnergy
     {
         // ReSharper disable once ArrangeTypeMemberModifiers
         static DHSimulateDistrictEnergy _instance;
+
+        /// <summary>
+        ///     Simulation Timestep
+        /// </summary>
+        private static int i;
 
         private int _progressBarPos;
 
@@ -67,6 +71,8 @@ namespace DistrictEnergy
         /// </summary>
         private static double[] WIND_n { get; set; }
 
+        private int numberTimesteps { get; set; }
+
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
             var umiContext = UmiContext.Current;
@@ -94,6 +100,7 @@ namespace DistrictEnergy
 
             // Go Hour by hour and parse through the simulation routine
             SetResultsArraystoZero();
+            DeleteLogFile();
             GetConstants();
             MainSimulation();
             SimulationResultsToCsv();
@@ -106,8 +113,9 @@ namespace DistrictEnergy
         /// </summary>
         private void MainSimulation()
         {
-            StatusBar.ShowProgressMeter(0, timesteps, "Solving Thermal Plant Components", true, true);
-            for (; i < timesteps; i++)
+            i = 0;
+            StatusBar.ShowProgressMeter(0, numberTimesteps, "Solving Thermal Plant Components", true, true);
+            for (; i < numberTimesteps; i++)
             {
                 //if (CHW_n[i] > 0)
                 //    Debugger.Break();
@@ -159,13 +167,6 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Distric Energy Simulation complete");
             StatusBar.HideProgressMeter();
         }
-
-        private int numberTimesteps { get; set; }
-
-        /// <summary>
-        ///     Simulation Timestep
-        /// </summary>
-        private static int i;
 
         private double[] GetHourlyChilledWaterProfile(List<UmiObject> contextObjects)
         {
@@ -341,6 +342,35 @@ namespace DistrictEnergy
             }
 
             RhinoApp.WriteLine(string.Format("CSV file successfully written to {}", file_name));
+        }
+
+
+        public string GetUmiTempPath()
+        {
+            var path = @"C:\UMI\temp";
+            if (!path.EndsWith("\\")) path += "\\";
+            return path;
+        }
+
+        public void LogMessageToFile(string msg, int atTimestep)
+        {
+            var sw = File.AppendText(
+                GetUmiTempPath() + "DHSimulationLogFile.txt");
+            try
+            {
+                var logLine = string.Format(
+                    "{0:G}: _{1}_{2}.", DateTime.Now, atTimestep, msg);
+                sw.WriteLine(logLine);
+            }
+            finally
+            {
+                sw.Close();
+            }
+        }
+
+        public void DeleteLogFile()
+        {
+            File.Delete(GetUmiTempPath() + "DHSimulationLogFile.txt");
         }
 
         #region Constants
