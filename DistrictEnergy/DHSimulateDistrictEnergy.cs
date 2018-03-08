@@ -97,7 +97,8 @@ namespace DistrictEnergy
                 if (i > 0)
                     eqTANK_CHG_n(TANK_CHG_n[i - 1], SHW_BAL[i], T_AMB_n[i], out TANK_CHG_n[i]); // OK
                 eqHW_HWT(TANK_CHG_n[i], HW_n[i], HW_ABS[i], HW_SHW[i], out HW_HWT[i]); // OK
-                eqELEC_EHP(HW_n[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], out ELEC_EHP[i], out HW_EHP[i]); // OK
+                eqELEC_EHP(HW_n[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], HW_CHP[i], out ELEC_EHP[i],
+                    out HW_EHP[i]); // Will call HW_CHP even though its not calculated yet
 
 
                 eqELEC_REN(ELEC_PV[i], ELEC_WND[i], ELEC_n[i], out ELEC_REN[i], out ELEC_BAL[i]); // OK
@@ -114,17 +115,23 @@ namespace DistrictEnergy
                     // ignore Elec_Chp
                     eqNGAS_CHP(TMOD_CHP, HW_CHP[i], ELEC_CHP[i], out NGAS_CHP[i]);
                     // ignore ElecN, ElecRen, ElecBat
-                    eqELEC_CHP(TMOD_CHP, NGAS_CHP[i], ELEC_n[i], ELEC_REN[i], ELEC_BAT[i], out ELEC_CHP[i]);
+                    eqELEC_CHP(TMOD_CHP, NGAS_CHP[i], ELEC_n[i], ELEC_REN[i], ELEC_BAT[i], ELEC_ECH[i], ELEC_EHP[i],
+                        out ELEC_CHP[i]);
                 }
 
                 if (string.Equals(TMOD_CHP, "Electrical"))
                 {
                     // ignore NgasChp
-                    eqELEC_CHP(TMOD_CHP, NGAS_CHP[i], ELEC_n[i], ELEC_REN[i], ELEC_BAT[i], out ELEC_CHP[i]);
+                    eqELEC_CHP(TMOD_CHP, NGAS_CHP[i], ELEC_n[i], ELEC_REN[i], ELEC_BAT[i], ELEC_ECH[i], ELEC_EHP[i],
+                        out ELEC_CHP[i]);
                     // ignore HwChp
                     eqNGAS_CHP(TMOD_CHP, HW_CHP[i], ELEC_CHP[i], out NGAS_CHP[i]);
                     // ignore HwN, HwEhp, HwAbs, HwShw, HwHwt
                     eqHW_CHP(TMOD_CHP, HW_n[i], HW_EHP[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], NGAS_CHP[i], out HW_CHP[i]);
+                    // call HP a second time
+                    eqELEC_EHP(HW_n[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], HW_CHP[i], out ELEC_EHP[i], out HW_EHP[i]);
+                    // call Bat a second time
+                    eqELEC_BAT(BAT_CHG_n[i], ELEC_n[i], ELEC_ECH[i], ELEC_EHP[i], out ELEC_BAT[i]);
                 }
 
                 eqNGAS_NGB(HW_n[i], HW_EHP[i], HW_ABS[i], HW_SHW[i], HW_HWT[i], HW_CHP[i], out NGAS_NGB[i],
@@ -512,13 +519,14 @@ namespace DistrictEnergy
         /// <param name="hwAbs"></param>
         /// <param name="hwShw"></param>
         /// <param name="hwHwt"></param>
+        /// <param name="hwChp"></param>
         /// <param name="elecEhp"></param>
         /// <param name="hwEhp"></param>
         private void eqELEC_EHP(double hwN, double hwAbs, double hwShw,
-            double hwHwt, out double elecEhp, out double hwEhp)
+            double hwHwt, double hwChp, out double elecEhp, out double hwEhp)
         {
-            elecEhp = Math.Min(hwN + hwAbs - hwShw - hwHwt, CAP_EHP) / HCOP_EHP;
-            hwEhp = Math.Min(hwN + hwAbs - hwShw - hwHwt, CAP_EHP);
+            elecEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, CAP_EHP) / HCOP_EHP;
+            hwEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, CAP_EHP);
         }
 
         /// <summary>
