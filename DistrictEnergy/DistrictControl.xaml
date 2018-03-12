@@ -389,7 +389,7 @@
                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel HorizontalAlignment="Left">
-                                    <Label Content="Heating efficiency" Margin="0,2"
+                                    <Label Content="Capacity as percent of peak cooling load" Margin="0,2"
                                            FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
                                            VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
                                            Height="21" />
