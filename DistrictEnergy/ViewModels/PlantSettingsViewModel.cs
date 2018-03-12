@@ -413,13 +413,13 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public double COP_WND
+        public double EFF_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().COP_WND;
+            get => ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND * 100;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().COP_WND = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(COP_WND)));
+                ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND = value / 100;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_WND)));
             }
         }
 

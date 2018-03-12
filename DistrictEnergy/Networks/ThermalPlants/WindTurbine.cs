@@ -12,10 +12,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.05)] public double OFF_WND { get; set; } = 0.05;
 
         /// <summary>
-        ///     Turbine coefficient of performance
+        ///     Turbine efficiency (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.3)] public double COP_WND { get; set; } = 0.3;
+        [DefaultValue(0.3)] public double EFF_WND { get; set; } = 0.3;
 
         /// <summary>
         ///     Cut-in speed (m/s)
