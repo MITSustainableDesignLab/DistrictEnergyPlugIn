@@ -54,34 +54,6 @@ namespace DistrictEnergy.ViewModels
 
         public static PlantSettingsViewModel Instance { get; private set; }
 
-        #region ElectricChiller
-
-        public double CCOP_ECH
-        {
-            get => ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH;
-            set
-            {
-                ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CCOP_ECH)));
-            }
-        }
-
-        #endregion
-
-        #region NatGasBoiler
-
-        public double EFF_NGB
-        {
-            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB;
-            set
-            {
-                ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_NGB)));
-            }
-        }
-
-        #endregion
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
@@ -150,14 +122,42 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        #region ElectricChiller
+
+        public double CCOP_ECH
+        {
+            get => ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH;
+            set
+            {
+                ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CCOP_ECH)));
+            }
+        }
+
+        #endregion
+
+        #region NatGasBoiler
+
+        public double EFF_NGB
+        {
+            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB * 100;
+            set
+            {
+                ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB = value / 100;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_NGB)));
+            }
+        }
+
+        #endregion
+
         #region AbsorptionChiller
 
         public double OFF_ABS
         {
-            get => ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS;
+            get => ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS * 100;
             set
             {
-                ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS = value;
+                ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_ABS)));
             }
         }
@@ -188,20 +188,20 @@ namespace DistrictEnergy.ViewModels
 
         public double LOSS_BAT
         {
-            get => ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT;
+            get => ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT * 100;
             set
             {
-                ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT = value;
+                ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_BAT)));
             }
         }
 
         public double BAT_START
         {
-            get => ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START;
+            get => ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START * 100;
             set
             {
-                ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START = value;
+                ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BAT_START)));
             }
         }
@@ -225,30 +225,30 @@ namespace DistrictEnergy.ViewModels
 
         public double OFF_CHP
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP;
+            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP = value;
+                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_CHP)));
             }
         }
 
         public double EFF_CHP
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP;
+            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP = value;
+                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_CHP)));
             }
         }
 
         public double HREC_CHP
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP;
+            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP = value;
+                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HREC_CHP)));
             }
         }
@@ -259,10 +259,10 @@ namespace DistrictEnergy.ViewModels
 
         public double OFF_EHP
         {
-            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP;
+            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value;
+                ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_EHP)));
             }
         }
@@ -293,20 +293,20 @@ namespace DistrictEnergy.ViewModels
 
         public double LOSS_HWT
         {
-            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().LOSS_HWT;
+            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().LOSS_HWT * 100;
             set
             {
-                ListOfPlantSettings.OfType<HotWaterStorage>().First().LOSS_HWT = value;
+                ListOfPlantSettings.OfType<HotWaterStorage>().First().LOSS_HWT = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_HWT)));
             }
         }
 
         public double TANK_START
         {
-            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START;
+            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START * 100;
             set
             {
-                ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START = value;
+                ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TANK_START)));
             }
         }
@@ -317,40 +317,40 @@ namespace DistrictEnergy.ViewModels
 
         public double OFF_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV;
+            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value;
+                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_PV)));
             }
         }
 
         public double EFF_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV;
+            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV = value;
+                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_PV)));
             }
         }
 
         public double UTIL_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV;
+            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV = value;
+                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UTIL_PV)));
             }
         }
 
         public double LOSS_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV;
+            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV = value;
+                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_PV)));
             }
         }
@@ -361,40 +361,40 @@ namespace DistrictEnergy.ViewModels
 
         public double EFF_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW;
+            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW = value;
+                ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_SHW)));
             }
         }
 
         public double OFF_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW;
+            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW = value;
+                ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_SHW)));
             }
         }
 
         public double UTIL_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW;
+            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW = value;
+                ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UTIL_SHW)));
             }
         }
 
         public double LOSS_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW;
+            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW = value;
+                ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_SHW)));
             }
         }
@@ -405,21 +405,21 @@ namespace DistrictEnergy.ViewModels
 
         public double OFF_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND;
+            get => ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND * 100;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value;
+                ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_WND)));
             }
         }
 
-        public double COP_WND
+        public double EFF_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().COP_WND;
+            get => ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND * 100;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().COP_WND = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(COP_WND)));
+                ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND = value / 100;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_WND)));
             }
         }
 
@@ -455,10 +455,10 @@ namespace DistrictEnergy.ViewModels
 
         public double LOSS_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND;
+            get => ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND * 100;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND = value;
+                ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND = value / 100;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_WND)));
             }
         }

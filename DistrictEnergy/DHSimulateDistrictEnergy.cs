@@ -975,12 +975,12 @@ namespace DistrictEnergy
 
         private static double EFF_NGB
         {
-            get { return PlantSettingsViewModel.Instance.EFF_NGB; }
+            get { return PlantSettingsViewModel.Instance.EFF_NGB / 100; }
         }
 
         private static double OFF_ABS
         {
-            get { return PlantSettingsViewModel.Instance.OFF_ABS; }
+            get { return PlantSettingsViewModel.Instance.OFF_ABS / 100; }
         }
 
         private static double CCOP_ABS
@@ -995,7 +995,7 @@ namespace DistrictEnergy
 
         private static double LOSS_BAT
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_BAT; }
+            get { return PlantSettingsViewModel.Instance.LOSS_BAT / 100; }
         }
 
         private static string TMOD_CHP
@@ -1005,22 +1005,22 @@ namespace DistrictEnergy
 
         private static double OFF_CHP
         {
-            get { return PlantSettingsViewModel.Instance.OFF_CHP; }
+            get { return PlantSettingsViewModel.Instance.OFF_CHP / 100; }
         }
 
         private static double EFF_CHP
         {
-            get { return PlantSettingsViewModel.Instance.EFF_CHP; }
+            get { return PlantSettingsViewModel.Instance.EFF_CHP / 100; }
         }
 
         private static double HREC_CHP
         {
-            get { return PlantSettingsViewModel.Instance.HREC_CHP; }
+            get { return PlantSettingsViewModel.Instance.HREC_CHP / 100; }
         }
 
         private static double OFF_EHP
         {
-            get { return PlantSettingsViewModel.Instance.OFF_EHP; }
+            get { return PlantSettingsViewModel.Instance.OFF_EHP / 100; }
         }
 
         private static double HCOP_EHP
@@ -1035,22 +1035,22 @@ namespace DistrictEnergy
 
         private static double OFF_PV
         {
-            get { return PlantSettingsViewModel.Instance.OFF_PV; }
+            get { return PlantSettingsViewModel.Instance.OFF_PV / 100; }
         }
 
         private static double UTIL_PV
         {
-            get { return PlantSettingsViewModel.Instance.UTIL_PV; }
+            get { return PlantSettingsViewModel.Instance.UTIL_PV / 100; }
         }
 
         private static double LOSS_PV
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_PV; }
+            get { return PlantSettingsViewModel.Instance.LOSS_PV / 100; }
         }
 
         private static double EFF_PV
         {
-            get { return PlantSettingsViewModel.Instance.EFF_PV; }
+            get { return PlantSettingsViewModel.Instance.EFF_PV / 100; }
         }
 
         /// <summary>
@@ -1058,7 +1058,7 @@ namespace DistrictEnergy
         /// </summary>
         private static double EFF_SHW
         {
-            get { return PlantSettingsViewModel.Instance.EFF_SHW; }
+            get { return PlantSettingsViewModel.Instance.EFF_SHW / 100; }
         }
 
         /// <summary>
@@ -1066,7 +1066,7 @@ namespace DistrictEnergy
         /// </summary>
         private static double LOSS_SHW
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_SHW; }
+            get { return PlantSettingsViewModel.Instance.LOSS_SHW / 100; }
         }
 
         /// <summary>
@@ -1074,7 +1074,7 @@ namespace DistrictEnergy
         /// </summary>
         private static double OFF_SHW
         {
-            get { return PlantSettingsViewModel.Instance.OFF_SHW; }
+            get { return PlantSettingsViewModel.Instance.OFF_SHW / 100; }
         }
 
         /// <summary>
@@ -1082,7 +1082,7 @@ namespace DistrictEnergy
         /// </summary>
         private static double UTIL_SHW
         {
-            get { return PlantSettingsViewModel.Instance.UTIL_SHW; }
+            get { return PlantSettingsViewModel.Instance.UTIL_SHW / 100; }
         }
 
         private static double CIN_WND
@@ -1092,7 +1092,7 @@ namespace DistrictEnergy
 
         private static double COP_WND
         {
-            get { return PlantSettingsViewModel.Instance.COP_WND; }
+            get { return PlantSettingsViewModel.Instance.EFF_WND / 100; }
         }
 
         private static double COUT_WND
@@ -1112,7 +1112,7 @@ namespace DistrictEnergy
 
         private static double LOSS_WND
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_WND; }
+            get { return PlantSettingsViewModel.Instance.LOSS_WND / 100; }
         }
 
         /// <summary>
@@ -1120,7 +1120,7 @@ namespace DistrictEnergy
         /// </summary>
         private static double TANK_START
         {
-            get { return PlantSettingsViewModel.Instance.TANK_START; }
+            get { return PlantSettingsViewModel.Instance.TANK_START / 100; }
         }
 
         /// <summary>
@@ -1128,7 +1128,7 @@ namespace DistrictEnergy
         /// </summary>
         private static double BAT_START
         {
-            get { return PlantSettingsViewModel.Instance.BAT_START; }
+            get { return PlantSettingsViewModel.Instance.BAT_START / 100; }
         }
 
         private static double LOSS_HWNET
