@@ -389,7 +389,7 @@
                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel HorizontalAlignment="Left">
-                                    <Label Content="Heating efficiency" Margin="0,2"
+                                    <Label Content="Capacity as percent of peak cooling load" Margin="0,2"
                                            FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
                                            VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
                                            Height="21" />
@@ -532,7 +532,7 @@
                                     <Label Content="Area utilization factor " Margin="0,2"
                                            FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
                                            VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
-                                           Height="21" />
+                                           Height="21" ToolTip="Accounts for collector frames and other infrastructural requirements" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
                                             HorizontalAlignment="Right" Margin="0">
