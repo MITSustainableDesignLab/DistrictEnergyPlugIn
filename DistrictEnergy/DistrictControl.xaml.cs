@@ -1,14 +1,16 @@
-﻿using Rhino;
+﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System;
-using DistrictEnergy.ViewModels;
+using System.Windows.Data;
+using Rhino;
+using Rhino.Runtime;
 
 namespace DistrictEnergy
 {
     /// <summary>
-    /// Interaction logic for ModuleControl.xaml
+    ///     Interaction logic for ModuleControl.xaml
     /// </summary>
     public partial class DistrictControl : UserControl
     {
@@ -19,22 +21,20 @@ namespace DistrictEnergy
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RhinoApp.RunScript("CreateNetworkLayer", echo: true);
+            RhinoApp.RunScript("CreateNetworkLayer", true);
         }
 
         private void button_Click_1(object sender, RoutedEventArgs e)
         {
-            RhinoApp.RunScript("RunTrnsysCommand", echo: true);
+            RhinoApp.RunScript("RunTrnsysCommand", true);
         }
 
         private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
         }
 
         private void radioButton2_Copy_Checked(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void button_Click_2(object sender, RoutedEventArgs e)
@@ -50,20 +50,20 @@ namespace DistrictEnergy
             if (rdoButton.IsChecked == true)
             {
                 //Create Loads CSV File
-                RhinoApp.RunScript("DHLoadstoCSV", echo: true);
+                RhinoApp.RunScript("DHLoadstoCSV", true);
 
                 //Create weatherfile csv
-                RhinoApp.RunScript("DHDryBulbCSV", echo: true);
+                RhinoApp.RunScript("DHDryBulbCSV", true);
 
-                double a = Convert.ToDouble(ElectricityGenerationCost.Text);
-                double b = Convert.ToDouble(PriceNaturalGas.Text);
-                double c = Convert.ToDouble(EmissionsElectricGeneration.Text);
-                double d = Convert.ToDouble(LossesTransmission.Text);
-                double e = Convert.ToDouble(LossesHeatHydronic.Text);
-                double f = Convert.ToDouble(EfficPowerGen.Text);
+                var a = Convert.ToDouble(ElectricityGenerationCost.Text);
+                var b = Convert.ToDouble(PriceNaturalGas.Text);
+                var c = Convert.ToDouble(EmissionsElectricGeneration.Text);
+                var d = Convert.ToDouble(LossesTransmission.Text);
+                var e = Convert.ToDouble(LossesHeatHydronic.Text);
+                var f = Convert.ToDouble(EfficPowerGen.Text);
 
                 //Run Python.exe
-                string args = scenario + " " + a + " " + b + " " + c + " " + d + " " + e + " " + f;
+                var args = scenario + " " + a + " " + b + " " + c + " " + d + " " + e + " " + f;
                 runcmd(args);
             }
         }
@@ -71,7 +71,7 @@ namespace DistrictEnergy
         private void runcmd(string args)
         {
             {
-                Process p = new Process();
+                var p = new Process();
                 p.StartInfo = new ProcessStartInfo(@"C:\UMI\temp\DEenginePython\DEenginePython.exe")
                 {
                     RedirectStandardOutput = true,
@@ -79,30 +79,30 @@ namespace DistrictEnergy
                     RedirectStandardInput = false,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    Arguments = args,
+                    Arguments = args
                 };
                 p.ErrorDataReceived += cmd_Error;
                 p.OutputDataReceived += cmd_DataReceived;
                 p.EnableRaisingEvents = true;
 
-                Rhino.Runtime.HostUtils.DisplayOleAlerts(false);
+                HostUtils.DisplayOleAlerts(false);
                 p.Start();
 
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
 
                 p.WaitForExit();
-                Rhino.Runtime.HostUtils.DisplayOleAlerts(true);
-
+                HostUtils.DisplayOleAlerts(true);
             }
         }
-        static void cmd_DataReceived(object sender, DataReceivedEventArgs e)
+
+        private static void cmd_DataReceived(object sender, DataReceivedEventArgs e)
         {
             //RhinoApp.WriteLine("Output from other process");
             RhinoApp.WriteLine(e.Data);
         }
 
-        static void cmd_Error(object sender, DataReceivedEventArgs e)
+        private static void cmd_Error(object sender, DataReceivedEventArgs e)
         {
             //RhinoApp.WriteLine("Error from other process");
             RhinoApp.SetCommandPrompt(e.Data);
@@ -110,38 +110,31 @@ namespace DistrictEnergy
 
         private void Cost_Electricity_TextChanged(object sender, TextChangedEventArgs e)
         {
-
             //UmiContext.Current.StoreSettings("Cost_Electricity", Cost_Electricity);
         }
 
         private void Price_NaturalGas_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void Emissions_ElectricGeneration_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void Transmission_Losses_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void Hydronic_Losses_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void Effic_PowerGen_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void radioButton1_Checked(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void CostElectricity_TextChanged(object sender, TextChangedEventArgs e)
@@ -152,27 +145,25 @@ namespace DistrictEnergy
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             if (button1.Content.ToString() == "Show Topology")
-            {
                 button1.Content = "Hide Topology";
-            }
             else
-            {
                 button1.Content = "Show Topology";
-            }
-            RhinoApp.RunScript("ToggleShowNetworkTopology", echo: true);
+            RhinoApp.RunScript("ToggleShowNetworkTopology", true);
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            string value = @"%SystemDrive%\UMI\temp\DHSimulationResults";
-            string path = Environment.ExpandEnvironmentVariables(value);
+            var value = @"%SystemDrive%\UMI\temp\DHSimulationResults";
+            var path = Environment.ExpandEnvironmentVariables(value);
             try
             {
-                System.Diagnostics.Process.Start(path);
+                Process.Start(path);
             }
             catch (Exception ex)
             {
-                RhinoApp.WriteLine("This location does not exist yet since no simulation has been performed\r\nRun a scenario first : {0}, {1}",ex.GetType().Name, ex.Message);
+                RhinoApp.WriteLine(
+                    "This location does not exist yet since no simulation has been performed\r\nRun a scenario first : {0}, {1}",
+                    ex.GetType().Name, ex.Message);
             }
         }
 
