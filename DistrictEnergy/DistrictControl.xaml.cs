@@ -175,6 +175,13 @@ namespace DistrictEnergy
                 RhinoApp.WriteLine("This location does not exist yet since no simulation has been performed\r\nRun a scenario first : {0}, {1}",ex.GetType().Name, ex.Message);
             }
         }
+
+        private void ButtonRunSimulation(object sender, RoutedEventArgs e)
+        {
+            RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
+        }
+    }
+
     public class DoubleRangeRule : ValidationRule
     {
         public double Min { get; set; }

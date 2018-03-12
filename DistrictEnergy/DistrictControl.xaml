@@ -4,8 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             xmlns:vm="clr-namespace:DistrictEnergy.ViewModels" d:DesignWidth="275" d:DesignHeight="1080">
-
+             xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
+             xmlns:thermalPlants="clr-namespace:DistrictEnergy.Networks.ThermalPlants"
+             xmlns:districtEnergy="clr-namespace:DistrictEnergy"
+             d:DesignWidth="365" d:DesignHeight="1270">
+    <UserControl.Resources>
+        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                              Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <districtEnergy:InverseAndBooleansToBooleanConverter x:Key="buttonEnabled2"/>
+    </UserControl.Resources>
     <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top"
                 RenderTransformOrigin="0.501,0.507">
 
@@ -172,7 +186,15 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0" />
+                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0" Click="ButtonRunSimulation">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource buttonEnabled2}" Mode="TwoWay">
+                            <Binding ElementName="turbineEff" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutHwt" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutBat" Path="(Validation.HasError)" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
                 <ScrollViewer Grid.Row="1">
                     <Grid Margin="0" VerticalAlignment="Top" Width="Auto">
                         <Grid.RowDefinitions>
@@ -528,11 +550,18 @@
                                            VerticalContentAlignment="Center" HorizontalAlignment="Center"
                                            Grid.Row="0"
                                            Grid.Column="1" />
-                                        <TextBox Margin="0,2" MaxLines="1"
+                                        <TextBox x:Name="AutHwt" Margin="0,2" MaxLines="1"
                                              VerticalContentAlignment="Center" HorizontalAlignment="Center"
                                              Width="35"
-                                             Text="{Binding AUT_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             AllowDrop="True" />
+                                                 AllowDrop="True">
+                                            <TextBox.Text>
+                                                <Binding Path="AUT_HWT" BindsDirectlyToSource="True" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <districtEnergy:DoubleRangeRule Min="0" Max="365"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
 
                                     </StackPanel>
                                 </Grid>
@@ -782,11 +811,18 @@
                                            VerticalContentAlignment="Center" HorizontalAlignment="Center"
                                            Grid.Row="0"
                                            Grid.Column="1" />
-                                        <TextBox Margin="0,2" MaxLines="1"
+                                        <TextBox x:Name="turbineEff" Margin="0,2" MaxLines="1" Style="{StaticResource TextBoxInError}"
                                              VerticalContentAlignment="Center" HorizontalAlignment="Center"
                                              Width="35"
-                                             Text="{Binding EFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             AllowDrop="True" />
+                                             AllowDrop="True" ToolTip="{Binding ElementName=turbineEff, Path=(Validation.Errors)[0].ErrorContent}">
+                                            <TextBox.Text>
+                                                <Binding Path="EFF_WND" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <districtEnergy:DoubleRangeRule Min="0" Max="59"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
 
                                     </StackPanel>
                                 </Grid>
@@ -936,11 +972,18 @@
                                            VerticalContentAlignment="Center" HorizontalAlignment="Center"
                                            Grid.Row="0"
                                            Grid.Column="1" />
-                                        <TextBox Margin="0,2" MaxLines="1"
+                                        <TextBox x:Name="AutBat" Margin="0,2" MaxLines="1"
                                              VerticalContentAlignment="Center" HorizontalAlignment="Center"
                                              Width="35"
-                                             Text="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             AllowDrop="True" />
+                                                 AllowDrop="True">
+                                            <TextBox.Text>
+                                                <Binding Path="AUT_BAT" BindsDirectlyToSource="True" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <districtEnergy:DoubleRangeRule Min="0" Max="365"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
                                 </Grid>
                                 <Grid Margin="0,3,0,0" VerticalAlignment="Top">
@@ -1027,7 +1070,7 @@
                                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
                                             HorizontalAlignment="Right" Margin="0">
                                         <ComboBox SelectedValue="{Binding TMOD_CHP, Mode=TwoWay}"
-                                              ItemsSource="{Binding PosibleTrackingModes}" />
+                                              ItemsSource="{Binding PosibleTrackingModes}" Height="21.3333333333333" />
                                     </StackPanel>
                                 </Grid>
                                 <Grid Margin="0,3,0,0" VerticalAlignment="Top">
