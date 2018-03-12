@@ -175,5 +175,57 @@ namespace DistrictEnergy
                 RhinoApp.WriteLine("This location does not exist yet since no simulation has been performed\r\nRun a scenario first : {0}, {1}",ex.GetType().Name, ex.Message);
             }
         }
+    public class DoubleRangeRule : ValidationRule
+    {
+        public double Min { get; set; }
+
+        public double Max { get; set; }
+
+        public override ValidationResult Validate(object value,
+            CultureInfo cultureInfo)
+        {
+            double parameter = 0;
+
+            try
+            {
+                if (((string) value).Length > 0) parameter = double.Parse((string) value);
+            }
+            catch (Exception e)
+            {
+                return new ValidationResult(false, "Illegal characters or "
+                                                   + e.Message);
+            }
+#if (DEBUG == true)
+            if (parameter < Min || parameter > Max)
+            {
+                RhinoApp.WriteLine(string.Format("Please enter value in the range: " + Min + " - " + Max + "."));
+                return new ValidationResult(false,
+                    "Please enter value in the range: "
+                    + Min + " - " + Max + ".");
+            }
+#endif
+            if (parameter < Min || parameter > Max)
+                return new ValidationResult(false,
+                    "Please enter value in the range: "
+                    + Min + " - " + Max + ".");
+            return new ValidationResult(true, null);
+        }
+    }
+
+    public class InverseAndBooleansToBooleanConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.LongLength > 0)
+                foreach (var value in values)
+                    if (value is bool && (bool) value)
+                        return false;
+            return true;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
