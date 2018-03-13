@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="365" d:DesignHeight="1295">
+             d:DesignWidth="365" d:DesignHeight="1295" d:DataContext="{d:DesignInstance districtEnergy:DistrictControl}">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -18,7 +18,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <districtEnergy:InverseAndBooleansToBooleanConverter x:Key="ButtonEnabled2" />
+        <districtEnergy:InverseAndBooleansToBooleanConverter x:Key="ButtonEnabled" />
         <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3" />
         <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA" />
         <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5" />
@@ -122,9 +122,9 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0">
+                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0" Click="RunSimulationClick">
                     <Button.IsEnabled>
-                        <MultiBinding Converter="{StaticResource ButtonEnabled2}" Mode="TwoWay">
+                        <MultiBinding Converter="{StaticResource ButtonEnabled}" Mode="TwoWay">
                             <Binding ElementName="TurbineEff" Path="(Validation.HasError)" />
                             <Binding ElementName="AutHwt" Path="(Validation.HasError)" />
                             <Binding ElementName="AutBat" Path="(Validation.HasError)" />
@@ -1095,10 +1095,10 @@
                                                 Width="{Binding ElementName=Canvas, Path=ActualWidth}"
                                                 Series="{Binding Series}" Hoverable="False" DataTooltip="{x:Null}">
                                 <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis IsEnabled="False" ShowLabels="False" />
+                                    <lvc:Axis IsEnabled="False" ShowLabels="True" />
                                 </lvc:CartesianChart.AxisX>
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis IsMerged="True" FontSize="14" />
+                                    <lvc:Axis IsMerged="True" FontSize="14" ShowLabels="True"/>
                                 </lvc:CartesianChart.AxisY>
                             </lvc:CartesianChart>
                         </Canvas>

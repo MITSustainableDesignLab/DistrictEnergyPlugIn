@@ -56,6 +56,11 @@ namespace DistrictEnergy
                 ? Visibility.Hidden
                 : Visibility.Visible;
         }
+
+        private void RunSimulationClick(object sender, RoutedEventArgs e)
+        {
+            RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
+        }
     }
 
     public class DoubleRangeRule : ValidationRule
