@@ -38,81 +38,87 @@
                     </Button.IsEnabled>
                 </Button>
                 <ScrollViewer Grid.Row="1">
-                    <Grid Margin="0" VerticalAlignment="Top" Width="Auto">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <GroupBox Header="Absorption Chiller" Margin="10,10,10,0" VerticalAlignment="Top"
-                                  Height="Auto" Grid.Row="0">
-                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto"
-                                        Margin="0">
-                                <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                    <Grid.DataContext>
-                                        <vm:PlantSettingsViewModel />
-                                    </Grid.DataContext>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel HorizontalAlignment="Left">
-                                        <Label Content="Capacity as percent of peak cooling load (%)" Margin="0,2"
-                                               FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
-                                               VerticalContentAlignment="Center"
-                                               HorizontalContentAlignment="Stretch"
-                                               Height="21" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
-                                                HorizontalAlignment="Right" Margin="0">
-                                        <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                               VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                                               Grid.Row="0"
-                                               Grid.Column="1" />
-                                        <TextBox Margin="0,2" MaxLines="1"
-                                                 VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                                                 Width="35"
-                                                 Text="{Binding OFF_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 AllowDrop="True" />
+                    <StackPanel VerticalAlignment="Top" Width="Auto">
+                        <Grid Margin="10">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                  Opacity=".2"
+                                                  ShadowDepth="1" />
+                            </Grid.Effect>
 
+                            <Border CornerRadius="5" Background="White">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" FontSize="14" Foreground="#404040" Margin="5, 5">Absorption Chiller</TextBlock>
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                                Width="Auto"
+                                                Background="White" Margin="5,0,5,5">
+                                        <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                            <Grid.DataContext>
+                                                <vm:PlantSettingsViewModel />
+                                            </Grid.DataContext>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                <ColumnDefinition Width="Auto" MinWidth="35" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Capacity as percent of peak cooling load (%)"
+                                                   Margin="0,2"
+                                                   FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                                   VerticalContentAlignment="Center"
+                                                   HorizontalContentAlignment="Stretch"
+                                                   Height="21" />
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                        Grid.ColumnSpan="2"
+                                                        HorizontalAlignment="Right" Margin="0">
+                                                <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                       VerticalContentAlignment="Center"
+                                                       HorizontalAlignment="Center" />
+                                                <TextBox Margin="0,2" MaxLines="1"
+                                                         VerticalContentAlignment="Center"
+                                                         HorizontalAlignment="Center"
+                                                         Width="35"
+                                                         Text="{Binding OFF_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         AllowDrop="True" />
+
+                                            </StackPanel>
+                                        </Grid>
+                                        <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                            <Grid.DataContext>
+                                                <vm:PlantSettingsViewModel />
+                                            </Grid.DataContext>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                <ColumnDefinition Width="Auto" MinWidth="35" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel HorizontalAlignment="Left">
+                                                <Label Content="Cooling coefficient of performance" Margin="0,2"
+                                                       FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
+                                                       VerticalContentAlignment="Center"
+                                                       HorizontalContentAlignment="Stretch"
+                                                       Height="21" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                        Grid.ColumnSpan="2"
+                                                        HorizontalAlignment="Right" Margin="0">
+                                                <TextBox Margin="0,2" MaxLines="1"
+                                                         VerticalContentAlignment="Center"
+                                                         HorizontalAlignment="Center"
+                                                         Width="35"
+                                                         Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         AllowDrop="True" />
+
+                                            </StackPanel>
+                                        </Grid>
                                     </StackPanel>
                                 </Grid>
-                                <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                    <Grid.DataContext>
-                                        <vm:PlantSettingsViewModel />
-                                    </Grid.DataContext>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel HorizontalAlignment="Left">
-                                        <Label Content="Cooling coefficient of performance" Margin="0,2"
-                                               FontWeight="Bold" HorizontalAlignment="Left" Padding="0"
-                                               VerticalContentAlignment="Center"
-                                               HorizontalContentAlignment="Stretch"
-                                               Height="21" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="2"
-                                                HorizontalAlignment="Right" Margin="0">
-                                        <TextBox Margin="0,2" MaxLines="1"
-                                                 VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                                                 Width="35"
-                                                 Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 AllowDrop="True" />
+                            </Border>
+                        </Grid>
 
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
-                        </GroupBox>
                         <GroupBox Header="Electric chillers" Margin="10,10,10,0" VerticalAlignment="Top"
                                   Height="Auto" Grid.Row="1">
                             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto"
@@ -1011,7 +1017,7 @@
                             </StackPanel>
 
                         </GroupBox>
-                    </Grid>
+                    </StackPanel>
                 </ScrollViewer>
             </Grid>
         </TabItem>
