@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="365" d:DesignHeight="1295" d:DataContext="{d:DesignInstance districtEnergy:DistrictControl}">
+             d:DesignWidth="365" d:DesignHeight="1295">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -70,7 +70,7 @@
                             Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
                 </MultiTrigger>
             </Style.Triggers>
-            
+
         </Style>
     </UserControl.Resources>
     <TabControl x:Name="TabControl" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top"
@@ -720,7 +720,8 @@
                                                              HorizontalAlignment="Center"
                                                              Width="40"
                                                              AllowDrop="True"
-                                                             ToolTip="{Binding ElementName=TurbineEff, Path=(Validation.Errors)[0].ErrorContent}" Height="22">
+                                                             ToolTip="{Binding ElementName=TurbineEff, Path=(Validation.Errors)[0].ErrorContent}"
+                                                             Height="22">
                                                         <TextBox.Text>
                                                             <Binding Path="EFF_WND"
                                                                      UpdateSourceTrigger="PropertyChanged">
@@ -1050,20 +1051,24 @@
         <TabItem Header="Results">
             <Grid Margin="20" Height="300">
                 <Grid.Effect>
-                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2" ShadowDepth="1"/>
+                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2"
+                                      ShadowDepth="1" />
                 </Grid.Effect>
                 <Grid.Resources>
-                    <districtEnergy:OpacityConverter x:Key="OpacityConverter"></districtEnergy:OpacityConverter>
-                    <districtEnergy:ReverseConverter x:Key="ReverseConverter"></districtEnergy:ReverseConverter>
+                    <districtEnergy:OpacityConverter x:Key="OpacityConverter" />
+                    <districtEnergy:ReverseConverter x:Key="ReverseConverter" />
                 </Grid.Resources>
                 <Border CornerRadius="5" Background="White">
-                    <Grid>
+                    <Grid d:DataContext="{d:DesignData DHSimulateDistrictEnergy}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="20, 10">Energy Consumption</TextBlock>
                         <Canvas Grid.Row="1" Name="Canvas" Margin="-4, 0, 0, 20">
+                            <Canvas.DataContext>
+                                <vm:ResultsViewModel/>
+                            </Canvas.DataContext>
                             <ListBox Name="ListBox"
                                      ItemsSource="{Binding Series, Converter={StaticResource ReverseConverter}}"
                                      PreviewMouseDown="ListBox_OnPreviewMouseDown"
@@ -1095,10 +1100,10 @@
                                                 Width="{Binding ElementName=Canvas, Path=ActualWidth}"
                                                 Series="{Binding Series}" Hoverable="False" DataTooltip="{x:Null}">
                                 <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis IsEnabled="False" ShowLabels="True" />
+                                    <lvc:Axis IsEnabled="False" ShowLabels="False" />
                                 </lvc:CartesianChart.AxisX>
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis IsMerged="True" FontSize="14" ShowLabels="True"/>
+                                    <lvc:Axis IsMerged="True" FontSize="14" ShowLabels="True" />
                                 </lvc:CartesianChart.AxisY>
                             </lvc:CartesianChart>
                         </Canvas>
