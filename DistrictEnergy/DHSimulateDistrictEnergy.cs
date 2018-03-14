@@ -36,8 +36,8 @@ namespace DistrictEnergy
         public DHSimulateDistrictEnergy()
         {
             _instance = this;
-            _resultsArray = new ResultsArray();
-            _allDistrictDemand = new DistrictDemand();
+            ResultsArray = new ResultsArray();
+            AllDistrictDemand = new DistrictDemand();
         }
 
         ///<summary>The only instance of the DHSimulateDistrictEnergy command.</summary>
@@ -815,10 +815,6 @@ namespace DistrictEnergy
 
         #region Results Array
 
-        private readonly ResultsArray _resultsArray;
-
-        private readonly DistrictDemand _allDistrictDemand;
-
         private void SetResultsArraystoZero()
         {
             Array.Clear(ResultsArray.BAT_CHG_n, 0, ResultsArray.BAT_CHG_n.Length);
@@ -844,15 +840,9 @@ namespace DistrictEnergy
             Array.Clear(ResultsArray.NGAS_PROJ, 0, ResultsArray.NGAS_PROJ.Length);
         }
 
-        public ResultsArray ResultsArray
-        {
-            get { return _resultsArray; }
-        }
+        public ResultsArray ResultsArray { get; }
 
-        public DistrictDemand AllDistrictDemand
-        {
-            get { return _allDistrictDemand; }
-        }
+        public DistrictDemand AllDistrictDemand { get; }
 
         #endregion
 
