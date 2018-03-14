@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="610" d:DesignHeight="1295">
+             d:DesignWidth="610" d:DesignHeight="1295" d:DataContext="{d:DesignData ResultsViewModel}">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -1086,7 +1086,7 @@
                                             <vm:ResultsViewModel />
                                         </Canvas.DataContext>
                                         <ListBox Name="ListBox"
-                                                 ItemsSource="{Binding Series, Converter={StaticResource ReverseConverter}}"
+                                                 ItemsSource="{Binding StackedGraphSeries, Converter={StaticResource ReverseConverter}}"
                                                  PreviewMouseDown="ListBox_OnPreviewMouseDown"
                                                  Panel.ZIndex="1" Canvas.Left="60" Canvas.Top="20" BorderThickness="0"
                                                  Background="Transparent">
@@ -1113,7 +1113,7 @@
                                         </ListBox>
                                         <lvc:CartesianChart Height="{Binding ElementName=Canvas, Path=ActualHeight}"
                                                             Width="{Binding ElementName=Canvas, Path=ActualWidth}"
-                                                            Series="{Binding Series}" Hoverable="False"
+                                                            Series="{Binding StackedGraphSeries}" Hoverable="False"
                                                             LegendLocation="Bottom">
                                             <lvc:CartesianChart.AxisX>
                                                 <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
@@ -1184,7 +1184,7 @@
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Electricity</TextBlock>
                                         <StackPanel Grid.Row="1">
-                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                            <lvc:Gauge From="0" To="100" Value="{Binding Path=PurchasedElecIntensity}" Height="125" Margin="5,0" />
                                             <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
                                             <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
                                         </StackPanel>
@@ -1214,6 +1214,32 @@
                             </Grid>
                         </Grid>
 
+                        <Grid Margin="20,20,20,20" Grid.Column="1">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                  Opacity=".2"
+                                                  ShadowDepth="1" />
+                            </Grid.Effect>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid Margin="0,0,0,5" d:DataContext="{d:DesignData SeriesAlgorithm}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">BreakDown</TextBlock>
+                                    <lvc:PieChart Name="Chart" Grid.Row="1" Series="{Binding SeriesCollection}" 
+                                                  LegendLocation="Right" InnerRadius="50" Margin="0 15" Height="200">
+                                        <lvc:PieChart.ChartLegend>
+                                            <lvc:DefaultLegend BulletSize="20"></lvc:DefaultLegend>
+                                        </lvc:PieChart.ChartLegend>
+                                        <lvc:PieChart.DataTooltip>
+                                            <lvc:DefaultTooltip BulletSize="20"></lvc:DefaultTooltip>
+                                        </lvc:PieChart.DataTooltip>
+                                    </lvc:PieChart>
+
+                                </Grid>
+                            </Border>
+                        </Grid>
 
                     </StackPanel>
                 </ScrollViewer>

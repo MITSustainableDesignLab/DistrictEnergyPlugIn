@@ -16,21 +16,32 @@ namespace DistrictEnergy.ViewModels
             Instance = this;
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
             YFormatter = val => (val / 1000).ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) + " MWh";
-
         }
 
         public static ResultsViewModel Instance { get; set; }
-        public static SeriesCollection Series { get; set; } = new SeriesCollection();
+        public static SeriesCollection StackedGraphSeries { get; set; } = new SeriesCollection();
+        public static SeriesCollection PieChartGraphSeries { get; set; } = new SeriesCollection();
         public Func<double, string> XFormatter { get; set; }
         public Func<double, string> YFormatter { get; set; }
 
+        public double PurchasedElec { get; set; }
+
+        public double PurchasedElecIntensity { get; set; }
+
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            if (DHSimulateDistrictEnergy.Instance != null)
-                DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateChart;
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+
+            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateStackedChart;
+            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateMetrics;
         }
 
-        private void UpdateChart(object sender, EventArgs e)
+        /// <summary>
+        ///     Updates the Stacked graph that shows the heating energy demand
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateStackedChart(object sender, EventArgs e)
         {
             var instance = DHSimulateDistrictEnergy.Instance;
             var HwDemand = new Dictionary<string, double[]>();
@@ -40,7 +51,7 @@ namespace DistrictEnergy.ViewModels
             HwDemand.Add("Natural Gas Boiler", instance.ResultsArray.HW_NGB);
             HwDemand.Add("Combined Heating and Power", instance.ResultsArray.HW_CHP);
 
-            Series.Clear();
+            StackedGraphSeries.Clear();
 
             foreach (var hw in HwDemand)
             {
@@ -53,8 +64,21 @@ namespace DistrictEnergy.ViewModels
                     Title = hw.Key,
                     LineSmoothness = 0.5
                 };
-                Series.Add(temp);
+                StackedGraphSeries.Add(temp);
             }
+        }
+
+        private void UpdateMetrics(object sender, EventArgs e)
+        {
+            double totalGrossFloorArea = 1;
+            var context = UmiContext.Current;
+            if (context != null)
+                totalGrossFloorArea = context.Buildings.All.Select(x => x.GrossFloorArea).Sum().Value;
+
+            var instance = DHSimulateDistrictEnergy.Instance;
+
+            PurchasedElec = instance.ResultsArray.ELEC_PROJ.Sum();
+            PurchasedElecIntensity = PurchasedElec / totalGrossFloorArea;
         }
     }
 }
