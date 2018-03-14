@@ -104,7 +104,6 @@
       <Feature Id="DHcommon" Title="District Energy Plug-In" Level="2" Absent="disallow">
         <MergeRef Id="DistrictEnergyMM" />
         <MergeRef Id="ExportLoadsToFileMM"/>
-        <MergeRef Id ="TempFilesMM"/>
       </Feature>
     </Feature>
 
@@ -115,7 +114,6 @@
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="DistrictEnergyMM" SourceFile="$(var.DistrictEnergyMM.TargetDir)DistrictEnergyMM.msm" Language="1033" DiskId="1" />
       <Merge Id="ExportLoadsToFileMM" SourceFile="$(var.ExportLoadsToFileMM.TargetDir)ExportLoadsToFileMM.msm" Language="1033" DiskId="1" />
-      <Merge Id="TempFilesMM" SourceFile="$(var.TempFilesMM.TargetDir)TempFilesMM.msm" Language="1033" DiskId="1" />
     </DirectoryRef>
   </Fragment>
 
@@ -125,9 +123,9 @@
       <ComponentRef Id="DistrictEnergyDLL" />
       <ComponentRef Id="CsvHelperDLL" />
       <ComponentRef Id="EnergyPlusWeatherDLL" />
-      <!--<ComponentRef Id="NewtonsoftJson" />-->
-      <ComponentRef Id="TrnsysUmiPlatformDLL" />
       <ComponentRef Id="MathNetNumericsDLL" />
+      <ComponentRef Id="LiveChartsDLL" />
+      <ComponentRef Id="LiveChartsWpfDLL" />
     </ComponentGroup>
   </Fragment>
 
@@ -137,7 +135,7 @@
         <Directory Id="PLUGINFOLDER" Name="District Energy Plug-Ins">
 
 
-          <Component Id="DistrictEnergyDLL" Guid="3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a">
+          <Component Id="DistrictEnergyDLL" Guid="{3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a}">
             <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall"/>
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="DistrictEnergyDLL" Value="1" KeyPath="yes" Type="integer" />
@@ -159,19 +157,28 @@
             <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll" Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll"/>
           </Component>
 
-          <Component Id="TrnsysUmiPlatformDLL" Guid="{36302638-557D-4B30-9667-22DCA2AB6050}">
-            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="TrnsysUmiPlatformDLL" Value="1" KeyPath="yes" Type="integer" />
-            </RegistryKey>
-            <File Id="TrnsysUmiPlatformDLL" Name="TrnsysUmiPlatform.dll" Source="$(var.TrnsysUmiPlatform.TargetDir)TrnsysUmiPlatform.dll"/>
-          </Component>
-
           <Component Id="MathNetNumericsDLL" Guid="{3843BF61-0F61-4C1D-8FDD-B40B40DC8E29}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="MathNetNumericsDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
             <File Id="MathNetNumericsDLL" Name="MathNet.Numerics.dll" Source="$(var.EnergyPlusWeather.TargetDir)MathNet.Numerics.dll"/>
           </Component>
+
+          <Component Id="LiveChartsDLL" Guid="{13DE637C-BC0C-40D9-B428-E9E6F4BD2F52}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="LiveChartsDLL" Value="1" KeyPath="yes" Type="integer" />
+            </RegistryKey>
+            <File Id="LiveChartsDLL" Name="LiveCharts.dll" Source="$(var.DistrictEnergy.TargetDir)LiveCharts.dll"/>
+          </Component>
+
+          <Component Id="LiveChartsWpfDLL" Guid="{A87122EC-EB95-4F6C-985A-254962FFF106}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="LiveChartsDLL" Value="1" KeyPath="yes" Type="integer" />
+            </RegistryKey>
+            <File Id="LiveChartsWpfDLL" Name="LiveCharts.Wpf.dll" Source="$(var.DistrictEnergy.TargetDir)LiveCharts.Wpf.dll"/>
+          </Component>
+
+
 
         </Directory>
       </Directory>

@@ -65,9 +65,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
-    <Reference Include="TrnsysUmiPlatform">
-      <HintPath>..\TrnsysUmiPlatform\obj\Debug\TrnsysUmiPlatform.dll</HintPath>
-    </Reference>
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
       <Private>False</Private>
@@ -105,7 +102,6 @@
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
     <Compile Include="Metrics\Metrics.cs" />
-    <Compile Include="Metrics\DHNetworkListCommand.cs" />
     <Compile Include="ReverseConverter.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
@@ -150,10 +146,6 @@
     <ProjectReference Include="..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\EnergyPlusWeather.csproj">
       <Project>{d8d748d7-aedf-4c88-9aa9-95498fcf87b8}</Project>
       <Name>EnergyPlusWeather</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NetworkDraw\NetworkDraw.csproj">
-      <Project>{4BD0987C-02DD-40F9-ABA9-D93190F32D17}</Project>
-      <Name>NetworkDraw</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
