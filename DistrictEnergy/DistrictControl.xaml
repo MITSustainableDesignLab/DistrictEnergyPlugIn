@@ -82,7 +82,7 @@
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="5" />
                     <Setter Property="HorizontalContentAlignment" Value="Left" />
-                    <Setter Property="VerticalContentAlignment" Value="Top" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Label}">
@@ -169,7 +169,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <Label Content="Capacity as percent of peak cooling load"
-                                                       Style="{DynamicResource PlantSettingStyle}" />
+                                                       Style="{DynamicResource PlantSettingStyle}" ToolTip="Ratio of cooling delivered by absorption chillers to total load at peak conditions" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -192,7 +192,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <Label Content="Cooling coefficient of performance"
-                                                       Style="{DynamicResource PlantSettingStyle}" />
+                                                       Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of useful cooling delivered to natural gas consumed" />
 
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -226,7 +226,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cooling coefficient of performance"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of useful cooling delivered to electricity consumed" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -270,7 +270,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as percent of peak cooling load"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Ratio of heating delivered by heat pumps to total load at peak conditions" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -294,7 +294,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Heating coefficient of performance"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -327,7 +327,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Target offset as percent of annual energy "
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Ratio of heating delivered by solar collectors to total annual heating requirement" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -350,7 +350,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Collector efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of the heat output from collectors divided by received solar radiation" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -397,7 +397,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Accounts for other losses including leakage, distribution, or context shading" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -431,7 +431,7 @@
 
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as number of days of autonomy"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Number of average annual days that tanks can meet demand once fully charged" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -465,7 +465,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Accounts for other losses including leakage and distribution " />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -489,7 +489,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Beginning Charged State"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="The Charging State of the tank at the begining of the simulatino year (0: empty, 100: full)" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -524,7 +524,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Heating efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of useful heating delivered to fuel consumed " />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -573,7 +573,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Target offset as percent of annual energy"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Ratio of electricity delivered by PV Array to total annual electricity requirement" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -597,7 +597,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cell efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of electricity output from array divided by received solar radiation" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -621,7 +621,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Area utilization factor"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Accounts for module frames and other infrastructural requirements" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -645,7 +645,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Accounts for other losses including line losses and balance of system" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -681,8 +681,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Target offset as percent of annual energy"
-
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Ratio of electricity delivered by wind turbines to total annual electricity requirement" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -704,10 +703,9 @@
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Turbine efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
-                                                </StackPanel>
+                                                <Label Content="Turbine efficiency"
+                                                       Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of power captured by turbine to total power available in the wind (Theoretical maximum is 59%)" />
+
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -745,7 +743,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cut-in speed "
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Minimum wind speed at which the turbine blades overcome friction and begin to rotate" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -769,7 +767,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cut-out speed"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Speed at which the turbine blades are brought to rest to avoid damage from high winds" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -792,7 +790,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Rotor area per turbine"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="The swept area is the plane of wind intersected by the turbine" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -853,7 +851,7 @@
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as number of days of autonomy"
 
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Number of average annual days that batteries can meet demand once fully charged" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -886,7 +884,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Accounts for other losses including line losses and balance of system" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -908,7 +906,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Starting Charge"
+                                                    <Label Content="Beginning Charged State"
                                                            Style="{DynamicResource PlantSettingStyle}" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
@@ -956,7 +954,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left" Width="78">
                                                     <Label Content="Tracking mode"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Control the generator to prioritize meeting the hot water or electricity demand" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -977,7 +975,7 @@
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as percent of peak electric load"
 
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Ratio of electricity delivered by generator to total demand at peak conditions" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
 
@@ -1000,7 +998,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Electrical efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of electricity delivered by generator to fuel consumed" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
 
@@ -1023,7 +1021,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Waste heat recovery effectiveness"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}" ToolTip="Average annual ratio of usable heat recovered from generator to fuel consumed " />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
 
