@@ -9,6 +9,8 @@ namespace DistrictEnergy
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+                return 1d;
             return (Visibility) value == Visibility.Visible
                 ? 1d
                 : .2d;

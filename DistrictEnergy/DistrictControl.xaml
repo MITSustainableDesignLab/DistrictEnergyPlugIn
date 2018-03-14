@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="365" d:DesignHeight="1295">
+             d:DesignWidth="610" d:DesignHeight="1295">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -1049,66 +1049,174 @@
             </Grid>
         </TabItem>
         <TabItem Header="Results">
-            <Grid Margin="20" Height="300">
-                <Grid.Effect>
-                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2"
-                                      ShadowDepth="1" />
-                </Grid.Effect>
-                <Grid.Resources>
-                    <districtEnergy:OpacityConverter x:Key="OpacityConverter" />
-                    <districtEnergy:ReverseConverter x:Key="ReverseConverter" />
-                </Grid.Resources>
-                <Border CornerRadius="5" Background="White">
-                    <Grid d:DataContext="{d:DesignData DHSimulateDistrictEnergy}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="20, 10">Energy Consumption</TextBlock>
-                        <Canvas Grid.Row="1" Name="Canvas" Margin="-4, 0, 0, 20">
-                            <Canvas.DataContext>
-                                <vm:ResultsViewModel/>
-                            </Canvas.DataContext>
-                            <ListBox Name="ListBox"
-                                     ItemsSource="{Binding Series, Converter={StaticResource ReverseConverter}}"
-                                     PreviewMouseDown="ListBox_OnPreviewMouseDown"
-                                     Panel.ZIndex="1" Canvas.Left="60" Canvas.Top="20" BorderThickness="0"
-                                     Background="Transparent">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding (lvc:LineSeries.Title)}"
-                                                   Foreground="{Binding (lvc:LineSeries.Fill)}"
-                                                   Opacity="{Binding (lvc:LineSeries.Visibility), Converter={StaticResource OpacityConverter}}"
-                                                   FontSize="22" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListBoxItem}">
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                                    <ContentPresenter />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-                            </ListBox>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0" Click="RunSimulationClick">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource ButtonEnabled}" Mode="TwoWay">
+                            <Binding ElementName="TurbineEff" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutHwt" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutBat" Path="(Validation.HasError)" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <ScrollViewer Grid.Row="1">
+                    <StackPanel>
+                        <Grid Margin="20,20,20,0" Height="300">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2"
+                                                  ShadowDepth="1" />
+                            </Grid.Effect>
+                            <Grid.Resources>
+                                <districtEnergy:OpacityConverter x:Key="OpacityConverter"></districtEnergy:OpacityConverter>
+                                <districtEnergy:ReverseConverter x:Key="ReverseConverter"></districtEnergy:ReverseConverter>
+                            </Grid.Resources>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid d:DataContext="{d:DesignData DHSimulateDistrictEnergy}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="20, 10">Energy Consumption</TextBlock>
+                                    <Canvas x:Name="Canvas" Grid.Row="1" Margin="5, 0, 5, 10">
+                                        <Canvas.DataContext>
+                                            <vm:ResultsViewModel />
+                                        </Canvas.DataContext>
+                                        <ListBox Name="ListBox"
+                                                 ItemsSource="{Binding Series, Converter={StaticResource ReverseConverter}}"
+                                                 PreviewMouseDown="ListBox_OnPreviewMouseDown"
+                                                 Panel.ZIndex="1" Canvas.Left="60" Canvas.Top="20" BorderThickness="0"
+                                                 Background="Transparent">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding (lvc:LineSeries.Title)}"
+                                                               Foreground="{Binding (lvc:LineSeries.Fill)}"
+                                                               Opacity="{Binding (lvc:LineSeries.Visibility), Converter={StaticResource OpacityConverter}}"
+                                                               FontSize="22" />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="{x:Type ListBoxItem}">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                                <ContentPresenter />
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                        </ListBox>
+                                        <lvc:CartesianChart Height="{Binding ElementName=Canvas, Path=ActualHeight}"
+                                                            Width="{Binding ElementName=Canvas, Path=ActualWidth}"
+                                                            Series="{Binding Series}" Hoverable="False"
+                                                            LegendLocation="Bottom">
+                                            <lvc:CartesianChart.AxisX>
+                                                <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
+                                                    <lvc:Axis.Separator>
+                                                        <lvc:Separator IsEnabled="True" Step="1"></lvc:Separator>
+                                                    </lvc:Axis.Separator>
+                                                </lvc:Axis>
+                                            </lvc:CartesianChart.AxisX>
+                                            <lvc:CartesianChart.AxisY>
+                                                <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
+                                                          ShowLabels="True"
+                                                          LabelFormatter="{Binding YFormatter}" />
+                                            </lvc:CartesianChart.AxisY>
+                                            <lvc:CartesianChart.DataTooltip>
+                                                <lvc:DefaultTooltip BulletSize="20" Background="Gray" />
+                                            </lvc:CartesianChart.DataTooltip>
+                                        </lvc:CartesianChart>
+                                    </Canvas>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <Grid Margin="20,20,20,0">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2"
+                                                  ShadowDepth="1" />
+                            </Grid.Effect>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock FontSize="20" Foreground="#404040" Margin="10, 10">Energy Consumption</TextBlock>
+                                    <Grid Margin="0,0,0,5" Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <lvc:Gauge From="0" To="100" Value="50"
+                                                   Height="100" Margin="10,0,5,0" />
+                                        <lvc:Gauge From="0" To="100" Value="50" Grid.Column="1"
+                                                   Height="100" Margin="5,0" />
+                                        <lvc:Gauge From="0" To="100" Value="50" Grid.Column="2"
+                                                   Height="100" Margin="5,0,10,0" />
 
-                            <lvc:CartesianChart Height="{Binding ElementName=Canvas, Path=ActualHeight}"
-                                                Width="{Binding ElementName=Canvas, Path=ActualWidth}"
-                                                Series="{Binding Series}" Hoverable="False" DataTooltip="{x:Null}">
-                                <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis IsEnabled="False" ShowLabels="False" />
-                                </lvc:CartesianChart.AxisX>
-                                <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis IsMerged="True" FontSize="14" ShowLabels="True" />
-                                </lvc:CartesianChart.AxisY>
-                            </lvc:CartesianChart>
-                        </Canvas>
-                    </Grid>
-                </Border>
+                                    </Grid>
+
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="210*" />
+                                <ColumnDefinition Width="210*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Margin="20,20,10,20">
+                                <Grid.Effect>
+                                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                      Opacity=".2"
+                                                      ShadowDepth="1" />
+                                </Grid.Effect>
+                                <Border CornerRadius="5" Background="White">
+                                    <Grid Margin="0,0,0,5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Electricity</TextBlock>
+                                        <StackPanel Grid.Row="1">
+                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                            <Grid Margin="10,20,20,20" Grid.Column="1">
+                                <Grid.Effect>
+                                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                      Opacity=".2"
+                                                      ShadowDepth="1" />
+                                </Grid.Effect>
+                                <Border CornerRadius="5" Background="White">
+                                    <Grid Margin="0,0,0,5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Natural Gas</TextBlock>
+                                        <StackPanel Grid.Row="1">
+                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Grid>
+
+
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </TabItem>
     </TabControl>

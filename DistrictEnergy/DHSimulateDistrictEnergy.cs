@@ -36,6 +36,7 @@ namespace DistrictEnergy
         {
             _instance = this;
             _resultsArray = new ResultsArray();
+            _allDistrictDemand = new DistrictDemand();
         }
 
         ///<summary>The only instance of the DHSimulateDistrictEnergy command.</summary>
@@ -50,36 +51,6 @@ namespace DistrictEnergy
             get { return "DHSimulateDistrictEnergy"; }
         }
 
-        /// <summary>
-        ///     Hourly chilled water load profile (kWh)
-        /// </summary>
-        private static double[] CHW_n { get; set; }
-
-        /// <summary>
-        ///     Hourly hot water load profile (kWh)
-        /// </summary>
-        private static double[] HW_n { get; set; }
-
-        /// <summary>
-        ///     Hourly electricity load profile (kWh)
-        /// </summary>
-        private static double[] ELEC_n { get; set; }
-
-        /// <summary>
-        ///     Hourly Global Solar Radiation from EPW file (kWh/m2)
-        /// </summary>
-        private static double[] RAD_n { get; set; }
-
-        /// <summary>
-        ///     Hourly location wind speed data (m/s)
-        /// </summary>
-        private static double[] WIND_n { get; set; }
-
-        /// <summary>
-        ///     Hourly Ambiant temperature (C)
-        /// </summary>
-        private static double[] T_AMB_n { get; set; }
-
         private int numberTimesteps { get; set; }
 
         /// <summary>
@@ -91,59 +62,59 @@ namespace DistrictEnergy
             StatusBar.ShowProgressMeter(0, numberTimesteps, "Solving Thermal Plant Components", true, true);
             for (; i < numberTimesteps; i++)
             {
-                if (i == 3878)
-                    Debugger.Break();
-                eqHW_ABS(CHW_n[i], out ResultsArray.HW_ABS[i], out ResultsArray.CHW_ABS[i]); //OK
-                eqELEC_ECH(CHW_n[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i]); //OK
-                eqHW_SHW(RAD_n[i], HW_n[i], ResultsArray.HW_ABS[i], out ResultsArray.HW_SHW[i],
+                //if (i == 3878)
+                //    Debugger.Break();
+                eqHW_ABS(AllDistrictDemand.CHW_n[i], out ResultsArray.HW_ABS[i], out ResultsArray.CHW_ABS[i]); //OK
+                eqELEC_ECH(AllDistrictDemand.CHW_n[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i]); //OK
+                eqHW_SHW(AllDistrictDemand.RAD_n[i], AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i], out ResultsArray.HW_SHW[i],
                     out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
-                eqELEC_PV(RAD_n[i], out ResultsArray.ELEC_PV[i]); // OK
-                eqELEC_WND(WIND_n[i], out ResultsArray.ELEC_WND[i]); // OK
+                eqELEC_PV(AllDistrictDemand.RAD_n[i], out ResultsArray.ELEC_PV[i]); // OK
+                eqELEC_WND(AllDistrictDemand.WIND_n[i], out ResultsArray.ELEC_WND[i]); // OK
                 if (i == 0) ResultsArray.TANK_CHG_n[i] = CAP_HWT * TANK_START;
                 if (i > 0)
-                    eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], T_AMB_n[i], out ResultsArray.TANK_CHG_n[i]); // OK
-                eqHW_HWT(ResultsArray.TANK_CHG_n[i], HW_n[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], out ResultsArray.HW_HWT[i]); // OK
-                eqELEC_EHP(HW_n[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.HW_CHP[i], out ResultsArray.ELEC_EHP[i],
+                    eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], AllDistrictDemand.T_AMB_n[i], out ResultsArray.TANK_CHG_n[i]); // OK
+                eqHW_HWT(ResultsArray.TANK_CHG_n[i], AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], out ResultsArray.HW_HWT[i]); // OK
+                eqELEC_EHP(AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.HW_CHP[i], out ResultsArray.ELEC_EHP[i],
                     out ResultsArray.HW_EHP[i]); // Will call HW_CHP even though its not calculated yet
 
 
-                eqELEC_REN(ResultsArray.ELEC_PV[i], ResultsArray.ELEC_WND[i], ELEC_n[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_REN[i],
+                eqELEC_REN(ResultsArray.ELEC_PV[i], ResultsArray.ELEC_WND[i], AllDistrictDemand.ELEC_n[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_REN[i],
                     out ResultsArray.ELEC_BAL[i]); // OK
                 if (i == 0) ResultsArray.BAT_CHG_n[0] = CAP_BAT * BAT_START;
                 if (i > 0)
                     eqBAT_CHG_n(ResultsArray.BAT_CHG_n[i - 1], ResultsArray.ELEC_BAL[i], out ResultsArray.BAT_CHG_n[i]); // OK
-                eqELEC_BAT(ResultsArray.BAT_CHG_n[i], ELEC_n[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_CHP[i]); // OK
+                eqELEC_BAT(ResultsArray.BAT_CHG_n[i], AllDistrictDemand.ELEC_n[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_CHP[i]); // OK
 
                 if (string.Equals(TMOD_CHP, "Thermal"))
                 {
                     // ignore NgasChp
-                    eqHW_CHP(TMOD_CHP, HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.NGAS_CHP[i], out ResultsArray.HW_CHP[i]);
+                    eqHW_CHP(TMOD_CHP, AllDistrictDemand.HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.NGAS_CHP[i], out ResultsArray.HW_CHP[i]);
                     // ignore Elec_Chp
                     eqNGAS_CHP(TMOD_CHP, ResultsArray.HW_CHP[i], ResultsArray.ELEC_CHP[i], out ResultsArray.NGAS_CHP[i]);
                     // ignore ElecN, ElecRen, ElecBat
-                    eqELEC_CHP(TMOD_CHP, ResultsArray.NGAS_CHP[i], ELEC_n[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i],
+                    eqELEC_CHP(TMOD_CHP, ResultsArray.NGAS_CHP[i], AllDistrictDemand.ELEC_n[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i],
                         out ResultsArray.ELEC_CHP[i]);
                 }
 
                 if (string.Equals(TMOD_CHP, "Electrical"))
                 {
                     // ignore NgasChp
-                    eqELEC_CHP(TMOD_CHP, ResultsArray.NGAS_CHP[i], ELEC_n[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i],
+                    eqELEC_CHP(TMOD_CHP, ResultsArray.NGAS_CHP[i], AllDistrictDemand.ELEC_n[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i],
                         out ResultsArray.ELEC_CHP[i]);
                     // ignore HwChp
                     eqNGAS_CHP(TMOD_CHP, ResultsArray.HW_CHP[i], ResultsArray.ELEC_CHP[i], out ResultsArray.NGAS_CHP[i]);
                     // ignore HwN, HwEhp, HwAbs, HwShw, HwHwt
-                    eqHW_CHP(TMOD_CHP, HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.NGAS_CHP[i], out ResultsArray.HW_CHP[i]);
+                    eqHW_CHP(TMOD_CHP, AllDistrictDemand.HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.NGAS_CHP[i], out ResultsArray.HW_CHP[i]);
                 }
 
-                eqNGAS_NGB(HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.HW_CHP[i], out ResultsArray.NGAS_NGB[i],
+                eqNGAS_NGB(AllDistrictDemand.HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.HW_CHP[i], out ResultsArray.NGAS_NGB[i],
                     out ResultsArray.HW_NGB[i]);
-                eqELEC_proj(ELEC_n[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_CHP[i], ResultsArray.ELEC_EHP[i], ResultsArray.ELEC_ECH[i],
+                eqELEC_proj(AllDistrictDemand.ELEC_n[i], ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_CHP[i], ResultsArray.ELEC_EHP[i], ResultsArray.ELEC_ECH[i],
                     out ResultsArray.ELEC_PROJ[i]);
                 eqNGAS_proj(ResultsArray.NGAS_NGB[i], ResultsArray.NGAS_CHP[i], out ResultsArray.NGAS_PROJ[i]);
                 StatusBar.UpdateProgressMeter(i, true);
             }
-            ResultsArray.OnArrayChanged(EventArgs.Empty);
+            ResultsArray.OnResultsChanged(EventArgs.Empty);
             RhinoApp.WriteLine("Distric Energy Simulation complete");
             StatusBar.HideProgressMeter();
         }
@@ -161,19 +132,19 @@ namespace DistrictEnergy
             // Getting the Aggregated Load Curve for all buildings
             var contextBuildings =
                 umiContext.GetObjects().Where(o => o.Data["SDL/Cooling"].Data.Count == 8760).ToList();
-            CHW_n = GetHourlyChilledWaterProfile(contextBuildings);
-            HW_n = GetHourlyHotWaterLoadProfile(contextBuildings);
-            ELEC_n = GetHourlyElectricalLoadProfile(contextBuildings);
+            AllDistrictDemand.CHW_n = GetHourlyChilledWaterProfile(contextBuildings);
+            AllDistrictDemand.HW_n = GetHourlyHotWaterLoadProfile(contextBuildings);
+            AllDistrictDemand.ELEC_n = GetHourlyElectricalLoadProfile(contextBuildings);
             StatusBar.HideProgressMeter();
-            RAD_n = GetHourlyLocationSolarRadiation(umiContext).ToArray();
-            WIND_n = GetHourlyLocationWind(umiContext).ToArray();
-            T_AMB_n = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
+            AllDistrictDemand.RAD_n = GetHourlyLocationSolarRadiation(umiContext).ToArray();
+            AllDistrictDemand.WIND_n = GetHourlyLocationWind(umiContext).ToArray();
+            AllDistrictDemand.T_AMB_n = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
 
 
-            numberTimesteps = HW_n.Length;
+            numberTimesteps = AllDistrictDemand.HW_n.Length;
 
             RhinoApp.WriteLine(
-                $"Calculated...\n{CHW_n.Length} datapoints for ColdWater profile\n{HW_n.Count()} datapoints for HotWater\n{ELEC_n.Count()} datapoints for Electricity\n{RAD_n.Count()} datapoints for Solar Frad\n{WIND_n.Count()} datapoints for WindSpeed");
+                $"Calculated...\n{AllDistrictDemand.CHW_n.Length} datapoints for ColdWater profile\n{AllDistrictDemand.HW_n.Count()} datapoints for HotWater\n{AllDistrictDemand.ELEC_n.Count()} datapoints for Electricity\n{AllDistrictDemand.RAD_n.Count()} datapoints for Solar Frad\n{AllDistrictDemand.WIND_n.Count()} datapoints for WindSpeed");
 
             // Go Hour by hour and parse through the simulation routine
             SetResultsArraystoZero();
@@ -366,9 +337,9 @@ namespace DistrictEnergy
                     csvWriter.WriteField(ResultsArray.SHW_BAL[i]); // 21
                     csvWriter.WriteField(ResultsArray.ELEC_PROJ[i]); // 22
                     csvWriter.WriteField(ResultsArray.NGAS_PROJ[i]); // 23
-                    csvWriter.WriteField(CHW_n[i]); // 24
-                    csvWriter.WriteField(HW_n[i]); // 25
-                    csvWriter.WriteField(ELEC_n[i]); // 26
+                    csvWriter.WriteField(AllDistrictDemand.CHW_n[i]); // 24
+                    csvWriter.WriteField(AllDistrictDemand.HW_n[i]); // 25
+                    csvWriter.WriteField(AllDistrictDemand.ELEC_n[i]); // 26
                     csvWriter.WriteField(ResultsArray.CHW_ABS[i]); // 27
                     csvWriter.WriteField(ResultsArray.CHW_ECH[i]); // 28
 
@@ -422,15 +393,15 @@ namespace DistrictEnergy
         /// </summary>
         private void CalculateConstants()
         {
-            CAP_ABS = CHW_n.Max() * OFF_ABS;
-            CAP_EHP = HW_n.Max() * OFF_EHP;
-            CAP_BAT = ELEC_n.Average() * AUT_BAT * 24;
-            CAP_HWT = HW_n.Average() * AUT_HWT * 24; // todo Prendre jour moyen du mois max.
-            CAP_CHP = ELEC_n.Max() * OFF_CHP;
-            AREA_SHW = HW_n.Sum() * OFF_SHW / (RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
-            AREA_PV = ELEC_n.Sum() * OFF_PV / (RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
-            var windCubed = WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
-            NUM_WND = ELEC_n.Sum() * OFF_WND /
+            CAP_ABS = AllDistrictDemand.CHW_n.Max() * OFF_ABS;
+            CAP_EHP = AllDistrictDemand.HW_n.Max() * OFF_EHP;
+            CAP_BAT = AllDistrictDemand.ELEC_n.Average() * AUT_BAT * 24;
+            CAP_HWT = AllDistrictDemand.HW_n.Average() * AUT_HWT * 24; // todo Prendre jour moyen du mois max.
+            CAP_CHP = AllDistrictDemand.ELEC_n.Max() * OFF_CHP;
+            AREA_SHW = AllDistrictDemand.HW_n.Sum() * OFF_SHW / (AllDistrictDemand.RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
+            AREA_PV = AllDistrictDemand.ELEC_n.Sum() * OFF_PV / (AllDistrictDemand.RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
+            var windCubed = AllDistrictDemand.WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3)).Sum();
+            NUM_WND = AllDistrictDemand.ELEC_n.Sum() * OFF_WND /
                       (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND /
                        1000); // Divide by 1000 because equation spits out Wh
             CHGR_HWT = CAP_HWT == 0 ? 0 : CAP_HWT / 12; // 12 hours // (AUT_HWT * 12);
@@ -743,7 +714,7 @@ namespace DistrictEnergy
                 // Send Excess heat to Tank
                 ResultsArray.SHW_BAL[i] = ResultsArray.SHW_BAL[i] + temp;
                 if (i > 0)
-                    eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], T_AMB_n[i], out ResultsArray.TANK_CHG_n[i]);
+                    eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], AllDistrictDemand.T_AMB_n[i], out ResultsArray.TANK_CHG_n[i]);
                 temp = 0; // force to zero becasue hwChp supplied to project is null; it only served to charge the tank
                 //LogMessageToFile("The CHP plant was forced to produce more energy than needed.", i);
             }
@@ -838,6 +809,8 @@ namespace DistrictEnergy
 
         private readonly ResultsArray _resultsArray;
 
+        private readonly DistrictDemand _allDistrictDemand;
+
         private void SetResultsArraystoZero()
         {
             Array.Clear(ResultsArray.BAT_CHG_n, 0, ResultsArray.BAT_CHG_n.Length);
@@ -861,6 +834,16 @@ namespace DistrictEnergy
             Array.Clear(ResultsArray.SHW_BAL, 0, ResultsArray.SHW_BAL.Length);
             Array.Clear(ResultsArray.ELEC_PROJ, 0, ResultsArray.ELEC_PROJ.Length);
             Array.Clear(ResultsArray.NGAS_PROJ, 0, ResultsArray.NGAS_PROJ.Length);
+        }
+
+        public ResultsArray ResultsArray
+        {
+            get { return _resultsArray; }
+        }
+
+        public DistrictDemand AllDistrictDemand
+        {
+            get { return _allDistrictDemand; }
         }
 
         #endregion
@@ -1046,12 +1029,44 @@ namespace DistrictEnergy
             } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
         }
 
-        public ResultsArray ResultsArray
+        #endregion
+    }
+
+    public class DistrictDemand
+    {
+        public DistrictDemand()
         {
-            get { return _resultsArray; }
         }
 
-        #endregion
+        /// <summary>
+        ///     Hourly chilled water load profile (kWh)
+        /// </summary>
+        public double[] CHW_n = new double[8760];
+
+        /// <summary>
+        ///     Hourly hot water load profile (kWh)
+        /// </summary>
+        public double[] HW_n = new double[8760];
+
+        /// <summary>
+        ///     Hourly electricity load profile (kWh)
+        /// </summary>
+        public double[] ELEC_n = new double[8760];
+
+        /// <summary>
+        ///     Hourly Global Solar Radiation from EPW file (kWh/m2)
+        /// </summary>
+        public double[] RAD_n = new double[8760];
+
+        /// <summary>
+        ///     Hourly location wind speed data (m/s)
+        /// </summary>
+        public double[] WIND_n = new double[8760];
+
+        /// <summary>
+        ///     Hourly Ambiant temperature (C)
+        /// </summary>
+        public double[] T_AMB_n = new double[8760];
     }
 
     public class ResultsArray
@@ -1175,11 +1190,11 @@ namespace DistrictEnergy
         {
         }
 
-        public event EventHandler ArrayChanged;
+        public event EventHandler ResultsChanged;
 
-        protected internal virtual void OnArrayChanged(EventArgs e)
+        protected internal virtual void OnResultsChanged(EventArgs e)
         {
-            EventHandler handler = ArrayChanged;
+            EventHandler handler = ResultsChanged;
             handler?.Invoke(this, e);
         }
     }
