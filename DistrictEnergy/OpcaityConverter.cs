@@ -11,7 +11,7 @@ namespace DistrictEnergy
         {
             if (value == null)
                 return 1d;
-            return (Visibility) value == Visibility.Visible
+            return (Visibility) value == Visibility.Visible // todo this doesn't work yet
                 ? 1d
                 : .2d;
         }

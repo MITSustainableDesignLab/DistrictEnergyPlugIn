@@ -10,7 +10,7 @@ namespace DistrictEnergy
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((SeriesCollection) value)?.Reverse();
+            return ((SeriesCollection) value)?.Reverse(); // todo this doesn't work yet
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

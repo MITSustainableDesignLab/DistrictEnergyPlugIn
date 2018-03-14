@@ -1547,9 +1547,9 @@
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                    Text="Heating" VerticalAlignment="Top" />
                                         <lvc:PieChart Grid.Column="0" Name="Chart"
-                                                      Series="{Binding PieHeatingChartGraphSeries}"
+                                                      Series="{Binding PieHeatingChartGraphSeries, StringFormat=N0}"
                                                       LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
-                                                      Height="200" Grid.IsSharedSizeScope="True">
+                                                      Height="200" Grid.IsSharedSizeScope="True" UseLayoutRounding="False" VerticalContentAlignment="Top">
                                             <lvc:PieChart.ChartLegend>
                                                 <lvc:DefaultLegend BulletSize="20" />
                                             </lvc:PieChart.ChartLegend>
@@ -1560,9 +1560,9 @@
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                    Text="Cooling" VerticalAlignment="Top" Grid.Column="1" />
                                         <lvc:PieChart Name="Chart2"
-                                                      Series="{Binding PieCoolingChartGraphSeries}"
+                                                      Series="{Binding PieCoolingChartGraphSeries, StringFormat=N0}"
                                                       LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
-                                                      Height="200" Grid.Column="1" Grid.IsSharedSizeScope="True">
+                                                      Height="200" Grid.Column="1" Grid.IsSharedSizeScope="True" VerticalContentAlignment="Top">
                                             <lvc:PieChart.ChartLegend>
                                                 <lvc:DefaultLegend BulletSize="20" />
                                             </lvc:PieChart.ChartLegend>
