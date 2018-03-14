@@ -1176,14 +1176,20 @@
                                 </Grid.Effect>
                                 <Border CornerRadius="5" Background="White">
                                     <Grid Margin="0,0,0,5">
+                                        <Grid.DataContext>
+                                            <vm:ResultsViewModel/>
+                                        </Grid.DataContext>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Electricity</TextBlock>
                                         <StackPanel Grid.Row="1">
-                                            <lvc:Gauge From="0" To="100" Value="{Binding Path=PurchasedElecIntensity}" Height="125" Margin="5,0" />
-                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="{Binding PurchasedElec, StringFormat=N0}" VerticalAlignment="Top" FontSize="48"/>
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="MWh" VerticalAlignment="Top"/>
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="Purchased" VerticalAlignment="Top"/>
+
+                                            <lvc:Gauge From="0" To="100" Value="{Binding PurchasedElecIntensity}" LabelFormatter ="{Binding GaugeFormatter}" Height="125" Margin="5,0" />
                                             <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
                                         </StackPanel>
                                     </Grid>
@@ -1197,14 +1203,20 @@
                                 </Grid.Effect>
                                 <Border CornerRadius="5" Background="White">
                                     <Grid Margin="0,0,0,5">
+                                        <Grid.DataContext>
+                                            <vm:ResultsViewModel/>
+                                        </Grid.DataContext>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Natural Gas</TextBlock>
                                         <StackPanel Grid.Row="1">
-                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
-                                            <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="{Binding PurchasedNgas, StringFormat=N0}" VerticalAlignment="Top" FontSize="48"/>
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="MWh" VerticalAlignment="Top"/>
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="Purchased" VerticalAlignment="Top"/>
+
+                                            <lvc:Gauge From="0" To="100" Value="{Binding PurchasedNgasIntensity, StringFormat=N0}" Height="125" Margin="5,0" />
                                             <lvc:Gauge From="0" To="100" Value="50" Height="125" Margin="5,0" />
                                         </StackPanel>
                                     </Grid>

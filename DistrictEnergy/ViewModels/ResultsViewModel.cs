@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using LiveCharts;
@@ -9,13 +10,19 @@ using Mit.Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy.ViewModels
 {
-    public class ResultsViewModel
+    public class ResultsViewModel : INotifyPropertyChanged
     {
+        private double _purchasedElec;
+        private double _purchasedNgas;
+        private double _purchasedElecIntensity;
+        private double _purchasedNgasIntensity;
+
         public ResultsViewModel()
         {
             Instance = this;
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
-            YFormatter = val => (val / 1000).ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) + " MWh";
+            YFormatter = val => (val / 1000).ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) + " MWh"; // Formats the yAxis of the stacked graph
+            GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
         }
 
         public static ResultsViewModel Instance { get; set; }
@@ -24,9 +31,50 @@ namespace DistrictEnergy.ViewModels
         public Func<double, string> XFormatter { get; set; }
         public Func<double, string> YFormatter { get; set; }
 
-        public double PurchasedElec { get; set; }
+        public double PurchasedElec
+        {
+            get => _purchasedElec;
+            set
+            {
+                _purchasedElec = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedElec)));
+            }
+        }
 
-        public double PurchasedElecIntensity { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public double PurchasedElecIntensity
+        {
+            get => _purchasedElecIntensity;
+            set
+            {
+                _purchasedElecIntensity = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedElecIntensity)));
+
+            }
+        }
+
+        public double PurchasedNgas
+        {
+            get => _purchasedNgas;
+            set
+            {
+                _purchasedNgas = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedNgas)));
+
+            }
+        }
+
+        public double PurchasedNgasIntensity
+        {
+            get => _purchasedNgasIntensity;
+            set
+            {
+                _purchasedNgasIntensity = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedNgasIntensity)));
+
+            }
+        }
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
@@ -77,8 +125,13 @@ namespace DistrictEnergy.ViewModels
 
             var instance = DHSimulateDistrictEnergy.Instance;
 
-            PurchasedElec = instance.ResultsArray.ELEC_PROJ.Sum();
-            PurchasedElecIntensity = PurchasedElec / totalGrossFloorArea;
+            PurchasedElec = instance.ResultsArray.ELEC_PROJ.Sum() / 1000; // To MWh
+            PurchasedElecIntensity = PurchasedElec * 1000 / totalGrossFloorArea; // kWh/m2
+
+            PurchasedNgas = instance.ResultsArray.NGAS_PROJ.Sum(); // To kWh
+            PurchasedNgasIntensity = PurchasedNgas * 1000 / totalGrossFloorArea; // kWh/m2
         }
+
+        public Func<double, string> GaugeFormatter { get; set; }
     }
 }

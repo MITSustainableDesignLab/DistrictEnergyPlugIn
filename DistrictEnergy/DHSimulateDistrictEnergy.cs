@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows;
 using CsvHelper;
 using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
@@ -132,6 +133,13 @@ namespace DistrictEnergy
             // Getting the Aggregated Load Curve for all buildings
             var contextBuildings =
                 umiContext.GetObjects().Where(o => o.Data["SDL/Cooling"].Data.Count == 8760).ToList();
+            if (contextBuildings.Count == 0)
+            {
+                MessageBox.Show(
+                    "There are no buildings with hourly results. Please Rerun the Energy Module after turning on the Hourly Results in Advanced Options", "Cannot continue with District simulation");
+                return Result.Failure;
+            }
+
             AllDistrictDemand.CHW_n = GetHourlyChilledWaterProfile(contextBuildings);
             AllDistrictDemand.HW_n = GetHourlyHotWaterLoadProfile(contextBuildings);
             AllDistrictDemand.ELEC_n = GetHourlyElectricalLoadProfile(contextBuildings);
