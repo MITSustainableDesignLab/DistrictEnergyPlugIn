@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+using LiveCharts.Wpf;
 using Rhino;
 
 namespace DistrictEnergy
@@ -14,6 +17,23 @@ namespace DistrictEnergy
         public DistrictControl()
         {
             InitializeComponent();
+        }
+
+
+        private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var item = ItemsControl.ContainerFromElement(ListBox, (DependencyObject) e.OriginalSource) as ListBoxItem;
+            if (item == null) return;
+
+            var series = (StackedAreaSeries) item.Content;
+            series.Visibility = series.Visibility == Visibility.Visible
+                ? Visibility.Hidden
+                : Visibility.Visible;
+        }
+
+        private void RunSimulationClick(object sender, RoutedEventArgs e)
+        {
+            RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
         }
     }
 

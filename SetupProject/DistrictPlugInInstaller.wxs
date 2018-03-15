@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
      xmlns:ui="http://schemas.microsoft.com/wix/">
   <!-- Use Id=* to generate a new GUID each time. Note that UpgradeCode MUST always stay the same for ever and ever. -->
   <?define ProductVersion="$(fileVersion.ProductVersion($(var.DistrictEnergy.TargetPath)))" ?>
-  <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="$(var.ProductVersion)" Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
+  <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="$(var.ProductVersion)"
+           Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
     <!-- Install perUser -->
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -34,39 +36,63 @@
       <Publish Dialog="SetupTypeDlg" Control="TypicalButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="SetupTypeDlg" Control="CustomButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
       <Publish Dialog="SetupTypeDlg" Control="CompleteButton" Event="NewDialog"
-               Value="VerifyReadyDlg">1</Publish>
+               Value="VerifyReadyDlg">
+        1
+      </Publish>
 
       <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg"
-               Order="1">WixUI_InstallMode = "Change"</Publish>
+               Order="1">
+        WixUI_InstallMode = "Change"
+      </Publish>
       <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg"
-               Order="2">WixUI_InstallMode = "InstallCustom"</Publish>
+               Order="2">
+        WixUI_InstallMode = "InstallCustom"
+      </Publish>
       <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
-               Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
+               Order="1">
+        WixUI_InstallMode = "InstallCustom"
+      </Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg"
-               Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
+               Order="2">
+        WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"
+      </Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg"
-               Order="3">WixUI_InstallMode = "Change"</Publish>
+               Order="3">
+        WixUI_InstallMode = "Change"
+      </Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg"
-               Order="4">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
+               Order="4">
+        WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"
+      </Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog"
-               Value="MaintenanceTypeDlg">1</Publish>
+               Value="MaintenanceTypeDlg">
+        1
+      </Publish>
 
       <Publish Dialog="MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog"
-               Value="CustomizeDlg">1</Publish>
+               Value="CustomizeDlg">
+        1
+      </Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
-               Value="VerifyReadyDlg">1</Publish>
+               Value="VerifyReadyDlg">
+        1
+      </Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
-               Value="VerifyReadyDlg">1</Publish>
+               Value="VerifyReadyDlg">
+        1
+      </Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog"
-               Value="MaintenanceWelcomeDlg">1</Publish>
+               Value="MaintenanceWelcomeDlg">
+        1
+      </Publish>
     </UI>
     <UIRef Id="WixUI_Common" />
     <WixVariable Id="WixUIBannerBmp" Value="$(var.DistrictEnergy.ProjectDir)Resources\banner.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="$(var.DistrictEnergy.ProjectDir)Resources\WixUIDialogBmp.bmp"/>
-    
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.DistrictEnergy.ProjectDir)Resources\WixUIDialogBmp.bmp" />
+
     <!-- Define the MARIN icon to show in the Add/Remove Programs (ARP) dialog-->
     <Icon Id="TabHeaderIcon.png" SourceFile="$(var.DistrictEnergy.ProjectDir)\Resources\TabHeaderIcon.png" />
     <Property Id="ARPPRODUCTICON" Value="TabHeaderIcon.png" />
@@ -77,7 +103,8 @@
 
     <!-- Check for .NET 4.0 -->
     <PropertyRef Id="NETFRAMEWORK45" />
-    <Condition Message="This application requires .NET Framework 4.5. Please install the .NET Framework then run this installer again.">
+    <Condition
+      Message="This application requires .NET Framework 4.5. Please install the .NET Framework then run this installer again.">
       <![CDATA[Installed OR NETFRAMEWORK45]]>
     </Condition>
 
@@ -103,8 +130,7 @@
       <!-- DH plug-in -->
       <Feature Id="DHcommon" Title="District Energy Plug-In" Level="2" Absent="disallow">
         <MergeRef Id="DistrictEnergyMM" />
-        <MergeRef Id="ExportLoadsToFileMM"/>
-        <MergeRef Id ="TempFilesMM"/>
+        <MergeRef Id="ExportLoadsToFileMM" />
       </Feature>
     </Feature>
 
@@ -113,9 +139,10 @@
   <!-- This is where the merge modules are referenced. Each plug-in creates a merge module -->
   <Fragment Id="FRG_Merge">
     <DirectoryRef Id="TARGETDIR">
-      <Merge Id="DistrictEnergyMM" SourceFile="$(var.DistrictEnergyMM.TargetDir)DistrictEnergyMM.msm" Language="1033" DiskId="1" />
-      <Merge Id="ExportLoadsToFileMM" SourceFile="$(var.ExportLoadsToFileMM.TargetDir)ExportLoadsToFileMM.msm" Language="1033" DiskId="1" />
-      <Merge Id="TempFilesMM" SourceFile="$(var.TempFilesMM.TargetDir)TempFilesMM.msm" Language="1033" DiskId="1" />
+      <Merge Id="DistrictEnergyMM" SourceFile="$(var.DistrictEnergyMM.TargetDir)DistrictEnergyMM.msm" Language="1033"
+             DiskId="1" />
+      <Merge Id="ExportLoadsToFileMM" SourceFile="$(var.ExportLoadsToFileMM.TargetDir)ExportLoadsToFileMM.msm"
+             Language="1033" DiskId="1" />
     </DirectoryRef>
   </Fragment>
 
@@ -125,9 +152,10 @@
       <ComponentRef Id="DistrictEnergyDLL" />
       <ComponentRef Id="CsvHelperDLL" />
       <ComponentRef Id="EnergyPlusWeatherDLL" />
-      <!--<ComponentRef Id="NewtonsoftJson" />-->
-      <ComponentRef Id="TrnsysUmiPlatformDLL" />
       <ComponentRef Id="MathNetNumericsDLL" />
+      <ComponentRef Id="LiveChartsDLL" />
+      <ComponentRef Id="LiveChartsWpfDLL" />
+      <ComponentRef Id="NewtonSoftJsonDLL"/>
     </ComponentGroup>
   </Fragment>
 
@@ -137,41 +165,61 @@
         <Directory Id="PLUGINFOLDER" Name="District Energy Plug-Ins">
 
 
-          <Component Id="DistrictEnergyDLL" Guid="3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a">
-            <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall"/>
+          <Component Id="DistrictEnergyDLL" Guid="{3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a}">
+            <RemoveFolder Id="remPLUGINFOLDER" Directory="PLUGINFOLDER" On="uninstall" />
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="DistrictEnergyDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="DistrictEnergyDLL" Name="DistrictEnergy.dll" Source="$(var.DistrictEnergy.TargetDir)DistrictEnergy.dll"/>
+            <File Id="DistrictEnergyDLL" Name="DistrictEnergy.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)DistrictEnergy.dll" />
           </Component>
 
           <Component Id="CsvHelperDLL" Guid="{BC056345-4E4F-458B-AC27-2D8421BE6B00}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="CsvHelperDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="CsvHelperDLL" Name="CsvHelper.dll" Source="$(var.ExportLoadsToFile.TargetDir)CsvHelper.dll"/>
+            <File Id="CsvHelperDLL" Name="CsvHelper.dll" Source="$(var.ExportLoadsToFile.TargetDir)CsvHelper.dll" />
           </Component>
 
           <Component Id="EnergyPlusWeatherDLL" Guid="{E31B8CD5-F5EB-4A12-A191-C66E46344E03}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="EnergyPlusWeatherDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll" Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll"/>
-          </Component>
-
-          <Component Id="TrnsysUmiPlatformDLL" Guid="{36302638-557D-4B30-9667-22DCA2AB6050}">
-            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="TrnsysUmiPlatformDLL" Value="1" KeyPath="yes" Type="integer" />
-            </RegistryKey>
-            <File Id="TrnsysUmiPlatformDLL" Name="TrnsysUmiPlatform.dll" Source="$(var.TrnsysUmiPlatform.TargetDir)TrnsysUmiPlatform.dll"/>
+            <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll"
+                  Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll" />
           </Component>
 
           <Component Id="MathNetNumericsDLL" Guid="{3843BF61-0F61-4C1D-8FDD-B40B40DC8E29}">
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="MathNetNumericsDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="MathNetNumericsDLL" Name="MathNet.Numerics.dll" Source="$(var.EnergyPlusWeather.TargetDir)MathNet.Numerics.dll"/>
+            <File Id="MathNetNumericsDLL" Name="MathNet.Numerics.dll"
+                  Source="$(var.EnergyPlusWeather.TargetDir)MathNet.Numerics.dll" />
           </Component>
+
+          <Component Id="LiveChartsDLL" Guid="{13DE637C-BC0C-40D9-B428-E9E6F4BD2F52}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="LiveChartsDLL" Value="1" KeyPath="yes" Type="integer" />
+            </RegistryKey>
+            <File Id="LiveChartsDLL" Name="LiveCharts.dll" Source="$(var.DistrictEnergy.TargetDir)LiveCharts.dll" />
+          </Component>
+
+          <Component Id="LiveChartsWpfDLL" Guid="{A87122EC-EB95-4F6C-985A-254962FFF106}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="LiveChartsDLL" Value="1" KeyPath="yes" Type="integer" />
+            </RegistryKey>
+            <File Id="LiveChartsWpfDLL" Name="LiveCharts.Wpf.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)LiveCharts.Wpf.dll" />
+          </Component>
+
+          <Component Id="NewtonSoftJsonDLL" Guid="{08A0E2F9-58A0-4B38-8515-0A6B804A4777}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="NewtonSoftJsonDLL" Value="1" KeyPath="yes" Type="integer" />
+            </RegistryKey>
+            <File Id="NewtonSoftJsonDLL" Name="Newtonsoft.Json.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)Newtonsoft.Json.dll" />
+          </Component>
+
 
         </Directory>
       </Directory>

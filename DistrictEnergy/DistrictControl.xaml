@@ -5,8 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="365" d:DesignHeight="1295">
+             d:DesignWidth="485" d:DesignHeight="1295" d:DataContext="{d:DesignData ResultsViewModel}">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -17,7 +18,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <districtEnergy:InverseAndBooleansToBooleanConverter x:Key="ButtonEnabled2" />
+        <districtEnergy:InverseAndBooleansToBooleanConverter x:Key="ButtonEnabled" />
         <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3" />
         <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA" />
         <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5" />
@@ -69,7 +70,7 @@
                             Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
                 </MultiTrigger>
             </Style.Triggers>
-            
+
         </Style>
     </UserControl.Resources>
     <TabControl x:Name="TabControl" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top"
@@ -81,7 +82,7 @@
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Padding" Value="5" />
                     <Setter Property="HorizontalContentAlignment" Value="Left" />
-                    <Setter Property="VerticalContentAlignment" Value="Top" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Label}">
@@ -121,9 +122,9 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0">
+                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0" Click="RunSimulationClick">
                     <Button.IsEnabled>
-                        <MultiBinding Converter="{StaticResource ButtonEnabled2}" Mode="TwoWay">
+                        <MultiBinding Converter="{StaticResource ButtonEnabled}" Mode="TwoWay">
                             <Binding ElementName="TurbineEff" Path="(Validation.HasError)" />
                             <Binding ElementName="AutHwt" Path="(Validation.HasError)" />
                             <Binding ElementName="AutBat" Path="(Validation.HasError)" />
@@ -168,7 +169,8 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <Label Content="Capacity as percent of peak cooling load"
-                                                       Style="{DynamicResource PlantSettingStyle}" />
+                                                       Style="{DynamicResource PlantSettingStyle}"
+                                                       ToolTip="Ratio of cooling delivered by absorption chillers to total load at peak conditions" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -191,7 +193,8 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <Label Content="Cooling coefficient of performance"
-                                                       Style="{DynamicResource PlantSettingStyle}" />
+                                                       Style="{DynamicResource PlantSettingStyle}"
+                                                       ToolTip="Average annual ratio of useful cooling delivered to natural gas consumed" />
 
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -225,7 +228,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cooling coefficient of performance"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of useful cooling delivered to electricity consumed" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -269,7 +273,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as percent of peak cooling load"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Ratio of heating delivered by heat pumps to total load at peak conditions" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -293,7 +298,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Heating coefficient of performance"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -326,7 +332,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Target offset as percent of annual energy "
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Ratio of heating delivered by solar collectors to total annual heating requirement" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -349,7 +356,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Collector efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of the heat output from collectors divided by received solar radiation" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -396,7 +404,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Accounts for other losses including leakage, distribution, or context shading" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -430,7 +439,8 @@
 
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as number of days of autonomy"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Number of average annual days that tanks can meet demand once fully charged" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -464,7 +474,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Accounts for other losses including leakage and distribution " />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -488,7 +499,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Beginning Charged State"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="The Charging State of the tank at the begining of the simulatino year (0: empty, 100: full)" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -523,7 +535,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Heating efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of useful heating delivered to fuel consumed " />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -572,7 +585,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Target offset as percent of annual energy"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Ratio of electricity delivered by PV Array to total annual electricity requirement" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -596,7 +610,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cell efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of electricity output from array divided by received solar radiation" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -620,7 +635,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Area utilization factor"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Accounts for module frames and other infrastructural requirements" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -644,7 +660,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Accounts for other losses including line losses and balance of system" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -680,8 +697,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Target offset as percent of annual energy"
-
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Ratio of electricity delivered by wind turbines to total annual electricity requirement" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -703,10 +720,10 @@
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Turbine efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
-                                                </StackPanel>
+                                                <Label Content="Turbine efficiency"
+                                                       Style="{DynamicResource PlantSettingStyle}"
+                                                       ToolTip="Average annual ratio of power captured by turbine to total power available in the wind (Theoretical maximum is 59%)" />
+
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -719,7 +736,8 @@
                                                              HorizontalAlignment="Center"
                                                              Width="40"
                                                              AllowDrop="True"
-                                                             ToolTip="{Binding ElementName=TurbineEff, Path=(Validation.Errors)[0].ErrorContent}" Height="22">
+                                                             ToolTip="{Binding ElementName=TurbineEff, Path=(Validation.Errors)[0].ErrorContent}"
+                                                             Height="22">
                                                         <TextBox.Text>
                                                             <Binding Path="EFF_WND"
                                                                      UpdateSourceTrigger="PropertyChanged">
@@ -743,7 +761,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cut-in speed "
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Minimum wind speed at which the turbine blades overcome friction and begin to rotate" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -767,7 +786,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Cut-out speed"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Speed at which the turbine blades are brought to rest to avoid damage from high winds" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -790,7 +810,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Rotor area per turbine"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="The swept area is the plane of wind intersected by the turbine" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -851,7 +872,8 @@
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as number of days of autonomy"
 
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Number of average annual days that batteries can meet demand once fully charged" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -884,7 +906,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Accounts for other losses including line losses and balance of system" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
@@ -906,7 +929,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Starting Charge"
+                                                    <Label Content="Beginning Charged State"
                                                            Style="{DynamicResource PlantSettingStyle}" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
@@ -954,7 +977,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left" Width="78">
                                                     <Label Content="Tracking mode"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Control the generator to prioritize meeting the hot water or electricity demand" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -975,7 +999,8 @@
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Capacity as percent of peak electric load"
 
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Ratio of electricity delivered by generator to total demand at peak conditions" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
 
@@ -998,7 +1023,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Electrical efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of electricity delivered by generator to fuel consumed" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
 
@@ -1021,7 +1047,8 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
                                                     <Label Content="Waste heat recovery effectiveness"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of usable heat recovered from generator to fuel consumed " />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
 
@@ -1039,6 +1066,513 @@
 
                                 </StackPanel>
 
+                            </Border>
+                        </Grid>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Results">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0" Click="RunSimulationClick">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource ButtonEnabled}" Mode="TwoWay">
+                            <Binding ElementName="TurbineEff" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutHwt" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutBat" Path="(Validation.HasError)" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <ScrollViewer Grid.Row="1">
+                    <StackPanel>
+                        <Grid Margin="20,20,20,0">
+                            <UniformGrid Columns="3">
+                                <FrameworkElement x:Name="C1" />
+                                <!-- no need to add the other three -->
+                            </UniformGrid>
+                            <TabControl x:Name="StackedGraphsTabControl">
+                                <TabControl.Resources>
+                                    <Style TargetType="TabControl">
+                                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="TabControl">
+                                                    <Grid KeyboardNavigation.TabNavigation="Local">
+                                                        <Grid.Effect>
+                                                            <DropShadowEffect BlurRadius="15" Direction="-90"
+                                                                              RenderingBias="Quality" Opacity=".2"
+                                                                              ShadowDepth="1" />
+                                                        </Grid.Effect>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+                                                        <TabPanel
+                                                            Name="HeaderPanel"
+                                                            Grid.Row="0"
+                                                            Panel.ZIndex="1"
+
+                                                            IsItemsHost="True"
+                                                            KeyboardNavigation.TabIndex="1"
+                                                            Background="Transparent" />
+                                                        <Border
+                                                            Name="Border"
+                                                            Grid.Row="1"
+                                                            Background="White"
+                                                            BorderBrush="Transparent"
+                                                            BorderThickness="1"
+                                                            CornerRadius="2"
+                                                            Margin="0,-1,0,0"
+                                                            KeyboardNavigation.TabNavigation="Local"
+                                                            KeyboardNavigation.DirectionalNavigation="Contained"
+                                                            KeyboardNavigation.TabIndex="2">
+                                                            <ContentPresenter
+                                                                Name="PART_SelectedContentHost"
+                                                                ContentSource="SelectedContent" />
+                                                        </Border>
+                                                    </Grid>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Foreground" Value="Gray" />
+                                                            <Setter TargetName="Border" Property="BorderBrush"
+                                                                    Value="Transparent" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+
+                                    <Style TargetType="TabItem">
+                                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                                        <Setter Property="FontSize" Value="16" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="TabItem">
+                                                    <Border Name="Border" BorderThickness="1,1,1,0"
+                                                            BorderBrush="Gainsboro"
+                                                            CornerRadius="4,4,0,0">
+                                                        <ContentPresenter x:Name="ContentSite"
+                                                                          VerticalAlignment="Center"
+                                                                          HorizontalAlignment="Center"
+                                                                          ContentSource="Header"
+                                                                          Margin="10,2" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="Border" Property="Background"
+                                                                    Value="White" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="False">
+                                                            <Setter TargetName="Border" Property="Background"
+                                                                    Value="LightSlateGray" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TabControl.Resources>
+                                <TabItem Header="Heating demand"
+                                         Width="{Binding ElementName=C1, Path=ActualWidth}">
+                                    <Grid Height="300"
+                                          Width="{Binding ActualWidth, ElementName=StackedGraphsTabControl, Mode=OneWay}">
+                                        <Grid.Resources>
+                                            <districtEnergy:OpacityConverter x:Key="OpacityConverter" />
+                                            <districtEnergy:ReverseConverter x:Key="ReverseConverter" />
+                                        </Grid.Resources>
+                                        <Border CornerRadius="5" Background="White">
+                                            <Grid d:DataContext="{d:DesignData DHSimulateDistrictEnergy}">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040"
+                                                           Margin="20, 10">
+                                                    <Run Text="Energy Consumption" /><Run Text=" by Source" />
+                                                </TextBlock>
+                                                <Canvas x:Name="SecondCanvas" Grid.Row="1" Margin="5, 0, 5, 10">
+                                                    <Canvas.DataContext>
+                                                        <vm:ResultsViewModel />
+                                                    </Canvas.DataContext>
+                                                    <ListBox Name="SecondListBox"
+                                                             ItemsSource="{Binding StackedHeatingSeries, Converter={StaticResource ReverseConverter}}"
+                                                             PreviewMouseDown="ListBox_OnPreviewMouseDown"
+                                                             Panel.ZIndex="1" Canvas.Left="60" Canvas.Top="20"
+                                                             BorderThickness="0"
+                                                             Background="Transparent">
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding (lvc:LineSeries.Title)}"
+                                                                           Foreground="{Binding (lvc:LineSeries.Fill)}"
+                                                                           Opacity="{Binding (lvc:LineSeries.Visibility), Converter={StaticResource OpacityConverter}}"
+                                                                           FontSize="22" />
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                        <ListBox.ItemContainerStyle>
+                                                            <Style TargetType="{x:Type ListBoxItem}">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate
+                                                                            TargetType="{x:Type ListBoxItem}">
+                                                                            <ContentPresenter />
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </ListBox.ItemContainerStyle>
+                                                    </ListBox>
+                                                    <lvc:CartesianChart
+                                                        Height="{Binding ElementName=SecondCanvas, Path=ActualHeight}"
+                                                        Width="{Binding ElementName=SecondCanvas, Path=ActualWidth}"
+                                                        Series="{Binding StackedHeatingSeries}" Hoverable="False"
+                                                        LegendLocation="Bottom">
+                                                        <lvc:CartesianChart.AxisX>
+                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
+                                                                <lvc:Axis.Separator>
+                                                                    <lvc:Separator IsEnabled="True" Step="1" />
+                                                                </lvc:Axis.Separator>
+                                                            </lvc:Axis>
+                                                        </lvc:CartesianChart.AxisX>
+                                                        <lvc:CartesianChart.AxisY>
+                                                            <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
+                                                                      ShowLabels="True"
+                                                                      LabelFormatter="{Binding YFormatter}" />
+                                                        </lvc:CartesianChart.AxisY>
+                                                        <lvc:CartesianChart.DataTooltip>
+                                                            <lvc:DefaultTooltip BulletSize="20" Background="Gray" />
+                                                        </lvc:CartesianChart.DataTooltip>
+                                                    </lvc:CartesianChart>
+                                                </Canvas>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="Cooling demand"
+                                         Width="{Binding ElementName=C1, Path=ActualWidth}">
+                                    <Grid Height="300"
+                                          Width="{Binding ActualWidth, ElementName=StackedGraphsTabControl, Mode=OneWay}">
+                                        <Grid.Effect>
+                                            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                              Opacity=".2"
+                                                              ShadowDepth="1" />
+                                        </Grid.Effect>
+                                        <Grid.Resources>
+                                            <districtEnergy:OpacityConverter x:Key="OpacityConverter" />
+                                            <districtEnergy:ReverseConverter x:Key="ReverseConverter" />
+                                        </Grid.Resources>
+                                        <Border CornerRadius="5" Background="White">
+                                            <Grid d:DataContext="{d:DesignData DHSimulateDistrictEnergy}">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040"
+                                                           Margin="20, 10">
+                                                    <Run Text="Energy Consumption" /><Run Text=" by Source" />
+                                                </TextBlock>
+                                                <Canvas x:Name="Canvas" Grid.Row="1" Margin="5, 0, 5, 10">
+                                                    <Canvas.DataContext>
+                                                        <vm:ResultsViewModel />
+                                                    </Canvas.DataContext>
+                                                    <ListBox Name="ListBox"
+                                                             ItemsSource="{Binding StackedHeatingSeries, Converter={StaticResource ReverseConverter}}"
+                                                             PreviewMouseDown="ListBox_OnPreviewMouseDown"
+                                                             Panel.ZIndex="1" Canvas.Left="60" Canvas.Top="20"
+                                                             BorderThickness="0"
+                                                             Background="Transparent">
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding (lvc:LineSeries.Title)}"
+                                                                           Foreground="{Binding (lvc:LineSeries.Fill)}"
+                                                                           Opacity="{Binding (lvc:LineSeries.Visibility), Converter={StaticResource OpacityConverter}}"
+                                                                           FontSize="22" />
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                        <ListBox.ItemContainerStyle>
+                                                            <Style TargetType="{x:Type ListBoxItem}">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate
+                                                                            TargetType="{x:Type ListBoxItem}">
+                                                                            <ContentPresenter />
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </ListBox.ItemContainerStyle>
+                                                    </ListBox>
+                                                    <lvc:CartesianChart
+                                                        Height="{Binding ElementName=Canvas, Path=ActualHeight}"
+                                                        Width="{Binding ElementName=Canvas, Path=ActualWidth}"
+                                                        Series="{Binding StackedCoolingSeries}" Hoverable="False"
+                                                        LegendLocation="Bottom">
+                                                        <lvc:CartesianChart.AxisX>
+                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
+                                                                <lvc:Axis.Separator>
+                                                                    <lvc:Separator IsEnabled="True" Step="1" />
+                                                                </lvc:Axis.Separator>
+                                                            </lvc:Axis>
+                                                        </lvc:CartesianChart.AxisX>
+                                                        <lvc:CartesianChart.AxisY>
+                                                            <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
+                                                                      ShowLabels="True"
+                                                                      LabelFormatter="{Binding YFormatter}" />
+                                                        </lvc:CartesianChart.AxisY>
+                                                        <lvc:CartesianChart.DataTooltip>
+                                                            <lvc:DefaultTooltip BulletSize="20" Background="Gray" />
+                                                        </lvc:CartesianChart.DataTooltip>
+                                                    </lvc:CartesianChart>
+                                                </Canvas>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="Electricity demand"
+                                         Width="{Binding ElementName=C1, Path=ActualWidth}">
+                                    <Grid Height="300"
+                                          Width="{Binding ActualWidth, ElementName=StackedGraphsTabControl, Mode=OneWay}">
+                                        <Grid.Effect>
+                                            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                              Opacity=".2"
+                                                              ShadowDepth="1" />
+                                        </Grid.Effect>
+                                        <Grid.Resources>
+                                            <districtEnergy:OpacityConverter x:Key="OpacityConverter" />
+                                            <districtEnergy:ReverseConverter x:Key="ReverseConverter" />
+                                        </Grid.Resources>
+                                        <Border CornerRadius="5" Background="White">
+                                            <Grid d:DataContext="{d:DesignData DHSimulateDistrictEnergy}">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040"
+                                                           Margin="20, 10">
+                                                    <Run Text="Energy Consumption" /><Run Text=" by Source" />
+                                                </TextBlock>
+                                                <Canvas x:Name="ThirdCanvas" Grid.Row="1" Margin="5, 0, 5, 10">
+                                                    <Canvas.DataContext>
+                                                        <vm:ResultsViewModel />
+                                                    </Canvas.DataContext>
+                                                    <ListBox Name="ThirdListBox"
+                                                             ItemsSource="{Binding StackedHeatingSeries, Converter={StaticResource ReverseConverter}}"
+                                                             PreviewMouseDown="ListBox_OnPreviewMouseDown"
+                                                             Panel.ZIndex="1" Canvas.Left="60" Canvas.Top="20"
+                                                             BorderThickness="0"
+                                                             Background="Transparent">
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding (lvc:LineSeries.Title)}"
+                                                                           Foreground="{Binding (lvc:LineSeries.Fill)}"
+                                                                           Opacity="{Binding (lvc:LineSeries.Visibility), Converter={StaticResource OpacityConverter}}"
+                                                                           FontSize="22" />
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                        <ListBox.ItemContainerStyle>
+                                                            <Style TargetType="{x:Type ListBoxItem}">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate
+                                                                            TargetType="{x:Type ListBoxItem}">
+                                                                            <ContentPresenter />
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </ListBox.ItemContainerStyle>
+                                                    </ListBox>
+                                                    <lvc:CartesianChart
+                                                        Height="{Binding ElementName=ThirdCanvas, Path=ActualHeight}"
+                                                        Width="{Binding ElementName=ThirdCanvas, Path=ActualWidth}"
+                                                        Series="{Binding StackedElecSeries}" Hoverable="False"
+                                                        LegendLocation="Bottom">
+                                                        <lvc:CartesianChart.AxisX>
+                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
+                                                                <lvc:Axis.Separator>
+                                                                    <lvc:Separator IsEnabled="True" Step="1" />
+                                                                </lvc:Axis.Separator>
+                                                            </lvc:Axis>
+                                                        </lvc:CartesianChart.AxisX>
+                                                        <lvc:CartesianChart.AxisY>
+                                                            <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
+                                                                      ShowLabels="True"
+                                                                      LabelFormatter="{Binding YFormatter}" />
+                                                        </lvc:CartesianChart.AxisY>
+                                                        <lvc:CartesianChart.DataTooltip>
+                                                            <lvc:DefaultTooltip BulletSize="20" Background="Gray" />
+                                                        </lvc:CartesianChart.DataTooltip>
+                                                    </lvc:CartesianChart>
+                                                </Canvas>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                        <Grid Margin="20,20,20,0">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2"
+                                                  ShadowDepth="1" />
+                            </Grid.Effect>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock FontSize="20" Foreground="#404040" Margin="10, 10">Energy Consumption</TextBlock>
+                                    <Grid Margin="0,0,0,5" Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <lvc:Gauge From="0" To="100" Value="50"
+                                                   Height="100" Margin="10,0,5,0" />
+                                        <lvc:Gauge From="0" To="100" Value="50" Grid.Column="1"
+                                                   Height="100" Margin="5,0" />
+                                        <lvc:Gauge From="0" To="100" Value="50" Grid.Column="2"
+                                                   Height="100" Margin="5,0,10,0" />
+
+                                    </Grid>
+
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="210*" />
+                                <ColumnDefinition Width="210*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Margin="20,20,10,0">
+                                <Grid.Effect>
+                                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                      Opacity=".2"
+                                                      ShadowDepth="1" />
+                                </Grid.Effect>
+                                <Border CornerRadius="5" Background="White">
+                                    <Grid Margin="0,0,0,5">
+                                        <Grid.DataContext>
+                                            <vm:ResultsViewModel />
+                                        </Grid.DataContext>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Electricity</TextBlock>
+                                        <StackPanel Grid.Row="1">
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="{Binding PurchasedElec, StringFormat=N0}"
+                                                       VerticalAlignment="Top" FontSize="48" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="MWh" VerticalAlignment="Top" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="Purchased" VerticalAlignment="Top" />
+
+                                            <lvc:Gauge From="0" To="100" Value="{Binding PurchasedElecIntensity}"
+                                                       LabelFormatter="{Binding GaugeFormatter}" Height="125"
+                                                       Margin="5,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                            <Grid Margin="10,20,20,0" Grid.Column="1">
+                                <Grid.Effect>
+                                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                      Opacity=".2"
+                                                      ShadowDepth="1" />
+                                </Grid.Effect>
+                                <Border CornerRadius="5" Background="White">
+                                    <Grid Margin="0,0,0,5">
+                                        <Grid.DataContext>
+                                            <vm:ResultsViewModel />
+                                        </Grid.DataContext>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Natural Gas</TextBlock>
+                                        <StackPanel Grid.Row="1">
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="{Binding PurchasedNgas, StringFormat=N0}"
+                                                       VerticalAlignment="Top" FontSize="48" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="MWh" VerticalAlignment="Top" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="Purchased" VerticalAlignment="Top" />
+
+                                            <lvc:Gauge From="0" To="100"
+                                                       Value="{Binding PurchasedNgasIntensity}"
+                                                       LabelFormatter="{Binding GaugeFormatter}"
+                                                       Height="125" Margin="5,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Grid>
+
+                        <Grid Margin="20,20,20,20">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                  Opacity=".2"
+                                                  ShadowDepth="1" />
+                            </Grid.Effect>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid Margin="0,0,0,5" d:DataContext="{d:DesignData SeriesAlgorithm}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.DataContext>
+                                        <vm:ResultsViewModel />
+                                    </Grid.DataContext>
+                                    <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5"><Run Text="Annual "/><Run Text="BreakDown"/></TextBlock>
+                                    <Grid Grid.Row="1" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="Heating" VerticalAlignment="Top" />
+                                        <lvc:PieChart Grid.Column="0" Name="Chart"
+                                                      Series="{Binding PieHeatingChartGraphSeries, StringFormat=N0}"
+                                                      LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
+                                                      Height="200" Grid.IsSharedSizeScope="True" UseLayoutRounding="False" VerticalContentAlignment="Top">
+                                            <lvc:PieChart.ChartLegend>
+                                                <lvc:DefaultLegend BulletSize="20" />
+                                            </lvc:PieChart.ChartLegend>
+                                            <lvc:PieChart.DataTooltip>
+                                                <lvc:DefaultTooltip BulletSize="20" />
+                                            </lvc:PieChart.DataTooltip>
+                                        </lvc:PieChart>
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="Cooling" VerticalAlignment="Top" Grid.Column="1" />
+                                        <lvc:PieChart Name="Chart2"
+                                                      Series="{Binding PieCoolingChartGraphSeries, StringFormat=N0}"
+                                                      LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
+                                                      Height="200" Grid.Column="1" Grid.IsSharedSizeScope="True" VerticalContentAlignment="Top">
+                                            <lvc:PieChart.ChartLegend>
+                                                <lvc:DefaultLegend BulletSize="20" />
+                                            </lvc:PieChart.ChartLegend>
+                                            <lvc:PieChart.DataTooltip>
+                                                <lvc:DefaultTooltip BulletSize="20" />
+                                            </lvc:PieChart.DataTooltip>
+                                        </lvc:PieChart>
+                                    </Grid>
+
+                                </Grid>
                             </Border>
                         </Grid>
 
