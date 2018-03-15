@@ -9,7 +9,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Capacity as percent of peak cooling load (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.5)] public double OFF_ABS { get; set; } = 0.5;
+        [DefaultValue(0)] public double OFF_ABS { get; set; } = 0;
 
         /// <summary>
         ///     Cooling coefficient of performance

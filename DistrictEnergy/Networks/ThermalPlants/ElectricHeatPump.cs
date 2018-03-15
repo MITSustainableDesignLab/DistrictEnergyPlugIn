@@ -9,7 +9,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Capacity as percent of peak heating load (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0)] public double OFF_EHP { get; set; }
+        [DefaultValue(0)] public double OFF_EHP { get; set; } = 0;
 
         /// <summary>
         ///     Heating coefficient of performance

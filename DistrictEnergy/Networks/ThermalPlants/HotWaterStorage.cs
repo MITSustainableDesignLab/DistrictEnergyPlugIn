@@ -9,7 +9,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Capacity as number of days of autonomy (#)
         /// </summary>
         [DataMember]
-        [DefaultValue(3.0)] public double AUT_HWT { get; set; } = 3.0;
+        [DefaultValue(0)] public double AUT_HWT { get; set; } = 0;
 
         /// <summary>
         ///     Miscellaneous losses (%)

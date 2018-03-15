@@ -16,7 +16,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Capacity as percent of peak electric load (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.5)] public double OFF_CHP { get; set; } = 0.5;
+        [DefaultValue(0)] public double OFF_CHP { get; set; } = 0;
 
         /// <summary>
         ///     Electrical Efficiency (%)

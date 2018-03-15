@@ -12,7 +12,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Target offset as percent of annual energy (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.05)] public double OFF_WND { get; set; } = 0.05;
+        [DefaultValue(0)] public double OFF_WND { get; set; } = 0;
 
         /// <summary>
         ///     Turbine efficiency (%)

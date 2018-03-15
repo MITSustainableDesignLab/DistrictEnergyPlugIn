@@ -9,7 +9,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Target offset as percent of annual energy (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.1)] public double OFF_SHW { get; set; } = 0.1;
+        [DefaultValue(0)] public double OFF_SHW { get; set; } = 0;
 
         /// <summary>
         ///     Collector efficiency (%)
