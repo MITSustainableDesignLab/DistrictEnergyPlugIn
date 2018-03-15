@@ -6,15 +6,14 @@ using Rhino.PlugIns;
 
 // Plug-in Description Attributes - all of these are optional
 // These will show in Rhino's option dialog, in the tab Plug-ins
-[assembly: PlugInDescription(DescriptionType.Address, "Polytechnique Montreal")]
+[assembly: PlugInDescription(DescriptionType.Address, "Samuel Letellier-Duchesne\nPolytechnique Montreal\n")]
 [assembly: PlugInDescription(DescriptionType.Country, "Canada")]
 [assembly: PlugInDescription(DescriptionType.Email, "samuel.letellier-duchesne@polymtl.ca")]
 [assembly: PlugInDescription(DescriptionType.Phone, "-")]
 [assembly: PlugInDescription(DescriptionType.Fax, "-")]
-[assembly: PlugInDescription(DescriptionType.Organization, "Polytechnique Montreal & Massachusetts Institute of Technology")]
+[assembly: PlugInDescription(DescriptionType.Organization, "Polytechnique Montreal & MIT Sustainable Design Lab")]
 [assembly: PlugInDescription(DescriptionType.UpdateUrl, "-")]
 [assembly: PlugInDescription(DescriptionType.WebSite, "-")]
-
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -22,9 +21,7 @@ using Rhino.PlugIns;
 [assembly: AssemblyTitle("ExportLoadsToFile")] // Plug-In title is extracted from this
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Samuel Letellier-Duchesne")]
 [assembly: AssemblyProduct("ExportLoadsToFile")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -47,4 +44,3 @@ using Rhino.PlugIns;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.2.*")]
-[assembly: AssemblyFileVersion("1.2.0.0")]

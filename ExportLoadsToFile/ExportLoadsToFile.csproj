@@ -61,6 +61,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyInfoCommon.cs">
+      <Link>Properties\AssemblyInfoCommon.cs</Link>
+    </Compile>
     <Compile Include="DHDryBulbCSV.cs" />
     <Compile Include="DHLoadsToCSV.cs" />
     <Compile Include="DHExportLoadColumns.cs" />
