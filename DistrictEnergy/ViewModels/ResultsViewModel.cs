@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Data;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Mit.Umi.RhinoServices.Context;
@@ -16,14 +17,27 @@ namespace DistrictEnergy.ViewModels
         private double _purchasedElecIntensity;
         private double _purchasedNgas;
         private double _purchasedNgasIntensity;
+        private double _totalEnergyIntensity;
+        private double _totalEnergyIntensityCarbon;
+        private double _totalEnergyIntensityCost;
 
         public ResultsViewModel()
         {
             Instance = this;
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
-            YFormatter = val =>
-                (val / 1000).ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) +
-                " MWh"; // Formats the yAxis of the stacked graph
+            KWhFormatter = delegate(double val)
+            {
+                if (val > 999)
+                    return (val / 1000).ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) +
+                           " MWh";
+
+                if (val > 999999)
+                    return (val / 1000000).ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) +
+                           " GWh";
+                return val.ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) +
+                       " kWh";
+            }; // Formats the yAxis of the stacked graph
+            MonthFormater = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
             GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
         }
 
@@ -33,50 +47,6 @@ namespace DistrictEnergy.ViewModels
         public static SeriesCollection StackedElecSeries { get; set; } = new SeriesCollection();
         public static SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
         public static SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
-        public Func<double, string> XFormatter { get; set; }
-        public Func<double, string> YFormatter { get; set; }
-
-        public double PurchasedElec
-        {
-            get => _purchasedElec;
-            set
-            {
-                _purchasedElec = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedElec)));
-            }
-        }
-
-        public double PurchasedElecIntensity
-        {
-            get => _purchasedElecIntensity;
-            set
-            {
-                _purchasedElecIntensity = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedElecIntensity)));
-            }
-        }
-
-        public double PurchasedNgas
-        {
-            get => _purchasedNgas;
-            set
-            {
-                _purchasedNgas = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedNgas)));
-            }
-        }
-
-        public double PurchasedNgasIntensity
-        {
-            get => _purchasedNgasIntensity;
-            set
-            {
-                _purchasedNgasIntensity = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedNgasIntensity)));
-            }
-        }
-
-        public Func<double, string> GaugeFormatter { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -250,11 +220,161 @@ namespace DistrictEnergy.ViewModels
 
             var instance = DHSimulateDistrictEnergy.Instance;
 
-            PurchasedElec = instance.ResultsArray.ELEC_PROJ.Sum() / 1000; // To MWh
-            PurchasedElecIntensity = PurchasedElec * 1000 / totalGrossFloorArea; // kWh/m2
+            PurchasedElec = instance.ResultsArray.ELEC_PROJ.Sum(); // kWh
+            PurchasedElecIntensity = PurchasedElec / totalGrossFloorArea; // kWh/m2
 
             PurchasedNgas = instance.ResultsArray.NGAS_PROJ.Sum(); // To kWh
-            PurchasedNgasIntensity = PurchasedNgas * 1000 / totalGrossFloorArea; // kWh/m2
+            PurchasedNgasIntensity = PurchasedNgas / totalGrossFloorArea; // kWh/m2
+
+            TotalEnergyIntensity = (instance.ResultsArray.ELEC_PROJ.Sum() + instance.ResultsArray.NGAS_PROJ.Sum()) /
+                                   totalGrossFloorArea; // kWh/m2
+            TotalEnergyIntensityCarbon =
+                (instance.ResultsArray.ELEC_PROJ.Sum() * UmiContext.Current.ProjectSettings.ElectricityCarbon +
+                 instance.ResultsArray.NGAS_PROJ.Sum() * UmiContext.Current.ProjectSettings.GasCarbon) /
+                totalGrossFloorArea;
+            TotalEnergyIntensityCost = (instance.ResultsArray.ELEC_PROJ.Sum() *
+                                        UmiContext.Current.ProjectSettings.ElectricityDollars +
+                                        instance.ResultsArray.NGAS_PROJ.Sum() *
+                                        UmiContext.Current.ProjectSettings.GasDollars) /
+                                       totalGrossFloorArea;
+        }
+
+        #region ViewResults
+
+        public double PurchasedElec
+        {
+            get => _purchasedElec;
+            set
+            {
+                _purchasedElec = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedElec)));
+            }
+        }
+
+        public double PurchasedElecIntensity
+        {
+            get => _purchasedElecIntensity;
+            set
+            {
+                _purchasedElecIntensity = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedElecIntensity)));
+            }
+        }
+
+        public double PurchasedNgas
+        {
+            get => _purchasedNgas;
+            set
+            {
+                _purchasedNgas = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedNgas)));
+            }
+        }
+
+        public double PurchasedNgasIntensity
+        {
+            get => _purchasedNgasIntensity;
+            set
+            {
+                _purchasedNgasIntensity = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchasedNgasIntensity)));
+            }
+        }
+
+        public double TotalEnergyIntensity
+        {
+            get => _totalEnergyIntensity;
+            set
+            {
+                _totalEnergyIntensity = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalEnergyIntensity)));
+            }
+        }
+
+        public double TotalEnergyIntensityCarbon
+        {
+            get => _totalEnergyIntensityCarbon;
+            set
+            {
+                _totalEnergyIntensityCarbon = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalEnergyIntensityCarbon)));
+            }
+        }
+
+        public double TotalEnergyIntensityCost
+        {
+            get => _totalEnergyIntensityCost;
+            set
+            {
+                _totalEnergyIntensityCost = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalEnergyIntensityCost)));
+            }
+        }
+
+        #endregion
+
+        #region Formatters
+
+        public Func<double, string> GaugeFormatter { get; set; }
+        public Func<double, string> XFormatter { get; set; }
+        public Func<double, string> KWhFormatter { get; set; }
+        public Func<double, string> MonthFormater { get; set; } // Adds 1 to month index
+
+        #endregion
+    }
+
+    /// <summary>
+    ///     Converts a kWh qauntity to MWh or GWh depending on magnitude of value
+    /// </summary>
+    public class KWhConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d)
+            {
+                if (d > 999)
+                    return (d / 1000).ToString("N1", culture); // for MWh
+
+                if (d > 999999)
+                    return (d / 1000000).ToString("N1", culture); // for GWh
+                return d.ToString("N1", culture); // for kWh;
+            }
+
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double d;
+            if (double.TryParse((string) value, out d))
+                return d;
+            return 0.0;
+        }
+    }
+
+    /// <summary>
+    ///     Converts a kWh qauntity to MWh or GWh depending on magnitude of value
+    /// </summary>
+    public class KWhConverterUnit : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d)
+            {
+                if (d > 999)
+                    return "MWh";
+
+                if (d > 999999)
+                    return "GWh";
+                return "kWh";
+            }
+
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return "kWh";
         }
     }
 }

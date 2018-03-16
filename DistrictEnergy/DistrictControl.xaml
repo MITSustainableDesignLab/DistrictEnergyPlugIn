@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="485" d:DesignHeight="1295" d:DataContext="{d:DesignData ResultsViewModel}">
+             d:DesignWidth="535" d:DesignHeight="1295" d:DataContext="{d:DesignData ResultsViewModel}">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -1237,7 +1237,8 @@
                                                         Series="{Binding StackedHeatingSeries}" Hoverable="False"
                                                         LegendLocation="Bottom">
                                                         <lvc:CartesianChart.AxisX>
-                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
+                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True"
+                                                                      LabelFormatter="{Binding MonthFormater}">
                                                                 <lvc:Axis.Separator>
                                                                     <lvc:Separator IsEnabled="True" Step="1" />
                                                                 </lvc:Axis.Separator>
@@ -1246,7 +1247,7 @@
                                                         <lvc:CartesianChart.AxisY>
                                                             <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
                                                                       ShowLabels="True"
-                                                                      LabelFormatter="{Binding YFormatter}" />
+                                                                      LabelFormatter="{Binding KWhFormatter}" />
                                                         </lvc:CartesianChart.AxisY>
                                                         <lvc:CartesianChart.DataTooltip>
                                                             <lvc:DefaultTooltip BulletSize="20" Background="Gray" />
@@ -1318,7 +1319,8 @@
                                                         Series="{Binding StackedCoolingSeries}" Hoverable="False"
                                                         LegendLocation="Bottom">
                                                         <lvc:CartesianChart.AxisX>
-                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
+                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True"
+                                                                      LabelFormatter="{Binding MonthFormater}">
                                                                 <lvc:Axis.Separator>
                                                                     <lvc:Separator IsEnabled="True" Step="1" />
                                                                 </lvc:Axis.Separator>
@@ -1327,7 +1329,7 @@
                                                         <lvc:CartesianChart.AxisY>
                                                             <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
                                                                       ShowLabels="True"
-                                                                      LabelFormatter="{Binding YFormatter}" />
+                                                                      LabelFormatter="{Binding KWhFormatter}" />
                                                         </lvc:CartesianChart.AxisY>
                                                         <lvc:CartesianChart.DataTooltip>
                                                             <lvc:DefaultTooltip BulletSize="20" Background="Gray" />
@@ -1399,7 +1401,8 @@
                                                         Series="{Binding StackedElecSeries}" Hoverable="False"
                                                         LegendLocation="Bottom">
                                                         <lvc:CartesianChart.AxisX>
-                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True">
+                                                            <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True"
+                                                                      LabelFormatter="{Binding MonthFormater}">
                                                                 <lvc:Axis.Separator>
                                                                     <lvc:Separator IsEnabled="True" Step="1" />
                                                                 </lvc:Axis.Separator>
@@ -1408,7 +1411,7 @@
                                                         <lvc:CartesianChart.AxisY>
                                                             <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
                                                                       ShowLabels="True"
-                                                                      LabelFormatter="{Binding YFormatter}" />
+                                                                      LabelFormatter="{Binding KWhFormatter}" />
                                                         </lvc:CartesianChart.AxisY>
                                                         <lvc:CartesianChart.DataTooltip>
                                                             <lvc:DefaultTooltip BulletSize="20" Background="Gray" />
@@ -1428,24 +1431,49 @@
                             </Grid.Effect>
                             <Border CornerRadius="5" Background="White">
                                 <Grid>
+                                    <Grid.DataContext>
+                                        <vm:ResultsViewModel />
+                                    </Grid.DataContext>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
-                                    <TextBlock FontSize="20" Foreground="#404040" Margin="10, 10">Energy Consumption</TextBlock>
-                                    <Grid Margin="0,0,0,5" Grid.Row="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock FontSize="20" Foreground="#404040" Margin="10,10,10,10">Source Energy Consumption</TextBlock>
+                                        <TextBlock FontSize="12" Foreground="#FF838383" Margin="10,19,10,12" Grid.Column="1" VerticalAlignment="Center">Annual</TextBlock>
+                                    </Grid>                                    <Grid Margin="0,0,0,5" Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <lvc:Gauge From="0" To="100" Value="50"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensity}" LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="10,0,5,0" />
-                                        <lvc:Gauge From="0" To="100" Value="50" Grid.Column="1"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCarbon}" LabelFormatter="{Binding GaugeFormatter}"
+                                                   Grid.Column="1"
                                                    Height="100" Margin="5,0" />
-                                        <lvc:Gauge From="0" To="100" Value="50" Grid.Column="2"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCost}" Grid.Column="2" LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="5,0,10,0" />
 
+                                    </Grid>
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
+                                                   Text="kWh/m²" VerticalAlignment="Bottom" FontSize="10" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
+                                                   Text="kgCO₂eq/m²" VerticalAlignment="Bottom"
+                                                   Grid.Column="1" FontSize="10" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
+                                                   Text="$/m²" VerticalAlignment="Bottom"
+                                                   Grid.Column="2" FontSize="10"  />
                                     </Grid>
 
                                 </Grid>
@@ -1473,18 +1501,26 @@
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Electricity</TextBlock>
                                         <StackPanel Grid.Row="1">
+                                            <StackPanel.Resources>
+                                                <vm:KWhConverter x:Key="KWhConverter" />
+                                                <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
+                                            </StackPanel.Resources>
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                       Text="{Binding PurchasedElec, StringFormat=N0}"
+                                                       Text="{Binding PurchasedElec, Converter={StaticResource KWhConverter}}"
                                                        VerticalAlignment="Top" FontSize="48" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                       Text="MWh" VerticalAlignment="Top" />
+                                                       Text="{Binding PurchasedElec, Converter={StaticResource KWhConverterUnit}}"
+                                                       VerticalAlignment="Top" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                        Text="Purchased" VerticalAlignment="Top" />
 
                                             <lvc:Gauge From="0" To="100" Value="{Binding PurchasedElecIntensity}"
                                                        LabelFormatter="{Binding GaugeFormatter}" Height="125"
-                                                       Margin="5,0" />
+                                                       Margin="5,0,5,10" />
                                         </StackPanel>
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,50" TextWrapping="Wrap"
+                                                   Text="kWh/m²" VerticalAlignment="Bottom" Grid.Row="1" />
+
                                     </Grid>
                                 </Border>
                             </Grid>
@@ -1505,19 +1541,27 @@
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">Natural Gas</TextBlock>
                                         <StackPanel Grid.Row="1">
+                                            <StackPanel.Resources>
+                                                <vm:KWhConverter x:Key="KWhConverter" />
+                                                <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
+                                            </StackPanel.Resources>
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                       Text="{Binding PurchasedNgas, StringFormat=N0}"
+                                                       Text="{Binding PurchasedNgas, Converter={StaticResource KWhConverter}}"
                                                        VerticalAlignment="Top" FontSize="48" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                       Text="MWh" VerticalAlignment="Top" />
+                                                       Text="{Binding PurchasedNgas, Converter={StaticResource KWhConverterUnit}}"
+                                                       VerticalAlignment="Top" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                        Text="Purchased" VerticalAlignment="Top" />
 
                                             <lvc:Gauge From="0" To="100"
                                                        Value="{Binding PurchasedNgasIntensity}"
                                                        LabelFormatter="{Binding GaugeFormatter}"
-                                                       Height="125" Margin="5,0" />
+                                                       Height="125" Margin="5,0,5,10" />
                                         </StackPanel>
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,50" TextWrapping="Wrap"
+                                                   Text="kWh/m²" VerticalAlignment="Bottom" Grid.Row="1" />
+
                                     </Grid>
                                 </Border>
                             </Grid>
@@ -1538,18 +1582,21 @@
                                     <Grid.DataContext>
                                         <vm:ResultsViewModel />
                                     </Grid.DataContext>
-                                    <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5"><Run Text="Annual "/><Run Text="BreakDown"/></TextBlock>
-                                    <Grid Grid.Row="1" >
+                                    <TextBlock Grid.Row="0" FontSize="20" Foreground="#404040" Margin="10,5">
+                                        <Run Text="Annual " /><Run Text="BreakDown" />
+                                    </TextBlock>
+                                    <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                    Text="Heating" VerticalAlignment="Top" />
                                         <lvc:PieChart Grid.Column="0" Name="Chart"
                                                       Series="{Binding PieHeatingChartGraphSeries, StringFormat=N0}"
                                                       LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
-                                                      Height="200" Grid.IsSharedSizeScope="True" UseLayoutRounding="False" VerticalContentAlignment="Top">
+                                                      Height="200" Grid.IsSharedSizeScope="True"
+                                                      UseLayoutRounding="False" VerticalContentAlignment="Top">
                                             <lvc:PieChart.ChartLegend>
                                                 <lvc:DefaultLegend BulletSize="20" />
                                             </lvc:PieChart.ChartLegend>
@@ -1562,7 +1609,8 @@
                                         <lvc:PieChart Name="Chart2"
                                                       Series="{Binding PieCoolingChartGraphSeries, StringFormat=N0}"
                                                       LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
-                                                      Height="200" Grid.Column="1" Grid.IsSharedSizeScope="True" VerticalContentAlignment="Top">
+                                                      Height="200" Grid.Column="1" Grid.IsSharedSizeScope="True"
+                                                      VerticalContentAlignment="Top">
                                             <lvc:PieChart.ChartLegend>
                                                 <lvc:DefaultLegend BulletSize="20" />
                                             </lvc:PieChart.ChartLegend>
