@@ -360,7 +360,7 @@ namespace DistrictEnergy
                 writer.Close();
             }
 
-            RhinoApp.WriteLine(string.Format("CSV file successfully written to {}", file_name));
+            RhinoApp.WriteLine(string.Format(@"CSV file successfully written to {0}", file_name));
         }
 
 
