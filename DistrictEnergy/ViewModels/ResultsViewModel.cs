@@ -25,6 +25,7 @@ namespace DistrictEnergy.ViewModels
         {
             Instance = this;
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
+            UmiEventSource.Instance.ProjectClosed += OnProjectClosed;
             KWhFormatter = delegate(double val)
             {
                 if (val > 999)
@@ -60,6 +61,24 @@ namespace DistrictEnergy.ViewModels
             DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateHeatingPieChart;
             DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateCoolingPieChart;
             DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateMetrics;
+        }
+
+        private void OnProjectClosed(object sender, EventArgs e)
+        {
+            // Reset arrays
+            PurchasedElec = new double();
+            PurchasedElecIntensity = new double();
+            PurchasedNgas = new double();
+            PurchasedNgasIntensity = new double();
+            TotalEnergyIntensity = new double();
+            TotalEnergyIntensityCarbon = new double();
+            TotalEnergyIntensityCost = new double();
+
+            PieHeatingChartGraphSeries = new SeriesCollection();
+            PieCoolingChartGraphSeries = new SeriesCollection();
+            StackedCoolingSeries = new SeriesCollection();
+            StackedHeatingSeries = new SeriesCollection();
+            StackedElecSeries = new SeriesCollection();
         }
 
         /// <summary>
