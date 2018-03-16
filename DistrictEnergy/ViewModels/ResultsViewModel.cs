@@ -32,6 +32,7 @@ namespace DistrictEnergy.ViewModels
         public static SeriesCollection StackedCoolingSeries { get; set; } = new SeriesCollection();
         public static SeriesCollection StackedElecSeries { get; set; } = new SeriesCollection();
         public static SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
+        public static SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
         public Func<double, string> XFormatter { get; set; }
         public Func<double, string> YFormatter { get; set; }
 
@@ -76,8 +77,6 @@ namespace DistrictEnergy.ViewModels
         }
 
         public Func<double, string> GaugeFormatter { get; set; }
-
-        public SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
