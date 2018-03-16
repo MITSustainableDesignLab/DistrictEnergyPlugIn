@@ -6,8 +6,9 @@
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DesignWidth="535" d:DesignHeight="1295" d:DataContext="{d:DesignData ResultsViewModel}">
+             d:DesignWidth="535" d:DesignHeight="1525" d:DataContext="{d:DesignData ResultsViewModel}">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -1450,7 +1451,8 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock FontSize="20" Foreground="#404040" Margin="10,10,10,10">Source Energy Consumption</TextBlock>
                                         <TextBlock FontSize="12" Foreground="#FF838383" Margin="10,19,10,12" Grid.Column="1" VerticalAlignment="Center">Annual</TextBlock>
-                                    </Grid>                                    <Grid Margin="0,0,0,5" Grid.Row="1">
+                                    </Grid>
+                                    <Grid Margin="0,0,0,5" Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
                                             <ColumnDefinition />
@@ -1510,7 +1512,7 @@
                                                 <vm:KWhConverter x:Key="KWhConverter" />
                                                 <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
                                             </StackPanel.Resources>
-                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                            <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
                                                        Text="{Binding PurchasedElec, Converter={StaticResource KWhConverter}}"
                                                        VerticalAlignment="Top" FontSize="48" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
@@ -1521,7 +1523,7 @@
 
                                             <lvc:Gauge From="0" To="100" Value="{Binding PurchasedElecIntensity}"
                                                        LabelFormatter="{Binding GaugeFormatter}" Height="125"
-                                                       Margin="5,0,5,10" />
+                                                       Margin="10,0,10,10" />
                                         </StackPanel>
                                         <TextBlock HorizontalAlignment="Center" Margin="0,0,0,50" TextWrapping="Wrap"
                                                    Text="kWh/m²" VerticalAlignment="Bottom" Grid.Row="1" />
@@ -1550,7 +1552,7 @@
                                                 <vm:KWhConverter x:Key="KWhConverter" />
                                                 <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
                                             </StackPanel.Resources>
-                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                            <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
                                                        Text="{Binding PurchasedNgas, Converter={StaticResource KWhConverter}}"
                                                        VerticalAlignment="Top" FontSize="48" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
@@ -1562,7 +1564,7 @@
                                             <lvc:Gauge From="0" To="100"
                                                        Value="{Binding PurchasedNgasIntensity}"
                                                        LabelFormatter="{Binding GaugeFormatter}"
-                                                       Height="125" Margin="5,0,5,10" />
+                                                       Height="125" Margin="10,0,10,10" />
                                         </StackPanel>
                                         <TextBlock HorizontalAlignment="Center" Margin="0,0,0,50" TextWrapping="Wrap"
                                                    Text="kWh/m²" VerticalAlignment="Bottom" Grid.Row="1" />
@@ -1597,32 +1599,33 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                    Text="Heating" VerticalAlignment="Top" />
-                                        <lvc:PieChart Grid.Column="0" Name="Chart"
-                                                      Series="{Binding PieHeatingChartGraphSeries, StringFormat=N0}"
+                                        <lvc:PieChart Grid.Column="0" Name="PieHeatingChart"
+                                                      Series="{Binding PieHeatingChartGraphSeries}"
                                                       LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
-                                                      Height="200" Grid.IsSharedSizeScope="True"
+                                                      Height="320" Grid.IsSharedSizeScope="True"
                                                       UseLayoutRounding="False" VerticalContentAlignment="Top">
-                                            <lvc:PieChart.ChartLegend>
-                                                <lvc:DefaultLegend BulletSize="20" />
-                                            </lvc:PieChart.ChartLegend>
                                             <lvc:PieChart.DataTooltip>
-                                                <lvc:DefaultTooltip BulletSize="20" />
+                                                <lvc:DefaultTooltip BulletSize="20" SelectionMode="OnlySender"/>
                                             </lvc:PieChart.DataTooltip>
+                                            <lvc:PieChart.ChartLegend>
+                                                <lvc:DefaultLegend BulletSize="20" Height="80"></lvc:DefaultLegend>
+                                            </lvc:PieChart.ChartLegend>
                                         </lvc:PieChart>
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                    Text="Cooling" VerticalAlignment="Top" Grid.Column="1" />
                                         <lvc:PieChart Name="Chart2"
-                                                      Series="{Binding PieCoolingChartGraphSeries, StringFormat=N0}"
+                                                      Series="{Binding PieCoolingChartGraphSeries}"
                                                       LegendLocation="Bottom" InnerRadius="50" Margin="0 15"
-                                                      Height="200" Grid.Column="1" Grid.IsSharedSizeScope="True"
+                                                      Height="320" Grid.Column="1" Grid.IsSharedSizeScope="True"
                                                       VerticalContentAlignment="Top">
-                                            <lvc:PieChart.ChartLegend>
-                                                <lvc:DefaultLegend BulletSize="20" />
-                                            </lvc:PieChart.ChartLegend>
                                             <lvc:PieChart.DataTooltip>
-                                                <lvc:DefaultTooltip BulletSize="20" />
+                                                <lvc:DefaultTooltip BulletSize="20" SelectionMode="OnlySender"/>
                                             </lvc:PieChart.DataTooltip>
+                                            <lvc:PieChart.ChartLegend>
+                                                <lvc:DefaultLegend BulletSize="20" Height="80"></lvc:DefaultLegend>
+                                            </lvc:PieChart.ChartLegend>
                                         </lvc:PieChart>
+
                                     </Grid>
 
                                 </Grid>

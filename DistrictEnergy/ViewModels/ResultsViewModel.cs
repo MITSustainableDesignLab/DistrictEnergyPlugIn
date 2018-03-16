@@ -38,7 +38,24 @@ namespace DistrictEnergy.ViewModels
                 return val.ToString("G0", CultureInfo.CreateSpecificCulture("en-US")) +
                        " kWh";
             }; // Formats the yAxis of the stacked graph
+
+            KWhLabelPointFormatter = delegate(ChartPoint chartPoint)
+            {
+                if (chartPoint.Y > 999)
+                {
+                    return string.Format("{0:N1} MWh", chartPoint.Y / 1000);
+                }
+
+                if (chartPoint.Y > 999999)
+                {
+                    return string.Format("{0:N1} GWh", chartPoint.Y / 1000000);
+
+                }
+                return string.Format("{0:N1} kWh", chartPoint.Y);
+            };
+
             MonthFormater = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
+
             GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
         }
 
@@ -104,7 +121,8 @@ namespace DistrictEnergy.ViewModels
                 {
                     Values = new ChartValues<double> {hw.Value.Sum()},
                     Title = hw.Key,
-                    DataLabels = true
+                    DataLabels = true,
+                    LabelPoint = KWhLabelPointFormatter
                 };
                 PieHeatingChartGraphSeries.Add(temp);
             }
@@ -130,7 +148,8 @@ namespace DistrictEnergy.ViewModels
                 {
                     Values = new ChartValues<double> {chw.Value.Sum()},
                     Title = chw.Key,
-                    DataLabels = false
+                    DataLabels = false,
+                    LabelPoint = KWhLabelPointFormatter
                 };
                 PieCoolingChartGraphSeries.Add(temp);
             }
@@ -163,7 +182,8 @@ namespace DistrictEnergy.ViewModels
                         .GroupBy(obj => obj.Index / 730)
                         .Select(obj => obj.Select(v => v.Value).Sum())),
                     Title = hw.Key,
-                    LineSmoothness = 0.5
+                    LineSmoothness = 0.5,
+                    LabelPoint = KWhLabelPointFormatter
                 };
                 StackedHeatingSeries.Add(temp);
             }
@@ -192,7 +212,8 @@ namespace DistrictEnergy.ViewModels
                         .GroupBy(obj => obj.Index / 730)
                         .Select(obj => obj.Select(v => v.Value).Sum())),
                     Title = chw.Key,
-                    LineSmoothness = 0.5
+                    LineSmoothness = 0.5,
+                    LabelPoint = KWhLabelPointFormatter
                 };
                 StackedCoolingSeries.Add(temp);
             }
@@ -223,7 +244,8 @@ namespace DistrictEnergy.ViewModels
                         .GroupBy(obj => obj.Index / 730)
                         .Select(obj => obj.Select(v => v.Value).Sum())),
                     Title = elec.Key,
-                    LineSmoothness = 0.5
+                    LineSmoothness = 0.5,
+                    LabelPoint = KWhLabelPointFormatter
                 };
                 StackedElecSeries.Add(temp);
             }
@@ -336,8 +358,10 @@ namespace DistrictEnergy.ViewModels
 
         public Func<double, string> GaugeFormatter { get; set; }
         public Func<double, string> XFormatter { get; set; }
+        public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
         public Func<double, string> KWhFormatter { get; set; }
-        public Func<double, string> MonthFormater { get; set; } // Adds 1 to month index
+
+    public Func<double, string> MonthFormater { get; set; } // Adds 1 to month index
 
         #endregion
     }
