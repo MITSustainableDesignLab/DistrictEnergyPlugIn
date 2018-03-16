@@ -4,7 +4,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using DistrictEnergy.ViewModels;
 using LiveCharts.Wpf;
+using Mit.Umi.RhinoServices.Context;
+using Mit.Umi.RhinoServices.UmiEvents;
 using Rhino;
 
 namespace DistrictEnergy
@@ -17,12 +20,13 @@ namespace DistrictEnergy
         public DistrictControl()
         {
             InitializeComponent();
+            UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
         }
 
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var item = ItemsControl.ContainerFromElement(ListBox, (DependencyObject) e.OriginalSource) as ListBoxItem;
+            var item = ItemsControl.ContainerFromElement((ListBox) sender, (DependencyObject) e.OriginalSource) as ListBoxItem;
             if (item == null) return;
 
             var series = (StackedAreaSeries) item.Content;
@@ -31,9 +35,31 @@ namespace DistrictEnergy
                 : Visibility.Visible;
         }
 
+        private void ListBox_OnUpdatedArrays(object sender, EventArgs e)
+        {
+            HeatingListBox.InvalidateArrange();
+            HeatingListBox.ItemsSource = ResultsViewModel.StackedHeatingSeries;
+            HeatingListBox.UpdateLayout();
+
+            CoolingListBox.InvalidateArrange();
+            CoolingListBox.ItemsSource = ResultsViewModel.StackedCoolingSeries;
+            CoolingListBox.UpdateLayout();
+            ElecListBox.InvalidateArrange();
+            ElecListBox.ItemsSource = ResultsViewModel.StackedElecSeries;
+            ElecListBox.UpdateLayout();
+
+        }
+
         private void RunSimulationClick(object sender, RoutedEventArgs e)
         {
             RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
+        }
+
+        private void SubscribeEvents(object sender, UmiContext e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+
+            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += ListBox_OnUpdatedArrays;
         }
     }
 
