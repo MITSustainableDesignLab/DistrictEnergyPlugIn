@@ -74,11 +74,11 @@ namespace DistrictEnergy.ViewModels
             TotalEnergyIntensityCarbon = new double();
             TotalEnergyIntensityCost = new double();
 
-            PieHeatingChartGraphSeries = new SeriesCollection();
-            PieCoolingChartGraphSeries = new SeriesCollection();
-            StackedCoolingSeries = new SeriesCollection();
-            StackedHeatingSeries = new SeriesCollection();
-            StackedElecSeries = new SeriesCollection();
+            PieHeatingChartGraphSeries.Clear();
+            PieCoolingChartGraphSeries.Clear();
+            StackedCoolingSeries.Clear();
+            StackedHeatingSeries.Clear();
+            StackedElecSeries.Clear();
         }
 
         /// <summary>
@@ -144,13 +144,13 @@ namespace DistrictEnergy.ViewModels
         /// <param name="e"></param>
         private void UpdateHeatingStackedChart(object sender, EventArgs e)
         {
-            var instance = DHSimulateDistrictEnergy.Instance;
+            var instance = (ResultsArray) sender;
             var HwDemand = new Dictionary<string, double[]>();
-            HwDemand.Add("Solar Hot Water", instance.ResultsArray.HW_SHW);
-            HwDemand.Add("Hot Water Tank", instance.ResultsArray.HW_HWT);
-            HwDemand.Add("Electric Heat Pump", instance.ResultsArray.HW_EHP);
-            HwDemand.Add("Natural Gas Boiler", instance.ResultsArray.HW_NGB);
-            HwDemand.Add("Combined Heating and Power", instance.ResultsArray.HW_CHP);
+            HwDemand.Add("Solar Hot Water", instance.HW_SHW);
+            HwDemand.Add("Hot Water Tank", instance.HW_HWT);
+            HwDemand.Add("Electric Heat Pump", instance.HW_EHP);
+            HwDemand.Add("Natural Gas Boiler", instance.HW_NGB);
+            HwDemand.Add("Combined Heating and Power", instance.HW_CHP);
 
             StackedHeatingSeries.Clear();
 
