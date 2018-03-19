@@ -6,8 +6,8 @@ using System.Linq;
 using System.Windows.Data;
 using LiveCharts;
 using LiveCharts.Wpf;
-using Mit.Umi.RhinoServices.Context;
-using Mit.Umi.RhinoServices.UmiEvents;
+using Umi.RhinoServices.Context;
+using Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy.ViewModels
 {

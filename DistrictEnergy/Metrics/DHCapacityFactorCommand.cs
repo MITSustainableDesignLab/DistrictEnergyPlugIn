@@ -3,7 +3,8 @@ using Rhino;
 using Rhino.Commands;
 using System.Linq;
 using System.Collections.Generic;
-using Mit.Umi.RhinoServices.Context;
+using Umi.Core;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
 {
@@ -57,7 +58,7 @@ namespace DistrictEnergy.Metrics
         /// </summary>
         /// <param name="building">A building IUmiObject</param>
         /// <returns></returns>
-        public static double MaxHeatingLoad(Mit.Umi.Core.IUmiObject building)
+        public static double MaxHeatingLoad(IUmiObject building)
         {
             return building.Data["SDL/Heating"].Data.Zip(building.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Max();
         }
@@ -67,7 +68,7 @@ namespace DistrictEnergy.Metrics
         /// </summary>
         /// <param name="building">A building IUmiObject</param>
         /// <returns></returns>
-        public static double AverageHeatingLoad(Mit.Umi.Core.IUmiObject building)
+        public static double AverageHeatingLoad(IUmiObject building)
         {
             return building.Data["SDL/Heating"].Data.Zip(building.Data["SDL/Domestic Hot Water"].Data, (heat, dhw) => heat + dhw).Average();
         }
