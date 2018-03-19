@@ -19,7 +19,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;UmiTempLocation=C:\Users\samib\Dropbox\Polytechnique\Doc\MIT\Plugin\DistrictEnergy\DHEngine\bin\dist\DEenginePython;</DefineConstants>
+    <DefineConstants>Debug;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="MergeModule.wxs" />
