@@ -7,11 +7,11 @@ using System.Windows;
 using CsvHelper;
 using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
-using Mit.Umi.Core;
-using Mit.Umi.RhinoServices.Context;
 using Rhino;
 using Rhino.Commands;
 using Rhino.UI;
+using Umi.Core;
+using Umi.RhinoServices.Context;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 

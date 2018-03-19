@@ -2,7 +2,7 @@
 using Rhino.Geometry;
 using System;
 using System.Linq;
-using Mit.Umi.RhinoServices.Context;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
 {
@@ -18,7 +18,7 @@ namespace DistrictEnergy.Metrics
         public static double CalcCapacityFactor(double averageLoad, double maximimLoad)
         {
             if (maximimLoad <= 0)
-                throw new System.DivideByZeroException();
+                throw new DivideByZeroException();
             return averageLoad / maximimLoad;
         }
 

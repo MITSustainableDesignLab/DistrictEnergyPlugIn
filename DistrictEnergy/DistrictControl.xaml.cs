@@ -6,9 +6,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Wpf;
-using Mit.Umi.RhinoServices.Context;
-using Mit.Umi.RhinoServices.UmiEvents;
 using Rhino;
+using Umi.RhinoServices.Context;
+using Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy
 {

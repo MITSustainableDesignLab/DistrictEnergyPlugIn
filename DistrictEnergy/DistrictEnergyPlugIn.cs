@@ -2,9 +2,8 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Controls;
-using DistrictEnergy.ViewModels;
 using Rhino.PlugIns;
-using Mit.Umi.RhinoServices;
+using Umi.RhinoServices;
 
 namespace DistrictEnergy
 {
