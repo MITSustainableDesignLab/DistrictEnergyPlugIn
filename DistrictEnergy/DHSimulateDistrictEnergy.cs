@@ -154,7 +154,7 @@ namespace DistrictEnergy
             _progressBarPos = 0;
             // Getting the Aggregated Load Curve for all buildings
             var contextBuildings =
-                umiContext.GetObjects().Where(o => o.Data["SDL/Cooling"].Data.Count == 8760).ToList();
+                umiContext.GetObjects().Where(o => o.Data.Any(x=>x.Value.Data.Count == 8760)).ToList();
             if (contextBuildings.Count == 0)
             {
                 MessageBox.Show(
