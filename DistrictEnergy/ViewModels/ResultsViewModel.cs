@@ -360,8 +360,7 @@ namespace DistrictEnergy.ViewModels
         public Func<double, string> XFormatter { get; set; }
         public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
         public Func<double, string> KWhFormatter { get; set; }
-
-    public Func<double, string> MonthFormater { get; set; } // Adds 1 to month index
+        public Func<double, string> MonthFormater { get; set; } // Adds 1 to month index
 
         #endregion
     }
@@ -420,4 +419,104 @@ namespace DistrictEnergy.ViewModels
             return "kWh";
         }
     }
+
+    /// <summary>
+    ///     Converts a kW quantity to MWh or GWh depending on magnitude of value
+    /// </summary>
+    public class KWConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d)
+            {
+                if (d > 999)
+                    return (d / 1000).ToString("N1", culture); // for MW
+
+                if (d > 999999)
+                    return (d / 1000000).ToString("N1", culture); // for GW
+                return d.ToString("N1", culture); // for kW;
+            }
+
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double d;
+            if (double.TryParse((string) value, out d))
+                return d;
+            return 0.0;
+        }
+    }
+
+    /// <summary>
+    ///     Converts a kW qauntity to MW or GW depending on magnitude of value
+    /// </summary>
+    public class KWConverterUnit : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d)
+            {
+                if (d > 999)
+                    return "MW";
+
+                if (d > 999999)
+                    return "GW";
+                return "kW";
+            }
+
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return "kW";
+        }
+    }
+
+    /// <summary>
+    ///     If value is higher than 999999 m2, than show square km2
+    /// </summary>
+    public class AreaConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d)
+            {
+                if (d > 999999)
+                    return (d * 1E-6).ToString("N0", culture); // km^2
+                return d.ToString("N0", culture);
+            }
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    ///     If value is higher than 999999 m2, than show square km2
+    /// </summary>
+    public class AreaConverterUnit : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d)
+            {
+                if (d > 999999)
+                    return "km²"; // km^2
+            }
+            return "m²";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 }

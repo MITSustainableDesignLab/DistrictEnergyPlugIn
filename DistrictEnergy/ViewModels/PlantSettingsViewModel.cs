@@ -291,16 +291,6 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public double LOSS_HWT
-        {
-            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().LOSS_HWT * 100;
-            set
-            {
-                ListOfPlantSettings.OfType<HotWaterStorage>().First().LOSS_HWT = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_HWT)));
-            }
-        }
-
         public double TANK_START
         {
             get => ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START * 100;
