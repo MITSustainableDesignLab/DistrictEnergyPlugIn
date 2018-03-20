@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -12,6 +13,7 @@ using Rhino.Commands;
 using Rhino.UI;
 using Umi.Core;
 using Umi.RhinoServices.Context;
+using Umi.RhinoServices.UmiEvents;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -35,6 +37,7 @@ namespace DistrictEnergy
             _instance = this;
             ResultsArray = new ResultsArray();
             AllDistrictDemand = new DistrictDemand();
+            SimConstants = new SimConstants();
         }
 
         ///<summary>The only instance of the DHSimulateDistrictEnergy command.</summary>
@@ -69,7 +72,7 @@ namespace DistrictEnergy
                     out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
                 eqELEC_PV(AllDistrictDemand.RAD_n[i], out ResultsArray.ELEC_PV[i]); // OK
                 eqELEC_WND(AllDistrictDemand.WIND_n[i], out ResultsArray.ELEC_WND[i]); // OK
-                if (i == 0) ResultsArray.TANK_CHG_n[i] = CAP_HWT * TANK_START;
+                if (i == 0) ResultsArray.TANK_CHG_n[i] = SimConstants.CapHwt * DistrictEnergy.Settings.TANK_START;
                 if (i > 0)
                     eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], AllDistrictDemand.T_AMB_n[i],
                         out ResultsArray.TANK_CHG_n[i]); // OK
@@ -83,7 +86,7 @@ namespace DistrictEnergy
                 eqELEC_REN(ResultsArray.ELEC_PV[i], ResultsArray.ELEC_WND[i], AllDistrictDemand.ELEC_n[i],
                     ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_REN[i],
                     out ResultsArray.ELEC_BAL[i]); // OK
-                if (i == 0) ResultsArray.BAT_CHG_n[0] = CAP_BAT * BAT_START;
+                if (i == 0) ResultsArray.BAT_CHG_n[0] = SimConstants.CapBat * DistrictEnergy.Settings.BAT_START;
                 if (i > 0)
                     eqBAT_CHG_n(ResultsArray.BAT_CHG_n[i - 1], ResultsArray.ELEC_BAL[i],
                         out ResultsArray.BAT_CHG_n[i]); // OK
@@ -91,34 +94,34 @@ namespace DistrictEnergy
                     ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_REN[i],
                     ResultsArray.ELEC_CHP[i]); // OK
 
-                if (string.Equals(TMOD_CHP, "Thermal"))
+                if (string.Equals(DistrictEnergy.Settings.TMOD_CHP, "Thermal"))
                 {
                     // ignore NgasChp
-                    eqHW_CHP(TMOD_CHP, AllDistrictDemand.HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i],
+                    eqHW_CHP(DistrictEnergy.Settings.TMOD_CHP, AllDistrictDemand.HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i],
                         ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.NGAS_CHP[i],
                         out ResultsArray.HW_CHP[i]);
                     // ignore Elec_Chp
-                    eqNGAS_CHP(TMOD_CHP, ResultsArray.HW_CHP[i], ResultsArray.ELEC_CHP[i],
+                    eqNGAS_CHP(DistrictEnergy.Settings.TMOD_CHP, ResultsArray.HW_CHP[i], ResultsArray.ELEC_CHP[i],
                         out ResultsArray.NGAS_CHP[i]);
                     // ignore ElecN, ElecRen, ElecBat
-                    eqELEC_CHP(TMOD_CHP, ResultsArray.NGAS_CHP[i], AllDistrictDemand.ELEC_n[i],
+                    eqELEC_CHP(DistrictEnergy.Settings.TMOD_CHP, ResultsArray.NGAS_CHP[i], AllDistrictDemand.ELEC_n[i],
                         ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_ECH[i],
                         ResultsArray.ELEC_EHP[i],
                         out ResultsArray.ELEC_CHP[i]);
                 }
 
-                if (string.Equals(TMOD_CHP, "Electrical"))
+                if (string.Equals(DistrictEnergy.Settings.TMOD_CHP, "Electrical"))
                 {
                     // ignore NgasChp
-                    eqELEC_CHP(TMOD_CHP, ResultsArray.NGAS_CHP[i], AllDistrictDemand.ELEC_n[i],
+                    eqELEC_CHP(DistrictEnergy.Settings.TMOD_CHP, ResultsArray.NGAS_CHP[i], AllDistrictDemand.ELEC_n[i],
                         ResultsArray.ELEC_REN[i], ResultsArray.ELEC_BAT[i], ResultsArray.ELEC_ECH[i],
                         ResultsArray.ELEC_EHP[i],
                         out ResultsArray.ELEC_CHP[i]);
                     // ignore HwChp
-                    eqNGAS_CHP(TMOD_CHP, ResultsArray.HW_CHP[i], ResultsArray.ELEC_CHP[i],
+                    eqNGAS_CHP(DistrictEnergy.Settings.TMOD_CHP, ResultsArray.HW_CHP[i], ResultsArray.ELEC_CHP[i],
                         out ResultsArray.NGAS_CHP[i]);
                     // ignore HwN, HwEhp, HwAbs, HwShw, HwHwt
-                    eqHW_CHP(TMOD_CHP, AllDistrictDemand.HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i],
+                    eqHW_CHP(DistrictEnergy.Settings.TMOD_CHP, AllDistrictDemand.HW_n[i], ResultsArray.HW_EHP[i], ResultsArray.HW_ABS[i],
                         ResultsArray.HW_SHW[i], ResultsArray.HW_HWT[i], ResultsArray.NGAS_CHP[i],
                         out ResultsArray.HW_CHP[i]);
                 }
@@ -177,7 +180,7 @@ namespace DistrictEnergy
             // Go Hour by hour and parse through the simulation routine
             SetResultsArraystoZero();
             DeleteLogFile();
-            CalculateConstants();
+            SimConstants.CalculateConstants();
             MainSimulation();
             SimulationResultsToCsv();
 
@@ -412,107 +415,6 @@ namespace DistrictEnergy
             File.Delete(GetUmiTempPath() + "DHSimulationLogFile.txt");
         }
 
-
-        #region Constants
-
-        /// <summary>
-        ///     Calculates the necessary constants used in different equations
-        /// </summary>
-        private void CalculateConstants()
-        {
-            CAP_ABS = AllDistrictDemand.CHW_n.Max() * OFF_ABS;
-            CAP_EHP = AllDistrictDemand.HW_n.Max() * OFF_EHP;
-            CAP_BAT = AllDistrictDemand.ELEC_n.Average() * AUT_BAT * 24;
-            CAP_HWT = AllDistrictDemand.HW_n.Average() * AUT_HWT * 24; // todo Prendre jour moyen du mois max.
-            CAP_CHP = AllDistrictDemand.ELEC_n.Max() * OFF_CHP;
-            AREA_SHW = AllDistrictDemand.HW_n.Sum() * OFF_SHW /
-                       (AllDistrictDemand.RAD_n.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
-            AREA_PV = AllDistrictDemand.ELEC_n.Sum() * OFF_PV /
-                      (AllDistrictDemand.RAD_n.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
-            var windCubed = AllDistrictDemand.WIND_n.Where(w => w > CIN_WND && w < COUT_WND).Select(w => Math.Pow(w, 3))
-                .Sum();
-            NUM_WND = AllDistrictDemand.ELEC_n.Sum() * OFF_WND /
-                      (0.6375 * windCubed * ROT_WND * (1 - LOSS_WND) * COP_WND /
-                       1000); // Divide by 1000 because equation spits out Wh
-            CHGR_HWT = CAP_HWT == 0 ? 0 : CAP_HWT / 12; // 12 hours // (AUT_HWT * 12);
-            CHGR_BAT = CAP_BAT == 0 ? 0 : CAP_BAT / 12;
-            DCHGR_HWT = CAP_HWT == 0
-                ? 0
-                : CAP_HWT / 12; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
-            DCHG_BAT = CAP_BAT == 0
-                ? 0
-                : CAP_BAT / 12; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
-        }
-
-        /// <summary>
-        ///     Cooling capacity of absorption chillers (kW)
-        /// </summary>
-        private static double CAP_ABS { get; set; }
-
-        /// <summary>
-        ///     Capacity of Electrical Heat Pumps
-        /// </summary>
-        private static double CAP_EHP { get; set; }
-
-        /// <summary>
-        ///     Capacity of Battery, defined as the everage demand times the desired autonomy
-        /// </summary>
-        private static double CAP_BAT { get; set; }
-
-        /// <summary>
-        ///     Capacity of Hot Water Tank, defined as the everage demand times the desired autonomy
-        /// </summary>
-        private static double CAP_HWT { get; set; }
-
-        /// <summary>
-        ///     Capacity of CHP plant
-        /// </summary>
-        private static double CAP_CHP { get; set; }
-
-        /// <summary>
-        ///     Calculated required area of solar thermal collector (m^2)
-        /// </summary>
-        private static double AREA_SHW { get; set; }
-
-        /// <summary>
-        ///     Calculated required area of PV collectors
-        /// </summary>
-        private static double AREA_PV { get; set; }
-
-        /// <summary>
-        ///     Number of turbines needed: Annual electricity needed divided by how much one turbine generates.
-        ///     [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and
-        ///     cut-out speeds x COP)]
-        /// </summary>
-        private static double NUM_WND { get; set; }
-
-        /// <summary>
-        ///     The Hot Water Tank Charge Rate (kWh / h)
-        /// </summary>
-        public static double CHGR_HWT { get; set; }
-
-        /// <summary>
-        ///     The Battery Charge Rate (kWh / h)
-        /// </summary>
-        public static double CHGR_BAT { get; set; }
-
-        /// <summary>
-        ///     Discharge rate of Hot Water Tank
-        /// </summary>
-        private static double DCHGR_HWT { get; set; }
-
-        /// <summary>
-        ///     Discharge rate of battery
-        /// </summary>
-        private static double DCHG_BAT { get; set; }
-
-        /// <summary>
-        ///     Hot Water Tank Losses (dependant of the outdoor temperature)
-        /// </summary>
-        private static double LOSS_HWT { get; set; }
-
-        #endregion
-
         #region Equation 1 to 18
 
         /// <summary>
@@ -523,8 +425,8 @@ namespace DistrictEnergy
         /// <param name="chwAbs"></param>
         private void eqHW_ABS(double chwN, out double hwAbs, out double chwAbs)
         {
-            hwAbs = Math.Min(chwN, CAP_ABS) / CCOP_ABS;
-            chwAbs = Math.Min(chwN, CAP_ABS);
+            hwAbs = Math.Min(chwN, SimConstants.CapAbs) / DistrictEnergy.Settings.CCOP_ABS;
+            chwAbs = Math.Min(chwN, SimConstants.CapAbs);
         }
 
         /// <summary>
@@ -537,10 +439,10 @@ namespace DistrictEnergy
         /// <param name="chwEch"></param>
         private void eqELEC_ECH(double chwN, out double elecEch, out double chwEch)
         {
-            if (chwN > CAP_ABS)
+            if (chwN > SimConstants.CapAbs)
             {
-                elecEch = (chwN - CAP_ABS) / CCOP_ECH;
-                chwEch = chwN - CAP_ABS;
+                elecEch = (chwN - SimConstants.CapAbs) / DistrictEnergy.Settings.CCOP_ECH;
+                chwEch = chwN - SimConstants.CapAbs;
             }
             else
             {
@@ -562,8 +464,8 @@ namespace DistrictEnergy
         private void eqELEC_EHP(double hwN, double hwAbs, double hwShw,
             double hwHwt, double hwChp, out double elecEhp, out double hwEhp)
         {
-            elecEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, CAP_EHP) / HCOP_EHP;
-            hwEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, CAP_EHP);
+            elecEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SimConstants.CapEhp) / DistrictEnergy.Settings.HCOP_EHP;
+            hwEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SimConstants.CapEhp);
         }
 
         /// <summary>
@@ -580,8 +482,7 @@ namespace DistrictEnergy
         private void eqNGAS_NGB(double hwN, double hwEhp, double hwAbs, double hwShw, double hwHwt, double hwChp,
             out double ngasNgb, out double hwNgb)
         {
-            ngasNgb = Math.Max(hwN - hwEhp + hwAbs - hwShw - hwHwt - hwChp, 0) /
-                      EFF_NGB; // If chp produces more energy than needed, ngas will be 0.
+            ngasNgb = Math.Max(hwN - hwEhp + hwAbs - hwShw - hwHwt - hwChp, 0) / DistrictEnergy.Settings.EFF_NGB; // If chp produces more energy than needed, ngas will be 0.
             hwNgb = Math.Max(hwN - hwEhp + hwAbs - hwShw - hwHwt - hwChp, 0);
         }
 
@@ -596,8 +497,8 @@ namespace DistrictEnergy
         private void eqHW_SHW(double radN, double hwN, double hwAbs, out double hwShw,
             out double solarBalance)
         {
-            hwShw = Math.Min(radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1 - LOSS_SHW), hwN + hwAbs);
-            solarBalance = radN * AREA_SHW * EFF_SHW * UTIL_SHW * (1 - LOSS_SHW) - hwN - hwAbs;
+            hwShw = Math.Min(radN * SimConstants.AreaShw * DistrictEnergy.Settings.EFF_SHW * DistrictEnergy.Settings.UTIL_SHW * (1 - DistrictEnergy.Settings.LOSS_SHW), hwN + hwAbs);
+            solarBalance = radN * SimConstants.AreaShw * DistrictEnergy.Settings.EFF_SHW * DistrictEnergy.Settings.UTIL_SHW * (1 - DistrictEnergy.Settings.LOSS_SHW) - hwN - hwAbs;
         }
 
         /// <summary>
@@ -611,21 +512,21 @@ namespace DistrictEnergy
         {
             if (shwBal < 0) // We are discharging the tank; Loss applies to the newly calculated charge
             {
-                tankChgN = Math.Max(previousTankChgN + shwBal, GetHighestNonNegative(previousTankChgN - DCHGR_HWT, 0));
-                LOSS_HWT = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
-                tankChgN = tankChgN * (1 - LOSS_HWT);
+                tankChgN = Math.Max(previousTankChgN + shwBal, GetHighestNonNegative(previousTankChgN - SimConstants.DchgrHwt, 0));
+                SimConstants.LossHwt = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3); // todo tanklosses-to-tAmb relation
+                tankChgN = tankChgN * (1 - SimConstants.LossHwt);
             }
             else if (shwBal > 0) // We are charging the tank
             {
                 tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal,
-                    GetSmallestNonNegative(previousTankChgN + CHGR_HWT, CAP_HWT));
-                LOSS_HWT = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
-                tankChgN = tankChgN * (1 - LOSS_HWT);
+                    GetSmallestNonNegative(previousTankChgN + SimConstants.ChgrHwt, SimConstants.CapHwt));
+                SimConstants.LossHwt = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
+                tankChgN = tankChgN * (1 - SimConstants.LossHwt);
             }
             else // We are not doing anything, but losses still occur
             {
                 tankChgN = previousTankChgN *
-                           (1 - LOSS_HWT); // Contrary to the Grasshopper code, the tank loses energy to the environnement even when not used.
+                           (1 - SimConstants.LossHwt); // Contrary to the Grasshopper code, the tank loses energy to the environnement even when not used.
             }
         }
 
@@ -639,7 +540,7 @@ namespace DistrictEnergy
         /// <param name="hwHwt">Demand met by hot water tank</param>
         private void eqHW_HWT(double tankChgN, double hwN, double hwAbs, double hwShw, out double hwHwt)
         {
-            hwHwt = GetSmallestNonNegative(hwN + hwAbs - hwShw, GetSmallestNonNegative(tankChgN, DCHGR_HWT));
+            hwHwt = GetSmallestNonNegative(hwN + hwAbs - hwShw, GetSmallestNonNegative(tankChgN, SimConstants.DchgrHwt));
         }
 
         /// <summary>
@@ -649,7 +550,7 @@ namespace DistrictEnergy
         /// <param name="elecPv"></param>
         private void eqELEC_PV(double radN, out double elecPv)
         {
-            elecPv = radN * AREA_PV * EFF_PV * UTIL_PV * (1 - LOSS_PV);
+            elecPv = radN * SimConstants.AreaPv * DistrictEnergy.Settings.EFF_PV * DistrictEnergy.Settings.UTIL_PV * (1 - DistrictEnergy.Settings.LOSS_PV);
         }
 
         /// <summary>
@@ -659,7 +560,7 @@ namespace DistrictEnergy
         /// <param name="elecWnd"></param>
         private void eqELEC_WND(double windN, out double elecWnd)
         {
-            elecWnd = 0.6375 * Math.Pow(windN, 3) * ROT_WND * NUM_WND * COP_WND * (1 - LOSS_WND) /
+            elecWnd = 0.6375 * Math.Pow(windN, 3) * DistrictEnergy.Settings.ROT_WND * SimConstants.NumWnd * DistrictEnergy.Settings.COP_WND * (1 - DistrictEnergy.Settings.LOSS_WND) /
                       1000; // Equation spits out Wh
         }
 
@@ -691,11 +592,11 @@ namespace DistrictEnergy
         {
             if (elecBalance < 0
             ) // We are discharging the battery; Not all the elecBalance can be fed to the batt because of the LOSS_BAT parameter.
-                batChgN = Math.Max(previousBatChgN + elecBalance * (1 - LOSS_BAT),
-                    GetHighestNonNegative(previousBatChgN - DCHG_BAT, 0));
+                batChgN = Math.Max(previousBatChgN + elecBalance * (1 - DistrictEnergy.Settings.LOSS_BAT),
+                    GetHighestNonNegative(previousBatChgN - SimConstants.DchgBat, 0));
             else if (elecBalance > 0) // We are charging the battery
-                batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance * (1 - LOSS_BAT),
-                    GetSmallestNonNegative(previousBatChgN + CHGR_BAT, CAP_BAT));
+                batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance * (1 - DistrictEnergy.Settings.LOSS_BAT),
+                    GetSmallestNonNegative(previousBatChgN + SimConstants.ChgrBat, SimConstants.CapBat));
             else
                 batChgN = previousBatChgN;
         }
@@ -714,7 +615,7 @@ namespace DistrictEnergy
             double elecRen, double elecChp)
         {
             elecBat = GetSmallestNonNegative(elecN + elecEch + elecEhp - elecRen - elecChp,
-                GetSmallestNonNegative(batChgN, DCHG_BAT));
+                GetSmallestNonNegative(batChgN, SimConstants.DchgBat));
         }
 
         /// <summary>
@@ -735,10 +636,10 @@ namespace DistrictEnergy
         {
             double temp = 0;
             if (string.Equals(tracking, "Thermal"))
-                temp = Math.Min(CAP_CHP / EFF_CHP * HREC_CHP,
+                temp = Math.Min(SimConstants.CapChpElec / DistrictEnergy.Settings.EFF_CHP * DistrictEnergy.Settings.HREC_CHP,
                     hWn + hwAbs - hwShw - hwHwt - hwEhp); //hwN - hwEhp + hwAbs - hwShw - hwHwt
             if (string.Equals(tracking, "Electrical"))
-                temp = ngasChp * HREC_CHP;
+                temp = ngasChp * DistrictEnergy.Settings.HREC_CHP;
             if (temp > hWn + hwAbs - hwShw - hwHwt - hwEhp) // CHP is forced to produce more energy than necessary
             {
                 // Send Excess heat to Tank
@@ -764,9 +665,9 @@ namespace DistrictEnergy
         {
             double temp = 0;
             if (string.Equals(tracking, "Thermal"))
-                temp = hwChp / HREC_CHP;
+                temp = hwChp / DistrictEnergy.Settings.HREC_CHP;
             if (string.Equals(tracking, "Electrical"))
-                temp = elecChp / EFF_CHP;
+                temp = elecChp / DistrictEnergy.Settings.EFF_CHP;
             ngasChp = temp;
         }
 
@@ -788,7 +689,7 @@ namespace DistrictEnergy
             double temp = 0;
             if (string.Equals(tracking, "Thermal"))
             {
-                temp = ngasChp * EFF_CHP;
+                temp = ngasChp * DistrictEnergy.Settings.EFF_CHP;
                 if (temp > elecN + elecEhp + elecEch - elecRen - elecBat)
                 {
                     // Send excess elec to Battery
@@ -801,7 +702,7 @@ namespace DistrictEnergy
             }
 
             if (string.Equals(tracking, "Electrical"))
-                temp = GetSmallestNonNegative(CAP_CHP,
+                temp = GetSmallestNonNegative(SimConstants.CapChpElec,
                     elecN + elecEch + elecEhp - elecRen -
                     elecBat); // todo CHP should cover all electrical loads, if it can.
             elecChp = temp;
@@ -867,189 +768,11 @@ namespace DistrictEnergy
         public ResultsArray ResultsArray { get; }
 
         public DistrictDemand AllDistrictDemand { get; }
+        public SimConstants SimConstants { get; }
 
         #endregion
 
         #region AvailableSettings
-
-        private static double CCOP_ECH
-        {
-            get { return PlantSettingsViewModel.Instance.CCOP_ECH; }
-        }
-
-        private static double EFF_NGB
-        {
-            get { return PlantSettingsViewModel.Instance.EFF_NGB / 100; }
-        }
-
-        private static double OFF_ABS
-        {
-            get { return PlantSettingsViewModel.Instance.OFF_ABS / 100; }
-        }
-
-        private static double CCOP_ABS
-        {
-            get { return PlantSettingsViewModel.Instance.CCOP_ABS; }
-        }
-
-        private static double AUT_BAT
-        {
-            get { return PlantSettingsViewModel.Instance.AUT_BAT; }
-        }
-
-        private static double LOSS_BAT
-        {
-            get { return PlantSettingsViewModel.Instance.LOSS_BAT / 100; }
-        }
-
-        private static string TMOD_CHP
-        {
-            get { return PlantSettingsViewModel.Instance.TMOD_CHP.ToString(); }
-        }
-
-        private static double OFF_CHP
-        {
-            get { return PlantSettingsViewModel.Instance.OFF_CHP / 100; }
-        }
-
-        private static double EFF_CHP
-        {
-            get { return PlantSettingsViewModel.Instance.EFF_CHP / 100; }
-        }
-
-        private static double HREC_CHP
-        {
-            get { return PlantSettingsViewModel.Instance.HREC_CHP / 100; }
-        }
-
-        private static double OFF_EHP
-        {
-            get { return PlantSettingsViewModel.Instance.OFF_EHP / 100; }
-        }
-
-        private static double HCOP_EHP
-        {
-            get { return PlantSettingsViewModel.Instance.HCOP_EHP; }
-        }
-
-        private static double AUT_HWT
-        {
-            get { return PlantSettingsViewModel.Instance.AUT_HWT; }
-        }
-
-        private static double OFF_PV
-        {
-            get { return PlantSettingsViewModel.Instance.OFF_PV / 100; }
-        }
-
-        private static double UTIL_PV
-        {
-            get { return PlantSettingsViewModel.Instance.UTIL_PV / 100; }
-        }
-
-        private static double LOSS_PV
-        {
-            get { return PlantSettingsViewModel.Instance.LOSS_PV / 100; }
-        }
-
-        private static double EFF_PV
-        {
-            get { return PlantSettingsViewModel.Instance.EFF_PV / 100; }
-        }
-
-        /// <summary>
-        ///     Collector efficiency (%)
-        /// </summary>
-        private static double EFF_SHW
-        {
-            get { return PlantSettingsViewModel.Instance.EFF_SHW / 100; }
-        }
-
-        /// <summary>
-        ///     Miscellaneous losses (%)
-        /// </summary>
-        private static double LOSS_SHW
-        {
-            get { return PlantSettingsViewModel.Instance.LOSS_SHW / 100; }
-        }
-
-        /// <summary>
-        ///     Target offset as percent of annual energy (%)
-        /// </summary>
-        private static double OFF_SHW
-        {
-            get { return PlantSettingsViewModel.Instance.OFF_SHW / 100; }
-        }
-
-        /// <summary>
-        ///     Area utilization factor (%)
-        /// </summary>
-        private static double UTIL_SHW
-        {
-            get { return PlantSettingsViewModel.Instance.UTIL_SHW / 100; }
-        }
-
-        private static double CIN_WND
-        {
-            get { return PlantSettingsViewModel.Instance.CIN_WND; }
-        }
-
-        private static double COP_WND
-        {
-            get { return PlantSettingsViewModel.Instance.EFF_WND / 100; }
-        }
-
-        private static double COUT_WND
-        {
-            get { return PlantSettingsViewModel.Instance.COUT_WND; }
-        }
-
-        private static double OFF_WND
-        {
-            get { return PlantSettingsViewModel.Instance.OFF_WND; }
-        }
-
-        private static double ROT_WND
-        {
-            get { return PlantSettingsViewModel.Instance.ROT_WND; }
-        }
-
-        private static double LOSS_WND
-        {
-            get { return PlantSettingsViewModel.Instance.LOSS_WND / 100; }
-        }
-
-        /// <summary>
-        ///     The Tank charged state at the begining of the simulation
-        /// </summary>
-        private static double TANK_START
-        {
-            get { return PlantSettingsViewModel.Instance.TANK_START / 100; }
-        }
-
-        /// <summary>
-        ///     The Battery charged state at the begining of the simulation
-        /// </summary>
-        private static double BAT_START
-        {
-            get { return PlantSettingsViewModel.Instance.BAT_START / 100; }
-        }
-
-        private static double LOSS_HWNET
-        {
-            get
-            {
-                return 0;
-            } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
-        }
-
-        private static double LOSS_CHWNET
-        {
-            get
-            {
-                return 0;
-            } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
-        }
 
         #endregion
     }
@@ -1211,5 +934,525 @@ namespace DistrictEnergy
             var handler = ResultsChanged;
             handler?.Invoke(this, e);
         }
+    }
+
+    public class Settings
+    {
+        public static double CCOP_ECH
+        {
+            get { return PlantSettingsViewModel.Instance.CCOP_ECH; }
+        }
+
+        public static double EFF_NGB
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_NGB / 100; }
+        }
+
+        internal static double OFF_ABS
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_ABS / 100; }
+        }
+
+        public static double CCOP_ABS
+        {
+            get { return PlantSettingsViewModel.Instance.CCOP_ABS; }
+        }
+
+        internal static double AUT_BAT
+        {
+            get { return PlantSettingsViewModel.Instance.AUT_BAT; }
+        }
+
+        public static double LOSS_BAT
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_BAT / 100; }
+        }
+
+        public static string TMOD_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.TMOD_CHP.ToString(); }
+        }
+
+        internal static double OFF_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_CHP / 100; }
+        }
+
+        public static double EFF_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_CHP / 100; }
+        }
+
+        public static double HREC_CHP
+        {
+            get { return PlantSettingsViewModel.Instance.HREC_CHP / 100; }
+        }
+
+        internal static double OFF_EHP
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_EHP / 100; }
+        }
+
+        public static double HCOP_EHP
+        {
+            get { return PlantSettingsViewModel.Instance.HCOP_EHP; }
+        }
+
+        internal static double AUT_HWT
+        {
+            get { return PlantSettingsViewModel.Instance.AUT_HWT; }
+        }
+
+        internal static double OFF_PV
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_PV / 100; }
+        }
+
+        public static double UTIL_PV
+        {
+            get { return PlantSettingsViewModel.Instance.UTIL_PV / 100; }
+        }
+
+        public static double LOSS_PV
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_PV / 100; }
+        }
+
+        public static double EFF_PV
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_PV / 100; }
+        }
+
+        /// <summary>
+        ///     Collector efficiency (%)
+        /// </summary>
+        public static double EFF_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_SHW / 100; }
+        }
+
+        /// <summary>
+        ///     Miscellaneous losses (%)
+        /// </summary>
+        public static double LOSS_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_SHW / 100; }
+        }
+
+        /// <summary>
+        ///     Target offset as percent of annual energy (%)
+        /// </summary>
+        internal static double OFF_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_SHW / 100; }
+        }
+
+        /// <summary>
+        ///     Area utilization factor (%)
+        /// </summary>
+        public static double UTIL_SHW
+        {
+            get { return PlantSettingsViewModel.Instance.UTIL_SHW / 100; }
+        }
+
+        internal static double CIN_WND
+        {
+            get { return PlantSettingsViewModel.Instance.CIN_WND; }
+        }
+
+        public static double COP_WND
+        {
+            get { return PlantSettingsViewModel.Instance.EFF_WND / 100; }
+        }
+
+        internal static double COUT_WND
+        {
+            get { return PlantSettingsViewModel.Instance.COUT_WND; }
+        }
+
+        internal static double OFF_WND
+        {
+            get { return PlantSettingsViewModel.Instance.OFF_WND; }
+        }
+
+        public static double ROT_WND
+        {
+            get { return PlantSettingsViewModel.Instance.ROT_WND; }
+        }
+
+        public static double LOSS_WND
+        {
+            get { return PlantSettingsViewModel.Instance.LOSS_WND / 100; }
+        }
+
+        /// <summary>
+        ///     The Tank charged state at the begining of the simulation
+        /// </summary>
+        public static double TANK_START
+        {
+            get { return PlantSettingsViewModel.Instance.TANK_START / 100; }
+        }
+
+        /// <summary>
+        ///     The Battery charged state at the begining of the simulation
+        /// </summary>
+        public static double BAT_START
+        {
+            get { return PlantSettingsViewModel.Instance.BAT_START / 100; }
+        }
+
+        private static double LOSS_HWNET
+        {
+            get
+            {
+                return 0;
+            } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
+        }
+
+        private static double LOSS_CHWNET
+        {
+            get
+            {
+                return 0;
+            } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
+        }
+    }
+
+    public class SimConstants : INotifyPropertyChanged
+    {
+        private double _dchgrHwt;
+        private double _dchgBat;
+        private double _capAbs;
+        private double _capEhp;
+        private double _capBat;
+        private double _capHwt;
+        private double _capChpElec;
+        private double _areaShw;
+        private double _areaPv;
+        private double _numWnd;
+        private double _chgrHwt;
+        private double _chgrBat;
+        private double _lossHwt;
+        private double _capNgb;
+        private double _capChpHeat;
+        private double _capShw;
+        private double _capEch;
+        private double _capElecProj;
+        private double _capPv;
+        private double _capWnd;
+
+        public SimConstants()
+        {
+            UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
+        }
+
+        private void CalculateConstants(object sender, EventArgs e)
+        {
+            CalculateConstants();
+        }
+
+        private void SubscribeEvents(object sender, UmiContext e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += CalculateConstants;
+        }
+
+        /// <summary>
+        ///     Cooling capacity of absorption chillers (kW)
+        /// </summary>
+        public double CapAbs
+        {
+            get => _capAbs;
+            set
+            {
+                _capAbs = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapAbs)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of Electrical Heat Pumps
+        /// </summary>
+        public double CapEhp
+        {
+            get => _capEhp;
+            set
+            {
+                _capEhp = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapEhp)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of Battery, defined as the everage demand times the desired autonomy
+        /// </summary>
+        public double CapBat
+        {
+            get => _capBat;
+            set
+            {
+                _capBat = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapBat)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of Hot Water Tank, defined as the everage demand times the desired autonomy
+        /// </summary>
+        public double CapHwt
+        {
+            get => _capHwt;
+            set
+            {
+                _capHwt = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapHwt)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of CHP plant
+        /// </summary>
+        public double CapChpElec
+        {
+            get => _capChpElec;
+            set
+            {
+                _capChpElec = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapChpElec)));
+            }
+        }
+
+        /// <summary>
+        ///     Calculated required area of solar thermal collector (m^2)
+        /// </summary>
+        public double AreaShw
+        {
+            get => _areaShw;
+            set
+            {
+                _areaShw = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AreaShw)));
+            }
+        }
+
+        /// <summary>
+        ///     Calculated required area of PV collectors
+        /// </summary>
+        public double AreaPv
+        {
+            get => _areaPv;
+            set
+            {
+                _areaPv = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AreaPv)));
+            }
+        }
+
+        /// <summary>
+        ///     Number of turbines needed: Annual electricity needed divided by how much one turbine generates.
+        ///     [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and
+        ///     cut-out speeds x COP)]
+        /// </summary>
+        public double NumWnd
+        {
+            get => _numWnd;
+            set
+            {
+                _numWnd = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NumWnd)));
+            }
+        }
+
+        /// <summary>
+        ///     The Hot Water Tank Charge Rate (kWh / h)
+        /// </summary>
+        public double ChgrHwt
+        {
+            get => _chgrHwt;
+            set
+            {
+                _chgrHwt = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChgrHwt)));
+            }
+        }
+
+        /// <summary>
+        ///     The Battery Charge Rate (kWh / h)
+        /// </summary>
+        public double ChgrBat
+        {
+            get => _chgrBat;
+            set
+            {
+                _chgrBat = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChgrBat)));
+            }
+        }
+
+        /// <summary>
+        ///     Discharge rate of Hot Water Tank
+        /// </summary>
+        public double DchgrHwt
+        {
+            get => _dchgrHwt;
+            set
+            {
+                _dchgrHwt = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DchgrHwt)));
+            }
+        }
+
+        /// <summary>
+        ///     Discharge rate of battery
+        /// </summary>
+        public double DchgBat
+        {
+            get => _dchgBat;
+            set
+            {
+                _dchgBat = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DchgBat)));
+            }
+        }
+
+        /// <summary>
+        ///     Hot Water Tank Losses (dependant of the outdoor temperature)
+        /// </summary>
+        public double LossHwt
+        {
+            get => _lossHwt;
+            set
+            {
+                _lossHwt = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossHwt)));
+            }
+        }
+        /// <summary>
+        ///     Capacity in hot water production (max over the year)
+        /// </summary>
+        public double CapNgb
+        {
+            get => _capNgb;
+            set
+            {
+                _capNgb = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapNgb)));
+            }
+        }
+        /// <summary>
+        ///     Capacity of CHP plant in hotwater production (max over the year)
+        /// </summary>
+        public double CapChpHeat
+        {
+            get => _capChpHeat;
+            set
+            {
+                _capChpHeat = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapChpHeat)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of the solar hot water array
+        /// </summary>
+        public double CapShw
+        {
+            get => _capShw;
+            set
+            {
+                _capShw = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapShw)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of the Electric Chiller
+        /// </summary>
+        public double CapEch
+        {
+            get => _capEch;
+            set
+            {
+                _capEch = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapEch)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of the grid to supply the project
+        /// </summary>
+        public double CapElecProj
+        {
+            get => _capElecProj;
+            set
+            {
+                _capElecProj = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapElecProj)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of the PV array
+        /// </summary>
+        public double CapPv
+        {
+            get { return _capPv; }
+            set
+            {
+                _capPv = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapPv)));
+            }
+        }
+
+        /// <summary>
+        ///     Capacity of the wind turbine field
+        /// </summary>
+        public double CapWnd
+        {
+            get { return _capWnd; }
+            set
+            {
+                _capWnd = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapWnd)));
+            }
+        }
+
+        /// <summary>
+        ///     Calculates the necessary constants used in different equations
+        /// </summary>
+        public void CalculateConstants()
+        {
+            CapAbs = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.CHW_n.Max() * Settings.OFF_ABS;
+            CapEhp = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.HW_n.Max() * Settings.OFF_EHP;
+            CapBat = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.ELEC_n.Average() * Settings.AUT_BAT * 24;
+            CapHwt = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.HW_n.Average() * Settings.AUT_HWT * 24; // todo Prendre jour moyen du mois max.
+            CapChpElec = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.ELEC_n.Max() * Settings.OFF_CHP;
+            CapChpHeat = DHSimulateDistrictEnergy.Instance.ResultsArray.HW_CHP.Max();
+            CapNgb = DHSimulateDistrictEnergy.Instance.ResultsArray.NGAS_NGB.Max();
+            CapShw = DHSimulateDistrictEnergy.Instance.ResultsArray.HW_SHW.Max();
+            CapEch = DHSimulateDistrictEnergy.Instance.ResultsArray.CHW_ECH.Max();
+            CapElecProj = DHSimulateDistrictEnergy.Instance.ResultsArray.ELEC_PROJ.Max();
+            CapPv = DHSimulateDistrictEnergy.Instance.ResultsArray.ELEC_PV.Max();
+            CapWnd = DHSimulateDistrictEnergy.Instance.ResultsArray.ELEC_WND.Max();
+            AreaShw = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.HW_n.Sum() * Settings.OFF_SHW /
+                       (DHSimulateDistrictEnergy.Instance.AllDistrictDemand.RAD_n.Sum() * Settings.EFF_SHW * (1 - Settings.LOSS_SHW) * Settings.UTIL_SHW);
+            AreaPv = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.ELEC_n.Sum() * Settings.OFF_PV /
+                      (DHSimulateDistrictEnergy.Instance.AllDistrictDemand.RAD_n.Sum() * Settings.EFF_PV * (1 - Settings.LOSS_PV) * Settings.UTIL_PV);
+            var windCubed = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.WIND_n.Where(w => w > Settings.CIN_WND && w < Settings.COUT_WND).Select(w => Math.Pow(w, 3))
+                .Sum();
+            NumWnd = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.ELEC_n.Sum() * Settings.OFF_WND /
+                      (0.6375 * windCubed * Settings.ROT_WND * (1 - Settings.LOSS_WND) * Settings.COP_WND /
+                       1000); // Divide by 1000 because equation spits out Wh
+            ChgrHwt = CapHwt == 0 ? 0 : CapHwt / 12; // 12 hours // (AUT_HWT * 12);
+            ChgrBat = CapBat == 0 ? 0 : CapBat / 12;
+            DchgrHwt = CapHwt == 0
+                ? 0
+                : CapHwt / 12; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+            DchgBat = CapBat == 0
+                ? 0
+                : CapBat / 12; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

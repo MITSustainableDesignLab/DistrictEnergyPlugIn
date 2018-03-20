@@ -6,7 +6,6 @@
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignWidth="535" d:DesignHeight="1525" d:DataContext="{d:DesignData ResultsViewModel}">
     <UserControl.Resources>
@@ -73,6 +72,14 @@
             </Style.Triggers>
 
         </Style>
+        <Style x:Key="PlantComponentHeader" TargetType="{x:Type TextBlock}">
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="None" />
+            <Setter Property="Margin" Value="5, 5" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#404040" />
+        </Style>
+
     </UserControl.Resources>
     <TabControl x:Name="TabControl" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top"
                 RenderTransformOrigin="0.501,0.507">
@@ -110,13 +117,6 @@
                     <Setter Property="FontWeight" Value="Normal" />
                     <Setter Property="HorizontalAlignment" Value="Left" />
                 </Style>
-                <Style x:Key="PlantComponentHeader" TargetType="{x:Type TextBlock}">
-                    <Setter Property="TextWrapping" Value="NoWrap" />
-                    <Setter Property="TextTrimming" Value="None" />
-                    <Setter Property="Margin" Value="5, 5" />
-                    <Setter Property="FontSize" Value="14" />
-                    <Setter Property="Foreground" Value="#404040" />
-                </Style>
             </TabItem.Resources>
             <Grid ScrollViewer.CanContentScroll="True">
                 <Grid.RowDefinitions>
@@ -148,7 +148,6 @@
                                                   Opacity=".3"
                                                   ShadowDepth="1" Color="DarkBlue" />
                             </Grid.Effect>
-
                             <Border CornerRadius="5" Background="White">
                                 <StackPanel>
                                     <Grid x:Name="Abs">
@@ -461,31 +460,6 @@
                                                             </Binding>
                                                         </TextBox.Text>
                                                     </TextBox>
-
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Accounts for other losses including leakage and distribution " />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding LOSS_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                                 </StackPanel>
                                             </Grid>
@@ -1074,6 +1048,503 @@
                 </ScrollViewer>
             </Grid>
         </TabItem>
+        <TabItem Header="Sizing">
+            <TabItem.Resources>
+                <Style x:Key="SubMetricStackPanelStyle" TargetType="StackPanel">
+                    <Setter Property="Margin" Value="5,0" />
+                </Style>
+            </TabItem.Resources>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Button Content="Run Simulation" Padding="5" Margin="5" Grid.Row="0" Click="RunSimulationClick">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource ButtonEnabled}" Mode="TwoWay">
+                            <Binding ElementName="TurbineEff" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutHwt" Path="(Validation.HasError)" />
+                            <Binding ElementName="AutBat" Path="(Validation.HasError)" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <ScrollViewer Grid.Row="1">
+                    <StackPanel>
+                        <Grid Margin="10">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                  Opacity=".3"
+                                                  ShadowDepth="1" Color="DarkBlue" />
+                            </Grid.Effect>
+                            <Grid.DataContext>
+                                <districtEnergy:SimConstants />
+                            </Grid.DataContext>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid Margin="5,5,5,10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <StackPanel.Resources>
+                                                <vm:KWConverter x:Key="KWConverter" />
+                                                <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                            </StackPanel.Resources>
+                                            <TextBlock Style="{DynamicResource PlantComponentHeader}"
+                                                       Text="Natural Gas Boiler" HorizontalAlignment="Center" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                       Text="{Binding CapNgb, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                       VerticalAlignment="Top" FontSize="36" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="{Binding CapNgb, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                       VerticalAlignment="Top" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="Installed" VerticalAlignment="Top" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <StackPanel.Resources>
+                                                <vm:KWConverter x:Key="KwConverter" />
+                                                <vm:KWConverterUnit x:Key="KwConverterUnit" />
+                                            </StackPanel.Resources>
+                                            <TextBlock HorizontalAlignment="Center"
+                                                       Style="{DynamicResource PlantComponentHeader}"
+                                                       Text="Electric Heat Pump" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                       Text="{Binding CapEhp, Converter={StaticResource KwConverter}}"
+                                                       VerticalAlignment="Top" FontSize="36" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="{Binding CapEhp, Converter={StaticResource KwConverterUnit}}"
+                                                       VerticalAlignment="Top" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="Installed" VerticalAlignment="Top" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <StackPanel.Resources>
+                                                <vm:KWConverter x:Key="KWConverter" />
+                                                <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                            </StackPanel.Resources>
+                                            <TextBlock HorizontalAlignment="Center"
+                                                       Style="{DynamicResource PlantComponentHeader}"
+                                                       Text="CHP Hot Water" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                       Text="{Binding CapChpElec, Converter={StaticResource KWConverter}}"
+                                                       VerticalAlignment="Top" FontSize="36" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="{Binding CapChpElec, Converter={StaticResource KWConverterUnit}}"
+                                                       VerticalAlignment="Top" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                       Text="Installed" VerticalAlignment="Top" />
+                                        </StackPanel>
+                                    </Grid>
+                                    <Grid Grid.Row="1" Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock HorizontalAlignment="Center"
+                                                       Style="{DynamicResource PlantComponentHeader}"
+                                                       Text="Solar Hot Water" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0" HorizontalAlignment="Right"
+                                                            Style="{StaticResource SubMetricStackPanelStyle}">
+                                                    <StackPanel.Resources>
+                                                        <vm:KWConverter x:Key="KWConverter" />
+                                                        <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                                    </StackPanel.Resources>
+                                                    <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding CapShw, Converter={StaticResource KWConverter}}"
+                                                               VerticalAlignment="Top" FontSize="24" />
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding CapShw, Converter={StaticResource KWConverterUnit}}"
+                                                               VerticalAlignment="Top" />
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               VerticalAlignment="Top">
+                                                        <Run Text="Installed " /><Run Text="Capacity" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Left"
+                                                            Style="{StaticResource SubMetricStackPanelStyle}">
+                                                    <StackPanel.Resources>
+                                                        <vm:AreaConverter x:Key="AreaConverter" />
+                                                        <vm:AreaConverterUnit x:Key="AreaConverterUnit" />
+                                                    </StackPanel.Resources>
+                                                    <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding AreaShw, Converter={StaticResource AreaConverter}}"
+                                                               VerticalAlignment="Top" FontSize="24" />
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding AreaShw, Converter={StaticResource AreaConverterUnit}}"
+                                                               VerticalAlignment="Top" />
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               Text="Solar Panels" VerticalAlignment="Top" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock HorizontalAlignment="Center"
+                                                       Style="{DynamicResource PlantComponentHeader}"
+                                                       Text="Hot Water Tank" />
+                                            <StackPanel>
+                                                <StackPanel.Resources>
+                                                    <vm:KWhConverter x:Key="KWhConverter" />
+                                                    <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
+                                                </StackPanel.Resources>
+                                                <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding CapHwt, Converter={StaticResource KWhConverter}}"
+                                                           VerticalAlignment="Top" FontSize="36" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="{Binding CapHwt, Converter={StaticResource KWhConverterUnit}}"
+                                                           VerticalAlignment="Top" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="Storage Capacity" VerticalAlignment="Top" />
+                                            </StackPanel>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.Resources>
+                                                    <vm:KWhConverter x:Key="KWhConverter" />
+                                                    <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
+                                                </Grid.Resources>
+                                                <StackPanel HorizontalAlignment="Right"
+                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               Text="Charging Rate" VerticalAlignment="Top" />
+
+                                                    <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding ChgrHwt, Converter={StaticResource KWhConverter}}"
+                                                               VerticalAlignment="Top" FontSize="24" />
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   TextWrapping="Wrap"
+                                                                   Text="{Binding ChgrHwt, Converter={StaticResource KWhConverterUnit}}"
+                                                                   VerticalAlignment="Top" />
+                                                        <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   Text="/h"
+                                                                   VerticalAlignment="Top" />
+                                                    </StackPanel>
+
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Left"
+                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               Text="Discharging Rate" VerticalAlignment="Top" />
+
+                                                    <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding DchgrHwt, Converter={StaticResource KWhConverter}}"
+                                                               VerticalAlignment="Top" FontSize="24" />
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   TextWrapping="Wrap"
+                                                                   Text="{Binding DchgrHwt, Converter={StaticResource KWhConverterUnit}}"
+                                                                   VerticalAlignment="Top" />
+                                                        <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   Text="/h"
+                                                                   VerticalAlignment="Top" />
+                                                    </StackPanel>
+
+                                                </StackPanel>
+
+                                            </Grid>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+
+
+                            </Border>
+
+                        </Grid>
+                        <Grid Margin="10">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                  Opacity=".3"
+                                                  ShadowDepth="1" Color="DarkBlue" />
+                            </Grid.Effect>
+                            <Grid.DataContext>
+                                <districtEnergy:SimConstants />
+                            </Grid.DataContext>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid Margin="5,5,5,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <StackPanel.Resources>
+                                            <vm:KWConverter x:Key="KWConverter" />
+                                            <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                        </StackPanel.Resources>
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{DynamicResource PlantComponentHeader}"
+                                                   Text="Absorption Chiller" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                   Text="{Binding CapAbs, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                   VerticalAlignment="Top" FontSize="36" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="{Binding CapAbs, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                   VerticalAlignment="Top" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="Installed" VerticalAlignment="Top" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <StackPanel.Resources>
+                                            <vm:KWConverter x:Key="KWConverter" />
+                                            <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                        </StackPanel.Resources>
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{DynamicResource PlantComponentHeader}"
+                                                   Text="Electric Chiller" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                   VerticalAlignment="Top" FontSize="36" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                   VerticalAlignment="Top" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="Installed" VerticalAlignment="Top" />
+                                    </StackPanel>
+
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <Grid Margin="10">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
+                                                  Opacity=".3"
+                                                  ShadowDepth="1" Color="DarkBlue" />
+                            </Grid.Effect>
+                            <Grid.DataContext>
+                                <districtEnergy:SimConstants />
+                            </Grid.DataContext>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid Margin="5,5,5,10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition/>
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <StackPanel.Resources>
+                                            <vm:KWConverter x:Key="KWConverter" />
+                                            <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                        </StackPanel.Resources>
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{DynamicResource PlantComponentHeader}"
+                                                   Text="Grid Electricity" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                   Text="{Binding CapElecProj, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                   VerticalAlignment="Top" FontSize="36" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="{Binding CapElecProj, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                   VerticalAlignment="Top" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="Installed" VerticalAlignment="Top" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="0" Grid.Column="1">
+                                        <StackPanel.Resources>
+                                            <vm:KWConverter x:Key="KWConverter" />
+                                            <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                        </StackPanel.Resources>
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{DynamicResource PlantComponentHeader}"
+                                                   Text="CHP Elec" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                   VerticalAlignment="Top" FontSize="36" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                   VerticalAlignment="Top" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                   Text="Installed" VerticalAlignment="Top" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{DynamicResource PlantComponentHeader}"
+                                                   Text="PV" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource SubMetricStackPanelStyle}">
+                                                <StackPanel.Resources>
+                                                    <vm:KWConverter x:Key="KWConverter" />
+                                                    <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                                </StackPanel.Resources>
+                                                <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding CapPv, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                           VerticalAlignment="Top" FontSize="24" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="{Binding CapPv, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                           VerticalAlignment="Top" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="Installed Capacity" VerticalAlignment="Top" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource SubMetricStackPanelStyle}">
+                                                <StackPanel.Resources>
+                                                    <vm:AreaConverter x:Key="AreaConverter" />
+                                                    <vm:AreaConverterUnit x:Key="AreaConverterUnit" />
+                                                </StackPanel.Resources>
+                                                <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding AreaPv, Mode=OneWay, Converter={StaticResource AreaConverter}}"
+                                                           VerticalAlignment="Top" FontSize="24" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="{Binding AreaPv, Mode=OneWay, Converter={StaticResource AreaConverterUnit}}"
+                                                           VerticalAlignment="Top" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="Solar Panels" VerticalAlignment="Top" />
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,10,0,0">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   Style="{DynamicResource PlantComponentHeader}"
+                                                   Text="Wind" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource SubMetricStackPanelStyle}">
+                                                <StackPanel.Resources>
+                                                    <vm:KWConverter x:Key="KWConverter" />
+                                                    <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                                </StackPanel.Resources>
+                                                <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding CapWnd, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                           VerticalAlignment="Top" FontSize="24" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="{Binding CapWnd, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                           VerticalAlignment="Top" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="Installed Capacity" VerticalAlignment="Top" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource SubMetricStackPanelStyle}">
+                                                <StackPanel.Resources>
+                                                    <vm:AreaConverter x:Key="AreaConverter" />
+                                                    <vm:AreaConverterUnit x:Key="AreaConverterUnit" />
+                                                </StackPanel.Resources>
+                                                <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding NumWnd, Mode=OneWay, StringFormat=N0}"
+                                                           VerticalAlignment="Top" FontSize="24" />
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="Wind Turbines" VerticalAlignment="Top" />
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Grid.Row="2">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                       Style="{DynamicResource PlantComponentHeader}"
+                                                       Text="Battery" />
+                                        <StackPanel>
+                                            <StackPanel.Resources>
+                                                <vm:KWhConverter x:Key="KWhConverter" />
+                                                <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
+                                            </StackPanel.Resources>
+                                            <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding CapBat, Converter={StaticResource KWhConverter}}"
+                                                           VerticalAlignment="Top" FontSize="36" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="{Binding CapBat, Converter={StaticResource KWhConverterUnit}}"
+                                                           VerticalAlignment="Top" />
+                                            <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
+                                                           Text="Storage Capacity" VerticalAlignment="Top" />
+                                        </StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.Resources>
+                                                <vm:KWhConverter x:Key="KWhConverter" />
+                                                <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
+                                            </Grid.Resources>
+                                            <StackPanel HorizontalAlignment="Right"
+                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               Text="Charging Rate" VerticalAlignment="Top" />
+
+                                                <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding ChgrBat, Converter={StaticResource KWhConverter}}"
+                                                               VerticalAlignment="Top" FontSize="24" />
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   TextWrapping="Wrap"
+                                                                   Text="{Binding ChgrBat, Converter={StaticResource KWhConverterUnit}}"
+                                                                   VerticalAlignment="Top" />
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   Text="/h"
+                                                                   VerticalAlignment="Top" />
+                                                </StackPanel>
+
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Left"
+                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                               TextWrapping="Wrap"
+                                                               Text="Discharging Rate" VerticalAlignment="Top" />
+
+                                                <TextBlock HorizontalAlignment="Center" Margin="5,0"
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding DchgBat, Converter={StaticResource KWhConverter}}"
+                                                               VerticalAlignment="Top" FontSize="24" />
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   TextWrapping="Wrap"
+                                                                   Text="{Binding DchgBat, Converter={StaticResource KWhConverterUnit}}"
+                                                                   VerticalAlignment="Top" />
+                                                    <TextBlock HorizontalAlignment="Center" Margin="0"
+                                                                   Text="/h"
+                                                                   VerticalAlignment="Top" />
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </TabItem>
         <TabItem Header="Results">
             <Grid>
                 <Grid.RowDefinitions>
@@ -1446,11 +1917,14 @@
                                     </Grid.RowDefinitions>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock FontSize="20" Foreground="#404040" Margin="10,10,10,10">Source Energy Consumption</TextBlock>
-                                        <TextBlock FontSize="12" Foreground="#FF838383" Margin="10,19,10,12" Grid.Column="1" VerticalAlignment="Center">Annual</TextBlock>
+                                        <TextBlock FontSize="12" Foreground="#FF838383" Margin="10,19,10,12"
+                                                   Grid.Column="1" VerticalAlignment="Center">
+                                            Annual
+                                        </TextBlock>
                                     </Grid>
                                     <Grid Margin="0,0,0,5" Grid.Row="1">
                                         <Grid.ColumnDefinitions>
@@ -1458,12 +1932,15 @@
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensity}" LabelFormatter="{Binding GaugeFormatter}"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensity}"
+                                                   LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="10,0,5,0" />
-                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCarbon}" LabelFormatter="{Binding GaugeFormatter}"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCarbon}"
+                                                   LabelFormatter="{Binding GaugeFormatter}"
                                                    Grid.Column="1"
                                                    Height="100" Margin="5,0" />
-                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCost}" Grid.Column="2" LabelFormatter="{Binding GaugeFormatter}"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCost}"
+                                                   Grid.Column="2" LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="5,0,10,0" />
 
                                     </Grid>
@@ -1480,7 +1957,7 @@
                                                    Grid.Column="1" FontSize="10" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
                                                    Text="$/m²" VerticalAlignment="Bottom"
-                                                   Grid.Column="2" FontSize="10"  />
+                                                   Grid.Column="2" FontSize="10" />
                                     </Grid>
 
                                 </Grid>
@@ -1605,10 +2082,10 @@
                                                       Height="320" Grid.IsSharedSizeScope="True"
                                                       UseLayoutRounding="False" VerticalContentAlignment="Top">
                                             <lvc:PieChart.DataTooltip>
-                                                <lvc:DefaultTooltip BulletSize="20" SelectionMode="OnlySender"/>
+                                                <lvc:DefaultTooltip BulletSize="20" SelectionMode="OnlySender" />
                                             </lvc:PieChart.DataTooltip>
                                             <lvc:PieChart.ChartLegend>
-                                                <lvc:DefaultLegend BulletSize="20" Height="80"></lvc:DefaultLegend>
+                                                <lvc:DefaultLegend BulletSize="20" Height="100" />
                                             </lvc:PieChart.ChartLegend>
                                         </lvc:PieChart>
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
@@ -1619,10 +2096,10 @@
                                                       Height="320" Grid.Column="1" Grid.IsSharedSizeScope="True"
                                                       VerticalContentAlignment="Top">
                                             <lvc:PieChart.DataTooltip>
-                                                <lvc:DefaultTooltip BulletSize="20" SelectionMode="OnlySender"/>
+                                                <lvc:DefaultTooltip BulletSize="20" SelectionMode="OnlySender" />
                                             </lvc:PieChart.DataTooltip>
                                             <lvc:PieChart.ChartLegend>
-                                                <lvc:DefaultLegend BulletSize="20" Height="80"></lvc:DefaultLegend>
+                                                <lvc:DefaultLegend BulletSize="20" Height="100" />
                                             </lvc:PieChart.ChartLegend>
                                         </lvc:PieChart>
 
