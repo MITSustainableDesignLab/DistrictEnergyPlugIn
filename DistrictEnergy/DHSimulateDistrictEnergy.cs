@@ -1443,14 +1443,14 @@ namespace DistrictEnergy
             NumWnd = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.ELEC_n.Sum() * Settings.OFF_WND /
                       (0.6375 * windCubed * Settings.ROT_WND * (1 - Settings.LOSS_WND) * Settings.COP_WND /
                        1000); // Divide by 1000 because equation spits out Wh
-            ChgrHwt = CapHwt == 0 ? 0 : CapHwt / 12; // 12 hours // (AUT_HWT * 12);
-            ChgrBat = CapBat == 0 ? 0 : CapBat / 12;
+            ChgrHwt = CapHwt == 0 ? 0 : CapHwt / 12 / Settings.AUT_HWT; // 12 hours // (AUT_HWT * 12);
+            ChgrBat = CapBat == 0 ? 0 : CapBat / 12 / Settings.AUT_BAT;
             DchgrHwt = CapHwt == 0
                 ? 0
-                : CapHwt / 12; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+                : CapHwt / 12 / Settings.AUT_HWT; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
             DchgBat = CapBat == 0
                 ? 0
-                : CapBat / 12; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+                : CapBat / 12 / Settings.AUT_BAT; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

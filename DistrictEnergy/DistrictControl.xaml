@@ -272,7 +272,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Capacity as percent of peak cooling load"
+                                                    <Label Content="Capacity as percent of peak heating load"
                                                            Style="{DynamicResource PlantSettingStyle}"
                                                            ToolTip="Ratio of heating delivered by heat pumps to total load at peak conditions" />
                                                 </StackPanel>
