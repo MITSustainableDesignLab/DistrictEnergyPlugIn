@@ -5,8 +5,8 @@
      xmlns:ui="http://schemas.microsoft.com/wix/">
   <!-- Use Id=* to generate a new GUID each time. Note that UpgradeCode MUST always stay the same for ever and ever. -->
   <?define ProductVersion="$(fileVersion.ProductVersion($(var.DistrictEnergy.TargetPath)))" ?>
-  <Product Id="*" Name="District Energy Plug-Ins" Language="1033" Version="$(var.ProductVersion)"
-           Manufacturer="MIT Sustainable Design Lab" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
+  <Product Id="*" Name="District Energy Plug-In" Language="1033" Version="$(var.ProductVersion)"
+           Manufacturer="Samuel Letellier-Duchesne" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
     <!-- Install perUser -->
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -138,7 +138,7 @@
       <![CDATA[Installed OR RHINOX64]]>
     </Condition>
 
-    <Feature Id="DistrictEnergyPlugins" Title="District Energy Plug-Ins" Level="1">
+    <Feature Id="DistrictEnergyPlugin" Title="District Energy Plug-In" Level="1">
       <!-- The DLL dependencies -->
       <ComponentGroupRef Id="CMPGRP_Dependencies" />
       <!-- DH plug-in -->
@@ -175,8 +175,8 @@
 
   <Fragment Id="FRG_Dependencies">
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="AppDataFolder" Name="AppDataFolder">
-        <Directory Id="PLUGINFOLDER" Name="District Energy Plug-Ins">
+      <Directory Id="CommonAppDataFolder" Name="CommonAppDataFolder">
+        <Directory Id="PLUGINFOLDER" Name="District Energy Plug-In">
 
 
           <Component Id="DistrictEnergyDLL" Guid="{3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a}">
