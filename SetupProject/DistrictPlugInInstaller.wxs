@@ -122,7 +122,7 @@
     <!-- Check for UMI 3.0-->
     <Property Id="UMI33VERSION">
       <DirectorySearch Id="UMIRHP" Path="[WindowsVolume]UMI\">
-        <FileSearch Name="umi.rhp" MinVersion="3.3.0.32371" />
+        <FileSearch Name="umi.rhp" MinVersion="3.3.0.0" />
         <!-- Umi version 3.3.0 is REQUIRED! -->
       </DirectorySearch>
     </Property>
