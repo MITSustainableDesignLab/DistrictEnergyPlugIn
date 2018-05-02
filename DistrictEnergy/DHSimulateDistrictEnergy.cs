@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -66,7 +67,7 @@ namespace DistrictEnergy
                 //if (i == 3878)
                 //    Debugger.Break();
                 eqHW_ABS(AllDistrictDemand.CHW_n[i], out ResultsArray.HW_ABS[i], out ResultsArray.CHW_ABS[i]); //OK
-                eqELEC_ECH(AllDistrictDemand.CHW_n[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i]); //OK
+                eqELEC_ECH(AllDistrictDemand.CHW_n[i], ResultsArray.EhpEvap[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i], out ResultsArray.CHW_EHPevap[i]); //OK
                 eqHW_SHW(AllDistrictDemand.RAD_n[i], AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i],
                     out ResultsArray.HW_SHW[i],
                     out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
@@ -80,8 +81,9 @@ namespace DistrictEnergy
                     ResultsArray.HW_SHW[i], out ResultsArray.HW_HWT[i]); // OK
                 eqELEC_EHP(AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i],
                     ResultsArray.HW_HWT[i], ResultsArray.HW_CHP[i], out ResultsArray.ELEC_EHP[i],
-                    out ResultsArray.HW_EHP[i]); // Will call HW_CHP even though its not calculated yet
-
+                    out ResultsArray.HW_EHP[i], out ResultsArray.EhpEvap[i]); // Will call HW_CHP even though its not calculated yet
+                // Call ECH a second time to calculate new chiller load since heat pumps may have reduced the load
+                eqELEC_ECH(AllDistrictDemand.CHW_n[i], ResultsArray.EhpEvap[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i], out ResultsArray.CHW_EHPevap[i]); //OK
 
                 eqELEC_REN(ResultsArray.ELEC_PV[i], ResultsArray.ELEC_WND[i], AllDistrictDemand.ELEC_n[i],
                     ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_REN[i],
@@ -334,6 +336,7 @@ namespace DistrictEnergy
                 Headers.Add("ELEC_n"); // 26
                 Headers.Add("CHW_ABS"); // 27
                 Headers.Add("CHW_ECH"); // 28
+                Headers.Add("CHW_EHPEvap"); // 29
 
                 foreach (var header in Headers) csvWriter.WriteField(header);
 
@@ -373,6 +376,7 @@ namespace DistrictEnergy
                     csvWriter.WriteField(AllDistrictDemand.ELEC_n[i]); // 26
                     csvWriter.WriteField(ResultsArray.CHW_ABS[i]); // 27
                     csvWriter.WriteField(ResultsArray.CHW_ECH[i]); // 28
+                    csvWriter.WriteField(ResultsArray.CHW_EHPevap[i]); // 29
 
                     csvWriter.NextRecord();
                     dateTime = dateTime.AddHours(1);
@@ -435,19 +439,30 @@ namespace DistrictEnergy
         ///     and the annual total can be expressed as:
         /// </summary>
         /// <param name="chwN">Hourly chilled water load profile (kWh)</param>
+        /// <param name="ehpEvap">All evaporator-side energy</param>
         /// <param name="elecEch">Electricity Consumption to generate chilled water from chillers</param>
         /// <param name="chwEch"></param>
-        private void eqELEC_ECH(double chwN, out double elecEch, out double chwEch)
+        /// <param name="chwEhpEvap"></param>
+        private void eqELEC_ECH(double chwN, double ehpEvap, out double elecEch, out double chwEch,
+            out double chwEhpEvap)
         {
             if (chwN > SimConstants.CapAbs)
             {
-                elecEch = (chwN - SimConstants.CapAbs) / DistrictEnergy.Settings.CCOP_ECH;
-                chwEch = chwN - SimConstants.CapAbs;
+                elecEch = Math.Max(chwN - SimConstants.CapAbs - ehpEvap, 0) / DistrictEnergy.Settings.CCOP_ECH;
+                chwEch = Math.Max(chwN - SimConstants.CapAbs - ehpEvap, 0);
+
+                if (ehpEvap > chwN - SimConstants.CapAbs)
+                    chwEhpEvap = chwN - SimConstants.CapAbs;
+                else
+                {
+                    chwEhpEvap = ehpEvap;
+                }
             }
             else
             {
                 elecEch = 0;
                 chwEch = 0;
+                chwEhpEvap = 0;
             }
         }
 
@@ -461,11 +476,16 @@ namespace DistrictEnergy
         /// <param name="hwChp"></param>
         /// <param name="elecEhp"></param>
         /// <param name="hwEhp"></param>
+        /// <param name="ehpEvap"></param>
         private void eqELEC_EHP(double hwN, double hwAbs, double hwShw,
-            double hwHwt, double hwChp, out double elecEhp, out double hwEhp)
+            double hwHwt, double hwChp, out double elecEhp, out double hwEhp, out double ehpEvap)
         {
             elecEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SimConstants.CapEhp) / DistrictEnergy.Settings.HCOP_EHP;
             hwEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SimConstants.CapEhp);
+            if (DistrictEnergy.Settings.UseEhpEvap)
+                ehpEvap = hwEhp * (1 - 1 / DistrictEnergy.Settings.HCOP_EHP);
+            else
+                ehpEvap = 0;
         }
 
         /// <summary>
@@ -743,6 +763,8 @@ namespace DistrictEnergy
         private void SetResultsArraystoZero()
         {
             Array.Clear(ResultsArray.BAT_CHG_n, 0, ResultsArray.BAT_CHG_n.Length);
+            Array.Clear(ResultsArray.CHW_ABS, 0, ResultsArray.CHW_ABS.Length);
+            Array.Clear(ResultsArray.CHW_ECH, 0, ResultsArray.CHW_ECH.Length);
             Array.Clear(ResultsArray.ELEC_BAT, 0, ResultsArray.ELEC_BAT.Length);
             Array.Clear(ResultsArray.ELEC_CHP, 0, ResultsArray.ELEC_CHP.Length);
             Array.Clear(ResultsArray.ELEC_ECH, 0, ResultsArray.ELEC_ECH.Length);
@@ -763,6 +785,8 @@ namespace DistrictEnergy
             Array.Clear(ResultsArray.SHW_BAL, 0, ResultsArray.SHW_BAL.Length);
             Array.Clear(ResultsArray.ELEC_PROJ, 0, ResultsArray.ELEC_PROJ.Length);
             Array.Clear(ResultsArray.NGAS_PROJ, 0, ResultsArray.NGAS_PROJ.Length);
+            Array.Clear(ResultsArray.EhpEvap, 0, ResultsArray.EhpEvap.Length);
+            Array.Clear(ResultsArray.CHW_EHPevap, 0, ResultsArray.CHW_EHPevap.Length);
         }
 
         public ResultsArray ResultsArray { get; }
@@ -928,6 +952,8 @@ namespace DistrictEnergy
         public readonly double[] TANK_CHG_n = new double[8760];
 
         public event EventHandler ResultsChanged;
+        public readonly double[] EhpEvap = new double[8760];
+        public readonly double[] CHW_EHPevap = new double[8760];
 
         protected internal virtual void OnResultsChanged(EventArgs e)
         {
@@ -1115,6 +1141,10 @@ namespace DistrictEnergy
             {
                 return 0;
             } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
+        }
+
+        public static bool UseEhpEvap {
+            get { return PlantSettingsViewModel.Instance.UseEhpEvap; }
         }
     }
 

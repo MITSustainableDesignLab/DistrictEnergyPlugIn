@@ -16,5 +16,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(3.2)] public double HCOP_EHP { get; set; } = 3.2;
+
+        /// <summary>
+        ///     Should the evaporator side be used as a cold source?
+        /// </summary>
+        [DataMember] [DefaultValue(0)] public int UseEhpEvap { get; set; } = 0;
     }
 }

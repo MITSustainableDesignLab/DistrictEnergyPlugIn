@@ -309,6 +309,28 @@
 
                                                 </StackPanel>
                                             </Grid>
+                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                <Grid.DataContext>
+                                                    <vm:PlantSettingsViewModel />
+                                                </Grid.DataContext>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel HorizontalAlignment="Left">
+                                                    <Label Content="Use Water Source instead of Air Source"
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                            Grid.ColumnSpan="2"
+                                                            HorizontalAlignment="Right" Margin="0">
+                                                    <CheckBox IsChecked="{Binding UseEhpEvap, Mode=TwoWay}" />
+
+                                                </StackPanel>
+                                            </Grid>
+
                                         </StackPanel>
                                     </Grid>
                                     <Grid x:Name="Shw" VerticalAlignment="Top" Height="Auto">
