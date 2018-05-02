@@ -200,6 +200,7 @@ namespace DistrictEnergy.ViewModels
             var chwDemand = new Dictionary<string, double[]>();
             chwDemand.Add("Absorption Chiller", instance.ResultsArray.CHW_ABS);
             chwDemand.Add("Electric Chiller", instance.ResultsArray.CHW_ECH);
+            chwDemand.Add("Evaporator Side of EHPs", instance.ResultsArray.CHW_EHPevap);
 
             StackedCoolingSeries.Clear();
 
