@@ -1098,7 +1098,7 @@ namespace DistrictEnergy
 
         internal static double OFF_WND
         {
-            get { return PlantSettingsViewModel.Instance.OFF_WND; }
+            get { return PlantSettingsViewModel.Instance.OFF_WND / 100; }
         }
 
         public static double ROT_WND
@@ -1470,9 +1470,9 @@ namespace DistrictEnergy
                       (DHSimulateDistrictEnergy.Instance.AllDistrictDemand.RAD_n.Sum() * Settings.EFF_PV * (1 - Settings.LOSS_PV) * Settings.UTIL_PV);
             var windCubed = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.WIND_n.Where(w => w > Settings.CIN_WND && w < Settings.COUT_WND).Select(w => Math.Pow(w, 3))
                 .Sum();
-            NumWnd = DHSimulateDistrictEnergy.Instance.AllDistrictDemand.ELEC_n.Sum() * Settings.OFF_WND /
+            NumWnd = Math.Ceiling(DHSimulateDistrictEnergy.Instance.AllDistrictDemand.ELEC_n.Sum() * Settings.OFF_WND /
                       (0.6375 * windCubed * Settings.ROT_WND * (1 - Settings.LOSS_WND) * Settings.COP_WND /
-                       1000); // Divide by 1000 because equation spits out Wh
+                       1000)); // Divide by 1000 because equation spits out Wh
             ChgrHwt = CapHwt == 0 ? 0 : CapHwt / 12 / Settings.AUT_HWT; // 12 hours // (AUT_HWT * 12);
             ChgrBat = CapBat == 0 ? 0 : CapBat / 12 / Settings.AUT_BAT;
             DchgrHwt = CapHwt == 0
