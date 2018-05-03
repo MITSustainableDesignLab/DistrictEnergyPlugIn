@@ -1935,6 +1935,8 @@
                                     </Grid.DataContext>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
                                     <Grid>
@@ -1948,20 +1950,85 @@
                                             Annual
                                         </TextBlock>
                                     </Grid>
+                                    <Grid Margin="0,0,0,18" Grid.Row="1">
+                                        <Grid.Resources>
+                                            <vm:KWConverter x:Key="KWConverter" />
+                                            <vm:KWConverterUnit x:Key="KWConverterUnit" />
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                   Text="{Binding TotalEnergyIntensity, Converter={StaticResource KWConverter}}"
+                                                   VerticalAlignment="Top" FontSize="36" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                   Text="{Binding TotalCarbonIntensity, Converter={StaticResource KWConverter}}"
+                                                   VerticalAlignment="Top" FontSize="36" Grid.Column="1" />
+
+                                        <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
+                                                   Text="{Binding TotalCostIntensity, Converter={StaticResource KWConverter}}"
+                                                   VerticalAlignment="Top" FontSize="36" Grid.Column="2" />
+
+                                    </Grid>
+                                    <Grid Grid.Row="1" Margin="0,0,0,18">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,-8" TextWrapping="Wrap"
+                                                   Text="kWh/m²" VerticalAlignment="Bottom" FontSize="10" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,-8" TextWrapping="Wrap"
+                                                   Text="kgCO₂eq/m²" VerticalAlignment="Bottom"
+                                                   Grid.Column="1" FontSize="10" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,-8" TextWrapping="Wrap"
+                                                   Text="$/m²" VerticalAlignment="Bottom"
+                                                   Grid.Column="2" FontSize="10" />
+                                    </Grid>
+
+
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <Grid Margin="20,20,20,0">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" Opacity=".2"
+                                                  ShadowDepth="1" />
+                            </Grid.Effect>
+                            <Border CornerRadius="5" Background="White">
+                                <Grid>
+                                    <Grid.DataContext>
+                                        <vm:ResultsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock FontSize="20" Foreground="#404040" Margin="10,10,10,10">Supplied Energy Breakdown</TextBlock>
+                                    </Grid>
                                     <Grid Margin="0,0,0,5" Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensity}"
+                                        <Label Content="Share of gas needed to meet each component" HorizontalAlignment="Left" Margin="5,-13,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                        <lvc:Gauge From="0" To="100" Value="{Binding GasToChw}"
                                                    LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="10,0,5,0" />
-                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCarbon}"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding GasToHw}"
                                                    LabelFormatter="{Binding GaugeFormatter}"
                                                    Grid.Column="1"
                                                    Height="100" Margin="5,0" />
-                                        <lvc:Gauge From="0" To="100" Value="{Binding TotalEnergyIntensityCost}"
+                                        <lvc:Gauge From="0" To="100" Value="{Binding GasToElec}"
                                                    Grid.Column="2" LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="5,0,10,0" />
 
@@ -1973,18 +2040,52 @@
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
-                                                   Text="kWh/m²" VerticalAlignment="Bottom" FontSize="10" />
+                                                   Text="chw" VerticalAlignment="Bottom" FontSize="10" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
-                                                   Text="kgCO₂eq/m²" VerticalAlignment="Bottom"
+                                                   Text="hw" VerticalAlignment="Bottom"
                                                    Grid.Column="1" FontSize="10" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
-                                                   Text="$/m²" VerticalAlignment="Bottom"
+                                                   Text="elec" VerticalAlignment="Bottom"
                                                    Grid.Column="2" FontSize="10" />
                                     </Grid>
+                                    <Grid Margin="0,10,0,5" Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Share of electricity needed to meet each component" HorizontalAlignment="Left" Margin="5,-13,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                        <lvc:Gauge From="0" To="100" Value="{Binding ElecToChw}"
+                                                   LabelFormatter="{Binding GaugeFormatter}"
+                                                   Height="100" Margin="10,0,5,0" />
+                                        <lvc:Gauge From="0" To="100" Value="{Binding ElecToHw}"
+                                                   LabelFormatter="{Binding GaugeFormatter}"
+                                                   Grid.Column="1"
+                                                   Height="100" Margin="5,0" />
+                                        <lvc:Gauge From="0" To="100" Value="{Binding ElecToElec}"
+                                                   Grid.Column="2" LabelFormatter="{Binding GaugeFormatter}"
+                                                   Height="100" Margin="5,0,10,0" />
 
+                                    </Grid>
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
+                                                   Text="chw" VerticalAlignment="Bottom" FontSize="10" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
+                                                   Text="hw" VerticalAlignment="Bottom"
+                                                   Grid.Column="1" FontSize="10" />
+                                        <TextBlock HorizontalAlignment="Center" Margin="0,0,0,41" TextWrapping="Wrap"
+                                                   Text="elec" VerticalAlignment="Bottom"
+                                                   Grid.Column="2" FontSize="10" />
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </Grid>
+
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="210*" />

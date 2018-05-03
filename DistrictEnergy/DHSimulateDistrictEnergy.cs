@@ -66,7 +66,7 @@ namespace DistrictEnergy
             {
                 //if (i == 3878)
                 //    Debugger.Break();
-                eqHW_ABS(AllDistrictDemand.CHW_n[i], out ResultsArray.HW_ABS[i], out ResultsArray.CHW_ABS[i]); //OK
+                eqHW_ABS(AllDistrictDemand.CHW_n[i], out ResultsArray.HW_ABS[i], out ResultsArray.CHW_ABS[i], ResultsArray.EhpEvap[i]); //OK
                 eqELEC_ECH(AllDistrictDemand.CHW_n[i], ResultsArray.EhpEvap[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i], out ResultsArray.CHW_EHPevap[i]); //OK
                 eqHW_SHW(AllDistrictDemand.RAD_n[i], AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i],
                     out ResultsArray.HW_SHW[i],
@@ -82,9 +82,23 @@ namespace DistrictEnergy
                 eqELEC_EHP(AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i], ResultsArray.HW_SHW[i],
                     ResultsArray.HW_HWT[i], ResultsArray.HW_CHP[i], out ResultsArray.ELEC_EHP[i],
                     out ResultsArray.HW_EHP[i], out ResultsArray.EhpEvap[i]); // Will call HW_CHP even though its not calculated yet
-                // Call ECH a second time to calculate new chiller load since heat pumps may have reduced the load
-                eqELEC_ECH(AllDistrictDemand.CHW_n[i], ResultsArray.EhpEvap[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i], out ResultsArray.CHW_EHPevap[i]); //OK
 
+                // Call ABS & ECH a second time to calculate new Absoprtion & Electric chiller loads since heat pumps may have reduced the load
+                eqHW_ABS(AllDistrictDemand.CHW_n[i], out ResultsArray.HW_ABS[i], out ResultsArray.CHW_ABS[i], ResultsArray.EhpEvap[i]);
+                eqELEC_ECH(AllDistrictDemand.CHW_n[i], ResultsArray.EhpEvap[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i], out ResultsArray.CHW_EHPevap[i]); //OK
+                eqHW_SHW(AllDistrictDemand.RAD_n[i], AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i],
+                    out ResultsArray.HW_SHW[i],
+                    out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
+                eqELEC_PV(AllDistrictDemand.RAD_n[i], out ResultsArray.ELEC_PV[i]); // OK
+                eqELEC_WND(AllDistrictDemand.WIND_n[i], out ResultsArray.ELEC_WND[i]); // OK
+                if (i == 0) ResultsArray.TANK_CHG_n[i] = SimConstants.CapHwt * DistrictEnergy.Settings.TANK_START;
+                if (i > 0)
+                    eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], AllDistrictDemand.T_AMB_n[i],
+                        out ResultsArray.TANK_CHG_n[i]); // OK
+                eqHW_HWT(ResultsArray.TANK_CHG_n[i], AllDistrictDemand.HW_n[i], ResultsArray.HW_ABS[i],
+                    ResultsArray.HW_SHW[i], out ResultsArray.HW_HWT[i]); // OK
+
+                // We continue...
                 eqELEC_REN(ResultsArray.ELEC_PV[i], ResultsArray.ELEC_WND[i], AllDistrictDemand.ELEC_n[i],
                     ResultsArray.ELEC_ECH[i], ResultsArray.ELEC_EHP[i], out ResultsArray.ELEC_REN[i],
                     out ResultsArray.ELEC_BAL[i]); // OK
@@ -427,10 +441,11 @@ namespace DistrictEnergy
         /// <param name="chwN">Hourly chilled water load profile (kWh)</param>
         /// <param name="hwAbs">Hot water required for Absorption Chiller</param>
         /// <param name="chwAbs"></param>
-        private void eqHW_ABS(double chwN, out double hwAbs, out double chwAbs)
+        /// <param name="ehpEvap"></param>
+        private void eqHW_ABS(double chwN, out double hwAbs, out double chwAbs, double ehpEvap)
         {
-            hwAbs = Math.Min(chwN, SimConstants.CapAbs) / DistrictEnergy.Settings.CCOP_ABS;
-            chwAbs = Math.Min(chwN, SimConstants.CapAbs);
+            hwAbs = GetSmallestNonNegative(chwN - ehpEvap, SimConstants.CapAbs) / DistrictEnergy.Settings.CCOP_ABS;
+            chwAbs = GetSmallestNonNegative(chwN - ehpEvap, SimConstants.CapAbs);
         }
 
         /// <summary>
@@ -656,7 +671,7 @@ namespace DistrictEnergy
         {
             double temp = 0;
             if (string.Equals(tracking, "Thermal"))
-                temp = Math.Min(SimConstants.CapChpElec / DistrictEnergy.Settings.EFF_CHP * DistrictEnergy.Settings.HREC_CHP,
+                temp = GetSmallestNonNegative(SimConstants.CapChpElec / DistrictEnergy.Settings.EFF_CHP * DistrictEnergy.Settings.HREC_CHP,
                     hWn + hwAbs - hwShw - hwHwt - hwEhp); //hwN - hwEhp + hwAbs - hwShw - hwHwt
             if (string.Equals(tracking, "Electrical"))
                 temp = ngasChp * DistrictEnergy.Settings.HREC_CHP;
@@ -667,7 +682,7 @@ namespace DistrictEnergy
                 if (i > 0)
                     eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], AllDistrictDemand.T_AMB_n[i],
                         out ResultsArray.TANK_CHG_n[i]);
-                temp = 0; // force to zero becasue hwChp supplied to project is null; it only served to charge the tank
+                temp = hWn + hwAbs - hwShw - hwHwt - hwEhp;
                 //LogMessageToFile("The CHP plant was forced to produce more energy than needed.", i);
             }
 
