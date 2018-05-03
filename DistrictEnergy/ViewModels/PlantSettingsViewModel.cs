@@ -453,6 +453,31 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool UseEhpEvap
+        {
+            get
+            {
+                if (ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap == 1)
+                    return true;
+                else
+                    return false;
+            }
+            set
+            {
+                if (value)
+                {
+                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 1;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseEhpEvap)));
+                }
+                else
+                {
+                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 0;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseEhpEvap)));
+                }
+                
+            }
+        }
+
         #endregion
     }
 }
