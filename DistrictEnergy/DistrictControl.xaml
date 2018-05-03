@@ -1386,7 +1386,7 @@
                                                    Text="{Binding CapElecProj, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
                                                    VerticalAlignment="Top" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                   Text="Installed" VerticalAlignment="Top" />
+                                                   Text="Strain on grid" VerticalAlignment="Top" />
                                     </StackPanel>
                                     <StackPanel Grid.Row="0" Grid.Column="1">
                                         <StackPanel.Resources>
@@ -1397,10 +1397,10 @@
                                                    Style="{DynamicResource PlantComponentHeader}"
                                                    Text="CHP Elec" />
                                         <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
-                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                   Text="{Binding CapChpElec, Mode=OneWay, Converter={StaticResource KWConverter}}"
                                                    VerticalAlignment="Top" FontSize="36" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                   Text="{Binding CapChpElec, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
                                                    VerticalAlignment="Top" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                    Text="Installed" VerticalAlignment="Top" />
