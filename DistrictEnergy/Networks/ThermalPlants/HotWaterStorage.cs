@@ -18,9 +18,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.15)] public double LOSS_HWT { get; set; } = 0.15;
 
         /// <summary>
-        ///     The Tank charged state at the begining of the simulation. Assumed at 80 %.
+        ///     The Tank charged state at the begining of the simulation. Assumed at 0 %.
         /// </summary>
         [DataMember]
-        [DefaultValue(0.8)] public double TANK_START { get; set; } = 0.8;
+        [DefaultValue(0.8)] public double TANK_START { get; set; } = 0.0;
     }
 }

@@ -319,7 +319,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Use Water Source instead of Air Source"
+                                                    <Label Content="Use Heating and Cooling simultaneously"
                                                            Style="{DynamicResource PlantSettingStyle}"
                                                            ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
                                                 </StackPanel>
@@ -979,9 +979,9 @@
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             HorizontalAlignment="Right" Margin="0">
-                                                    <ComboBox SelectedValue="{Binding TMOD_CHP}"
+                                                    <ComboBox SelectedItem="{Binding TMOD_CHP, Mode=TwoWay}"
                                                               ItemsSource="{Binding PosibleTrackingModes}"
-                                                              Height="20" IsSynchronizedWithCurrentItem="True" />
+                                                              Height="20" IsSynchronizedWithCurrentItem="True"  />
                                                 </StackPanel>
                                             </Grid>
                                             <Grid Margin="0,3,0,0" VerticalAlignment="Top">
@@ -1386,7 +1386,7 @@
                                                    Text="{Binding CapElecProj, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
                                                    VerticalAlignment="Top" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                   Text="Installed" VerticalAlignment="Top" />
+                                                   Text="Strain on grid" VerticalAlignment="Top" />
                                     </StackPanel>
                                     <StackPanel Grid.Row="0" Grid.Column="1">
                                         <StackPanel.Resources>
@@ -1397,10 +1397,10 @@
                                                    Style="{DynamicResource PlantComponentHeader}"
                                                    Text="CHP Elec" />
                                         <TextBlock HorizontalAlignment="Center" Margin="5,0" TextWrapping="Wrap"
-                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverter}}"
+                                                   Text="{Binding CapChpElec, Mode=OneWay, Converter={StaticResource KWConverter}}"
                                                    VerticalAlignment="Top" FontSize="36" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                   Text="{Binding CapEch, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
+                                                   Text="{Binding CapChpElec, Mode=OneWay, Converter={StaticResource KWConverterUnit}}"
                                                    VerticalAlignment="Top" />
                                         <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                    Text="Installed" VerticalAlignment="Top" />

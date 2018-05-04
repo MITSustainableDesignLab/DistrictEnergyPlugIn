@@ -64,7 +64,7 @@ namespace DistrictEnergy
             StatusBar.ShowProgressMeter(0, numberTimesteps, "Solving Thermal Plant Components", true, true);
             for (; i < numberTimesteps; i++)
             {
-                //if (i == 3878)
+                //if (i == 3473)
                 //    Debugger.Break();
                 eqHW_ABS(AllDistrictDemand.CHW_n[i], out ResultsArray.HW_ABS[i], out ResultsArray.CHW_ABS[i], ResultsArray.EhpEvap[i]); //OK
                 eqELEC_ECH(AllDistrictDemand.CHW_n[i], ResultsArray.EhpEvap[i], out ResultsArray.ELEC_ECH[i], out ResultsArray.CHW_ECH[i], out ResultsArray.CHW_EHPevap[i]); //OK
@@ -675,14 +675,15 @@ namespace DistrictEnergy
                     hWn + hwAbs - hwShw - hwHwt - hwEhp); //hwN - hwEhp + hwAbs - hwShw - hwHwt
             if (string.Equals(tracking, "Electrical"))
                 temp = ngasChp * DistrictEnergy.Settings.HREC_CHP;
-            if (temp > hWn + hwAbs - hwShw - hwHwt - hwEhp) // CHP is forced to produce more energy than necessary
+            var demandToBeMetByChp = Math.Max(hWn + hwAbs - hwShw - hwHwt - hwEhp, 0);
+            if (temp > demandToBeMetByChp) // CHP is forced to produce more energy than necessary
             {
                 // Send Excess heat to Tank
                 ResultsArray.SHW_BAL[i] = ResultsArray.SHW_BAL[i] + temp;
                 if (i > 0)
                     eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], AllDistrictDemand.T_AMB_n[i],
                         out ResultsArray.TANK_CHG_n[i]);
-                temp = hWn + hwAbs - hwShw - hwHwt - hwEhp;
+                temp = demandToBeMetByChp;
                 //LogMessageToFile("The CHP plant was forced to produce more energy than needed.", i);
             }
 
