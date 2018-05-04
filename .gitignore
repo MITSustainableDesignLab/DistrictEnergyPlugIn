@@ -266,4 +266,6 @@ __pycache__/
 *.pyc
 /DistricEnergyPlugInDocs/Help
 
-changelog\.*
+changelog*.*
+
+AllPreviousReleases/

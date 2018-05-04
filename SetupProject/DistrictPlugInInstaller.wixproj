@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>2a10a76b-558f-424d-965b-d2c84703cee0</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>DistrictPluginInstaller-4.433-2018-release-1.2.12</OutputName>
+    <OutputName>DistrictPluginInstaller-4.433-2018-release-1.2.13</OutputName>
     <OutputType>Package</OutputType>
     <Name>DistrictPlugInInstaller</Name>
   </PropertyGroup>
@@ -91,6 +91,9 @@
   </Target>
   <PropertyGroup>
     <PreBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(SolutionDir)AllPreviousReleases\$(TargetFileName)</PostBuildEvent>
   </PropertyGroup>
   <!--To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.-->
