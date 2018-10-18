@@ -66,11 +66,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
     <Reference Include="Umi.Core">
-      <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
+      <HintPath>C:\UMI\Umi.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Rhino">
-      <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Rhino.dll</HintPath>
+      <HintPath>C:\UMI\Umi.Rhino.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
