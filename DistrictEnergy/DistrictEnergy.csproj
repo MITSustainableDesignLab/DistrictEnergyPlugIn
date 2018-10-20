@@ -97,7 +97,7 @@
     <Compile Include="Networks\ThermalPlants\PhotovoltaicArray.cs" />
     <Compile Include="Networks\ThermalPlants\SolarThermalCollector.cs" />
     <Compile Include="Networks\ThermalPlants\WindTurbine.cs" />
-    <Compile Include="OpcaityConverter.cs" />
+    <Compile Include="OpacityConverter.cs" />
     <Compile Include="PlanningSettings.cs" />
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
