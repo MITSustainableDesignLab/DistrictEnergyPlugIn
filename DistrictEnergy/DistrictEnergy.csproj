@@ -52,7 +52,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RhinoCommon">
-      <HintPath>Resources\RhinoCommon.dll</HintPath>
+      <HintPath>C:\Program Files\Rhino 6\System\RhinoCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -66,11 +66,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
     <Reference Include="Umi.Core">
-      <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Core.dll</HintPath>
+      <HintPath>C:\UMI\Umi.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Rhino">
-      <HintPath>..\..\..\..\..\..\..\..\..\Umi\Umi.Rhino.dll</HintPath>
+      <HintPath>C:\UMI\Umi.Rhino.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -97,7 +97,7 @@
     <Compile Include="Networks\ThermalPlants\PhotovoltaicArray.cs" />
     <Compile Include="Networks\ThermalPlants\SolarThermalCollector.cs" />
     <Compile Include="Networks\ThermalPlants\WindTurbine.cs" />
-    <Compile Include="OpcaityConverter.cs" />
+    <Compile Include="OpacityConverter.cs" />
     <Compile Include="PlanningSettings.cs" />
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />

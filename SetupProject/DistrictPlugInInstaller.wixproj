@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>2a10a76b-558f-424d-965b-d2c84703cee0</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>DistrictPluginInstaller-4.433-2018-release-1.2.13</OutputName>
+    <OutputName>DistrictPluginInstaller-4.433-2018-release-1.3.0</OutputName>
     <OutputType>Package</OutputType>
     <Name>DistrictPlugInInstaller</Name>
   </PropertyGroup>

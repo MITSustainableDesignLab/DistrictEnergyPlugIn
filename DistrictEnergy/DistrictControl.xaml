@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="535" d:DesignHeight="1525" d:DataContext="{d:DesignData ResultsViewModel}">
+             d:DesignWidth="385" d:DesignHeight="1100" d:DataContext="{d:DesignData ResultsViewModel}">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
@@ -140,6 +140,7 @@
                                 <Setter Property="VerticalAlignment" Value="Top" />
                                 <Setter Property="Width" Value="Auto" />
                                 <Setter Property="Margin" Value="5,0,5,5" />
+                                <Setter Property="Background" Value="White" />
                             </Style>
                         </StackPanel.Resources>
                         <Grid x:Name="ChilledWaterGroup" Margin="10">
@@ -159,18 +160,19 @@
                                         <StackPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                                                     Width="Auto"
                                                     Background="White" Margin="5,0,5,5">
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <Label Content="Capacity as percent of peak cooling load"
-                                                       Style="{DynamicResource PlantSettingStyle}"
-                                                       ToolTip="Ratio of cooling delivered by absorption chillers to total load at peak conditions" />
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                                        Value="{Binding OFF_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Capacity as percent of peak cooling load" IsSnapToTickEnabled="True" Focusable="False" />
+
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -179,30 +181,32 @@
                                                            HorizontalAlignment="Center" />
                                                     <TextBox
                                                         Text="{Binding OFF_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        Style="{DynamicResource TextBoxStyle}" />
+                                                        Style="{DynamicResource TextBoxStyle}" UndoLimit="10" />
 
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <Label Content="Cooling coefficient of performance"
-                                                       Style="{DynamicResource PlantSettingStyle}"
-                                                       ToolTip="Average annual ratio of useful cooling delivered to natural gas consumed" />
+                                            <Expander Margin="0,-22,0,0">
+                                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                                    <Grid.DataContext>
+                                                        <vm:PlantSettingsViewModel />
+                                                    </Grid.DataContext>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="Cooling coefficient of performance"
+                                                           Style="{DynamicResource PlantSettingStyle}"
+                                                           ToolTip="Average annual ratio of useful cooling delivered to natural gas consumed" />
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                Grid.ColumnSpan="2"
+                                                                HorizontalAlignment="Right" Margin="0">
+                                                        <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                 Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Expander>
                                         </StackPanel>
                                     </Grid>
                                     <Grid x:Name="Ech" VerticalAlignment="Top"
@@ -235,7 +239,8 @@
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
                                                     <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding CCOP_ECH, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                             Text="{Binding CCOP_ECH, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                             UndoLimit="10" />
                                                 </StackPanel>
                                             </Grid>
                                         </StackPanel>
@@ -260,22 +265,19 @@
                                             Electric Heat Pump
                                         </TextBlock>
 
-                                        <StackPanel
-                                            Grid.Row="1" Style="{StaticResource StackPanelStyle}">
-                                            <Grid VerticalAlignment="Top">
+                                        <StackPanel Grid.Row="1" Style="{StaticResource StackPanelStyle}">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Capacity as percent of peak heating load"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Ratio of heating delivered by heat pumps to total load at peak conditions" />
-                                                </StackPanel>
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                                        Value="{Binding OFF_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Ratio of heating delivered by heat pumps to total load at peak conditions" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -287,49 +289,53 @@
 
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Heating coefficient of performance"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding HCOP_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Expander Margin="0,-22,0,0">
+                                                <StackPanel>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Heating coefficient of performance"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding HCOP_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Use Heating and Cooling simultaneously"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <CheckBox IsChecked="{Binding UseEhpEvap, Mode=TwoWay}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Use Heating and Cooling simultaneously"
+                                                               Style="{DynamicResource PlantSettingStyle}"
+                                                               ToolTip="Average annual ratio of useful heating delivered to electricity consumed" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                Grid.ColumnSpan="2"
+                                                                HorizontalAlignment="Right" Margin="0">
+                                                            <CheckBox IsChecked="{Binding UseEhpEvap, Mode=TwoWay}" />
 
+                                                        </StackPanel>
+                                                    </Grid>
                                                 </StackPanel>
-                                            </Grid>
+                                            </Expander>
 
                                         </StackPanel>
                                     </Grid>
@@ -343,20 +349,18 @@
 
                                         <StackPanel Grid.Row="1" Style="{StaticResource StackPanelStyle}">
 
-                                            <Grid VerticalAlignment="Top">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Target offset as percent of annual energy "
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Ratio of heating delivered by solar collectors to total annual heating requirement" />
-                                                </StackPanel>
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                                        Value="{Binding OFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Ratio of heating delivered by solar collectors to total annual heating requirement" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -367,78 +371,81 @@
                                                              Text="{Binding OFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Collector efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Average annual ratio of the heat output from collectors divided by received solar radiation" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding EFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Area utilization factor "
-                                                           ToolTip="Accounts for collector frames and other infrastructural requirements"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Accounts for other losses including leakage, distribution, or context shading" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding LOSS_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
+                                            <Expander Margin="0,-22,0,0">
+                                                <StackPanel>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Collector efficiency"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Average annual ratio of the heat output from collectors divided by received solar radiation" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding EFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Area utilization factor "
+                                                                   ToolTip="Accounts for collector frames and other infrastructural requirements"
+                                                                   Style="{DynamicResource PlantSettingStyle}" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Miscellaneous losses"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Accounts for other losses including leakage, distribution, or context shading" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding LOSS_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </StackPanel></Expander>
 
                                         </StackPanel>
                                     </Grid>
@@ -449,7 +456,7 @@
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" Style="{DynamicResource PlantComponentHeader}">Hot Water Tank</TextBlock>
                                         <StackPanel Style="{StaticResource StackPanelStyle}" Grid.Row="1">
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
@@ -458,12 +465,9 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="30" />
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
-
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Capacity as number of days of autonomy"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Number of average annual days that tanks can meet demand once fully charged" />
-                                                </StackPanel>
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
+                                                        Value="{Binding AUT_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Number of average annual days that tanks can meet demand once fully charged" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -485,31 +489,32 @@
 
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Beginning Charged State"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="The Charging State of the tank at the begining of the simulatino year (0: empty, 100: full)" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding TANK_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Expander Margin="0,-22,0,0">
+                                                <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                    <Grid.DataContext>
+                                                        <vm:PlantSettingsViewModel />
+                                                    </Grid.DataContext>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel HorizontalAlignment="Left">
+                                                        <Label Content="Beginning Charged State"
+                                                               Style="{DynamicResource PlantSettingStyle}"
+                                                               ToolTip="The Charging State of the tank at the begining of the simulatino year (0: empty, 100: full)" />
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                Grid.ColumnSpan="2"
+                                                                HorizontalAlignment="Right" Margin="0">
+                                                        <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                               VerticalContentAlignment="Center"
+                                                               HorizontalAlignment="Center" />
+                                                        <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                 Text="{Binding TANK_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                                </StackPanel>
-                                            </Grid>
+                                                    </StackPanel>
+                                                </Grid></Expander>
 
 
                                         </StackPanel>
@@ -571,20 +576,18 @@
                                         </TextBlock>
                                         <StackPanel Style="{StaticResource StackPanelStyle}"
                                                     Grid.Row="1">
-                                            <Grid VerticalAlignment="Top">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Target offset as percent of annual energy"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Ratio of electricity delivered by PV Array to total annual electricity requirement" />
-                                                </StackPanel>
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                                        Value="{Binding OFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Ratio of electricity delivered by PV Array to total annual electricity requirement" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -596,80 +599,83 @@
 
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Cell efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Average annual ratio of electricity output from array divided by received solar radiation" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding EFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Expander Margin="0,-22,0,0">
+                                                <StackPanel>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Cell efficiency"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Average annual ratio of electricity output from array divided by received solar radiation" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding EFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Area utilization factor"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Accounts for module frames and other infrastructural requirements" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Area utilization factor"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Accounts for module frames and other infrastructural requirements" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Accounts for other losses including line losses and balance of system" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding LOSS_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Miscellaneous losses"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Accounts for other losses including line losses and balance of system" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding LOSS_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </StackPanel></Expander>
 
                                         </StackPanel>
                                     </Grid>
@@ -683,20 +689,18 @@
                                         </TextBlock>
                                         <StackPanel Style="{StaticResource StackPanelStyle}"
                                                     Grid.Row="1">
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Target offset as percent of annual energy"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Ratio of electricity delivered by wind turbines to total annual electricity requirement" />
-                                                </StackPanel>
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                                        Value="{Binding OFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Ratio of electricity delivered by wind turbines to total annual electricity requirement" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -708,141 +712,145 @@
 
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <Label Content="Turbine efficiency"
-                                                       Style="{DynamicResource PlantSettingStyle}"
-                                                       ToolTip="Average annual ratio of power captured by turbine to total power available in the wind (Theoretical maximum is 59%)" />
+                                            <Expander Margin="0,-22,0,0">
+                                                <StackPanel>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Content="Turbine efficiency"
+                                                               Style="{DynamicResource PlantSettingStyle}"
+                                                               ToolTip="Average annual ratio of power captured by turbine to total power available in the wind (Theoretical maximum is 59%)" />
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox x:Name="TurbineEff" Margin="0,2" MaxLines="1"
-                                                             Style="{StaticResource TextBoxInError}"
-                                                             VerticalContentAlignment="Center"
-                                                             HorizontalAlignment="Center"
-                                                             Width="40"
-                                                             AllowDrop="True"
-                                                             ToolTip="{Binding ElementName=TurbineEff, Path=(Validation.Errors)[0].ErrorContent}"
-                                                             Height="22">
-                                                        <TextBox.Text>
-                                                            <Binding Path="EFF_WND"
-                                                                     UpdateSourceTrigger="PropertyChanged">
-                                                                <Binding.ValidationRules>
-                                                                    <districtEnergy:DoubleRangeRule Min="0" Max="59" />
-                                                                </Binding.ValidationRules>
-                                                            </Binding>
-                                                        </TextBox.Text>
-                                                    </TextBox>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox x:Name="TurbineEff" Margin="0,2" MaxLines="1"
+                                                                     Style="{StaticResource TextBoxInError}"
+                                                                     VerticalContentAlignment="Center"
+                                                                     HorizontalAlignment="Center"
+                                                                     Width="40"
+                                                                     AllowDrop="True"
+                                                                     ToolTip="{Binding ElementName=TurbineEff, Path=(Validation.Errors)[0].ErrorContent}"
+                                                                     Height="22">
+                                                                <TextBox.Text>
+                                                                    <Binding Path="EFF_WND"
+                                                                             UpdateSourceTrigger="PropertyChanged">
+                                                                        <Binding.ValidationRules>
+                                                                            <districtEnergy:DoubleRangeRule Min="0"
+                                                                                                            Max="59" />
+                                                                        </Binding.ValidationRules>
+                                                                    </Binding>
+                                                                </TextBox.Text>
+                                                            </TextBox>
 
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Cut-in speed "
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Minimum wind speed at which the turbine blades overcome friction and begin to rotate" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="m/s" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding CIN_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Cut-in speed "
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Minimum wind speed at which the turbine blades overcome friction and begin to rotate" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="m/s" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding CIN_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Cut-out speed"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Speed at which the turbine blades are brought to rest to avoid damage from high winds" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="m/s" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding COUT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Rotor area per turbine"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="The swept area is the plane of wind intersected by the turbine" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="m²" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding ROT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding LOSS_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Cut-out speed"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Speed at which the turbine blades are brought to rest to avoid damage from high winds" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="m/s" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding COUT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Rotor area per turbine"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="The swept area is the plane of wind intersected by the turbine" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="m²" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding ROT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Miscellaneous losses"
+                                                                   Style="{DynamicResource PlantSettingStyle}" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding LOSS_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </StackPanel></Expander>
 
 
                                         </StackPanel>
@@ -857,7 +865,7 @@
                                         </TextBlock>
                                         <StackPanel Style="{StaticResource StackPanelStyle}"
                                                     Grid.Row="1">
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
@@ -866,12 +874,9 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="50" />
                                                     <ColumnDefinition Width="Auto" MinWidth="35" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Capacity as number of days of autonomy"
-
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Number of average annual days that batteries can meet demand once fully charged" />
-                                                </StackPanel>
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
+                                                        Value="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Number of average annual days that batteries can meet demand once fully charged" IsSnapToTickEnabled="True" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                             Grid.ColumnSpan="2"
                                                             HorizontalAlignment="Right" Margin="0">
@@ -892,53 +897,56 @@
                                                     </TextBox>
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Miscellaneous losses"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Accounts for other losses including line losses and balance of system" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding LOSS_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Beginning Charged State"
-                                                           Style="{DynamicResource PlantSettingStyle}" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                            Grid.ColumnSpan="2"
-                                                            HorizontalAlignment="Right" Margin="0">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding BAT_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
+                                            <Expander Margin="0,-22,0,0">
+                                                <StackPanel>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Miscellaneous losses"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Accounts for other losses including line losses and balance of system" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding LOSS_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Beginning Charged State"
+                                                                   Style="{DynamicResource PlantSettingStyle}" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                                    Grid.ColumnSpan="2"
+                                                                    HorizontalAlignment="Right" Margin="0">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding BAT_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </StackPanel></Expander>
                                         </StackPanel>
                                     </Grid>
 
@@ -981,24 +989,21 @@
                                                             HorizontalAlignment="Right" Margin="0">
                                                     <ComboBox SelectedItem="{Binding TMOD_CHP, Mode=TwoWay}"
                                                               ItemsSource="{Binding PosibleTrackingModes}"
-                                                              Height="20" IsSynchronizedWithCurrentItem="True"  />
+                                                              Height="20" IsSynchronizedWithCurrentItem="True" Panel.ZIndex="2" Margin="0,0,1,0" />
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                            <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
                                                 <Grid.DataContext>
                                                     <vm:PlantSettingsViewModel />
                                                 </Grid.DataContext>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                    <ColumnDefinition Width="Auto" MinWidth="30"/>
+                                                    <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Capacity as percent of peak electric load"
-
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Ratio of electricity delivered by generator to total demand at peak conditions" />
-                                                </StackPanel>
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                                        Value="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        ToolTip="Ratio of electricity delivered by generator to total demand at peak conditions" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
 
                                                             HorizontalAlignment="Right" Margin="0" Grid.ColumnSpan="2">
@@ -1006,57 +1011,60 @@
                                                            VerticalContentAlignment="Center"
                                                            HorizontalAlignment="Center" />
                                                     <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                             Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,1,0" />
                                                 </StackPanel>
                                             </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Electrical efficiency"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Average annual ratio of electricity delivered by generator to fuel consumed" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                            <Expander Margin="0,-22,0,0">
+                                                <StackPanel>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="40" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Electrical efficiency"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Average annual ratio of electricity delivered by generator to fuel consumed" />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
 
-                                                            HorizontalAlignment="Right" Margin="0" Grid.ColumnSpan="2">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding EFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                                <Grid.DataContext>
-                                                    <vm:PlantSettingsViewModel />
-                                                </Grid.DataContext>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel HorizontalAlignment="Left">
-                                                    <Label Content="Waste heat recovery effectiveness"
-                                                           Style="{DynamicResource PlantSettingStyle}"
-                                                           ToolTip="Average annual ratio of usable heat recovered from generator to fuel consumed " />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Grid.Column="1"
-
-                                                            HorizontalAlignment="Right" Margin="0" Grid.ColumnSpan="2">
-                                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                                           VerticalContentAlignment="Center"
-                                                           HorizontalAlignment="Center" />
-                                                    <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding HREC_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                </StackPanel>
-                                            </Grid>
+                                                                    HorizontalAlignment="Right" Margin="0"
+                                                                    Grid.ColumnSpan="2">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding EFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                                        <Grid.DataContext>
+                                                            <vm:PlantSettingsViewModel />
+                                                        </Grid.DataContext>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel HorizontalAlignment="Left">
+                                                            <Label Content="Waste heat recovery effectiveness"
+                                                                   Style="{DynamicResource PlantSettingStyle}"
+                                                                   ToolTip="Average annual ratio of usable heat recovered from generator to fuel consumed " />
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="0"
+                                                                    Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                                   VerticalContentAlignment="Center"
+                                                                   HorizontalAlignment="Center" />
+                                                            <TextBox Style="{DynamicResource TextBoxStyle}"
+                                                                     Text="{Binding HREC_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </StackPanel></Expander>
 
                                         </StackPanel>
                                     </Grid>
@@ -1068,6 +1076,7 @@
 
                     </StackPanel>
                 </ScrollViewer>
+
             </Grid>
         </TabItem>
         <TabItem Header="Sizing">
@@ -1247,7 +1256,8 @@
                                                     <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
                                                 </Grid.Resources>
                                                 <StackPanel HorizontalAlignment="Right"
-                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                            Style="{StaticResource SubMetricStackPanelStyle}"
+                                                            Margin="5,5,5,0">
                                                     <TextBlock HorizontalAlignment="Center" Margin="0"
                                                                TextWrapping="Wrap"
                                                                Text="Charging Rate" VerticalAlignment="Top" />
@@ -1268,7 +1278,8 @@
 
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="1" HorizontalAlignment="Left"
-                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                            Style="{StaticResource SubMetricStackPanelStyle}"
+                                                            Margin="5,5,5,0">
                                                     <TextBlock HorizontalAlignment="Center" Margin="0"
                                                                TextWrapping="Wrap"
                                                                Text="Discharging Rate" VerticalAlignment="Top" />
@@ -1364,7 +1375,7 @@
                                 <Grid Margin="5,5,5,10">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
-                                        <RowDefinition/>
+                                        <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
@@ -1414,7 +1425,8 @@
                                                 <ColumnDefinition />
                                                 <ColumnDefinition />
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource SubMetricStackPanelStyle}">
+                                            <StackPanel Grid.Column="0" HorizontalAlignment="Right"
+                                                        Style="{StaticResource SubMetricStackPanelStyle}">
                                                 <StackPanel.Resources>
                                                     <vm:KWConverter x:Key="KWConverter" />
                                                     <vm:KWConverterUnit x:Key="KWConverterUnit" />
@@ -1429,7 +1441,8 @@
                                                 <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                            Text="Installed Capacity" VerticalAlignment="Top" />
                                             </StackPanel>
-                                            <StackPanel Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource SubMetricStackPanelStyle}">
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Left"
+                                                        Style="{StaticResource SubMetricStackPanelStyle}">
                                                 <StackPanel.Resources>
                                                     <vm:AreaConverter x:Key="AreaConverter" />
                                                     <vm:AreaConverterUnit x:Key="AreaConverterUnit" />
@@ -1456,7 +1469,8 @@
                                                 <ColumnDefinition />
                                                 <ColumnDefinition />
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource SubMetricStackPanelStyle}">
+                                            <StackPanel Grid.Column="0" HorizontalAlignment="Right"
+                                                        Style="{StaticResource SubMetricStackPanelStyle}">
                                                 <StackPanel.Resources>
                                                     <vm:KWConverter x:Key="KWConverter" />
                                                     <vm:KWConverterUnit x:Key="KWConverterUnit" />
@@ -1471,7 +1485,8 @@
                                                 <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
                                                            Text="Installed Capacity" VerticalAlignment="Top" />
                                             </StackPanel>
-                                            <StackPanel Grid.Column="1" HorizontalAlignment="Left" Style="{StaticResource SubMetricStackPanelStyle}">
+                                            <StackPanel Grid.Column="1" HorizontalAlignment="Left"
+                                                        Style="{StaticResource SubMetricStackPanelStyle}">
                                                 <StackPanel.Resources>
                                                     <vm:AreaConverter x:Key="AreaConverter" />
                                                     <vm:AreaConverterUnit x:Key="AreaConverterUnit" />
@@ -1488,22 +1503,22 @@
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Grid.Row="2">
                                         <TextBlock HorizontalAlignment="Center"
-                                                       Style="{DynamicResource PlantComponentHeader}"
-                                                       Text="Battery" />
+                                                   Style="{DynamicResource PlantComponentHeader}"
+                                                   Text="Battery" />
                                         <StackPanel>
                                             <StackPanel.Resources>
                                                 <vm:KWhConverter x:Key="KWhConverter" />
                                                 <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
                                             </StackPanel.Resources>
                                             <TextBlock HorizontalAlignment="Center" Margin="5,0"
-                                                           TextWrapping="Wrap"
-                                                           Text="{Binding CapBat, Converter={StaticResource KWhConverter}}"
-                                                           VerticalAlignment="Top" FontSize="36" />
+                                                       TextWrapping="Wrap"
+                                                       Text="{Binding CapBat, Converter={StaticResource KWhConverter}}"
+                                                       VerticalAlignment="Top" FontSize="36" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                           Text="{Binding CapBat, Converter={StaticResource KWhConverterUnit}}"
-                                                           VerticalAlignment="Top" />
+                                                       Text="{Binding CapBat, Converter={StaticResource KWhConverterUnit}}"
+                                                       VerticalAlignment="Top" />
                                             <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap"
-                                                           Text="Storage Capacity" VerticalAlignment="Top" />
+                                                       Text="Storage Capacity" VerticalAlignment="Top" />
                                         </StackPanel>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -1515,44 +1530,46 @@
                                                 <vm:KWhConverterUnit x:Key="KWhConverterUnit" />
                                             </Grid.Resources>
                                             <StackPanel HorizontalAlignment="Right"
-                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                        Style="{StaticResource SubMetricStackPanelStyle}"
+                                                        Margin="5,5,5,0">
                                                 <TextBlock HorizontalAlignment="Center" Margin="0"
-                                                               TextWrapping="Wrap"
-                                                               Text="Charging Rate" VerticalAlignment="Top" />
+                                                           TextWrapping="Wrap"
+                                                           Text="Charging Rate" VerticalAlignment="Top" />
 
                                                 <TextBlock HorizontalAlignment="Center" Margin="5,0"
-                                                               TextWrapping="Wrap"
-                                                               Text="{Binding ChgrBat, Converter={StaticResource KWhConverter}}"
-                                                               VerticalAlignment="Top" FontSize="24" />
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding ChgrBat, Converter={StaticResource KWhConverter}}"
+                                                           VerticalAlignment="Top" FontSize="24" />
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                     <TextBlock HorizontalAlignment="Center" Margin="0"
-                                                                   TextWrapping="Wrap"
-                                                                   Text="{Binding ChgrBat, Converter={StaticResource KWhConverterUnit}}"
-                                                                   VerticalAlignment="Top" />
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding ChgrBat, Converter={StaticResource KWhConverterUnit}}"
+                                                               VerticalAlignment="Top" />
                                                     <TextBlock HorizontalAlignment="Center" Margin="0"
-                                                                   Text="/h"
-                                                                   VerticalAlignment="Top" />
+                                                               Text="/h"
+                                                               VerticalAlignment="Top" />
                                                 </StackPanel>
 
                                             </StackPanel>
                                             <StackPanel Grid.Column="1" HorizontalAlignment="Left"
-                                                            Style="{StaticResource SubMetricStackPanelStyle}" Margin="5,5,5,0">
+                                                        Style="{StaticResource SubMetricStackPanelStyle}"
+                                                        Margin="5,5,5,0">
                                                 <TextBlock HorizontalAlignment="Center" Margin="0"
-                                                               TextWrapping="Wrap"
-                                                               Text="Discharging Rate" VerticalAlignment="Top" />
+                                                           TextWrapping="Wrap"
+                                                           Text="Discharging Rate" VerticalAlignment="Top" />
 
                                                 <TextBlock HorizontalAlignment="Center" Margin="5,0"
-                                                               TextWrapping="Wrap"
-                                                               Text="{Binding DchgBat, Converter={StaticResource KWhConverter}}"
-                                                               VerticalAlignment="Top" FontSize="24" />
+                                                           TextWrapping="Wrap"
+                                                           Text="{Binding DchgBat, Converter={StaticResource KWhConverter}}"
+                                                           VerticalAlignment="Top" FontSize="24" />
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                     <TextBlock HorizontalAlignment="Center" Margin="0"
-                                                                   TextWrapping="Wrap"
-                                                                   Text="{Binding DchgBat, Converter={StaticResource KWhConverterUnit}}"
-                                                                   VerticalAlignment="Top" />
+                                                               TextWrapping="Wrap"
+                                                               Text="{Binding DchgBat, Converter={StaticResource KWhConverterUnit}}"
+                                                               VerticalAlignment="Top" />
                                                     <TextBlock HorizontalAlignment="Center" Margin="0"
-                                                                   Text="/h"
-                                                                   VerticalAlignment="Top" />
+                                                               Text="/h"
+                                                               VerticalAlignment="Top" />
                                                 </StackPanel>
 
                                             </StackPanel>
@@ -2020,7 +2037,9 @@
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Label Content="Share of gas needed to meet each component" HorizontalAlignment="Left" Margin="5,-13,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                        <Label Content="Share of gas needed to meet each component"
+                                               HorizontalAlignment="Left" Margin="5,-13,0,0" VerticalAlignment="Top"
+                                               Grid.ColumnSpan="2" />
                                         <lvc:Gauge From="0" To="100" Value="{Binding GasToChw}"
                                                    LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="10,0,5,0" />
@@ -2054,7 +2073,9 @@
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Label Content="Share of electricity needed to meet each component" HorizontalAlignment="Left" Margin="5,-13,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                        <Label Content="Share of electricity needed to meet each component"
+                                               HorizontalAlignment="Left" Margin="5,-13,0,0" VerticalAlignment="Top"
+                                               Grid.ColumnSpan="2" />
                                         <lvc:Gauge From="0" To="100" Value="{Binding ElecToChw}"
                                                    LabelFormatter="{Binding GaugeFormatter}"
                                                    Height="100" Margin="10,0,5,0" />
