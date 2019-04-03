@@ -585,7 +585,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="30" />
                                                     <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
                                                         Value="{Binding OFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                         ToolTip="Ratio of electricity delivered by PV Array to total annual electricity requirement" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
@@ -698,7 +698,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="30" />
                                                     <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
                                                         Value="{Binding OFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                         ToolTip="Ratio of electricity delivered by wind turbines to total annual electricity requirement" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
@@ -989,7 +989,7 @@
                                                             HorizontalAlignment="Right" Margin="0">
                                                     <ComboBox SelectedItem="{Binding TMOD_CHP, Mode=TwoWay}"
                                                               ItemsSource="{Binding PosibleTrackingModes}"
-                                                              Height="20" IsSynchronizedWithCurrentItem="True" Panel.ZIndex="2" />
+                                                              Height="20" IsSynchronizedWithCurrentItem="True" Panel.ZIndex="2" Margin="0,0,1,0" />
                                                 </StackPanel>
                                             </Grid>
                                             <Grid Margin="25,3,0,0" VerticalAlignment="Top" Panel.ZIndex="1">
@@ -1001,7 +1001,7 @@
                                                     <ColumnDefinition Width="Auto" MinWidth="30"/>
                                                     <ColumnDefinition Width="Auto" MinWidth="40" />
                                                 </Grid.ColumnDefinitions>
-                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
+                                                <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
                                                         Value="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                         ToolTip="Ratio of electricity delivered by generator to total demand at peak conditions" IsSnapToTickEnabled="True" Focusable="False" />
                                                 <StackPanel Orientation="Horizontal" Grid.Column="1"
@@ -1011,7 +1011,7 @@
                                                            VerticalContentAlignment="Center"
                                                            HorizontalAlignment="Center" />
                                                     <TextBox Style="{DynamicResource TextBoxStyle}"
-                                                             Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                             Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,1,0" />
                                                 </StackPanel>
                                             </Grid>
                                             <Expander Margin="0,-22,0,0">
@@ -1022,8 +1022,8 @@
                                                         </Grid.DataContext>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition />
-                                                            <ColumnDefinition Width="Auto" />
-                                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                                            <ColumnDefinition Width="Auto" MinWidth="40" />
                                                         </Grid.ColumnDefinitions>
                                                         <StackPanel HorizontalAlignment="Left">
                                                             <Label Content="Electrical efficiency"
@@ -1055,10 +1055,8 @@
                                                                    Style="{DynamicResource PlantSettingStyle}"
                                                                    ToolTip="Average annual ratio of usable heat recovered from generator to fuel consumed " />
                                                         </StackPanel>
-                                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
-
-                                                                    HorizontalAlignment="Right" Margin="0"
-                                                                    Grid.ColumnSpan="2">
+                                                        <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="0"
+                                                                    Grid.ColumnSpan="2" HorizontalAlignment="Right">
                                                             <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
                                                                    VerticalContentAlignment="Center"
                                                                    HorizontalAlignment="Center" />
