@@ -2,7 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.IO;
-using Rhino;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 

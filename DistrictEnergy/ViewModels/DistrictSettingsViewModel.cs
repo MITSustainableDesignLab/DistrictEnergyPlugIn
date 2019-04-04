@@ -2,7 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.IO;
-using Rhino;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -12,7 +11,6 @@ namespace DistrictEnergy.ViewModels
     {
         public DistrictSettingsViewModel()
         {
-            //RhinoDoc.EndSaveDocument += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }

@@ -6,7 +6,6 @@ using System.Linq;
 using DistrictEnergy.Networks.ThermalPlants;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Rhino;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -25,7 +24,8 @@ namespace DistrictEnergy.ViewModels
             new NatGasBoiler(),
             new PhotovoltaicArray(),
             new SolarThermalCollector(),
-            new WindTurbine()
+            new WindTurbine(),
+            new PipeNetwork()
         };
 
         private readonly KnownTypesBinder _knownTypesBinder = new KnownTypesBinder
@@ -41,7 +41,8 @@ namespace DistrictEnergy.ViewModels
                 typeof(NatGasBoiler),
                 typeof(PhotovoltaicArray),
                 typeof(SolarThermalCollector),
-                typeof(WindTurbine)
+                typeof(WindTurbine),
+                typeof(PipeNetwork)
             }
         };
 
@@ -78,12 +79,13 @@ namespace DistrictEnergy.ViewModels
         {
             if (context == null) return;
             var path = context.AuxiliaryFiles.GetFullPath("ThermalPlantSettings.json");
-            if (File.Exists(path))
+            if (!File.Exists(path))
             {
                 var json = File.ReadAllText(path);
                 ListOfPlantSettings = JsonConvert.DeserializeObject<List<IThermalPlantSettings>>(json,
                     new JsonSerializerSettings
                     {
+                        DefaultValueHandling = DefaultValueHandling.Populate,
                         TypeNameHandling = TypeNameHandling.Objects,
                         SerializationBinder = _knownTypesBinder
                     });
@@ -475,6 +477,53 @@ namespace DistrictEnergy.ViewModels
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseEhpEvap)));
                 }
                 
+            }
+        }
+        #endregion
+        #region Pipe Network
+
+        public bool UseDistrictLosses
+        {
+            get
+            {
+                if (ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses == 1)
+                    return true;
+                else
+                    return false;
+            }
+            set
+            {
+                if (value)
+                {
+                    ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 1;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseDistrictLosses)));
+                }
+                else
+                {
+                    ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 0;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseDistrictLosses)));
+                }
+
+            }
+        }
+
+        public double RelDistHeatLoss
+        {
+            get => ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss * 100;
+            set
+            {
+                ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss = value / 100;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RelDistHeatLoss)));
+            }
+        }
+
+        public double RelDistCoolLoss
+        {
+            get => ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss * 100;
+            set
+            {
+                ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss = value / 100;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RelDistCoolLoss)));
             }
         }
 

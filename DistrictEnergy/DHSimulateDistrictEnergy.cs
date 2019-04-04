@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -216,6 +215,12 @@ namespace DistrictEnergy
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     var d = umiObject.Data["SDL/Cooling"].Data[i];
+                    if (DistrictEnergy.Settings.UseDistrictLosses)
+                        // If distribution losses, increase demand
+                    {
+                        d *= (1 + DistrictEnergy.Settings.LossChwnet);
+                    }
+
                     aggregationArray[i] += d;
                     _progressBarPos += 1;
                     StatusBar.UpdateProgressMeter(_progressBarPos, true);
@@ -236,6 +241,12 @@ namespace DistrictEnergy
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     var d = umiObject.Data["SDL/Heating"].Data[i] + umiObject.Data["SDL/Domestic Hot Water"].Data[i];
+
+                    if (DistrictEnergy.Settings.UseDistrictLosses)
+                    {
+                        d *= (1 + DistrictEnergy.Settings.LossHwnet);
+                    }
+
                     aggregationArray[i] += d;
                     _progressBarPos += 1;
                     StatusBar.UpdateProgressMeter(_progressBarPos, true);
@@ -1223,23 +1234,35 @@ namespace DistrictEnergy
             get { return PlantSettingsViewModel.Instance.BAT_START / 100; }
         }
 
-        private static double LossHwnet
+        public static double LossHwnet
         {
             get
             {
-                return 0;
-            } // todo Should a Hot Water network loss be added as a User Parameter (Default 15%) Add new user value
+                return PlantSettingsViewModel.Instance.RelDistHeatLoss / 100;
+            }
         }
 
-        private static double LossChwnet
+        /// <summary>
+        ///     
+        /// </summary>
+        public static double LossChwnet
         {
             get
             {
-                return 0;
-            } // todo Should a Chilled Water network loss be added as a User Parameter (Default 5%) Add new user value
+                return PlantSettingsViewModel.Instance.RelDistCoolLoss / 100;
+            }
         }
 
-        public static bool UseEhpEvap {
+        /// <summary>
+        ///     
+        /// </summary>
+        public static bool UseDistrictLosses
+        {
+            get { return PlantSettingsViewModel.Instance.UseDistrictLosses; }
+        }
+
+        public static bool UseEhpEvap
+        {
             get { return PlantSettingsViewModel.Instance.UseEhpEvap; }
         }
     }
@@ -1266,6 +1289,8 @@ namespace DistrictEnergy
         private double _capElecProj;
         private double _capPv;
         private double _capWnd;
+        private double _relDistHeatLoss;
+        private double _relDistCoolLoss;
 
         public SimConstants()
         {
@@ -1540,6 +1565,26 @@ namespace DistrictEnergy
             {
                 _capWnd = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapWnd)));
+            }
+        }
+
+        public double RelDistHeatLoss
+        {
+            get { return _relDistHeatLoss; }
+            set
+            {
+                _relDistHeatLoss = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(_relDistHeatLoss)));
+            }
+        }
+
+        public double RelDistCoolLoss
+        {
+            get { return _relDistCoolLoss; }
+            set
+            {
+                _relDistHeatLoss = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(_relDistCoolLoss)));
             }
         }
 
