@@ -79,7 +79,7 @@ namespace DistrictEnergy.ViewModels
         {
             if (context == null) return;
             var path = context.AuxiliaryFiles.GetFullPath("ThermalPlantSettings.json");
-            if (!File.Exists(path))
+            if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
                 ListOfPlantSettings = JsonConvert.DeserializeObject<List<IThermalPlantSettings>>(json,
