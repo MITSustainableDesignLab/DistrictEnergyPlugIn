@@ -48,7 +48,7 @@ namespace DistrictEnergy.ViewModels
         public PlantSettingsViewModel()
         {
             Instance = this;
-            RhinoDoc.EndSaveDocument += RhinoDoc_EndSaveDocument;
+            UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
@@ -56,9 +56,9 @@ namespace DistrictEnergy.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
+        private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
         {
-            SaveSettings();
+            SaveSettings(e);
         }
 
         private void PopulateFrom(object sender, UmiContext e)
@@ -92,9 +92,9 @@ namespace DistrictEnergy.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
         }
 
-        private void SaveSettings()
+        private void SaveSettings(UmiContext e)
         {
-            var context = UmiContext.Current;
+            var context = e;
 
             if (context == null) return;
             var dSjson = JsonConvert.SerializeObject(ListOfPlantSettings, Formatting.Indented,
