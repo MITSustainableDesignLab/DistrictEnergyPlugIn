@@ -206,7 +206,7 @@ namespace DistrictEnergy.ViewModels
             var chwDemand = new Dictionary<string, double[]>();
             chwDemand.Add("Absorption Chiller", instance.ResultsArray.ChwAbs);
             chwDemand.Add("Electric Chiller", instance.ResultsArray.ChwEch);
-            chwDemand.Add("Evaporator Side of EHPs", instance.ResultsArray.CHW_EHPevap);
+            chwDemand.Add("Evaporator Side of EHPs", instance.ResultsArray.ChwEhpEvap);
 
             StackedCoolingSeries.Clear();
 
@@ -289,54 +289,54 @@ namespace DistrictEnergy.ViewModels
             // Gas To Chilled Water Paths
             
             double gasChwByBoilerAbs = instance.ResultsArray.NgasNgb.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) * 
-                                       instance.ResultsArray.HwAbs.Sum().SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.AllDistrictDemand.HW_n.Sum() - instance.ResultsArray.HwEhp.Sum());
+                                       instance.ResultsArray.HwAbs.Sum().SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum());
             double gasChwByChpAbs = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                              instance.ResultsArray.HwChp.Sum().SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
-                             instance.ResultsArray.HwAbs.Sum().SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.AllDistrictDemand.HW_n.Sum() - instance.ResultsArray.HwEhp.Sum());
+                             instance.ResultsArray.HwAbs.Sum().SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum());
             double gasChwByChpEhp = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                              instance.ResultsArray.ElecChp.Sum().SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
-                             instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ELEC_n.Sum()) *
-                             instance.ResultsArray.CHW_EHPevap.Sum().SafeDivision(instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.CHW_EHPevap.Sum());
+                             instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ElecN.Sum()) *
+                             instance.ResultsArray.ChwEhpEvap.Sum().SafeDivision(instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.ChwEhpEvap.Sum());
             double gasChwByChpEch = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                              instance.ResultsArray.ElecChp.Sum().SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
-                             instance.ResultsArray.ElecEch.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ELEC_n.Sum());
+                             instance.ResultsArray.ElecEch.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ElecN.Sum());
             GasToChw = (gasChwByBoilerAbs + gasChwByChpAbs + gasChwByChpEhp + gasChwByChpEch) * 100;
 
             // Gas to How Water Paths
             double gasHwByBoiler = instance.ResultsArray.NgasNgb.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
-                                   (instance.AllDistrictDemand.HW_n.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(instance.AllDistrictDemand.HW_n.Sum() - instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.HwAbs.Sum());
+                                   (instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.HwAbs.Sum());
             double gasHwByChp = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                          instance.ResultsArray.HwChp.Sum().SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
-                         (instance.AllDistrictDemand.HW_n.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(instance.AllDistrictDemand.HW_n.Sum() - instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.HwAbs.Sum());
+                         (instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.HwAbs.Sum());
             double gasHwByChpEhp = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                                    instance.ResultsArray.ElecChp.Sum().SafeDivision(instance.ResultsArray.ElecChp.Sum() + instance.ResultsArray.HwChp.Sum()) *
-                                   instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ELEC_n.Sum()) *
-                                   instance.ResultsArray.HwEhp.Sum().SafeDivision(instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.CHW_EHPevap.Sum());
+                                   instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ElecN.Sum()) *
+                                   instance.ResultsArray.HwEhp.Sum().SafeDivision(instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.ChwEhpEvap.Sum());
 
             GasToHw = (gasHwByBoiler + gasHwByChp + gasHwByChpEhp) * 100;
 
             // Gas to Electricity Paths
             double gasElecByChp = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                                   instance.ResultsArray.ElecChp.Sum().SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
-                                  instance.AllDistrictDemand.ELEC_n.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ELEC_n.Sum());
+                                  instance.AllDistrictDemand.ElecN.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ElecN.Sum());
 
             GasToElec = gasElecByChp * 100;
 
             // Electricity to Chilled Water Paths
-            double elecChwByEch = instance.ResultsArray.ElecEch.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ELEC_n.Sum());
-            double elecChwByEhp = instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ELEC_n.Sum()) *
-                                  instance.ResultsArray.CHW_EHPevap.Sum().SafeDivision(instance.ResultsArray.CHW_EHPevap.Sum() + instance.ResultsArray.HwEhp.Sum());
+            double elecChwByEch = instance.ResultsArray.ElecEch.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ElecN.Sum());
+            double elecChwByEhp = instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ElecN.Sum()) *
+                                  instance.ResultsArray.ChwEhpEvap.Sum().SafeDivision(instance.ResultsArray.ChwEhpEvap.Sum() + instance.ResultsArray.HwEhp.Sum());
 
             ElecToChw = (elecChwByEch + elecChwByEhp) * 100;
 
             // Elec to Hot Water
-            double elecHwByEhp = instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ELEC_n.Sum()) *
-                                 instance.ResultsArray.HwEhp.Sum().SafeDivision(instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.CHW_EHPevap.Sum());
+            double elecHwByEhp = instance.ResultsArray.ElecEhp.Sum().SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() + instance.AllDistrictDemand.ElecN.Sum()) *
+                                 instance.ResultsArray.HwEhp.Sum().SafeDivision(instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.ChwEhpEvap.Sum());
 
             ElecToHw = elecHwByEhp * 100;
 
             // Elec to Elec Paths
-            double elecElecDirect = instance.AllDistrictDemand.ELEC_n.Sum().SafeDivision(instance.AllDistrictDemand.ELEC_n.Sum() + instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum());
+            double elecElecDirect = instance.AllDistrictDemand.ElecN.Sum().SafeDivision(instance.AllDistrictDemand.ElecN.Sum() + instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum());
 
             ElecToElec = elecElecDirect * 100;
         }
