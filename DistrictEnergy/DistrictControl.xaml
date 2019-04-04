@@ -143,6 +143,34 @@
                                 <Setter Property="Background" Value="White" />
                             </Style>
                         </StackPanel.Resources>
+                        <Grid Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.DataContext>
+                                <vm:PlantSettingsViewModel />
+                            </Grid.DataContext>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Label Content="Account for network losses?"
+                                       Style="{DynamicResource PlantSettingStyle}"
+                                       ToolTip="Average annual ratio of useful heating delivered to electricity consumed" Margin="0,2,3,2" />
+                                <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Grid.Column="1">
+
+                                <Label Content="Hot"
+                                       Style="{DynamicResource PlantSettingStyle}"
+                                       ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
+                                <TextBox Style="{DynamicResource TextBoxStyle}"
+                                         Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" />
+                                <Label Content="Cold"
+                                       Style="{DynamicResource PlantSettingStyle}"
+                                       ToolTip="Average annual ratio of useful heating delivered to electricity consumed" Margin="0,2,4,2" />
+                                <TextBox Style="{DynamicResource TextBoxStyle}"
+                                         Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" />
+                            </StackPanel>
+                        </Grid>
                         <Grid x:Name="ChilledWaterGroup" Margin="10">
                             <Grid.Effect>
                                 <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality"
@@ -331,7 +359,6 @@
                                                                 Grid.ColumnSpan="2"
                                                                 HorizontalAlignment="Right" Margin="0">
                                                             <CheckBox IsChecked="{Binding UseEhpEvap, Mode=TwoWay}" />
-
                                                         </StackPanel>
                                                     </Grid>
                                                 </StackPanel>
@@ -445,7 +472,8 @@
                                                                      Text="{Binding LOSS_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                         </StackPanel>
                                                     </Grid>
-                                                </StackPanel></Expander>
+                                                </StackPanel>
+                                            </Expander>
 
                                         </StackPanel>
                                     </Grid>
@@ -514,7 +542,8 @@
                                                                  Text="{Binding TANK_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                                     </StackPanel>
-                                                </Grid></Expander>
+                                                </Grid>
+                                            </Expander>
 
 
                                         </StackPanel>
@@ -675,7 +704,8 @@
                                                                      Text="{Binding LOSS_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                         </StackPanel>
                                                     </Grid>
-                                                </StackPanel></Expander>
+                                                </StackPanel>
+                                            </Expander>
 
                                         </StackPanel>
                                     </Grid>
@@ -850,7 +880,8 @@
                                                                      Text="{Binding LOSS_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                         </StackPanel>
                                                     </Grid>
-                                                </StackPanel></Expander>
+                                                </StackPanel>
+                                            </Expander>
 
 
                                         </StackPanel>
@@ -946,7 +977,8 @@
                                                                      Text="{Binding BAT_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                         </StackPanel>
                                                     </Grid>
-                                                </StackPanel></Expander>
+                                                </StackPanel>
+                                            </Expander>
                                         </StackPanel>
                                     </Grid>
 
@@ -1064,7 +1096,8 @@
                                                                      Text="{Binding HREC_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                         </StackPanel>
                                                     </Grid>
-                                                </StackPanel></Expander>
+                                                </StackPanel>
+                                            </Expander>
 
                                         </StackPanel>
                                     </Grid>

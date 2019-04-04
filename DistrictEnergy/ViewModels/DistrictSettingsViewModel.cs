@@ -2,7 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.IO;
-using Rhino;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -12,15 +11,15 @@ namespace DistrictEnergy.ViewModels
     {
         public DistrictSettingsViewModel()
         {
-            RhinoDoc.EndSaveDocument += RhinoDoc_EndSaveDocument;
+            UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
         public static DistrictSettings DistrictSettings = new DistrictSettings();
 
-        private void RhinoDoc_EndSaveDocument(object sender, DocumentSaveEventArgs e)
+        private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
         {
-            SaveSettings();
+            SaveSettings(e);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,9 +41,9 @@ namespace DistrictEnergy.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
         }
 
-        private void SaveSettings()
+        private void SaveSettings(UmiContext e)
         {
-            var context = UmiContext.Current;
+            var context = e;
 
             if (context == null)
             {
