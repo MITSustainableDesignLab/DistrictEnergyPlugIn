@@ -163,12 +163,12 @@
                                        Style="{DynamicResource PlantSettingStyle}"
                                        ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
                                 <TextBox Style="{DynamicResource TextBoxStyle}"
-                                         Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                         Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" />
                                 <Label Content="Cold"
                                        Style="{DynamicResource PlantSettingStyle}"
                                        ToolTip="Average annual ratio of useful heating delivered to electricity consumed" Margin="0,2,4,2" />
                                 <TextBox Style="{DynamicResource TextBoxStyle}"
-                                         Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                         Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" />
                             </StackPanel>
                         </Grid>
                         <Grid x:Name="ChilledWaterGroup" Margin="10">
