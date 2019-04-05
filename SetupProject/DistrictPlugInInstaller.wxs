@@ -108,11 +108,11 @@
       <![CDATA[Installed OR NETFRAMEWORK45]]>
     </Condition>
 
-    <!-- Check for Rhino 5.0 x64-->
+    <!-- Check for Rhino 6.0 x64-->
     <Property Id="RHINOX64">
       <RegistrySearch Id="TestAppRegSearch"
                       Root="HKLM"
-                      Key="SOFTWARE\McNeel\Rhinoceros\5.0x64\Install"
+                      Key="SOFTWARE\McNeel\Rhinoceros\6.0\Install"
                       Name="Version"
                       Type="raw"
                       Win64="yes" />
@@ -134,7 +134,7 @@
 
 
     <!-- TODO: check the actual version of Rhino against the version used to build the plug-ins -->
-    <Condition Message="[ProductName] require Rhino 5.0 (64-bit). Please install Rhino then run this installer again.">
+    <Condition Message="[ProductName] require Rhino 6. Please install Rhino and run this installer again.">
       <![CDATA[Installed OR RHINOX64]]>
     </Condition>
 
