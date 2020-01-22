@@ -119,20 +119,6 @@
       <!-- Win64=yes is REQUIRED! -->
     </Property>
 
-    <!-- Check for UMI 3.0-->
-    <Property Id="UMI33VERSION">
-      <DirectorySearch Id="UMIRHP" Path="[WindowsVolume]UMI\">
-        <FileSearch Name="umi.rhp" MinVersion="3.3.0.0" />
-        <!-- Umi version 3.3.0 is REQUIRED! -->
-      </DirectorySearch>
-    </Property>
-
-    <Condition
-      Message="This plugin requires UMI 3.3 or later. Please install the latets UMI version then run this installer again.">
-      <![CDATA[Installed OR UMI33VERSION]]>
-    </Condition>
-
-
     <!-- TODO: check the actual version of Rhino against the version used to build the plug-ins -->
     <Condition Message="[ProductName] require Rhino 6. Please install Rhino and run this installer again.">
       <![CDATA[Installed OR RHINOX64]]>
