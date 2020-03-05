@@ -23,13 +23,13 @@
             </RegistryKey>
 
             <!-- the following will tell Rhinoceros to find the plug-in there on the next run -->
-            <RegistryKey Root="HKCU" Key="Software\McNeel\Rhinoceros\5.0x64\Plug-ins\0710815b-0916-4111-94ae-3dabe3dc34de">
+            <RegistryKey Root="HKCU" Key="Software\McNeel\Rhinoceros\6.0\Plug-ins\0710815b-0916-4111-94ae-3dabe3dc34de">
               <RegistryValue Name="Name" Value="DistrictEnergy" Type="string"/>
               <RegistryValue Name="FileName" Value="[PLUGINFOLDER]DistrictEnergy.rhp" Type="string"/>
             </RegistryKey>
 
             <!-- when uninstalling, remove the registry entry for this plug-in -->
-            <RemoveRegistryKey Root="HKCU" Key="Software\McNeel\Rhinoceros\5.0x64\Plug-ins\0710815b-0916-4111-94ae-3dabe3dc34de" Action="removeOnUninstall" />
+            <RemoveRegistryKey Root="HKCU" Key="Software\McNeel\Rhinoceros\6.0\Plug-ins\0710815b-0916-4111-94ae-3dabe3dc34de" Action="removeOnUninstall" />
           </Component>
         </Directory>
       </Directory>
