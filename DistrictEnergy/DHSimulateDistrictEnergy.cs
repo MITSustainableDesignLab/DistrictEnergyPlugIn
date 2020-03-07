@@ -12,6 +12,7 @@ using Rhino;
 using Rhino.Commands;
 using Rhino.UI;
 using Umi.Core;
+using Umi.RhinoServices.Buildings;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -165,11 +166,15 @@ namespace DistrictEnergy
                 RhinoApp.WriteLine("Problem getting the umi context");
                 return Result.Failure;
             }
-
+            var _idList = new List<string>();
+            foreach (var building in umiContext.Buildings.All)
+            {
+                _idList.Add(building.Id.ToString());
+            }
             _progressBarPos = 0;
             // Getting the Aggregated Load Curve for all buildings
             var contextBuildings =
-                umiContext.GetObjects().Where(o => o.Data.Any(x=>x.Value.Data.Count == 8760)).ToList();
+                umiContext.GetObjects().Where(o => o.Data.Any(x=>x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
             if (contextBuildings.Count == 0)
             {
                 MessageBox.Show(
@@ -181,10 +186,17 @@ namespace DistrictEnergy
             AllDistrictDemand.ChwN = GetHourlyChilledWaterProfile(contextBuildings);
             AllDistrictDemand.HwN = GetHourlyHotWaterLoadProfile(contextBuildings);
             AllDistrictDemand.ElecN = GetHourlyElectricalLoadProfile(contextBuildings);
+            AllDistrictDemand.AddL = GetAdditionalLoadProfile(umiContext.GetObjects<UmiObject>().Where(o => o.Name == "Additional Load").ToList());
             StatusBar.HideProgressMeter();
             AllDistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
             AllDistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
             AllDistrictDemand.TAmbN = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
+
+            //Adding Additional load to Chilled Water Load
+            for (int runs = 0; runs < AllDistrictDemand.ChwN.Length; runs++)
+            {
+                AllDistrictDemand.ChwN[runs] += AllDistrictDemand.AddL[runs];
+            }
 
 
             numberTimesteps = AllDistrictDemand.HwN.Length;
@@ -273,6 +285,32 @@ namespace DistrictEnergy
                 }
 
             return aggreagationArray;
+        }
+
+        private double[] GetAdditionalLoadProfile(List<UmiObject> contextObjects)
+        {
+            RhinoApp.WriteLine("Getting additional loads");
+            var nbDataPoint = 8760;
+            var aggregationArray = new double[nbDataPoint];
+            StatusBar.HideProgressMeter();
+            StatusBar.ShowProgressMeter(0, nbDataPoint * contextObjects.Count * 3,
+                "Aggregating Hot Water Loads", true, true);
+            foreach (var umiObject in contextObjects)
+                for (var i = 0; i < nbDataPoint; i++)
+                {
+                    var d = umiObject.Data["Additional Load"].Data[i];
+
+                    if (DistrictEnergy.Settings.UseDistrictLosses)
+                    {
+                        d *= (1 + DistrictEnergy.Settings.LossHwnet);
+                    }
+
+                    aggregationArray[i] += d;
+                    _progressBarPos += 1;
+                    StatusBar.UpdateProgressMeter(_progressBarPos, true);
+                }
+
+            return aggregationArray;
         }
 
         private IEnumerable<double> GetHourlyLocationSolarRadiation(UmiContext context)
@@ -859,6 +897,11 @@ namespace DistrictEnergy
         ///     Hourly location wind speed data (m/s)
         /// </summary>
         public double[] WindN = new double[8760];
+
+        /// <summary>
+        ///     Hourly additional loads input by users.
+        /// </summary>
+        public double[] AddL { get; set; }
     }
 
     public class ResultsArray
