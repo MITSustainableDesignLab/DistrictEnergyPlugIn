@@ -36,9 +36,12 @@
   <ItemGroup>
     <Reference Include="CsvHelper">
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
+      <Private>False</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="EnergyPlusWeather">
-      <HintPath>..\..\EnergyPlusWeatherPull-master\EnergyPlusWeather\bin\EnergyPlusWeather.dll</HintPath>
+    <Reference Include="EnergyPlusWeather, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\EnergyPlusWeatherPull\EnergyPlusWeather\bin\Release\EnergyPlusWeather.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
