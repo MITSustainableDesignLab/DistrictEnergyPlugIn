@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using CsvHelper;
 using Rhino;
 using Rhino.Commands;
+using Rhino.Input;
+using Rhino.Input.Custom;
 using Umi.Core;
 using Umi.RhinoServices.Context;
 
@@ -31,6 +33,7 @@ namespace DistrictEnergy
             var fileContent = string.Empty;
             var filePath = string.Empty;
 
+            var lt = LoadType.Cooling;
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = doc.Path;
@@ -39,20 +42,62 @@ namespace DistrictEnergy
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
                     //Get the path of specified file
                     filePath = openFileDialog.FileName;
-
-                    //Read the contents of the file into the umi db
-                    var records = AddAdditionalLoad(filePath, context);
-                }
             }
 
-            RhinoApp.WriteLine(fileContent, "Additional Load at path: " + filePath);
-            return Result.Success;
+            using (var getOptions = new GetOption())
+            {
+                for (;;)
+                {
+                    getOptions.SetCommandPrompt("What type of load profile is this");
+                    getOptions.ClearCommandOptions();
+                    var modeInt = AddEnumOptionList(getOptions, lt);
+
+                    if (getOptions.Get() == GetResult.Option)
+                    {
+                        if (getOptions.Option().Index == modeInt)
+                            lt = RetrieveEnumOptionValue<LoadType>(getOptions.Option().CurrentListOptionIndex);
+                    }
+                    else
+                    {
+                        //Read the contents of the file into the umi db
+                        var records = AddAdditionalLoad(filePath, context, lt);
+
+                        RhinoApp.WriteLine(fileContent, "Additional Load at path: " + filePath);
+                        return Result.Success;
+                    }
+                }
+            }
         }
 
-        private static ICollection<IUmiObject> AddAdditionalLoad(string filePath, UmiContext context)
+        private static int AddEnumOptionList(GetOption getOptions, LoadType lt)
+        {
+            var type = lt.GetType();
+
+            var names = Enum.GetNames(type);
+            var current = Enum.GetName(type, lt);
+
+            var location = Array.IndexOf(names, current);
+            if (location == -1)
+                throw new ArgumentException("enumerationCurrent is not an existing value");
+            return getOptions.AddOptionList(type.Name, names, location);
+        }
+
+        public static T RetrieveEnumOptionValue<T>(int resultIndex)
+        {
+            var type = typeof(T);
+
+            if (!type.IsEnum)
+                throw new ApplicationException("T must be enum");
+
+            var values = Enum.GetValues(type);
+            var current = values.GetValue(resultIndex);
+
+            return (T) current;
+        }
+
+        private static ICollection<IUmiObject> AddAdditionalLoad(string filePath, UmiContext context, LoadType loadType)
         {
             ICollection<IUmiObject> records;
             using (var reader = new StreamReader(filePath))
@@ -64,9 +109,11 @@ namespace DistrictEnergy
                     {
                         Name = "Additional Load", //Path.GetFileName(filePath),
                         Id = ToGuid(Path.GetFileName(filePath)).ToString(),
-                        Data = new Dictionary<string, UmiDataSeries>()
+                        Data = new Dictionary<string, UmiDataSeries>(),
+                        FilePath = filePath,
+                        LoadType = loadType
                     };
-                    record.Data["Additional Load"] = new UmiDataSeries
+                    record.Data["Additional " + loadType] = new UmiDataSeries
                     {
                         Name = "Additional Load",
                         Units = "kWh",
@@ -107,8 +154,18 @@ namespace DistrictEnergy
 
     public class AdditionalLoad : IUmiObject
     {
+        public string FilePath { get; set; }
+        public LoadType LoadType { get; set; }
         public string Name { get; set; }
         public string Id { get; set; }
         public IDictionary<string, UmiDataSeries> Data { get; set; }
     }
+
+    public enum LoadType
+    {
+        Cooling = 1,
+        Heating = 2,
+        Elec = 3
+    }
+
 }
