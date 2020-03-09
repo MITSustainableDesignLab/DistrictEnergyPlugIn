@@ -271,3 +271,5 @@ changelog*.*
 AllPreviousReleases/
 
 \.DS_Store
+
+UnitTest/4.433_refresher_umi.umi
