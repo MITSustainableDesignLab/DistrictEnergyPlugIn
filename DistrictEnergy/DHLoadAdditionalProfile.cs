@@ -46,29 +46,11 @@ namespace DistrictEnergy
                     filePath = openFileDialog.FileName;
             }
 
-            using (var getOptions = new GetOption())
-            {
-                for (;;)
-                {
-                    getOptions.SetCommandPrompt("What type of load profile is this");
-                    getOptions.ClearCommandOptions();
-                    var modeInt = AddEnumOptionList(getOptions, lt);
+            //Read the contents of the file into the umi db
+            AddAdditionalLoad(filePath, context);
 
-                    if (getOptions.Get() == GetResult.Option)
-                    {
-                        if (getOptions.Option().Index == modeInt)
-                            lt = RetrieveEnumOptionValue<LoadType>(getOptions.Option().CurrentListOptionIndex);
-                    }
-                    else
-                    {
-                        //Read the contents of the file into the umi db
-                        var records = AddAdditionalLoad(filePath, context, lt);
-
-                        RhinoApp.WriteLine(fileContent, "Additional Load at path: " + filePath);
-                        return Result.Success;
-                    }
-                }
-            }
+            RhinoApp.WriteLine(fileContent, "Additional Load at path: " + filePath);
+            return Result.Success;
         }
 
         private static int AddEnumOptionList(GetOption getOptions, LoadType lt)
@@ -97,36 +79,64 @@ namespace DistrictEnergy
             return (T) current;
         }
 
-        private static ICollection<IUmiObject> AddAdditionalLoad(string filePath, UmiContext context, LoadType loadType)
+        /// <summary>
+        /// Reads a CSV file with 3 columns.
+        /// </summary>
+        /// <param name="filePath">The path to the csv file</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private static ICollection<IUmiObject> AddAdditionalLoad(string filePath, UmiContext context)
         {
             ICollection<IUmiObject> records;
+
+            // Start stream reader
             using (var reader = new StreamReader(filePath))
             {
+                // Using CSV reader class
                 using (var csv = new CsvReader(reader))
                 {
                     records = new Collection<IUmiObject>();
+                    var name = "Additional Loads";
                     var record = new AdditionalLoad
                     {
-                        Name = "Additional Load", //Path.GetFileName(filePath),
+                        Name = name, //Path.GetFileName(filePath),
                         Id = ToGuid(Path.GetFileName(filePath)).ToString(),
                         Data = new Dictionary<string, UmiDataSeries>(),
-                        FilePath = filePath,
-                        LoadType = loadType
+                        FilePath = filePath
                     };
-                    record.Data["Additional " + loadType] = new UmiDataSeries
+                    List<string> types = new List<string>();
+                    types.Add("Cooling");
+                    types.Add("Heating");
+                    types.Add("Elec");
+
+
+                    foreach (var _type in types)
                     {
-                        Name = "Additional Load",
-                        Units = "kWh",
-                        Resolution = "Hourly",
-                        Data = new List<double>()
-                    };
+                        var seriesName = $"Additional {_type} Load";
+                        record.Data[seriesName] = new UmiDataSeries
+                        {
+                            Name = seriesName,
+                            Units = "kWh",
+                            Resolution = "Hourly",
+                            Data = new List<double>()
+                        };
+                    }
+
+                    {
+                        
+                    }
+
+                    // Actual reading of the columns
                     csv.Read();
                     csv.ReadHeader();
                     while (csv.Read())
                     {
-                        var timestamp = csv.GetField<DateTime>("TimeStamp");
-                        var value = csv.GetField<double>("Value");
-                        record.Data["Additional Load"].Data.Add(value);
+                        // Iterate over 3 columns
+                        foreach (var _type in types)
+                        {
+                            var value = csv.GetField<double>(_type);
+                            record.Data[$"Additional {_type} Load"].Data.Add(value);
+                        }
                     }
 
                     records.Add(record);
@@ -152,15 +162,20 @@ namespace DistrictEnergy
         }
     }
 
+    /// <summary>
+    /// Class used for additional loads. This class inherits the IUmiObject interface.
+    /// </summary>
     public class AdditionalLoad : IUmiObject
     {
         public string FilePath { get; set; }
-        public LoadType LoadType { get; set; }
         public string Name { get; set; }
         public string Id { get; set; }
         public IDictionary<string, UmiDataSeries> Data { get; set; }
     }
 
+    /// <summary>
+    /// Types of additional loads that can be imported.
+    /// </summary>
     public enum LoadType
     {
         Cooling = 1,
