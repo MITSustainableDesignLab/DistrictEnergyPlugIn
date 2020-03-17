@@ -8,8 +8,8 @@ using System.Windows.Forms;
 using CsvHelper;
 using Rhino;
 using Rhino.Commands;
+using Rhino.DocObjects;
 using Rhino.Input;
-using Rhino.Input.Custom;
 using Umi.Core;
 using Umi.RhinoServices.Context;
 
@@ -33,7 +33,13 @@ namespace DistrictEnergy
             var fileContent = string.Empty;
             var filePath = string.Empty;
 
-            var lt = LoadType.Cooling;
+            ObjRef obj_ref;
+            var rc = RhinoGet.GetOneObject("Select a brep", true, ObjectType.Brep, out obj_ref);
+            if (rc != Result.Success)
+                return rc;
+
+            var refId = obj_ref.ObjectId;
+
             using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = doc.Path;
@@ -47,45 +53,19 @@ namespace DistrictEnergy
             }
 
             //Read the contents of the file into the umi db
-            AddAdditionalLoad(filePath, context);
+            AddAdditionalLoad(filePath, context, refId);
 
-            RhinoApp.WriteLine(fileContent, "Additional Load at path: " + filePath);
+            RhinoApp.WriteLine($"Added additional load from '{filePath}'");
             return Result.Success;
         }
 
-        private static int AddEnumOptionList(GetOption getOptions, LoadType lt)
-        {
-            var type = lt.GetType();
-
-            var names = Enum.GetNames(type);
-            var current = Enum.GetName(type, lt);
-
-            var location = Array.IndexOf(names, current);
-            if (location == -1)
-                throw new ArgumentException("enumerationCurrent is not an existing value");
-            return getOptions.AddOptionList(type.Name, names, location);
-        }
-
-        public static T RetrieveEnumOptionValue<T>(int resultIndex)
-        {
-            var type = typeof(T);
-
-            if (!type.IsEnum)
-                throw new ApplicationException("T must be enum");
-
-            var values = Enum.GetValues(type);
-            var current = values.GetValue(resultIndex);
-
-            return (T) current;
-        }
-
         /// <summary>
-        /// Reads a CSV file with 3 columns.
+        ///     Reads a CSV file with 3 columns.
         /// </summary>
         /// <param name="filePath">The path to the csv file</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static ICollection<IUmiObject> AddAdditionalLoad(string filePath, UmiContext context)
+        private static ICollection<IUmiObject> AddAdditionalLoad(string filePath, UmiContext context, Guid refId)
         {
             ICollection<IUmiObject> records;
 
@@ -100,11 +80,11 @@ namespace DistrictEnergy
                     var record = new AdditionalLoad
                     {
                         Name = name, //Path.GetFileName(filePath),
-                        Id = ToGuid(Path.GetFileName(filePath)).ToString(),
+                        Id = refId.ToString(),
                         Data = new Dictionary<string, UmiDataSeries>(),
                         FilePath = filePath
                     };
-                    List<string> types = new List<string>();
+                    var types = new List<string>();
                     types.Add("Cooling");
                     types.Add("Heating");
                     types.Add("Elec");
@@ -123,21 +103,18 @@ namespace DistrictEnergy
                     }
 
                     {
-                        
                     }
 
                     // Actual reading of the columns
                     csv.Read();
                     csv.ReadHeader();
                     while (csv.Read())
-                    {
                         // Iterate over 3 columns
                         foreach (var _type in types)
                         {
                             var value = csv.GetField<double>(_type);
                             record.Data[$"Additional {_type} Load"].Data.Add(value);
                         }
-                    }
 
                     records.Add(record);
                     context.StoreObjects(records);
@@ -163,7 +140,7 @@ namespace DistrictEnergy
     }
 
     /// <summary>
-    /// Class used for additional loads. This class inherits the IUmiObject interface.
+    ///     Class used for additional loads. This class inherits the IUmiObject interface.
     /// </summary>
     public class AdditionalLoad : IUmiObject
     {
@@ -172,15 +149,4 @@ namespace DistrictEnergy
         public string Id { get; set; }
         public IDictionary<string, UmiDataSeries> Data { get; set; }
     }
-
-    /// <summary>
-    /// Types of additional loads that can be imported.
-    /// </summary>
-    public enum LoadType
-    {
-        Cooling = 1,
-        Heating = 2,
-        Elec = 3
-    }
-
 }
