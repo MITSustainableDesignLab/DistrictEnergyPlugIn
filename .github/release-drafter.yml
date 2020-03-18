@@ -13,6 +13,11 @@ categories:
   - title: '🧰 Maintenance'
     label: 'chore'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+prerelease: true
+on:
+  push:
+    branches:
+      - feature/*
 template: |
   ## Changes
 
