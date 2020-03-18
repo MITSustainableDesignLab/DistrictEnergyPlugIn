@@ -14,7 +14,7 @@ categories:
     label:
       - 'chore'
       - 'refactor'
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-template: '- $TITLE (#$NUMBER)'
 prerelease: true
 on:
   push:
