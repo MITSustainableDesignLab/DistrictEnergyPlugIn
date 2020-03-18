@@ -1,5 +1,5 @@
 name-template: 'v$NEXT_PATCH_VERSION 🌈'
-tag-template: 'v$NEXT_PATCH_VERSION'
+tag-template: '$NEXT_PATCH_VERSION'
 categories:
   - title: '🚀 Features'
     labels:
@@ -15,9 +15,12 @@ categories:
     label:
       - 'chore'
       - 'refactor'
-change-template: '- $TITLE (#$NUMBER)'
 prerelease: true
 template: |
-  ## Changes
+  ## What’s Changed
 
   $CHANGES
+
+  ### Contributors
+
+  $CONTRIBUTORS
