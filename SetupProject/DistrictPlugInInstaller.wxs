@@ -152,7 +152,6 @@
       <ComponentRef Id="DistrictEnergyDLL" />
       <ComponentRef Id="CsvHelperDLL" />
       <ComponentRef Id="EnergyPlusWeatherDLL" />
-      <ComponentRef Id="MathNetNumericsDLL" />
       <ComponentRef Id="LiveChartsDLL" />
       <ComponentRef Id="LiveChartsWpfDLL" />
       <ComponentRef Id="NewtonSoftJsonDLL" />
@@ -185,16 +184,7 @@
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="EnergyPlusWeatherDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll"
-                  Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll" />
-          </Component>
-
-          <Component Id="MathNetNumericsDLL" Guid="{3843BF61-0F61-4C1D-8FDD-B40B40DC8E29}">
-            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
-              <RegistryValue Name="MathNetNumericsDLL" Value="1" KeyPath="yes" Type="integer" />
-            </RegistryKey>
-            <File Id="MathNetNumericsDLL" Name="MathNet.Numerics.dll"
-                  Source="$(var.EnergyPlusWeather.TargetDir)MathNet.Numerics.dll" />
+            <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll" Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll" />
           </Component>
 
           <Component Id="LiveChartsDLL" Guid="{13DE637C-BC0C-40D9-B428-E9E6F4BD2F52}">
