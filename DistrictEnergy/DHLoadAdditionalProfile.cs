@@ -27,6 +27,18 @@ namespace DistrictEnergy
 
         public override string EnglishName => "DHLoadAdditionalProfile";
 
+        public static List<string> Types
+        {
+            get
+            {
+                var types = new List<string>();
+                types.Add("Cooling");
+                types.Add("Heating");
+                types.Add("Elec");
+                return types;
+            }
+        }
+
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
             var context = UmiContext.Current;
@@ -84,13 +96,9 @@ namespace DistrictEnergy
                         Data = new Dictionary<string, UmiDataSeries>(),
                         FilePath = filePath
                     };
-                    var types = new List<string>();
-                    types.Add("Cooling");
-                    types.Add("Heating");
-                    types.Add("Elec");
 
 
-                    foreach (var _type in types)
+                    foreach (var _type in Types)
                     {
                         var seriesName = $"Additional {_type} Load";
                         record.Data[seriesName] = new UmiDataSeries
@@ -110,7 +118,7 @@ namespace DistrictEnergy
                     csv.ReadHeader();
                     while (csv.Read())
                         // Iterate over 3 columns
-                        foreach (var _type in types)
+                        foreach (var _type in Types)
                         {
                             var value = csv.GetField<double>(_type);
                             record.Data[$"Additional {_type} Load"].Data.Add(value);
@@ -140,7 +148,7 @@ namespace DistrictEnergy
     }
 
     /// <summary>
-    ///     Class used for additional loads. This class inherits the IUmiObject interface.
+    ///     Class used for additional loads. This class inherits the UmiObject class.
     /// </summary>
     public class AdditionalLoad : IUmiObject
     {
