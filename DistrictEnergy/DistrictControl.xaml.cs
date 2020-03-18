@@ -55,6 +55,11 @@ namespace DistrictEnergy
             RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
         }
 
+        private void AdditionalProfileClick(object sender, RoutedEventArgs e)
+        {
+            RhinoApp.RunScript("DHLoadAdditionalProfile", true);
+        }
+
         private void SubscribeEvents(object sender, UmiContext e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
