@@ -6,3 +6,14 @@ template: |
   ## Contributors
 
   $CONTRIBUTORS
+
+categories:
+  - title: '🚀 Features'
+    label:
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
