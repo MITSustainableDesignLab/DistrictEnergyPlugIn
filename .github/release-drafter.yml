@@ -10,6 +10,7 @@ categories:
       - 'fix'
       - 'bugfix'
       - 'bug'
+      - 'quickfix'
   - title: '🧰 Maintenance'
     label:
       - 'chore'
