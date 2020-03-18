@@ -198,7 +198,9 @@ namespace DistrictEnergy
             AllDistrictDemand.ChwN = GetHourlyChilledWaterProfile(contextBuildings);
             AllDistrictDemand.HwN = GetHourlyHotWaterLoadProfile(contextBuildings);
             AllDistrictDemand.ElecN = GetHourlyElectricalLoadProfile(contextBuildings);
-            (AllDistrictDemand.AddC, AllDistrictDemand.AddH, AllDistrictDemand.AddE) = GetAdditionalLoadProfile(umiContext.GetObjects().Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null).ToList());
+            (AllDistrictDemand.AddC, AllDistrictDemand.AddH, AllDistrictDemand.AddE) = GetAdditionalLoadProfile(
+                umiContext.GetObjects()
+                    .Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null).ToList());
             StatusBar.HideProgressMeter();
             AllDistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
             AllDistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
@@ -906,6 +908,21 @@ namespace DistrictEnergy
     public class DistrictDemand
     {
         /// <summary>
+        ///     Hourly Additional Cooling Load
+        /// </summary>
+        public double[] AddC = new double[8760];
+
+        /// <summary>
+        ///     Hourly Additional Electricity Load
+        /// </summary>
+        public double[] AddE = new double[8760];
+
+        /// <summary>
+        ///     Hourly Additional Heating Load
+        /// </summary>
+        public double[] AddH = new double[8760];
+
+        /// <summary>
         ///     Hourly additional loads input by users.
         /// </summary>
         public double[] AddL = new double[8760];
@@ -939,21 +956,6 @@ namespace DistrictEnergy
         ///     Hourly location wind speed data (m/s)
         /// </summary>
         public double[] WindN = new double[8760];
-
-        /// <summary>
-        ///     Hourly Additional Cooling Load
-        /// </summary>
-        public double[] AddC = new double[8760];
-
-        /// <summary>
-        ///     Hourly Additional Heating Load
-        /// </summary>
-        public double[] AddH = new double[8760];
-
-        /// <summary>
-        ///     Hourly Additional Electricity Load
-        /// </summary>
-        public double[] AddE = new double[8760];
     }
 
     public class ResultsArray
