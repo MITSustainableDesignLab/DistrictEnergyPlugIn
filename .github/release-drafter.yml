@@ -9,7 +9,7 @@ template: |
 
 categories:
   - title: 'Features'
-    label:
+    labels:
       - 'feature'
       - 'enhancement'
   - title: 'Bug Fixes'
