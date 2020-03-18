@@ -17,10 +17,6 @@ categories:
       - 'refactor'
 change-template: '- $TITLE (#$NUMBER)'
 prerelease: true
-on:
-  push:
-    branches:
-      - develop
 template: |
   ## Changes
 
