@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
-             d:DesignWidth="385" d:DesignHeight="1100" d:DataContext="{d:DesignData ResultsViewModel}">
+             d:DesignWidth="480" d:DesignHeight="1105" d:DataContext="{d:DesignData ResultsViewModel}">
     <UserControl.Resources>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Style.Triggers>
