@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using LiveCharts.Wpf;
 using Rhino;
+using DistrictEnergy.ViewModels;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
