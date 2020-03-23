@@ -1,10 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using DistrictEnergy.ViewModels;
 using LiveCharts.Wpf;
 using Rhino;
 using Umi.RhinoServices.Context;
@@ -20,13 +20,16 @@ namespace DistrictEnergy
         public DistrictControl()
         {
             InitializeComponent();
+
+
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
         }
 
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var item = ItemsControl.ContainerFromElement((ListBox) sender, (DependencyObject) e.OriginalSource) as ListBoxItem;
+            var item =
+                ItemsControl.ContainerFromElement((ListBox) sender, (DependencyObject) e.OriginalSource) as ListBoxItem;
             if (item == null) return;
 
             var series = (StackedAreaSeries) item.Content;
@@ -35,20 +38,20 @@ namespace DistrictEnergy
                 : Visibility.Visible;
         }
 
-        private void ListBox_OnUpdatedArrays(object sender, EventArgs e)
+        /*private void ListBox_OnUpdatedArrays(object sender, EventArgs e)
         {
             HeatingListBox.InvalidateArrange();
-            HeatingListBox.ItemsSource = ResultsViewModel.StackedHeatingSeries;
+            HeatingListBox.ItemsSource = ResultsViewModel.StackedHeatingSeriesCollection;
             HeatingListBox.UpdateLayout();
 
             CoolingListBox.InvalidateArrange();
-            CoolingListBox.ItemsSource = ResultsViewModel.StackedCoolingSeries;
+            CoolingListBox.ItemsSource = ResultsViewModel.StackedCoolingSeriesCollection;
             CoolingListBox.UpdateLayout();
             ElecListBox.InvalidateArrange();
-            ElecListBox.ItemsSource = ResultsViewModel.StackedElecSeries;
+            ElecListBox.ItemsSource = ResultsViewModel.StackedElecSeriesCollection;
             ElecListBox.UpdateLayout();
 
-        }
+        }*/
 
         private void RunSimulationClick(object sender, RoutedEventArgs e)
         {
@@ -64,8 +67,10 @@ namespace DistrictEnergy
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
 
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += ListBox_OnUpdatedArrays;
+            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += ListBox_OnUpdatedArrays;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public class DoubleRangeRule : ValidationRule

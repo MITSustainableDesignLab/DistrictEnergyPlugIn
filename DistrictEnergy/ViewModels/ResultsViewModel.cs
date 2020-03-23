@@ -59,9 +59,10 @@ namespace DistrictEnergy.ViewModels
         }
 
         public static ResultsViewModel Instance { get; set; }
-        public static SeriesCollection StackedHeatingSeries { get; set; } = new SeriesCollection();
-        public static SeriesCollection StackedCoolingSeries { get; set; } = new SeriesCollection();
-        public static SeriesCollection StackedElecSeries { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedDemandSeriesCollection { get; set; }
+        public static SeriesCollection StackedHeatingSeriesCollection { get; set; } = new SeriesCollection();
+        public static SeriesCollection StackedCoolingSeriesCollection { get; set; } = new SeriesCollection();
+        public static SeriesCollection StackedElecSeriesCollection { get; set; } = new SeriesCollection();
         public static SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
         public static SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
 
@@ -144,9 +145,9 @@ namespace DistrictEnergy.ViewModels
 
             PieHeatingChartGraphSeries.Clear();
             PieCoolingChartGraphSeries.Clear();
-            StackedCoolingSeries.Clear();
-            StackedHeatingSeries.Clear();
-            StackedElecSeries.Clear();
+            StackedCoolingSeriesCollection.Clear();
+            StackedHeatingSeriesCollection.Clear();
+            StackedElecSeriesCollection.Clear();
         }
 
         /// <summary>
@@ -206,6 +207,34 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        private void UpdateDemandStackedChart(object sender, EventArgs e)
+        {
+            var instance = (DistrictDemand)sender;
+            var Demand = new Dictionary<string, double[]>
+            {
+                { "Heating", instance.ChwN },
+                { "Cooling", instance.HwN },
+                { "Electricity", instance.ElecN },
+            };
+
+            StackedDemandSeriesCollection.Clear();
+
+            foreach (var d in Demand)
+            {
+                var temp = new StackedAreaSeries
+                {
+                    Values = new ChartValues<double>(d.Value
+                        .Select((x, i) => new {Index = i, Value = x})
+                        .GroupBy(obj => obj.Index / 730)
+                        .Select(obj => obj.Select(v => v.Value).Sum())),
+                    Title=d.Key,
+                    LineSmoothness = 0,
+                    LabelPoint = KWhLabelPointFormatter
+                };
+                StackedDemandSeriesCollection.Add(temp);
+            }
+        }
+
 
         /// <summary>
         ///     Updates the Stacked graph that shows the heating energy demand
@@ -215,14 +244,16 @@ namespace DistrictEnergy.ViewModels
         private void UpdateHeatingStackedChart(object sender, EventArgs e)
         {
             var instance = (ResultsArray) sender;
-            var HwDemand = new Dictionary<string, double[]>();
-            HwDemand.Add("Solar Hot Water", instance.HwShw);
-            HwDemand.Add("Hot Water Tank", instance.HwHwt);
-            HwDemand.Add("Electric Heat Pump", instance.HwEhp);
-            HwDemand.Add("Natural Gas Boiler", instance.HwNgb);
-            HwDemand.Add("Combined Heating and Power", instance.HwChp);
+            var HwDemand = new Dictionary<string, double[]>
+            {
+                { "Solar Hot Water", instance.HwShw },
+                { "Hot Water Tank", instance.HwHwt },
+                { "Electric Heat Pump", instance.HwEhp },
+                { "Natural Gas Boiler", instance.HwNgb },
+                { "Combined Heating and Power", instance.HwChp }
+            };
 
-            StackedHeatingSeries.Clear();
+            StackedHeatingSeriesCollection.Clear();
 
             foreach (var hw in HwDemand)
             {
@@ -236,7 +267,7 @@ namespace DistrictEnergy.ViewModels
                     LineSmoothness = 0.5,
                     LabelPoint = KWhLabelPointFormatter
                 };
-                StackedHeatingSeries.Add(temp);
+                StackedHeatingSeriesCollection.Add(temp);
             }
         }
 
@@ -253,7 +284,7 @@ namespace DistrictEnergy.ViewModels
             chwDemand.Add("Electric Chiller", instance.ResultsArray.ChwEch);
             chwDemand.Add("Evaporator Side of EHPs", instance.ResultsArray.ChwEhpEvap);
 
-            StackedCoolingSeries.Clear();
+            StackedCoolingSeriesCollection.Clear();
 
             foreach (var chw in chwDemand)
             {
@@ -267,7 +298,7 @@ namespace DistrictEnergy.ViewModels
                     LineSmoothness = 0.5,
                     LabelPoint = KWhLabelPointFormatter
                 };
-                StackedCoolingSeries.Add(temp);
+                StackedCoolingSeriesCollection.Add(temp);
             }
         }
 
@@ -285,7 +316,7 @@ namespace DistrictEnergy.ViewModels
             elecDemand.Add("Combined Heat & Power", instance.ResultsArray.ElecChp);
             elecDemand.Add("Purchased Electricity", instance.ResultsArray.ElecProj);
 
-            StackedElecSeries.Clear();
+            StackedElecSeriesCollection.Clear();
 
             foreach (var elec in elecDemand)
             {
@@ -299,7 +330,7 @@ namespace DistrictEnergy.ViewModels
                     LineSmoothness = 0.5,
                     LabelPoint = KWhLabelPointFormatter
                 };
-                StackedElecSeries.Add(temp);
+                StackedElecSeriesCollection.Add(temp);
             }
         }
 
