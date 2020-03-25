@@ -7,6 +7,9 @@
              mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="500">
     <Grid>
+        <Grid.DataContext>
+            <vm:ResultsViewModel/>
+        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
