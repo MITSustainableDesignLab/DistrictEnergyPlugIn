@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using LiveCharts;
 using LiveCharts.Wpf;
 using Rhino;
 using DistrictEnergy.ViewModels;

@@ -4,14 +4,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-             xmlns:districtEnergy="clr-namespace:DistrictEnergy"
-             xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              mc:Ignorable="d"
-             d:DesignWidth="450" d:DesignHeight="500" d:DataContext="{d:DesignData ResultsViewModel}">
+             d:DesignWidth="450" d:DesignHeight="500">
     <Grid>
-        <Grid.DataContext>
-            <vm:ResultsViewModel/>
-        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
@@ -39,7 +34,21 @@
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
         <lvc:CartesianChart Grid.Column="0" Grid.Row="1" DisableAnimations="True" Hoverable="False"
-                            DataTooltip="{x:Null}" Series="{Binding StackedHeatingSeriesCollection}" />
+                            DataTooltip="{x:Null}" Series="{Binding StackedHeatingSeriesCollection}">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True"
+                          LabelFormatter="{Binding MonthFormater}">
+                    <lvc:Axis.Separator>
+                        <lvc:Separator IsEnabled="True" Step="1" />
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
+                          ShowLabels="True"
+                          LabelFormatter="{Binding KWhFormatter}" />
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
         <Expander Grid.Row="3" Grid.Column="0" Header="Advanced Options">
             <StackPanel>
                 <Grid Margin="10,0,0,0">
@@ -47,12 +56,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid.DataContext>
-                        <vm:PlantSettingsViewModel />
-                    </Grid.DataContext>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <Label Content="Account for network losses?"
-                               Style="{DynamicResource PlantSettingStyle}"
                                ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
                                Margin="0,2,3,2" />
                         <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
