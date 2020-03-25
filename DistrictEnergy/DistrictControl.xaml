@@ -7,20 +7,71 @@
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              mc:Ignorable="d"
-             d:DesignWidth="450" d:DesignHeight="800" d:DataContext="{d:DesignData ResultsViewModel}">
+             d:DesignWidth="450" d:DesignHeight="500" d:DataContext="{d:DesignData ResultsViewModel}">
     <Grid>
+        <Grid.DataContext>
+            <vm:ResultsViewModel/>
+        </Grid.DataContext>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="2" Grid.Column="0" Click="RunSimulationClick" Height="20"></Button>
+        <Button Grid.Row="2" Grid.Column="0" Click="RunSimulationClick" Content="Run Simulation" />
         <lvc:CartesianChart Grid.Column="0" Grid.Row="0" DisableAnimations="True" Hoverable="False"
-                            DataTooltip="{x:Null}" Series="{Binding StackedHeatingSeriesCollection}">
+                            DataTooltip="{x:Null}" Series="{Binding StackedDemandSeriesCollection}">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True"
+                          LabelFormatter="{Binding MonthFormater}">
+                    <lvc:Axis.Separator>
+                        <lvc:Separator IsEnabled="True" Step="1" />
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
+                          ShowLabels="True"
+                          LabelFormatter="{Binding KWhFormatter}" />
+            </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
+        <lvc:CartesianChart Grid.Column="0" Grid.Row="1" DisableAnimations="True" Hoverable="False"
+                            DataTooltip="{x:Null}" Series="{Binding StackedHeatingSeriesCollection}" />
+        <Expander Grid.Row="3" Grid.Column="0" Header="Advanced Options">
+            <StackPanel>
+                <Grid Margin="10,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.DataContext>
+                        <vm:PlantSettingsViewModel />
+                    </Grid.DataContext>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Label Content="Account for network losses?"
+                               Style="{DynamicResource PlantSettingStyle}"
+                               ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
+                               Margin="0,2,3,2" />
+                        <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
+                                  VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                        <Label Content="Hot"
+                               ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
+                        <TextBox Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,5,0" VerticalContentAlignment="Center" />
+                        <Label Content="Cold"
+                               ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
+                               Margin="0,2,4,2" />
+                        <TextBox Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0" VerticalContentAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Expander>
     </Grid>
 
 </UserControl>
