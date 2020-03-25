@@ -3,13 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" 
              mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="500">
     <Grid>
-        <Grid.DataContext>
-            <vm:ResultsViewModel/>
-        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
