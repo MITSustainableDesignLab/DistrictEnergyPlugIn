@@ -40,9 +40,6 @@
     <Reference Include="CsvHelper">
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="EnergyPlusWeather">
-      <HintPath>..\..\EnergyPlusWeatherPull\EnergyPlusWeather\bin\Release\EnergyPlusWeather.dll</HintPath>
-    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
@@ -150,6 +147,12 @@
     <Content Include="Resources\banner.bmp" />
     <Content Include="Resources\TRNExeConsole.f90" />
     <Content Include="Resources\WixUIDialogBmp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EnergyPlusWeatherPull\EnergyPlusWeather\EnergyPlusWeather.csproj">
+      <Project>{d8d748d7-aedf-4c88-9aa9-95498fcf87b8}</Project>
+      <Name>EnergyPlusWeather</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
