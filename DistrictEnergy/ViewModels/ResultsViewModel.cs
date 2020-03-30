@@ -53,7 +53,7 @@ namespace DistrictEnergy.ViewModels
                 return string.Format("{0:N1} kWh", chartPoint.Y);
             };
 
-            MonthFormater = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
+            MonthFormatter = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
 
             GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
         }
@@ -559,7 +559,7 @@ namespace DistrictEnergy.ViewModels
         public Func<double, string> XFormatter { get; set; }
         public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
         public Func<double, string> KWhFormatter { get; set; }
-        public Func<double, string> MonthFormater { get; set; } // Adds 1 to month index
+        public Func<double, string> MonthFormatter { get; set; } // Adds 1 to month index
 
         #endregion
     }
