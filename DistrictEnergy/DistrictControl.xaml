@@ -7,39 +7,47 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf" 
              mc:Ignorable="d"
-             d:DesignWidth="450" d:DesignHeight="500">
+             d:DesignWidth="450" d:DesignHeight="500"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="32" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="2" Grid.Column="0" Click="RunSimulationClick" Content="Run Simulation" />
-        <lvc:CartesianChart Grid.Column="0" Grid.Row="0" DisableAnimations="True" Hoverable="False"
-                            DataTooltip="{x:Null}" Series="{Binding StackedDemandSeriesCollection}">
-            <lvc:CartesianChart.DataContext>
-                <vm:ResultsViewModel/>
-            </lvc:CartesianChart.DataContext>
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True"
-                          LabelFormatter="{Binding MonthFormatter}">
-                    <lvc:Axis.Separator>
-                        <lvc:Separator IsEnabled="True" Step="1" />
-                    </lvc:Axis.Separator>
-                </lvc:Axis>
-            </lvc:CartesianChart.AxisX>
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
-                          ShowLabels="True"
-                          LabelFormatter="{Binding KWhFormatter}" />
-            </lvc:CartesianChart.AxisY>
-        </lvc:CartesianChart>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="daily"/>
+            <ToggleButton x:Name="TimeGrouped" Style="{DynamicResource MaterialDesignSwitchToggleButton}"
+                          HorizontalAlignment="Left" />
+            <Label Content="monthly"/>
+        </StackPanel>
         <lvc:CartesianChart Grid.Column="0" Grid.Row="1" DisableAnimations="True" Hoverable="False"
-                            DataTooltip="{x:Null}" Series="{Binding StackedHeatingSeriesCollection}">
+                            Series="{Binding StackedSeriesCollection}" Grid.RowSpan="2">
+            <lvc:CartesianChart.ToolTip>
+                <lvc:DefaultTooltip SelectionMode="OnlySender" />
+            </lvc:CartesianChart.ToolTip>
             <lvc:CartesianChart.DataContext>
                 <vm:ResultsViewModel/>
             </lvc:CartesianChart.DataContext>
@@ -57,7 +65,8 @@
                           LabelFormatter="{Binding KWhFormatter}" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
-        <Expander Grid.Row="3" Grid.Column="0" Header="Advanced Options">
+        <Button Grid.Row="3" Grid.Column="0" Click="RunSimulationClick" Content="Run Simulation" Margin="5,0" />
+        <Expander Grid.Row="4" Grid.Column="0" Header="Advanced Options" Style="{DynamicResource MaterialDesignExpander}">
             <StackPanel>
                 <Grid Margin="10,0,0,0">
                     <Grid.DataContext>
