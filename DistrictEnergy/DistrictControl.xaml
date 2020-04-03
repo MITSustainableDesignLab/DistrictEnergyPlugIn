@@ -65,7 +65,16 @@
                           LabelFormatter="{Binding KWhFormatter}" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
-        <Button Grid.Row="3" Grid.Column="0" Click="RunSimulationClick" Content="Run Simulation" Margin="5,0" />
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="SimCases" Width="30" ItemsSource="{Binding Path=SimCases}"  
+                      SelectedItem="{Binding Path=ASimCase}"
+                      DisplayMemberPath="Name"/>
+            <Button Click="RunSimulationClick" Margin="5,0" Grid.Column="1" Content="Run Simulation"></Button>
+        </Grid>
         <Expander Grid.Row="4" Grid.Column="0" Header="Advanced Options" Style="{DynamicResource MaterialDesignExpander}">
             <StackPanel>
                 <Grid Margin="10,0,0,0">

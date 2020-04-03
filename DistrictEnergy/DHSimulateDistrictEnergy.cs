@@ -1746,4 +1746,23 @@ namespace DistrictEnergy
                   Settings.AutBat; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
         }
     }
+
+    public class SimCase
+    {
+        private int _id;
+
+        public int Id
+        {
+            get { return _id; }
+            set { Id = value; }
+        }
+
+        private string _name;
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+    }
 }
