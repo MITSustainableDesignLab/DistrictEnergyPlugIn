@@ -52,7 +52,7 @@
         <lvc:CartesianChart Grid.Column="0" Grid.Row="1" DisableAnimations="True" Hoverable="False"
                             Series="{Binding StackedSeriesCollection}" Grid.RowSpan="2">
             <lvc:CartesianChart.ToolTip>
-                <lvc:DefaultTooltip SelectionMode="OnlySender" />
+                <lvc:DefaultTooltip SelectionMode="Auto" />
             </lvc:CartesianChart.ToolTip>
             <lvc:CartesianChart.DataContext>
                 <vm:ResultsViewModel />
