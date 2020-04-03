@@ -245,7 +245,12 @@ namespace DistrictEnergy
                     var d = umiObject.Data["SDL/Cooling"].Data[i];
                     if (DistrictEnergy.Settings.UseDistrictLosses)
                         // If distribution losses, increase demand
-                        d *= 1 + DistrictEnergy.Settings.LossChwnet;
+
+                    {
+                        var lossChwnet = 1 + DistrictEnergy.Settings.LossChwnet;
+                        DHSimulateDistrictEnergy.Instance.DistrictDemand.CoolingNetworkLosses[i] += d * lossChwnet;
+                        d *= lossChwnet;
+                    }
 
                     aggregationArray[i] += d;
                     _progressBarPos += 1;
@@ -268,7 +273,12 @@ namespace DistrictEnergy
                 {
                     var d = umiObject.Data["SDL/Heating"].Data[i] + umiObject.Data["SDL/Domestic Hot Water"].Data[i];
 
-                    if (DistrictEnergy.Settings.UseDistrictLosses) d *= 1 + DistrictEnergy.Settings.LossHwnet;
+                    if (DistrictEnergy.Settings.UseDistrictLosses)
+                    {
+                        var lossHwnet = 1 + DistrictEnergy.Settings.LossHwnet;
+                        DHSimulateDistrictEnergy.Instance.DistrictDemand.HeatingNetworkLosses[i] += d * lossHwnet;
+                        d *= lossHwnet;
+                    }
 
                     aggregationArray[i] += d;
                     _progressBarPos += 1;
@@ -959,6 +969,17 @@ namespace DistrictEnergy
         ///     Hourly location wind speed data (m/s)
         /// </summary>
         public double[] WindN = new double[8760];
+
+        /// <summary>
+        ///     Hourly Losses through cooling network
+        /// </summary>
+        public double[] CoolingNetworkLosses = new double[8760];
+
+        /// <summary>
+        ///     Hourly Losses through heating network
+        /// </summary>
+        public double[] HeatingNetworkLosses = new double[8760];
+
     }
 
     public class ResultsArray
