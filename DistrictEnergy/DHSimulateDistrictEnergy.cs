@@ -936,11 +936,6 @@ namespace DistrictEnergy
         public double[] AddH = new double[8760];
 
         /// <summary>
-        ///     Hourly additional loads input by users.
-        /// </summary>
-        public double[] AddL = new double[8760];
-
-        /// <summary>
         ///     Hourly chilled water load profile (kWh)
         /// </summary>
         public double[] ChwN = new double[8760];
