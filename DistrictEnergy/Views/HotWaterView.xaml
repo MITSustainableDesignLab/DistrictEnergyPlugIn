@@ -45,14 +45,34 @@
         </Style>-->
     </UserControl.Resources>
     <Grid x:Name="HotWaterGroup">
-        <materialDesign:Card Padding="32" Margin="16">
+        <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
+                  HorizontalAlignment="Stretch">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Grid.Column="0" 
+                                                 Kind="InfoOutline"
+                                                 Height="32"
+                                                 Width="32"
+                                                 VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="HOT WATER" />
+                    </Grid>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
             <StackPanel>
                 <Grid x:Name="Ehp">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">
                         Electric Heat Pump
                     </TextBlock>
                     <StackPanel Grid.Row="1">
@@ -134,7 +154,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">Solar Hot Water</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Solar Hot Water</TextBlock>
                     <StackPanel Grid.Row="1">
 
                         <Expander>
@@ -244,7 +264,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">Hot Water Tank</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Hot Water Tank</TextBlock>
                     <StackPanel Grid.Row="1">
                         <Expander>
                             <Expander.Header>
@@ -309,7 +329,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">Natural Gas Boiler</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Natural Gas Boiler</TextBlock>
                     <StackPanel Grid.Row="1" Margin="0">
                         <Grid VerticalAlignment="Top" Margin="0,0,60,0">
                             <Grid.DataContext>
@@ -338,7 +358,7 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
-        </materialDesign:Card>
+        </GroupBox>
     </Grid>
 
 </UserControl>

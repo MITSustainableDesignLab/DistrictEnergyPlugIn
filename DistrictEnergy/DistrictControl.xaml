@@ -7,7 +7,8 @@
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:Views="clr-namespace:DistrictEnergy.Views"
+             xmlns:views="clr-namespace:DistrictEnergy.Views"
+             xmlns:helpers="clr-namespace:DistrictEnergy.Helpers"
              mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="500"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -48,9 +49,21 @@
                           HorizontalAlignment="Left" Checked="TimeGrouped_Checked" Unchecked="TimeGrouped_Unchecked"
                           IsChecked="True" />
             <Label Content="monthly" />
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel.DataContext>
+                    <vm:ResultsViewModel />
+                </StackPanel.DataContext>
+                <StackPanel.Resources>
+                    <helpers:ComparisonConverter x:Key="ComparisonConverter" />
+                </StackPanel.Resources>
+                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Cost}}">Cost</RadioButton>
+                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Carbon}}">Carbon</RadioButton>
+                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.FuelUse}}">Fuel</RadioButton>
+                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Load}}">Loads</RadioButton>
+            </StackPanel>
         </StackPanel>
         <lvc:CartesianChart Grid.Column="0" Grid.Row="1" DisableAnimations="True" Hoverable="False"
-                            Series="{Binding StackedSeriesCollection}" Grid.RowSpan="2">
+                            Series="{Binding StackedSeriesCollection}" Grid.RowSpan="2" MouseMove="CartesianChart_MouseMove">
             <lvc:CartesianChart.ToolTip>
                 <lvc:DefaultTooltip SelectionMode="Auto" />
             </lvc:CartesianChart.ToolTip>
@@ -63,6 +76,16 @@
                     <lvc:Axis.Separator>
                         <lvc:Separator IsEnabled="True" Step="1" />
                     </lvc:Axis.Separator>
+                    <lvc:Axis.Sections>
+                        <lvc:AxisSection Value="{Binding XPointer}"
+                                         SectionWidth="0.25"
+                                         SectionOffset="-0.125"
+                                         Fill="#59FF5722"
+                                         Stroke="#ff5722"
+                                         StrokeThickness=".5"
+                                         DataLabelForeground="White"
+                                         DataLabel="True"/>
+                    </lvc:Axis.Sections>
                 </lvc:Axis>
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
@@ -89,7 +112,7 @@
                   Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch">
             <ScrollViewer Height="500">
                 <StackPanel>
-                    <Grid Margin="10,0,0,0">
+                    <Grid>
                         <Grid.DataContext>
                             <vm:PlantSettingsViewModel />
                         </Grid.DataContext>
@@ -120,11 +143,11 @@
                                 VerticalContentAlignment="Center" />
                         </StackPanel>
                     </Grid>
-                    <Views:AbsorptionChillerView Height="auto" />
-                    <Views:HotWaterView Height="auto" />
-                    <Views:ElectricGenerationView Height="auto" />
-                    <Views:CombinedHeatAndPowerView Height="auto" />
-                </StackPanel>
+
+                    <views:AbsorptionChillerView Height="auto" />
+                    <views:HotWaterView Height="auto" />
+                    <views:ElectricGenerationView Height="auto" />
+                    <views:CombinedHeatAndPowerView Height="auto" /></StackPanel>
             </ScrollViewer>
         </Expander>
     </Grid>

@@ -104,6 +104,8 @@
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
     <Compile Include="DHSimulateDistrictEnergy.cs" />
+    <Compile Include="Helpers\ChartMode.cs" />
+    <Compile Include="Helpers\ComparisonConverter.cs" />
     <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
     <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
     <Compile Include="Networks\ThermalPlants\AbsorptionChiller.cs" />

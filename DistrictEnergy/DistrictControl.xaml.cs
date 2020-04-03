@@ -5,10 +5,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using DistrictEnergy.Helpers;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Rhino;
 using DistrictEnergy.ViewModels;
+using LiveCharts.Helpers;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -87,6 +89,53 @@ namespace DistrictEnergy
             DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = 24;
             //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
         }
+
+        private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            var chart = (LiveCharts.Wpf.CartesianChart) sender;
+            var vm = (ResultsViewModel) chart.DataContext;
+
+            //lets get where the mouse is at our chart
+            var mouseCoordinate = e.GetPosition(chart);
+
+            //now that we know where the mouse is, lets use
+            //ConverToChartValues extension
+            //it takes a point in pixes and scales it to our chart current scale/values
+            var p = chart.ConvertToChartValues(mouseCoordinate);
+
+            //in the Y section, lets use the raw value
+            vm.YPointer = p.Y;
+
+            //for X in this case we will only highlight the closest point.
+            //lets use the already defined ClosestPointTo extension
+            //it will return the closest ChartPoint to a value according to an axis.
+            //here we get the closest point to p.X according to the X axis
+            if (chart.Series.Count > 0)
+            {
+                var series = chart.Series[0];
+                var closetsPoint = series.ClosestPointTo(p.X, AxisOrientation.X);
+
+                vm.XPointer = closetsPoint.X;
+            }
+        }
+
+        public ChartMode ChartMode { get; set; }
+
+        public class ComparisonConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                return value?.Equals(parameter);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                return value?.Equals(true) == true ? parameter : Binding.DoNothing;
+            }
+        }
+
+
     }
 
     public class DoubleRangeRule : ValidationRule

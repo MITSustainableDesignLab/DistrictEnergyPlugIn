@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
+using DistrictEnergy.Helpers;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
@@ -28,6 +29,8 @@ namespace DistrictEnergy.ViewModels
         private double _totalCarbonIntensity;
         private double _totalCostIntensity;
         private double _totalEnergyIntensity;
+        private double _xPointer;
+        private double _yPointer;
 
         public ResultsViewModel()
         {
@@ -58,6 +61,13 @@ namespace DistrictEnergy.ViewModels
             MonthFormatter = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
 
             GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
+
+            //lets initialize in an invisible location
+            XPointer = -5;
+            YPointer = -5;
+
+            //the formatter or labels property is shared 
+            Formatter = x => x.ToString("N2");
         }
 
         public ResultsViewModel Instance { get; set; }
@@ -68,6 +78,28 @@ namespace DistrictEnergy.ViewModels
         public SeriesCollection StackedElecSeriesCollection { get; set; } = new SeriesCollection();
         public SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
         public SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
+
+        public double XPointer
+        {
+            get { return _xPointer; }
+            set
+            {
+                _xPointer = value;
+                OnPropertyChanged("XPointer");
+            }
+        }
+
+        public double YPointer
+        {
+            get { return _yPointer; }
+            set
+            {
+                _yPointer = value;
+                OnPropertyChanged("YPointer");
+            }
+        }
+
+        public Func<double, string> Formatter { get; set; }
 
         public double ElecToHw
         {
@@ -122,6 +154,11 @@ namespace DistrictEnergy.ViewModels
         public double TotalCost { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null) PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
@@ -637,6 +674,8 @@ namespace DistrictEnergy.ViewModels
         public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
         public Func<double, string> KWhFormatter { get; set; }
         public Func<double, string> MonthFormatter { get; set; } // Adds 1 to month index
+
+        public ChartMode ChartMode { get; set; }
 
         #endregion
     }

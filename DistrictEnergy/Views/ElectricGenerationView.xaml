@@ -54,14 +54,34 @@
         </Style>-->
     </UserControl.Resources>
     <Grid x:Name="ElectricGenGroup">
-        <materialDesign:Card Padding="32" Margin="16">
+        <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
+                  HorizontalAlignment="Stretch">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Grid.Column="0" 
+                                                 Kind="InfoOutline"
+                                                 Height="32"
+                                                 Width="32"
+                                                 VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="ELECTRICITY GENERATION" />
+                    </Grid>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
             <StackPanel>
                 <Grid x:Name="Pv" VerticalAlignment="Top" Height="Auto">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">
                         Photovoltaic Array
                     </TextBlock>
                     <StackPanel Grid.Row="1">
@@ -157,7 +177,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">
                         Wind Turbines
                     </TextBlock>
                     <StackPanel Grid.Row="1">
@@ -305,7 +325,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">
                         Battery Bank
                     </TextBlock>
                     <StackPanel Grid.Row="1">
@@ -388,7 +408,7 @@
                 </Grid>
 
             </StackPanel>
-        </materialDesign:Card>
+        </GroupBox>
 
 
     </Grid>

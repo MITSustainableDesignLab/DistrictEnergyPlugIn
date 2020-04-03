@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DistrictEnergy.Views.AbsorptionChillerView"
+<UserControl x:Class="DistrictEnergy.Views.AbsorptionChillerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,14 +30,34 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="ChilledWaterGroup">
-        <materialDesign:Card Padding="32" Margin="16">
+        <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
+                  HorizontalAlignment="Stretch">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Grid.Column="0" 
+                                                 Kind="InfoOutline"
+                                                 Height="32"
+                                                 Width="32"
+                                                 VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="CHILLED WATER" />
+                    </Grid>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
             <StackPanel>
                 <Grid x:Name="Abs">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">Absorption Chiller</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Absorption Chiller</TextBlock>
                     <StackPanel Grid.Row="1">
                         <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
                             <Expander.Header>
@@ -93,7 +113,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Style="{DynamicResource MaterialDesignHeadline5TextBlock}" Grid.Row="0">Electric Chiller</TextBlock>
+                    <TextBlock Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Grid.Row="0">Electric Chiller</TextBlock>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto"
                                 Grid.Row="1">
                         <Grid VerticalAlignment="Top" Margin="0,0,60,0">
@@ -120,6 +140,6 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
-        </materialDesign:Card>
+        </GroupBox>
     </Grid>
 </UserControl>
