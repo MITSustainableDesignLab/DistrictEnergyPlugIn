@@ -383,7 +383,7 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        ///     Equation 19 : Hourly purchased grid Wlectricity for whole site
+        ///     Equation 19 : Hourly purchased grid electricity for whole site
         /// </summary>
         /// <param name="elecN"></param>
         /// <param name="elecRen"></param>
