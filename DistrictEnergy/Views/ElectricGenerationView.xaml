@@ -1,0 +1,396 @@
+﻿<UserControl x:Class="DistrictEnergy.Views.ElectricGenerationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DistrictEnergy.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
+             xmlns:districtEnergy="clr-namespace:DistrictEnergy"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        <!--<Style x:Key="PlantComponentHeader" TargetType="{x:Type TextBlock}">
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="None" />
+            <Setter Property="Margin" Value="5, 5" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#404040" />
+        </Style>
+        <Style x:Key="StackPanelStyle" TargetType="StackPanel">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Width" Value="Auto" />
+            <Setter Property="Margin" Value="5,0,5,5" />
+            <Setter Property="Background" Value="White" />
+        </Style>
+        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                              Path=(Validation.Errors)[0].ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>-->
+    </UserControl.Resources>
+    <Grid x:Name="ElectricGenGroup">
+        <materialDesign:Card Padding="32" Margin="16">
+            <StackPanel>
+                <Grid x:Name="Pv" VerticalAlignment="Top" Height="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                        Photovoltaic Array
+                    </TextBlock>
+                    <StackPanel Grid.Row="1">
+                        <Expander>
+                            <Expander.Header>
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Slider VerticalAlignment="Center" Maximum="100"
+                                            Value="{Binding OFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ToolTip="Ratio of electricity delivered by PV Array to total annual electricity requirement"
+                                            IsSnapToTickEnabled="True" Focusable="False" />
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                Grid.ColumnSpan="2"
+                                                HorizontalAlignment="Right" Margin="0">
+                                        <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                               VerticalContentAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                                        <TextBox
+                                            Text="{Binding OFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Expander.Header>
+                            <StackPanel>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Cell efficiency"
+                                           ToolTip="Average annual ratio of electricity output from array divided by received solar radiation" />
+
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding EFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Area utilization factor"
+                                           ToolTip="Accounts for module frames and other infrastructural requirements" />
+
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Miscellaneous losses"
+                                           ToolTip="Accounts for other losses including line losses and balance of system" />
+
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding LOSS_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+
+                    </StackPanel>
+                </Grid>
+                <Grid x:Name="Wnd" VerticalAlignment="Top" Height="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                        Wind Turbines
+                    </TextBlock>
+                    <StackPanel Grid.Row="1">
+                        <Expander>
+                            <Expander.Header>
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                            Value="{Binding OFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ToolTip="Ratio of electricity delivered by wind turbines to total annual electricity requirement"
+                                            IsSnapToTickEnabled="True" Focusable="False" />
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                Grid.ColumnSpan="2"
+                                                HorizontalAlignment="Right" Margin="0">
+                                        <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                               VerticalContentAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                                        <TextBox
+                                            Text="{Binding OFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Expander.Header>
+                            <StackPanel>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Turbine efficiency"
+                                           ToolTip="Average annual ratio of power captured by turbine to total power available in the wind (Theoretical maximum is 59%)" />
+
+                                    <Label Content="%"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox x:Name="TurbineEff"
+                                             VerticalContentAlignment="Center"
+                                             AllowDrop="True"
+                                             ToolTip="{Binding ElementName=TurbineEff, Path=(Validation.Errors)[0].ErrorContent}"
+                                             Grid.Column="2">
+                                        <TextBox.Text>
+                                            <Binding Path="EFF_WND"
+                                                     UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <districtEnergy:DoubleRangeRule Min="0"
+                                                                                    Max="59" />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Cut-in speed "
+                                           ToolTip="Minimum wind speed at which the turbine blades overcome friction and begin to rotate" />
+
+                                    <Label Content="m/s"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding CIN_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Cut-out speed"
+                                           ToolTip="Speed at which the turbine blades are brought to rest to avoid damage from high winds" />
+
+                                    <Label Content="m/s"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding COUT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Rotor area per turbine"
+                                           ToolTip="The swept area is the plane of wind intersected by the turbine" />
+
+                                    <Label Content="m²"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding ROT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Miscellaneous losses" />
+
+                                    <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding LOSS_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+
+
+                    </StackPanel>
+                </Grid>
+                <Grid x:Name="Bat" VerticalAlignment="Top" Height="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                        Battery Bank
+                    </TextBlock>
+                    <StackPanel Grid.Row="1">
+                        <Expander>
+                            <Expander.Header>
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="50" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
+                                            Value="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ToolTip="Number of average annual days that batteries can meet demand once fully charged"
+                                            IsSnapToTickEnabled="True" />
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                Grid.ColumnSpan="2"
+                                                HorizontalAlignment="Right" Margin="0">
+                                        <Label Content="n days"
+                                               VerticalContentAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                                        <TextBox x:Name="AutBat">
+                                            <TextBox.Text>
+                                                <Binding Path="AUT_BAT" BindsDirectlyToSource="True"
+                                                         Mode="TwoWay"
+                                                         UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <districtEnergy:DoubleRangeRule Min="0" Max="365" />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander.Header>
+                            <StackPanel>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Miscellaneous losses"
+                                           ToolTip="Accounts for other losses including line losses and balance of system" />
+
+                                    <Label Content="%"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding LOSS_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Beginning Charged State" />
+
+                                    <Label Content="%"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding BAT_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+        </materialDesign:Card>
+
+
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,145 @@
+﻿<UserControl x:Class="DistrictEnergy.Views.CombinedHeatAndPowerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DistrictEnergy.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        <!--<Style x:Key="PlantComponentHeader" TargetType="{x:Type TextBlock}">
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="None" />
+            <Setter Property="Margin" Value="5, 5" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#404040" />
+        </Style>
+        <Style x:Key="StackPanelStyle" TargetType="StackPanel">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Width" Value="Auto" />
+            <Setter Property="Margin" Value="5,0,5,5" />
+            <Setter Property="Background" Value="White" />
+        </Style>-->
+    </UserControl.Resources>
+    <Grid x:Name="ChpGroup">
+        <materialDesign:Card Padding="32" Margin="16">
+            <StackPanel>
+                <Grid x:Name="Chp" VerticalAlignment="Top" Height="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignHeadline5TextBlock}">
+                        Combined Heating &amp; Power
+                    </TextBlock>
+                    <StackPanel Grid.Row="1">
+                        <Expander>
+                            <Expander.Header>
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                            Value="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ToolTip="Ratio of electricity delivered by generator to total demand at peak conditions"
+                                            IsSnapToTickEnabled="True" Focusable="False" />
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+
+                                                HorizontalAlignment="Right" Margin="0" Grid.ColumnSpan="2">
+                                        <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                               VerticalContentAlignment="Center"
+                                               HorizontalAlignment="Center" />
+                                        <TextBox Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Margin="0,0,1,0" />
+                                    </StackPanel>
+                                </Grid>
+                            </Expander.Header>
+                            <StackPanel>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Tracking mode"
+                                           ToolTip="Control the generator to prioritize meeting the hot water or electricity demand" />
+
+                                    <ComboBox SelectedItem="{Binding TMOD_CHP, Mode=TwoWay}"
+                                              ItemsSource="{Binding PosibleTrackingModes}"
+                                              IsSynchronizedWithCurrentItem="True"
+                                              Panel.ZIndex="2" Grid.Column="1" />
+
+                                </Grid>
+                                <Grid Margin="0,3,0,0" VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Electrical efficiency"
+                                           ToolTip="Average annual ratio of electricity delivered by generator to fuel consumed" />
+
+                                    <Label Content="%"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2" Text="{Binding EFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </Grid>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.DataContext>
+                                        <viewModels:PlantSettingsViewModel />
+                                    </Grid.DataContext>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30"/>
+                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Waste heat recovery effectiveness"
+                                           ToolTip="Average annual ratio of usable heat recovered from generator to fuel consumed " />
+
+                                    <Label Content="%"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox Grid.Column="2" Text="{Binding HREC_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel></materialDesign:Card>
+
+
+    </Grid>
+
+</UserControl>
