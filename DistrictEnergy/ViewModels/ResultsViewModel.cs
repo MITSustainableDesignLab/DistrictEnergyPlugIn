@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Windows.Data;
-using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
@@ -15,6 +13,7 @@ namespace DistrictEnergy.ViewModels
 {
     public class ResultsViewModel : INotifyPropertyChanged
     {
+        private int _aggregationPeriod = 730;
         private double _elecToChw;
         private double _elecToElec;
         private double _elecToHw;
@@ -128,12 +127,7 @@ namespace DistrictEnergy.ViewModels
             if (DHSimulateDistrictEnergy.Instance == null) return;
 
             DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateStackedChart;
-            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateDemandStackedChart;
-            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateHeatingStackedChart;
-            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateCoolingStackedChart;
-            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateElecStackedChart;
-            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateHeatingPieChart;
-            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateCoolingPieChart;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.PropertyChanged += UpdateStackedChart;
             DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateMetrics;
         }
 
@@ -150,10 +144,6 @@ namespace DistrictEnergy.ViewModels
 
             PieHeatingChartGraphSeries.Clear();
             PieCoolingChartGraphSeries.Clear();
-            // StackedCoolingSeriesCollection.Clear();
-            // StackedHeatingSeriesCollection.Clear();
-            // StackedElecSeriesCollection.Clear();
-            // StackedDemandSeriesCollection.Clear();
             StackedSeriesCollection.Clear();
         }
 
@@ -223,9 +213,13 @@ namespace DistrictEnergy.ViewModels
             var instance = DHSimulateDistrictEnergy.Instance;
             var Demand = new Dictionary<string, double[]>
             {
-                { "Chilled Water Demand", instance.DistrictDemand.ChwN },
-                { "Hot Water Demand", instance.DistrictDemand.HwN },
-                { "Total Electricity Demand", instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray().Zip(instance.ResultsArray.ElecEhp, (x,y)=>x+y).ToArray() }
+                {"Chilled Water Demand", instance.DistrictDemand.ChwN},
+                {"Hot Water Demand", instance.DistrictDemand.HwN},
+                {
+                    "Total Electricity Demand",
+                    instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
+                        .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
+                }
             };
             var Supply = new Dictionary<string, double[]>
             {
@@ -249,7 +243,7 @@ namespace DistrictEnergy.ViewModels
             {
                 var series = new StackedAreaSeries
                 {
-                    Values = aggregateByPeriod(demand.Value, true, period: 730),
+                    Values = AggregateByPeriod(demand.Value, true, instance.PluginSettings.AggregationPeriod),
                     Title = demand.Key,
                     LineSmoothness = 0,
                     LabelPoint = KWhLabelPointFormatter,
@@ -257,11 +251,12 @@ namespace DistrictEnergy.ViewModels
                 };
                 StackedSeriesCollection.Add(series);
             }
+
             foreach (var supply in Supply)
             {
                 var series = new StackedAreaSeries
                 {
-                    Values = aggregateByPeriod(supply.Value, false, period: 730),
+                    Values = AggregateByPeriod(supply.Value, false, instance.PluginSettings.AggregationPeriod),
                     Title = supply.Key,
                     LineSmoothness = 0,
                     LabelPoint = KWhLabelPointFormatter,
@@ -276,9 +271,9 @@ namespace DistrictEnergy.ViewModels
             var instance = DHSimulateDistrictEnergy.Instance;
             var Demand = new Dictionary<string, double[]>
             {
-                { "Heating", instance.DistrictDemand.ChwN },
-                { "Cooling", instance.DistrictDemand.HwN },
-                { "Electricity", instance.DistrictDemand.ElecN },
+                {"Heating", instance.DistrictDemand.ChwN},
+                {"Cooling", instance.DistrictDemand.HwN},
+                {"Electricity", instance.DistrictDemand.ElecN}
             };
 
             StackedDemandSeriesCollection.Clear();
@@ -287,8 +282,8 @@ namespace DistrictEnergy.ViewModels
             {
                 var temp = new StackedAreaSeries
                 {
-                    Values = aggregateByPeriod(d.Value, false, period: 24),
-                    Title=d.Key,
+                    Values = AggregateByPeriod(d.Value, false, instance.PluginSettings.AggregationPeriod),
+                    Title = d.Key,
                     LineSmoothness = 0,
                     LabelPoint = KWhLabelPointFormatter
                 };
@@ -296,23 +291,17 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        private static ChartValues<double> aggregateByPeriod(double[] d, bool negative = true, int period = 730)
+        private static ChartValues<double> AggregateByPeriod(double[] d, bool negative = true, int period = 730)
         {
             if (negative)
-            {
                 return new ChartValues<double>(d
-                    .Select((x, i) => new { Index = i, Value = x })
+                    .Select((x, i) => new {Index = i, Value = x})
                     .GroupBy(obj => obj.Index / period)
                     .Select(obj => obj.Select(v => -v.Value).Sum()));
-            }
-            else
-            {
-                return new ChartValues<double>(d
-                    .Select((x, i) => new { Index = i, Value = x })
-                    .GroupBy(obj => obj.Index / period)
-                    .Select(obj => obj.Select(v => v.Value).Sum()));
-            }
-            
+            return new ChartValues<double>(d
+                .Select((x, i) => new {Index = i, Value = x})
+                .GroupBy(obj => obj.Index / period)
+                .Select(obj => obj.Select(v => v.Value).Sum()));
         }
 
 
@@ -326,11 +315,11 @@ namespace DistrictEnergy.ViewModels
             var instance = (ResultsArray) sender;
             var HwDemand = new Dictionary<string, double[]>
             {
-                { "Solar Hot Water", instance.HwShw },
-                { "Hot Water Tank", instance.HwHwt },
-                { "Electric Heat Pump", instance.HwEhp },
-                { "Natural Gas Boiler", instance.HwNgb },
-                { "Combined Heating and Power", instance.HwChp }
+                {"Solar Hot Water", instance.HwShw},
+                {"Hot Water Tank", instance.HwHwt},
+                {"Electric Heat Pump", instance.HwEhp},
+                {"Natural Gas Boiler", instance.HwNgb},
+                {"Combined Heating and Power", instance.HwChp}
             };
 
             StackedHeatingSeriesCollection.Clear();

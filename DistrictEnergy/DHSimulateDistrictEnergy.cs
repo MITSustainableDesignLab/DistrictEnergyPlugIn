@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using CsvHelper;
@@ -45,7 +46,14 @@ namespace DistrictEnergy
             ResultsArray = new ResultsArray();
             DistrictDemand = new DistrictDemand();
             SimConstants = new SimConstants();
+            PluginSettings = new Settings();
         }
+
+        public ResultsArray ResultsArray { get; }
+        public DistrictDemand DistrictDemand { get; }
+        public SimConstants SimConstants { get; }
+        public Settings PluginSettings { get; }
+
 
         ///<summary>The only instance of the DHSimulateDistrictEnergy command.</summary>
         // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
@@ -509,6 +517,39 @@ namespace DistrictEnergy
             File.Delete(GetUmiTempPath() + "DHSimulationLogFile.txt");
         }
 
+        #region Results Array
+
+        private void SetResultsArraystoZero()
+        {
+            Array.Clear(ResultsArray.BatChgN, 0, ResultsArray.BatChgN.Length);
+            Array.Clear(ResultsArray.ChwAbs, 0, ResultsArray.ChwAbs.Length);
+            Array.Clear(ResultsArray.ChwEch, 0, ResultsArray.ChwEch.Length);
+            Array.Clear(ResultsArray.ElecBat, 0, ResultsArray.ElecBat.Length);
+            Array.Clear(ResultsArray.ElecChp, 0, ResultsArray.ElecChp.Length);
+            Array.Clear(ResultsArray.ElecEch, 0, ResultsArray.ElecEch.Length);
+            Array.Clear(ResultsArray.ElecEhp, 0, ResultsArray.ElecEhp.Length);
+            Array.Clear(ResultsArray.ElecPv, 0, ResultsArray.ElecPv.Length);
+            Array.Clear(ResultsArray.ElecRen, 0, ResultsArray.ElecRen.Length);
+            Array.Clear(ResultsArray.ElecWnd, 0, ResultsArray.ElecWnd.Length);
+            Array.Clear(ResultsArray.ElecBal, 0, ResultsArray.ElecBal.Length);
+            Array.Clear(ResultsArray.HwAbs, 0, ResultsArray.HwAbs.Length);
+            Array.Clear(ResultsArray.HwEhp, 0, ResultsArray.HwEhp.Length);
+            Array.Clear(ResultsArray.HwChp, 0, ResultsArray.HwChp.Length);
+            Array.Clear(ResultsArray.HwHwt, 0, ResultsArray.HwHwt.Length);
+            Array.Clear(ResultsArray.HwShw, 0, ResultsArray.HwShw.Length);
+            Array.Clear(ResultsArray.HwNgb, 0, ResultsArray.HwNgb.Length);
+            Array.Clear(ResultsArray.NgasChp, 0, ResultsArray.NgasChp.Length);
+            Array.Clear(ResultsArray.NgasNgb, 0, ResultsArray.NgasNgb.Length);
+            Array.Clear(ResultsArray.TANK_CHG_n, 0, ResultsArray.TANK_CHG_n.Length);
+            Array.Clear(ResultsArray.SHW_BAL, 0, ResultsArray.SHW_BAL.Length);
+            Array.Clear(ResultsArray.ElecProj, 0, ResultsArray.ElecProj.Length);
+            Array.Clear(ResultsArray.NgasProj, 0, ResultsArray.NgasProj.Length);
+            Array.Clear(ResultsArray.EhpEvap, 0, ResultsArray.EhpEvap.Length);
+            Array.Clear(ResultsArray.ChwEhpEvap, 0, ResultsArray.ChwEhpEvap.Length);
+        }
+
+        #endregion
+
         #region Equation 1 to 18
 
         /// <summary>
@@ -644,7 +685,7 @@ namespace DistrictEnergy
             {
                 tankChgN = previousTankChgN *
                            (1 - SimConstants
-                                .LossHwt
+                               .LossHwt
                            ); // Contrary to the Grasshopper code, the tank loses energy to the environnement even when not used.
             }
         }
@@ -862,44 +903,6 @@ namespace DistrictEnergy
 
         #endregion
 
-        #region Results Array
-
-        private void SetResultsArraystoZero()
-        {
-            Array.Clear(ResultsArray.BatChgN, 0, ResultsArray.BatChgN.Length);
-            Array.Clear(ResultsArray.ChwAbs, 0, ResultsArray.ChwAbs.Length);
-            Array.Clear(ResultsArray.ChwEch, 0, ResultsArray.ChwEch.Length);
-            Array.Clear(ResultsArray.ElecBat, 0, ResultsArray.ElecBat.Length);
-            Array.Clear(ResultsArray.ElecChp, 0, ResultsArray.ElecChp.Length);
-            Array.Clear(ResultsArray.ElecEch, 0, ResultsArray.ElecEch.Length);
-            Array.Clear(ResultsArray.ElecEhp, 0, ResultsArray.ElecEhp.Length);
-            Array.Clear(ResultsArray.ElecPv, 0, ResultsArray.ElecPv.Length);
-            Array.Clear(ResultsArray.ElecRen, 0, ResultsArray.ElecRen.Length);
-            Array.Clear(ResultsArray.ElecWnd, 0, ResultsArray.ElecWnd.Length);
-            Array.Clear(ResultsArray.ElecBal, 0, ResultsArray.ElecBal.Length);
-            Array.Clear(ResultsArray.HwAbs, 0, ResultsArray.HwAbs.Length);
-            Array.Clear(ResultsArray.HwEhp, 0, ResultsArray.HwEhp.Length);
-            Array.Clear(ResultsArray.HwChp, 0, ResultsArray.HwChp.Length);
-            Array.Clear(ResultsArray.HwHwt, 0, ResultsArray.HwHwt.Length);
-            Array.Clear(ResultsArray.HwShw, 0, ResultsArray.HwShw.Length);
-            Array.Clear(ResultsArray.HwNgb, 0, ResultsArray.HwNgb.Length);
-            Array.Clear(ResultsArray.NgasChp, 0, ResultsArray.NgasChp.Length);
-            Array.Clear(ResultsArray.NgasNgb, 0, ResultsArray.NgasNgb.Length);
-            Array.Clear(ResultsArray.TANK_CHG_n, 0, ResultsArray.TANK_CHG_n.Length);
-            Array.Clear(ResultsArray.SHW_BAL, 0, ResultsArray.SHW_BAL.Length);
-            Array.Clear(ResultsArray.ElecProj, 0, ResultsArray.ElecProj.Length);
-            Array.Clear(ResultsArray.NgasProj, 0, ResultsArray.NgasProj.Length);
-            Array.Clear(ResultsArray.EhpEvap, 0, ResultsArray.EhpEvap.Length);
-            Array.Clear(ResultsArray.ChwEhpEvap, 0, ResultsArray.ChwEhpEvap.Length);
-        }
-
-        public ResultsArray ResultsArray { get; }
-
-        public DistrictDemand DistrictDemand { get; }
-        public SimConstants SimConstants { get; }
-
-        #endregion
-
         #region AvailableSettings
 
         #endregion
@@ -1084,7 +1087,9 @@ namespace DistrictEnergy
         /// </summary>
         internal readonly double[] TANK_CHG_n = new double[8760];
 
+
         public event EventHandler ResultsChanged;
+
 
         protected internal virtual void OnResultsChanged(EventArgs e)
         {
@@ -1096,8 +1101,20 @@ namespace DistrictEnergy
     /// <summary>
     ///     Properties of energy sources
     /// </summary>
-    public class Settings
+    public class Settings : INotifyPropertyChanged
     {
+        private int _aggregationPeriod = 730;
+
+        public int AggregationPeriod
+        {
+            get => _aggregationPeriod;
+            set
+            {
+                _aggregationPeriod = value;
+                OnPropertyChanged(nameof(AggregationPeriod));
+            }
+        }
+
         /// <summary>
         ///     Cooling coefficient of performance: Average annual ratio of useful cooling delivered to electricity consumed
         /// </summary>
@@ -1352,6 +1369,13 @@ namespace DistrictEnergy
         public static bool UseEhpEvap
         {
             get { return PlantSettingsViewModel.Instance.UseEhpEvap; }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
@@ -73,6 +73,20 @@ namespace DistrictEnergy
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void TimeGrouped_Checked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = 730;
+            //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
+        }
+
+        private void TimeGrouped_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = 24;
+            //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
+        }
     }
 
     public class DoubleRangeRule : ValidationRule

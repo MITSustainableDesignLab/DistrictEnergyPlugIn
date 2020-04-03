@@ -40,7 +40,7 @@
         <StackPanel Orientation="Horizontal">
             <Label Content="daily"/>
             <ToggleButton x:Name="TimeGrouped" Style="{DynamicResource MaterialDesignSwitchToggleButton}"
-                          HorizontalAlignment="Left" />
+                          HorizontalAlignment="Left" Checked="TimeGrouped_Checked" Unchecked="TimeGrouped_Unchecked" IsChecked="True" />
             <Label Content="monthly"/>
         </StackPanel>
         <lvc:CartesianChart Grid.Column="0" Grid.Row="1" DisableAnimations="True" Hoverable="False"
