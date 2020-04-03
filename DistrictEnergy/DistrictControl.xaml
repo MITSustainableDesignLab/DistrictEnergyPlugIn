@@ -67,12 +67,16 @@
         </lvc:CartesianChart>
         <Grid Grid.Row="3" Grid.Column="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="50*"/>
             </Grid.ColumnDefinitions>
-            <ComboBox x:Name="SimCases" Width="30" ItemsSource="{Binding Path=SimCases}"  
+            <ComboBox x:Name="SimCases" Width="Auto" ItemsSource="{Binding Path=SimCases}"  
                       SelectedItem="{Binding Path=ASimCase}"
-                      DisplayMemberPath="Name"/>
+                      DisplayMemberPath="Name">
+                <ComboBox.DataContext>
+                    <vm:DistrictSettingsViewModel/>
+                </ComboBox.DataContext>
+            </ComboBox>
             <Button Click="RunSimulationClick" Margin="5,0" Grid.Column="1" Content="Run Simulation"></Button>
         </Grid>
         <Expander Grid.Row="4" Grid.Column="0" Header="Advanced Options" Style="{DynamicResource MaterialDesignExpander}">

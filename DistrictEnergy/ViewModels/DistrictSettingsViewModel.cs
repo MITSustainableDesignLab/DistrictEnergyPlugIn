@@ -105,7 +105,7 @@ namespace DistrictEnergy.ViewModels
                 DistrictSettings = JsonConvert.DeserializeObject<DistrictSettings>(json);
             }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DistrictSettings)));
         }
 
         private void SaveSettings(UmiContext e)
@@ -127,6 +127,7 @@ namespace DistrictEnergy.ViewModels
                 new SimCase {Id = 2, Name = "Business As Usual"},
                 new SimCase {Id = 3, Name = "All Gas"}
             };
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SimCases)));
         }
     }
 }

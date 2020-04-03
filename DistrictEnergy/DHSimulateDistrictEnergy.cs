@@ -1754,7 +1754,7 @@ namespace DistrictEnergy
         public int Id
         {
             get { return _id; }
-            set { Id = value; }
+            set { _id = value; }
         }
 
         private string _name;
