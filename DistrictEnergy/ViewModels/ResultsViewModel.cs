@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
@@ -211,30 +212,32 @@ namespace DistrictEnergy.ViewModels
         public void UpdateStackedChart(object sender, EventArgs e)
         {
             var instance = DHSimulateDistrictEnergy.Instance;
-            var Demand = new Dictionary<string, double[]>
+            var Demand = new List<ChartValue>
             {
-                {"Chilled Water Demand", instance.DistrictDemand.ChwN},
-                {"Hot Water Demand", instance.DistrictDemand.HwN},
+                new ChartValue {Key = "Chilled Water Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)), Value = instance.DistrictDemand.ChwN},
+                new ChartValue {Key = "Hot Water Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)), Value = instance.DistrictDemand.HwN},
+                new ChartValue
                 {
-                    "Total Electricity Demand",
-                    instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
-                        .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
+                    Key = "Total Electricity Demand",
+                    Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)), 
+                    Value = instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
+                            .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
                 }
             };
-            var Supply = new Dictionary<string, double[]>
+            var Supply = new List<ChartValue>
             {
-                {"CW Absorption Chiller", instance.ResultsArray.ChwAbs},
-                {"CW Electric Chiller", instance.ResultsArray.ChwEch},
-                {"CW Evaporator Side of EHPs", instance.ResultsArray.ChwEhpEvap},
-                {"HW Solar Hot Water", instance.ResultsArray.HwShw},
-                {"HW Hot Water Tank", instance.ResultsArray.HwHwt},
-                {"HW Electric Heat Pump", instance.ResultsArray.HwEhp},
-                {"HW Natural Gas Boiler", instance.ResultsArray.HwNgb},
-                {"HW Combined Heating and Power", instance.ResultsArray.HwChp},
-                {"EL Battery", instance.ResultsArray.ElecBat},
-                {"EL Renewables", instance.ResultsArray.ElecRen},
-                {"EL Combined Heat & Power", instance.ResultsArray.ElecChp},
-                {"EL Purchased Electricity", instance.ResultsArray.ElecProj}
+                new ChartValue {Key = "CW Absorption Chiller", Fill = new SolidColorBrush(Color.FromRgb(146,241,254)), Value = instance.ResultsArray.ChwAbs},
+                new ChartValue {Key = "CW Electric Chiller", Fill = new SolidColorBrush(Color.FromRgb(93,153,170)), Value = instance.ResultsArray.ChwEch},
+                new ChartValue {Key = "CW Evaporator Side of EHPs", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)), Value = instance.ResultsArray.ChwEhpEvap},
+                new ChartValue {Key = "HW Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251,209,39)), Value = instance.ResultsArray.HwShw},
+                new ChartValue {Key = "HW Hot Water Tank", Fill = new SolidColorBrush(Color.FromRgb(253,199,204)), Value = instance.ResultsArray.HwHwt},
+                new ChartValue {Key = "HW Electric Heat Pump", Fill = new SolidColorBrush(Color.FromRgb(231,71,126)), Value = instance.ResultsArray.HwEhp},
+                new ChartValue {Key = "HW Natural Gas Boiler", Fill = new SolidColorBrush(Color.FromRgb(189,133,74)), Value = instance.ResultsArray.HwNgb},
+                new ChartValue {Key = "HW Combined Heating and Power", Fill = new SolidColorBrush(Color.FromRgb(247,96,21)), Value = instance.ResultsArray.HwChp},
+                new ChartValue {Key = "EL Battery", Fill = new SolidColorBrush(Color.FromRgb(192,244,66)), Value = instance.ResultsArray.ElecBat},
+                new ChartValue {Key = "EL Renewables", Fill = new SolidColorBrush(Color.FromRgb(112,159,15)), Value = instance.ResultsArray.ElecRen},
+                new ChartValue {Key = "EL Combined Heat & Power", Fill = new SolidColorBrush(Color.FromRgb(253,199,204)), Value = instance.ResultsArray.ElecChp},
+                new ChartValue {Key = "EL Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0,0,0)), Value = instance.ResultsArray.ElecProj}
             };
 
             StackedSeriesCollection.Clear();
@@ -247,7 +250,8 @@ namespace DistrictEnergy.ViewModels
                     Title = demand.Key,
                     LineSmoothness = 0,
                     LabelPoint = KWhLabelPointFormatter,
-                    AreaLimit = 0
+                    AreaLimit = 0,
+                    Fill = demand.Fill
                 };
                 StackedSeriesCollection.Add(series);
             }
@@ -260,7 +264,8 @@ namespace DistrictEnergy.ViewModels
                     Title = supply.Key,
                     LineSmoothness = 0,
                     LabelPoint = KWhLabelPointFormatter,
-                    AreaLimit = 0
+                    AreaLimit = 0,
+                    Fill = supply.Fill
                 };
                 StackedSeriesCollection.Add(series);
             }
@@ -530,6 +535,13 @@ namespace DistrictEnergy.ViewModels
                 instance.ResultsArray.ElecEch.Sum());
 
             ElecToElec = elecElecDirect * 100;
+        }
+
+        public class ChartValue
+        {
+            public string Key { get; set; }
+            public SolidColorBrush Fill { get; set; }
+            public double[] Value { get; set; }
         }
 
         #region ViewResults
