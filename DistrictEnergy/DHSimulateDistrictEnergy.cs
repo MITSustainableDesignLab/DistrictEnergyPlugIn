@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -225,7 +225,7 @@ namespace DistrictEnergy
             DeleteLogFile();
             SimConstants.CalculateConstants();
             MainSimulation();
-            SimulationResultsToCsv();
+            //SimulationResultsToCsv();
 
             return Result.Success;
         }
