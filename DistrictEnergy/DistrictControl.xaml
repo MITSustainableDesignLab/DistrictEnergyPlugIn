@@ -43,6 +43,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
+        <Grid.DataContext>
+            <vm:ResultsViewModel />
+        </Grid.DataContext>
         <StackPanel Orientation="Horizontal">
             <Label Content="daily" />
             <ToggleButton x:Name="TimeGrouped" Style="{DynamicResource MaterialDesignSwitchToggleButton}"
@@ -50,9 +53,6 @@
                           IsChecked="True" />
             <Label Content="monthly" />
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <StackPanel.DataContext>
-                    <vm:ResultsViewModel />
-                </StackPanel.DataContext>
                 <StackPanel.Resources>
                     <helpers:ComparisonConverter x:Key="ComparisonConverter" />
                 </StackPanel.Resources>
@@ -67,9 +67,6 @@
             <lvc:CartesianChart.ToolTip>
                 <lvc:DefaultTooltip SelectionMode="Auto" />
             </lvc:CartesianChart.ToolTip>
-            <lvc:CartesianChart.DataContext>
-                <vm:ResultsViewModel />
-            </lvc:CartesianChart.DataContext>
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True" Labels="{Binding Labels}">
                     <lvc:Axis.Separator>
