@@ -39,6 +39,17 @@
   <ItemGroup>
     <Reference Include="CsvHelper">
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Deedle, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Deedle.2.1.2\lib\net45\Deedle.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto">
+      <HintPath>..\..\..\Program Files\Rhino 6\System\Eto.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FSharp.Core, Version=4.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -46,11 +57,23 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="MaterialDesignColors, Version=1.2.2.920, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.2.2\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=3.0.1.920, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.3.0.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Rhino.UI">
+      <HintPath>..\..\..\Program Files\Rhino 6\System\Rhino.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="RhinoCommon">
       <HintPath>C:\Program Files\Rhino 6\System\RhinoCommon.dll</HintPath>
       <Private>False</Private>
@@ -87,6 +110,9 @@
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
     <Compile Include="DHSimulateDistrictEnergy.cs" />
+    <Compile Include="Helpers\ChartMode.cs" />
+    <Compile Include="Helpers\ComparisonConverter.cs" />
+    <Compile Include="Helpers\TimeGroupers.cs" />
     <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
     <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
     <Compile Include="Networks\ThermalPlants\AbsorptionChiller.cs" />
@@ -124,15 +150,42 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\ChilledWaterView.xaml.cs">
+      <DependentUpon>ChilledWaterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CombinedHeatAndPowerView.xaml.cs">
+      <DependentUpon>CombinedHeatAndPowerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ElectricGenerationView.xaml.cs">
+      <DependentUpon>ElectricGenerationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HotWaterView.xaml.cs">
+      <DependentUpon>HotWaterView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ChilledWaterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CombinedHeatAndPowerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ElectricGenerationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HotWaterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\TabHeaderIcon.ico" />
   </ItemGroup>
@@ -147,12 +200,6 @@
     <Content Include="Resources\banner.bmp" />
     <Content Include="Resources\TRNExeConsole.f90" />
     <Content Include="Resources\WixUIDialogBmp.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EnergyPlusWeatherPull\EnergyPlusWeather\EnergyPlusWeather.csproj">
-      <Project>{d8d748d7-aedf-4c88-9aa9-95498fcf87b8}</Project>
-      <Name>EnergyPlusWeather</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -176,6 +223,13 @@
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>
     </DocumentationFile>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+  <Import Project="..\packages\MaterialDesignThemes.3.0.1\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.0.1\build\MaterialDesignThemes.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.0.1\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.0.1\build\MaterialDesignThemes.targets'))" />
+  </Target>
 </Project>

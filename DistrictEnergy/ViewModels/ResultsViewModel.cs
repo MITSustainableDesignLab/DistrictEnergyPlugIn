@@ -1,10 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Media;
+using Deedle;
+using DistrictEnergy.Helpers;
 using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -13,6 +19,7 @@ namespace DistrictEnergy.ViewModels
 {
     public class ResultsViewModel : INotifyPropertyChanged
     {
+        private int _aggregationPeriod = 730;
         private double _elecToChw;
         private double _elecToElec;
         private double _elecToHw;
@@ -26,6 +33,8 @@ namespace DistrictEnergy.ViewModels
         private double _totalCarbonIntensity;
         private double _totalCostIntensity;
         private double _totalEnergyIntensity;
+        private double _xPointer;
+        private double _yPointer;
 
         public ResultsViewModel()
         {
@@ -47,23 +56,61 @@ namespace DistrictEnergy.ViewModels
 
             KWhLabelPointFormatter = delegate(ChartPoint chartPoint)
             {
-                if (chartPoint.Y > 999) return string.Format("{0:N1} MWh", chartPoint.Y / 1000);
+                if (Math.Abs(chartPoint.Y) > 999) return string.Format("{0:N1} MWh", chartPoint.Y / 1000);
 
-                if (chartPoint.Y > 999999) return string.Format("{0:N1} GWh", chartPoint.Y / 1000000);
+                if (Math.Abs(chartPoint.Y) > 999999) return string.Format("{0:N1} GWh", chartPoint.Y / 1000000);
                 return string.Format("{0:N1} kWh", chartPoint.Y);
             };
 
-            MonthFormater = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
+            MonthFormatter = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
 
             GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
+
+            //lets initialize in an invisible location
+            XPointer = -5;
+            YPointer = -5;
+
+            //the formatter or labels property is shared 
+            Formatter = x => x.ToString("N2");
+
+            Labels = new[]
+            {
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            };
+
         }
 
-        public static ResultsViewModel Instance { get; set; }
-        public static SeriesCollection StackedHeatingSeries { get; set; } = new SeriesCollection();
-        public static SeriesCollection StackedCoolingSeries { get; set; } = new SeriesCollection();
-        public static SeriesCollection StackedElecSeries { get; set; } = new SeriesCollection();
-        public static SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
-        public static SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
+        public string[] Labels { get; set; }
+        public ResultsViewModel Instance { get; set; }
+        public SeriesCollection StackedSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedDemandSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedHeatingSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedCoolingSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedElecSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
+        public SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
+
+        public double XPointer
+        {
+            get { return _xPointer; }
+            set
+            {
+                _xPointer = value;
+                OnPropertyChanged("XPointer");
+            }
+        }
+
+        public double YPointer
+        {
+            get { return _yPointer; }
+            set
+            {
+                _yPointer = value;
+                OnPropertyChanged("YPointer");
+            }
+        }
+
+        public Func<double, string> Formatter { get; set; }
 
         public double ElecToHw
         {
@@ -119,15 +166,17 @@ namespace DistrictEnergy.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null) PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private void SubscribeEvents(object sender, UmiContext e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
 
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateHeatingStackedChart;
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateCoolingStackedChart;
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateElecStackedChart;
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateHeatingPieChart;
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateCoolingPieChart;
+            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateStackedChart;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.PropertyChanged += UpdateStackedChart;
             DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateMetrics;
         }
 
@@ -144,9 +193,8 @@ namespace DistrictEnergy.ViewModels
 
             PieHeatingChartGraphSeries.Clear();
             PieCoolingChartGraphSeries.Clear();
-            StackedCoolingSeries.Clear();
-            StackedHeatingSeries.Clear();
-            StackedElecSeries.Clear();
+            if (StackedSeriesCollection.Count > 0)
+                StackedSeriesCollection.Clear();
         }
 
         /// <summary>
@@ -157,12 +205,14 @@ namespace DistrictEnergy.ViewModels
         private void UpdateHeatingPieChart(object sender, EventArgs e)
         {
             var instance = DHSimulateDistrictEnergy.Instance;
-            var HwDemand = new Dictionary<string, double[]>();
-            HwDemand.Add("Solar Hot Water", instance.ResultsArray.HwShw);
-            HwDemand.Add("Hot Water Tank", instance.ResultsArray.HwHwt);
-            HwDemand.Add("Electric Heat Pump", instance.ResultsArray.HwEhp);
-            HwDemand.Add("Natural Gas Boiler", instance.ResultsArray.HwNgb);
-            HwDemand.Add("Combined Heating and Power", instance.ResultsArray.HwChp);
+            var HwDemand = new Dictionary<string, double[]>
+            {
+                {"Solar Hot Water", instance.ResultsArray.HwShw},
+                {"Hot Water Tank", instance.ResultsArray.HwHwt},
+                {"Electric Heat Pump", instance.ResultsArray.HwEhp},
+                {"Natural Gas Boiler", instance.ResultsArray.HwNgb},
+                {"Combined Heating and Power", instance.ResultsArray.HwChp}
+            };
 
             PieHeatingChartGraphSeries.Clear();
 
@@ -187,9 +237,11 @@ namespace DistrictEnergy.ViewModels
         private void UpdateCoolingPieChart(object sender, EventArgs e)
         {
             var instance = DHSimulateDistrictEnergy.Instance;
-            var chwDemand = new Dictionary<string, double[]>();
-            chwDemand.Add("Absorption Chiller", instance.ResultsArray.ChwAbs);
-            chwDemand.Add("Electric Chiller", instance.ResultsArray.ChwEch);
+            var chwDemand = new Dictionary<string, double[]>
+            {
+                {"Absorption Chiller", instance.ResultsArray.ChwAbs},
+                {"Electric Chiller", instance.ResultsArray.ChwEch}
+            };
 
             PieCoolingChartGraphSeries.Clear();
 
@@ -206,6 +258,142 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public void UpdateStackedChart(object sender, EventArgs e)
+        {
+            var instance = DHSimulateDistrictEnergy.Instance;
+            var Demand = new List<ChartValue>
+            {
+                new ChartValue {Key = "Chilled Water Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)), Value = instance.DistrictDemand.ChwN},
+                new ChartValue {Key = "Hot Water Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)), Value = instance.DistrictDemand.HwN},
+                new ChartValue
+                {
+                    Key = "Total Electricity Demand",
+                    Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)), 
+                    Value = instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
+                            .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
+                }
+            };
+            var Supply = new List<ChartValue>
+            {
+                new ChartValue {Key = "CW Absorption Chiller", Fill = new SolidColorBrush(Color.FromRgb(146,241,254)), Value = instance.ResultsArray.ChwAbs},
+                new ChartValue {Key = "CW Electric Chiller", Fill = new SolidColorBrush(Color.FromRgb(93,153,170)), Value = instance.ResultsArray.ChwEch},
+                new ChartValue {Key = "CW Evaporator Side of EHPs", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)), Value = instance.ResultsArray.ChwEhpEvap},
+                new ChartValue {Key = "HW Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251,209,39)), Value = instance.ResultsArray.HwShw},
+                new ChartValue {Key = "HW Hot Water Tank", Fill = new SolidColorBrush(Color.FromRgb(253,199,204)), Value = instance.ResultsArray.HwHwt},
+                new ChartValue {Key = "HW Electric Heat Pump", Fill = new SolidColorBrush(Color.FromRgb(231,71,126)), Value = instance.ResultsArray.HwEhp},
+                new ChartValue {Key = "HW Natural Gas Boiler", Fill = new SolidColorBrush(Color.FromRgb(189,133,74)), Value = instance.ResultsArray.HwNgb},
+                new ChartValue {Key = "HW Combined Heating and Power", Fill = new SolidColorBrush(Color.FromRgb(247,96,21)), Value = instance.ResultsArray.HwChp},
+                new ChartValue {Key = "EL Battery", Fill = new SolidColorBrush(Color.FromRgb(192,244,66)), Value = instance.ResultsArray.ElecBat},
+                new ChartValue {Key = "EL Renewables", Fill = new SolidColorBrush(Color.FromRgb(112,159,15)), Value = instance.ResultsArray.ElecRen},
+                new ChartValue {Key = "EL Combined Heat & Power", Fill = new SolidColorBrush(Color.FromRgb(253,199,204)), Value = instance.ResultsArray.ElecChp},
+                new ChartValue {Key = "EL Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0,0,0)), Value = instance.ResultsArray.ElecProj}
+            };
+
+            if (StackedSeriesCollection.Count > 0)
+            {
+                StackedSeriesCollection.Clear();
+            }
+
+            foreach (var demand in Demand)
+            {
+                if (Math.Abs(demand.Value.Sum()) > 0.001) {
+                    var series = new StackedAreaSeries
+                    {
+                        Values = AggregateByPeriod(demand.Value, true, instance.PluginSettings.AggregationPeriod),
+                        Title = demand.Key,
+                        LineSmoothness = 0,
+                        LabelPoint = KWhLabelPointFormatter,
+                        AreaLimit = 0,
+                        Fill = demand.Fill
+                    };
+                    StackedSeriesCollection.Add(series);
+                }
+                
+            }
+
+            foreach (var supply in Supply)
+            {
+                if (Math.Abs(supply.Value.Sum()) > 0.001)
+                {
+                    var series = new StackedAreaSeries
+                    {
+                        Values = AggregateByPeriod(supply.Value, false, instance.PluginSettings.AggregationPeriod),
+                        Title = supply.Key,
+                        LineSmoothness = 0,
+                        LabelPoint = KWhLabelPointFormatter,
+                        AreaLimit = 0,
+                        Fill = supply.Fill
+                    };
+                    StackedSeriesCollection.Add(series);
+                }
+            }
+
+            
+        }
+
+        private void UpdateDemandStackedChart(object sender, EventArgs e)
+        {
+            var instance = DHSimulateDistrictEnergy.Instance;
+            var Demand = new Dictionary<string, double[]>
+            {
+                {"Heating", instance.DistrictDemand.ChwN},
+                {"Cooling", instance.DistrictDemand.HwN},
+                {"Electricity", instance.DistrictDemand.ElecN}
+            };
+
+            StackedDemandSeriesCollection.Clear();
+
+            foreach (var d in Demand)
+            {
+                var temp = new StackedAreaSeries
+                {
+                    Values = AggregateByPeriod(d.Value, false, instance.PluginSettings.AggregationPeriod),
+                    Title = d.Key,
+                    LineSmoothness = 0,
+                    LabelPoint = KWhLabelPointFormatter
+                };
+                StackedDemandSeriesCollection.Add(temp);
+            }
+        }
+
+        private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true, TimeGroupers period = TimeGroupers.Monthly)
+        {
+            // Using a startdate of "2018-01-01" because it starts on a Monday
+            var startDate = new DateTime(2018, 01, 01, 0, 0, 0);
+
+            // Create SeriesBuilder
+            var seriesBuilder = new SeriesBuilder<DateTime, double>();
+
+            // Iterate over each element of the array of results & create datetime index incrementally
+            for (int i = 0; i < d.Length; i++)
+            {
+                seriesBuilder.Add(startDate.AddHours(i), d[i] );
+            }
+
+            // To Series.
+            var series = seriesBuilder.Series;
+            Series<DateTime, double> result;
+            // Group the series by period
+            if (period == TimeGroupers.Monthly)
+            {
+                result = series.GroupBy(c => new DateTime(2018, c.Key.Month, 01))
+                    .Select(g => g.Value.Values.Sum());
+            }
+            else
+            {
+                result = series.GroupBy(c => c.Key.Date)
+                    .Select(g => g.Value.Values.Sum());
+            }
+            
+
+            if (negative)
+            {
+                result = -result;
+            }
+
+            return result.Values.AsChartValues();
+        }
+
 
         /// <summary>
         ///     Updates the Stacked graph that shows the heating energy demand
@@ -215,14 +403,16 @@ namespace DistrictEnergy.ViewModels
         private void UpdateHeatingStackedChart(object sender, EventArgs e)
         {
             var instance = (ResultsArray) sender;
-            var HwDemand = new Dictionary<string, double[]>();
-            HwDemand.Add("Solar Hot Water", instance.HwShw);
-            HwDemand.Add("Hot Water Tank", instance.HwHwt);
-            HwDemand.Add("Electric Heat Pump", instance.HwEhp);
-            HwDemand.Add("Natural Gas Boiler", instance.HwNgb);
-            HwDemand.Add("Combined Heating and Power", instance.HwChp);
+            var HwDemand = new Dictionary<string, double[]>
+            {
+                {"Solar Hot Water", instance.HwShw},
+                {"Hot Water Tank", instance.HwHwt},
+                {"Electric Heat Pump", instance.HwEhp},
+                {"Natural Gas Boiler", instance.HwNgb},
+                {"Combined Heating and Power", instance.HwChp}
+            };
 
-            StackedHeatingSeries.Clear();
+            StackedHeatingSeriesCollection.Clear();
 
             foreach (var hw in HwDemand)
             {
@@ -236,7 +426,7 @@ namespace DistrictEnergy.ViewModels
                     LineSmoothness = 0.5,
                     LabelPoint = KWhLabelPointFormatter
                 };
-                StackedHeatingSeries.Add(temp);
+                StackedHeatingSeriesCollection.Add(temp);
             }
         }
 
@@ -248,12 +438,14 @@ namespace DistrictEnergy.ViewModels
         private void UpdateCoolingStackedChart(object sender, EventArgs e)
         {
             var instance = DHSimulateDistrictEnergy.Instance;
-            var chwDemand = new Dictionary<string, double[]>();
-            chwDemand.Add("Absorption Chiller", instance.ResultsArray.ChwAbs);
-            chwDemand.Add("Electric Chiller", instance.ResultsArray.ChwEch);
-            chwDemand.Add("Evaporator Side of EHPs", instance.ResultsArray.ChwEhpEvap);
+            var chwDemand = new Dictionary<string, double[]>
+            {
+                {"Absorption Chiller", instance.ResultsArray.ChwAbs},
+                {"Electric Chiller", instance.ResultsArray.ChwEch},
+                {"Evaporator Side of EHPs", instance.ResultsArray.ChwEhpEvap}
+            };
 
-            StackedCoolingSeries.Clear();
+            StackedCoolingSeriesCollection.Clear();
 
             foreach (var chw in chwDemand)
             {
@@ -267,7 +459,7 @@ namespace DistrictEnergy.ViewModels
                     LineSmoothness = 0.5,
                     LabelPoint = KWhLabelPointFormatter
                 };
-                StackedCoolingSeries.Add(temp);
+                StackedCoolingSeriesCollection.Add(temp);
             }
         }
 
@@ -279,13 +471,15 @@ namespace DistrictEnergy.ViewModels
         private void UpdateElecStackedChart(object sender, EventArgs e)
         {
             var instance = DHSimulateDistrictEnergy.Instance;
-            var elecDemand = new Dictionary<string, double[]>();
-            elecDemand.Add("Battery", instance.ResultsArray.ElecBat);
-            elecDemand.Add("Renewables", instance.ResultsArray.ElecRen);
-            elecDemand.Add("Combined Heat & Power", instance.ResultsArray.ElecChp);
-            elecDemand.Add("Purchased Electricity", instance.ResultsArray.ElecProj);
+            var elecDemand = new Dictionary<string, double[]>
+            {
+                {"Battery", instance.ResultsArray.ElecBat},
+                {"Renewables", instance.ResultsArray.ElecRen},
+                {"Combined Heat & Power", instance.ResultsArray.ElecChp},
+                {"Purchased Electricity", instance.ResultsArray.ElecProj}
+            };
 
-            StackedElecSeries.Clear();
+            StackedElecSeriesCollection.Clear();
 
             foreach (var elec in elecDemand)
             {
@@ -299,7 +493,7 @@ namespace DistrictEnergy.ViewModels
                     LineSmoothness = 0.5,
                     LabelPoint = KWhLabelPointFormatter
                 };
-                StackedElecSeries.Add(temp);
+                StackedElecSeriesCollection.Add(temp);
             }
         }
 
@@ -336,14 +530,14 @@ namespace DistrictEnergy.ViewModels
             var gasChwByBoilerAbs =
                 instance.ResultsArray.NgasNgb.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                 instance.ResultsArray.HwAbs.Sum()
-                    .SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.AllDistrictDemand.HwN.Sum() -
+                    .SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.DistrictDemand.HwN.Sum() -
                                   instance.ResultsArray.HwEhp.Sum());
             var gasChwByChpAbs =
                 instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                 instance.ResultsArray.HwChp.Sum()
                     .SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
                 instance.ResultsArray.HwAbs.Sum()
-                    .SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.AllDistrictDemand.HwN.Sum() -
+                    .SafeDivision(instance.ResultsArray.HwAbs.Sum() + instance.DistrictDemand.HwN.Sum() -
                                   instance.ResultsArray.HwEhp.Sum());
             var gasChwByChpEhp =
                 instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
@@ -351,7 +545,7 @@ namespace DistrictEnergy.ViewModels
                     .SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
                 instance.ResultsArray.ElecEhp.Sum()
                     .SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() +
-                                  instance.AllDistrictDemand.ElecN.Sum()) *
+                                  instance.DistrictDemand.ElecN.Sum()) *
                 instance.ResultsArray.ChwEhpEvap.Sum()
                     .SafeDivision(instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.ChwEhpEvap.Sum());
             var gasChwByChpEch =
@@ -360,20 +554,20 @@ namespace DistrictEnergy.ViewModels
                     .SafeDivision(instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
                 instance.ResultsArray.ElecEch.Sum()
                     .SafeDivision(instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() +
-                                  instance.AllDistrictDemand.ElecN.Sum());
+                                  instance.DistrictDemand.ElecN.Sum());
             GasToChw = (gasChwByBoilerAbs + gasChwByChpAbs + gasChwByChpEhp + gasChwByChpEch) * 100;
 
             // Gas to How Water Paths
             var gasHwByBoiler = instance.ResultsArray.NgasNgb.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
-                                (instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(
-                                    instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum() +
+                                (instance.DistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(
+                                    instance.DistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum() +
                                     instance.ResultsArray.HwAbs.Sum());
             var gasHwByChp = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                              instance.ResultsArray.HwChp.Sum()
                                  .SafeDivision(instance.ResultsArray.HwChp.Sum() +
                                                instance.ResultsArray.ElecChp.Sum()) *
-                             (instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(
-                                 instance.AllDistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum() +
+                             (instance.DistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum()).SafeDivision(
+                                 instance.DistrictDemand.HwN.Sum() - instance.ResultsArray.HwEhp.Sum() +
                                  instance.ResultsArray.HwAbs.Sum());
             var gasHwByChpEhp = instance.ResultsArray.NgasChp.Sum().SafeDivision(instance.ResultsArray.NgasProj.Sum()) *
                                 instance.ResultsArray.ElecChp.Sum()
@@ -381,7 +575,7 @@ namespace DistrictEnergy.ViewModels
                                                   instance.ResultsArray.HwChp.Sum()) *
                                 instance.ResultsArray.ElecEhp.Sum().SafeDivision(
                                     instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() +
-                                    instance.AllDistrictDemand.ElecN.Sum()) *
+                                    instance.DistrictDemand.ElecN.Sum()) *
                                 instance.ResultsArray.HwEhp.Sum().SafeDivision(
                                     instance.ResultsArray.HwEhp.Sum() + instance.ResultsArray.ChwEhpEvap.Sum());
 
@@ -392,19 +586,19 @@ namespace DistrictEnergy.ViewModels
                                instance.ResultsArray.ElecChp.Sum()
                                    .SafeDivision(
                                        instance.ResultsArray.HwChp.Sum() + instance.ResultsArray.ElecChp.Sum()) *
-                               instance.AllDistrictDemand.ElecN.Sum().SafeDivision(
+                               instance.DistrictDemand.ElecN.Sum().SafeDivision(
                                    instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() +
-                                   instance.AllDistrictDemand.ElecN.Sum());
+                                   instance.DistrictDemand.ElecN.Sum());
 
             GasToElec = gasElecByChp * 100;
 
             // Electricity to Chilled Water Paths
             var elecChwByEch = instance.ResultsArray.ElecEch.Sum().SafeDivision(
                 instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() +
-                instance.AllDistrictDemand.ElecN.Sum());
+                instance.DistrictDemand.ElecN.Sum());
             var elecChwByEhp = instance.ResultsArray.ElecEhp.Sum().SafeDivision(
                                    instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() +
-                                   instance.AllDistrictDemand.ElecN.Sum()) *
+                                   instance.DistrictDemand.ElecN.Sum()) *
                                instance.ResultsArray.ChwEhpEvap.Sum().SafeDivision(
                                    instance.ResultsArray.ChwEhpEvap.Sum() + instance.ResultsArray.HwEhp.Sum());
 
@@ -413,7 +607,7 @@ namespace DistrictEnergy.ViewModels
             // Elec to Hot Water
             var elecHwByEhp = instance.ResultsArray.ElecEhp.Sum().SafeDivision(
                                   instance.ResultsArray.ElecEhp.Sum() + instance.ResultsArray.ElecEch.Sum() +
-                                  instance.AllDistrictDemand.ElecN.Sum()) *
+                                  instance.DistrictDemand.ElecN.Sum()) *
                               instance.ResultsArray.HwEhp.Sum()
                                   .SafeDivision(instance.ResultsArray.HwEhp.Sum() +
                                                 instance.ResultsArray.ChwEhpEvap.Sum());
@@ -421,11 +615,18 @@ namespace DistrictEnergy.ViewModels
             ElecToHw = elecHwByEhp * 100;
 
             // Elec to Elec Paths
-            var elecElecDirect = instance.AllDistrictDemand.ElecN.Sum().SafeDivision(
-                instance.AllDistrictDemand.ElecN.Sum() + instance.ResultsArray.ElecEhp.Sum() +
+            var elecElecDirect = instance.DistrictDemand.ElecN.Sum().SafeDivision(
+                instance.DistrictDemand.ElecN.Sum() + instance.ResultsArray.ElecEhp.Sum() +
                 instance.ResultsArray.ElecEch.Sum());
 
             ElecToElec = elecElecDirect * 100;
+        }
+
+        public class ChartValue
+        {
+            public string Key { get; set; }
+            public SolidColorBrush Fill { get; set; }
+            public double[] Value { get; set; }
         }
 
         #region ViewResults
@@ -520,7 +721,9 @@ namespace DistrictEnergy.ViewModels
         public Func<double, string> XFormatter { get; set; }
         public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
         public Func<double, string> KWhFormatter { get; set; }
-        public Func<double, string> MonthFormater { get; set; } // Adds 1 to month index
+        public Func<double, string> MonthFormatter { get; set; } // Adds 1 to month index
+
+        public ChartMode ChartMode { get; set; }
 
         #endregion
     }
