@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -68,8 +68,15 @@ namespace DistrictEnergy.ViewModels
 
             //the formatter or labels property is shared 
             Formatter = x => x.ToString("N2");
+
+            Labels = new[]
+            {
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            };
+
         }
 
+        public string[] Labels { get; set; }
         public ResultsViewModel Instance { get; set; }
         public SeriesCollection StackedSeriesCollection { get; set; } = new SeriesCollection();
         public SeriesCollection StackedDemandSeriesCollection { get; set; } = new SeriesCollection();
