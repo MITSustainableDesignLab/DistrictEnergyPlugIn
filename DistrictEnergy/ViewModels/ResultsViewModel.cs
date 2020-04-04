@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
+using Deedle;
 using DistrictEnergy.Helpers;
 using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -189,7 +193,8 @@ namespace DistrictEnergy.ViewModels
 
             PieHeatingChartGraphSeries.Clear();
             PieCoolingChartGraphSeries.Clear();
-            StackedSeriesCollection.Clear();
+            if (StackedSeriesCollection.Count > 0)
+                StackedSeriesCollection.Clear();
         }
 
         /// <summary>
@@ -284,35 +289,46 @@ namespace DistrictEnergy.ViewModels
                 new ChartValue {Key = "EL Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0,0,0)), Value = instance.ResultsArray.ElecProj}
             };
 
-            StackedSeriesCollection.Clear();
+            if (StackedSeriesCollection.Count > 0)
+            {
+                StackedSeriesCollection.Clear();
+            }
 
             foreach (var demand in Demand)
             {
-                var series = new StackedAreaSeries
-                {
-                    Values = AggregateByPeriod(demand.Value, true, instance.PluginSettings.AggregationPeriod),
-                    Title = demand.Key,
-                    LineSmoothness = 0,
-                    LabelPoint = KWhLabelPointFormatter,
-                    AreaLimit = 0,
-                    Fill = demand.Fill
-                };
-                StackedSeriesCollection.Add(series);
+                if (Math.Abs(demand.Value.Sum()) > 0.001) {
+                    var series = new StackedAreaSeries
+                    {
+                        Values = AggregateByPeriod(demand.Value, true, instance.PluginSettings.AggregationPeriod),
+                        Title = demand.Key,
+                        LineSmoothness = 0,
+                        LabelPoint = KWhLabelPointFormatter,
+                        AreaLimit = 0,
+                        Fill = demand.Fill
+                    };
+                    StackedSeriesCollection.Add(series);
+                }
+                
             }
 
             foreach (var supply in Supply)
             {
-                var series = new StackedAreaSeries
+                if (Math.Abs(supply.Value.Sum()) > 0.001)
                 {
-                    Values = AggregateByPeriod(supply.Value, false, instance.PluginSettings.AggregationPeriod),
-                    Title = supply.Key,
-                    LineSmoothness = 0,
-                    LabelPoint = KWhLabelPointFormatter,
-                    AreaLimit = 0,
-                    Fill = supply.Fill
-                };
-                StackedSeriesCollection.Add(series);
+                    var series = new StackedAreaSeries
+                    {
+                        Values = AggregateByPeriod(supply.Value, false, instance.PluginSettings.AggregationPeriod),
+                        Title = supply.Key,
+                        LineSmoothness = 0,
+                        LabelPoint = KWhLabelPointFormatter,
+                        AreaLimit = 0,
+                        Fill = supply.Fill
+                    };
+                    StackedSeriesCollection.Add(series);
+                }
             }
+
+            
         }
 
         private void UpdateDemandStackedChart(object sender, EventArgs e)
@@ -340,17 +356,42 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        private static ChartValues<double> AggregateByPeriod(double[] d, bool negative = true, int period = 730)
+        private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true, TimeGroupers period = TimeGroupers.Monthly)
         {
+            // Using a startdate of "2018-01-01" because it starts on a Monday
+            var startDate = new DateTime(2018, 01, 01, 0, 0, 0);
+
+            // Create SeriesBuilder
+            var seriesBuilder = new SeriesBuilder<DateTime, double>();
+
+            // Iterate over each element of the array of results & create datetime index incrementally
+            for (int i = 0; i < d.Length; i++)
+            {
+                seriesBuilder.Add(startDate.AddHours(i), d[i] );
+            }
+
+            // To Series.
+            var series = seriesBuilder.Series;
+            Series<DateTime, double> result;
+            // Group the series by period
+            if (period == TimeGroupers.Monthly)
+            {
+                result = series.GroupBy(c => new DateTime(2018, c.Key.Month, 01))
+                    .Select(g => g.Value.Values.Sum());
+            }
+            else
+            {
+                result = series.GroupBy(c => c.Key.Date)
+                    .Select(g => g.Value.Values.Sum());
+            }
+            
+
             if (negative)
-                return new ChartValues<double>(d
-                    .Select((x, i) => new {Index = i, Value = x})
-                    .GroupBy(obj => obj.Index / period)
-                    .Select(obj => obj.Select(v => -v.Value).Sum()));
-            return new ChartValues<double>(d
-                .Select((x, i) => new {Index = i, Value = x})
-                .GroupBy(obj => obj.Index / period)
-                .Select(obj => obj.Select(v => v.Value).Sum()));
+            {
+                result = -result;
+            }
+
+            return result.Values.AsChartValues();
         }
 
 

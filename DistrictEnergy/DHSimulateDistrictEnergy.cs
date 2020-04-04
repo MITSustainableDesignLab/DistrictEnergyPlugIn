@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using CsvHelper;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
 using Rhino;
@@ -1119,9 +1120,9 @@ namespace DistrictEnergy
     /// </summary>
     public class Settings : INotifyPropertyChanged
     {
-        private int _aggregationPeriod = 730;
+        private TimeGroupers _aggregationPeriod = TimeGroupers.Monthly;
 
-        public int AggregationPeriod
+        public TimeGroupers AggregationPeriod
         {
             get => _aggregationPeriod;
             set

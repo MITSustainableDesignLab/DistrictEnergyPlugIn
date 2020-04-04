@@ -79,14 +79,14 @@ namespace DistrictEnergy
         private void TimeGrouped_Checked(object sender, RoutedEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = 730;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = TimeGroupers.Monthly;
             //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
         }
 
         private void TimeGrouped_Unchecked(object sender, RoutedEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = 24;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = TimeGroupers.Daily;
             //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
         }
 
