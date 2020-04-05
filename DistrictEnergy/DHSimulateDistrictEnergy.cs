@@ -1776,7 +1776,7 @@ namespace DistrictEnergy
 
         private string _name;
 
-        public string Name
+        public string DName
         {
             get { return _name; }
             set { _name = value; }

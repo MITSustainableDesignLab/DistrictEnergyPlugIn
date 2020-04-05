@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DistrictEnergy.Networks.ThermalPlants;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -13,7 +15,7 @@ namespace DistrictEnergy.ViewModels
 {
     public class PlantSettingsViewModel : INotifyPropertyChanged
     {
-        public static List<IThermalPlantSettings> ListOfPlantSettings = new List<IThermalPlantSettings>
+        public static ObservableCollection<IThermalPlantSettings> ListOfPlantSettings = new ObservableCollection<IThermalPlantSettings>
         {
             new AbsorptionChiller(),
             new BatteryBank(),
@@ -53,9 +55,16 @@ namespace DistrictEnergy.ViewModels
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
-        public static PlantSettingsViewModel Instance { get; private set; }
+        public static PlantSettingsViewModel Instance { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        // Create the OnPropertyChanged method to raise the event
+        // The calling member's name will be used as the parameter.
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
         {
@@ -82,7 +91,7 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                ListOfPlantSettings = JsonConvert.DeserializeObject<List<IThermalPlantSettings>>(json,
+                ListOfPlantSettings = JsonConvert.DeserializeObject<ObservableCollection<IThermalPlantSettings>>(json,
                     new JsonSerializerSettings
                     {
                         DefaultValueHandling = DefaultValueHandling.Populate,
@@ -91,7 +100,7 @@ namespace DistrictEnergy.ViewModels
                     });
             }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+            OnPropertyChanged(string.Empty);
         }
 
         private void SaveSettings(UmiContext e)
@@ -132,7 +141,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CCOP_ECH)));
+                OnPropertyChanged();
             }
         }
 
@@ -146,7 +155,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_NGB)));
+                OnPropertyChanged();
             }
         }
 
@@ -160,7 +169,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_ABS)));
+                OnPropertyChanged(string.Empty);
             }
         }
 
@@ -170,7 +179,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<AbsorptionChiller>().First().CCOP_ABS = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CCOP_ABS)));
+                OnPropertyChanged();
             }
         }
 
@@ -184,7 +193,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AUT_BAT)));
+                OnPropertyChanged();
             }
         }
 
@@ -194,7 +203,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_BAT)));
+                OnPropertyChanged();
             }
         }
 
@@ -204,7 +213,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BAT_START)));
+                OnPropertyChanged();
             }
         }
 
@@ -221,7 +230,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TMOD_CHP)));
+                OnPropertyChanged();
             }
         }
 
@@ -231,7 +240,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_CHP)));
+                OnPropertyChanged();
             }
         }
 
@@ -241,7 +250,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_CHP)));
+                OnPropertyChanged();
             }
         }
 
@@ -251,7 +260,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HREC_CHP)));
+                OnPropertyChanged();
             }
         }
 
@@ -265,7 +274,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_EHP)));
+                OnPropertyChanged();
             }
         }
 
@@ -275,7 +284,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<ElectricHeatPump>().First().HCOP_EHP = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HCOP_EHP)));
+                OnPropertyChanged();
             }
         }
 
@@ -289,7 +298,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AUT_HWT)));
+                OnPropertyChanged();
             }
         }
 
@@ -299,7 +308,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TANK_START)));
+                OnPropertyChanged();
             }
         }
 
@@ -313,7 +322,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_PV)));
+                OnPropertyChanged();
             }
         }
 
@@ -323,7 +332,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_PV)));
+                OnPropertyChanged();
             }
         }
 
@@ -333,7 +342,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UTIL_PV)));
+                OnPropertyChanged();
             }
         }
 
@@ -343,7 +352,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_PV)));
+                OnPropertyChanged();
             }
         }
 
@@ -357,7 +366,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_SHW)));
+                OnPropertyChanged();
             }
         }
 
@@ -367,7 +376,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_SHW)));
+                OnPropertyChanged();
             }
         }
 
@@ -377,7 +386,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UTIL_SHW)));
+                OnPropertyChanged();
             }
         }
 
@@ -387,7 +396,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_SHW)));
+                OnPropertyChanged();
             }
         }
 
@@ -401,7 +410,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OFF_WND)));
+                OnPropertyChanged();
             }
         }
 
@@ -411,7 +420,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EFF_WND)));
+                OnPropertyChanged();
             }
         }
 
@@ -421,7 +430,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<WindTurbine>().First().CIN_WND = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CIN_WND)));
+                OnPropertyChanged();
             }
         }
 
@@ -431,7 +440,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<WindTurbine>().First().COUT_WND = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(COUT_WND)));
+                OnPropertyChanged();
             }
         }
 
@@ -441,7 +450,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<WindTurbine>().First().ROT_WND = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ROT_WND)));
+                OnPropertyChanged();
             }
         }
 
@@ -451,7 +460,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LOSS_WND)));
+                OnPropertyChanged();
             }
         }
 
@@ -469,12 +478,12 @@ namespace DistrictEnergy.ViewModels
                 if (value)
                 {
                     ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 1;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseEhpEvap)));
+                    OnPropertyChanged();
                 }
                 else
                 {
                     ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 0;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseEhpEvap)));
+                    OnPropertyChanged();
                 }
                 
             }
@@ -496,12 +505,12 @@ namespace DistrictEnergy.ViewModels
                 if (value)
                 {
                     ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 1;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseDistrictLosses)));
+                    OnPropertyChanged();
                 }
                 else
                 {
                     ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 0;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseDistrictLosses)));
+                    OnPropertyChanged();
                 }
 
             }
@@ -513,7 +522,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RelDistHeatLoss)));
+                OnPropertyChanged();
             }
         }
 
@@ -523,7 +532,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss = value / 100;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RelDistCoolLoss)));
+                OnPropertyChanged();
             }
         }
 

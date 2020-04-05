@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using Newtonsoft.Json;
@@ -123,9 +123,9 @@ namespace DistrictEnergy.ViewModels
             if (context == null) return;
             SimCases = new ObservableCollection<SimCase>
             {
-                new SimCase {Id = 1, Name = "Net Zero Community"},
-                new SimCase {Id = 2, Name = "Business As Usual"},
-                new SimCase {Id = 3, Name = "All Gas"}
+                new SimCase {Id = 1, DName = "Net Zero Community"},
+                new SimCase {Id = 2, DName = "Business As Usual"},
+                new SimCase {Id = 3, DName = "All Gas"}
             };
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SimCases)));
         }

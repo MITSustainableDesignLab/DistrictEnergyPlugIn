@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,7 +20,7 @@ namespace DistrictEnergy
     /// <summary>
     ///     Interaction logic for ModuleControl.xaml
     /// </summary>
-    public partial class DistrictControl : UserControl
+    public partial class DistrictControl : UserControl, INotifyPropertyChanged
     {
         public DistrictControl()
         {
@@ -27,6 +28,9 @@ namespace DistrictEnergy
 
 
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
+
+            SelectSimCase.SelectionChanged += OnSelectionChanged;
+            SelectSimCase.DropDownOpened += OnDropDownOpened;
         }
 
 
@@ -135,7 +139,37 @@ namespace DistrictEnergy
             }
         }
 
+        private void OnDropDownOpened(object sender, EventArgs e)
+        {
+            SelectSimCase.SelectedItem = null;
+        }
 
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectSimCase.SelectedItem != null)
+            {
+                var item = (SimCase) SelectSimCase.SelectedItem;
+                if (item.DName == "Business As Usual")
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                }
+                if (item.DName == "Business As Usual")
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                }
+                if (item.DName == "Business As Usual")
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                }
+            }
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            var vm = PlantSettingsViewModel.Instance;
+            vm.OFF_ABS = 0;
+        }
     }
 
     public class DoubleRangeRule : ValidationRule
