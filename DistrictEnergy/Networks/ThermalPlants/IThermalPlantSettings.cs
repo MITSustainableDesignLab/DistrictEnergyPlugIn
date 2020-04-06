@@ -1,4 +1,4 @@
-﻿namespace DistrictEnergy.Networks.ThermalPlants
+namespace DistrictEnergy.Networks.ThermalPlants
 {
     public interface IThermalPlantSettings
     {

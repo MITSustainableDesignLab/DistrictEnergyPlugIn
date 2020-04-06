@@ -1,12 +1,22 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using DistrictEnergy.ViewModels;
+using DistrictEnergy.Annotations;
+using DistrictEnergy.Helpers;
+using LiveCharts;
 using LiveCharts.Wpf;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 using Rhino;
+using DistrictEnergy.ViewModels;
+using LiveCharts.Helpers;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -15,18 +25,27 @@ namespace DistrictEnergy
     /// <summary>
     ///     Interaction logic for ModuleControl.xaml
     /// </summary>
-    public partial class DistrictControl : UserControl
+    public partial class DistrictControl : UserControl, INotifyPropertyChanged
     {
         public DistrictControl()
         {
+            Instance = this;
+            var searchPaths = Rhino.Runtime.HostUtils.GetAssemblySearchPaths();
+            Dictionary<Guid, string> dict = Rhino.PlugIns.PlugIn.GetInstalledPlugIns();
             InitializeComponent();
+
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
+            SelectSimCase.SelectionChanged += OnSimCaseChanged;
+            SelectSimCase.DropDownOpened += OnDropDownOpened;
         }
+
+        public static DistrictControl Instance { get; set; }
 
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var item = ItemsControl.ContainerFromElement((ListBox) sender, (DependencyObject) e.OriginalSource) as ListBoxItem;
+            var item =
+                ItemsControl.ContainerFromElement((ListBox) sender, (DependencyObject) e.OriginalSource) as ListBoxItem;
             if (item == null) return;
 
             var series = (StackedAreaSeries) item.Content;
@@ -35,20 +54,20 @@ namespace DistrictEnergy
                 : Visibility.Visible;
         }
 
-        private void ListBox_OnUpdatedArrays(object sender, EventArgs e)
+        /*private void ListBox_OnUpdatedArrays(object sender, EventArgs e)
         {
             HeatingListBox.InvalidateArrange();
-            HeatingListBox.ItemsSource = ResultsViewModel.StackedHeatingSeries;
+            HeatingListBox.ItemsSource = ResultsViewModel.StackedHeatingSeriesCollection;
             HeatingListBox.UpdateLayout();
 
             CoolingListBox.InvalidateArrange();
-            CoolingListBox.ItemsSource = ResultsViewModel.StackedCoolingSeries;
+            CoolingListBox.ItemsSource = ResultsViewModel.StackedCoolingSeriesCollection;
             CoolingListBox.UpdateLayout();
             ElecListBox.InvalidateArrange();
-            ElecListBox.ItemsSource = ResultsViewModel.StackedElecSeries;
+            ElecListBox.ItemsSource = ResultsViewModel.StackedElecSeriesCollection;
             ElecListBox.UpdateLayout();
 
-        }
+        }*/
 
         private void RunSimulationClick(object sender, RoutedEventArgs e)
         {
@@ -64,7 +83,108 @@ namespace DistrictEnergy
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
 
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += ListBox_OnUpdatedArrays;
+            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += ListBox_OnUpdatedArrays;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void TimeGrouped_Checked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = TimeGroupers.Monthly;
+            //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
+        }
+
+        private void TimeGrouped_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = TimeGroupers.Daily;
+            //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
+        }
+
+        public class ComparisonConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter,
+                System.Globalization.CultureInfo culture)
+            {
+                return value?.Equals(parameter);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter,
+                System.Globalization.CultureInfo culture)
+            {
+                return value?.Equals(true) == true ? parameter : Binding.DoNothing;
+            }
+        }
+
+        private void OnDropDownOpened(object sender, EventArgs e)
+        {
+            // SelectSimCase.SelectedItem = null;
+        }
+
+        private void OnSimCaseChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectSimCase.SelectedItem != null)
+            {
+                var item = (SimCase) SelectSimCase.SelectedItem;
+                if (item.Id == 1)
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_PV = 100;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 100;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 100;
+                    PlantSettingsViewModel.Instance.OFF_WND = 100;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                }
+
+                if (item.Id == 2)
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_PV = 0;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
+                    PlantSettingsViewModel.Instance.OFF_WND = 0;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                }
+
+                if (item.Id == 3)
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 100;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 100;
+                    PlantSettingsViewModel.Instance.OFF_PV = 0;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
+                    PlantSettingsViewModel.Instance.OFF_WND = 0;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                }
+
+                RhinoApp.WriteLine($"Plant settings changed to predefined case {item.DName}");
+            }
+
+            OnPropertyChanged();
+        }
+
+        private void CostsChecked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            // Display Costs
+        }
+
+        private void CarbonChecked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            // Display Carbon
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

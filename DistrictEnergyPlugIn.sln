@@ -32,6 +32,8 @@ Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "DistricEnergyPlugInDocs", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportLoadsToFile", "ExportLoadsToFile\ExportLoadsToFile.csproj", "{897ECA20-9485-475E-8E35-6C681B70A582}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnergyPlusWeather", "EnergyPlusWeatherPull\EnergyPlusWeather\EnergyPlusWeather.csproj", "{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,18 @@ Global
 		{897ECA20-9485-475E-8E35-6C681B70A582}.Release|x64.Build.0 = Release|Any CPU
 		{897ECA20-9485-475E-8E35-6C681B70A582}.Release|x86.ActiveCfg = Release|Any CPU
 		{897ECA20-9485-475E-8E35-6C681B70A582}.Release|x86.Build.0 = Release|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Debug|x64.Build.0 = Debug|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Debug|x86.Build.0 = Debug|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Release|x64.ActiveCfg = Release|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Release|x64.Build.0 = Release|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Release|x86.ActiveCfg = Release|Any CPU
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +129,7 @@ Global
 		{98853A97-4086-4BB0-9C04-2CA271F03DB6} = {ABB2541D-60B9-4DC3-AAEC-22E2D3151247}
 		{087A7734-F41B-4595-897A-A6E65E2C554E} = {DE15F97C-B48D-4280-BC7B-5789B7C0720B}
 		{897ECA20-9485-475E-8E35-6C681B70A582} = {24EF740C-D3FA-417A-BD27-1FC0ECDDFA9C}
+		{D8D748D7-AEDF-4C88-9AA9-95498FCF87B8} = {24EF740C-D3FA-417A-BD27-1FC0ECDDFA9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBC464E8-5BBF-4AC5-A709-5B3B0814FDC0}
