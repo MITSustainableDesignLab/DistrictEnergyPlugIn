@@ -170,7 +170,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS = value / 100;
-                OnPropertyChanged(string.Empty);
+                OnPropertyChanged();
             }
         }
 

@@ -48,6 +48,8 @@ namespace DistrictEnergy
             DistrictDemand = new DistrictDemand();
             SimConstants = new SimConstants();
             PluginSettings = new Settings();
+
+            PlantSettingsViewModel.Instance.PropertyChanged += RerunSimulation;
         }
 
         public ResultsArray ResultsArray { get; }
@@ -70,11 +72,17 @@ namespace DistrictEnergy
 
         private int numberTimesteps { get; set; }
 
+        private void RerunSimulation(object sender, EventArgs e)
+        {
+            MainSimulation();
+        }
+
         /// <summary>
         ///     This is the routine that goeas though all the eqautions one timestep at a time
         /// </summary>
         private void MainSimulation()
         {
+            if (Instance == null) return;
             i = 0;
             StatusBar.ShowProgressMeter(0, numberTimesteps, "Solving Thermal Plant Components", true, true);
             for (; i < numberTimesteps; i++)
@@ -249,7 +257,7 @@ namespace DistrictEnergy
 
                     {
                         var lossChwnet = 1 + DistrictEnergy.Settings.LossChwnet;
-                        DHSimulateDistrictEnergy.Instance.DistrictDemand.CoolingNetworkLosses[i] += d * lossChwnet;
+                        Instance.DistrictDemand.CoolingNetworkLosses[i] += d * lossChwnet;
                         d *= lossChwnet;
                     }
 
@@ -277,7 +285,7 @@ namespace DistrictEnergy
                     if (DistrictEnergy.Settings.UseDistrictLosses)
                     {
                         var lossHwnet = 1 + DistrictEnergy.Settings.LossHwnet;
-                        DHSimulateDistrictEnergy.Instance.DistrictDemand.HeatingNetworkLosses[i] += d * lossHwnet;
+                        Instance.DistrictDemand.HeatingNetworkLosses[i] += d * lossHwnet;
                         d *= lossHwnet;
                     }
 
@@ -942,9 +950,19 @@ namespace DistrictEnergy
         public double[] ChwN = new double[8760];
 
         /// <summary>
+        ///     Hourly Losses through cooling network
+        /// </summary>
+        public double[] CoolingNetworkLosses = new double[8760];
+
+        /// <summary>
         ///     Hourly electricity load profile (kWh)
         /// </summary>
         public double[] ElecN = new double[8760];
+
+        /// <summary>
+        ///     Hourly Losses through heating network
+        /// </summary>
+        public double[] HeatingNetworkLosses = new double[8760];
 
         /// <summary>
         ///     Hourly hot water load profile (kWh)
@@ -1766,20 +1784,8 @@ namespace DistrictEnergy
 
     public class SimCase
     {
-        private int _id;
+        public int Id { get; set; }
 
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
-
-        private string _name;
-
-        public string DName
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string DName { get; set; }
     }
 }
