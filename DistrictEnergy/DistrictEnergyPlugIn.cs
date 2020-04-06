@@ -32,12 +32,12 @@ namespace DistrictEnergy
         // loading and shut down, add options pages to the Rhino _Option command
         // and mantain plug-in wide options in a document.
 
-        public DistrictControl SimulatePanel { get; set; } = new DistrictControl();
+        // public DistrictControl SimulatePanel { get; set; } = new DistrictControl();
 
         /// <summary>Gets the GUI</summary>
         protected override UserControl ModuleControl
         {
-            get { return SimulatePanel; }
+            get { return new DistrictControl(); }
         }
 
         protected override string TabHeaderToolTip

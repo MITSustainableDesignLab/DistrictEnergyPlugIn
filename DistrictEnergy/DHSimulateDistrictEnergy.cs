@@ -32,8 +32,6 @@ namespace DistrictEnergy
             Elec
         }
 
-        // ReSharper disable once ArrangeTypeMemberModifiers
-        static DHSimulateDistrictEnergy _instance;
 
         /// <summary>
         ///     Simulation Timestep
@@ -44,13 +42,13 @@ namespace DistrictEnergy
 
         public DHSimulateDistrictEnergy()
         {
-            _instance = this;
+            Instance = this;
             ResultsArray = new ResultsArray();
             DistrictDemand = new DistrictDemand();
             SimConstants = new SimConstants();
             PluginSettings = new Settings();
 
-            DistrictControl.Instance.PropertyChanged += RerunSimulation;
+            // DistrictControl.Instance.PropertyChanged += RerunSimulation;
             UmiEventSource.Instance.EnergySimulationsCompleted += StaleResultsOnEnergySimulationsCompletedEventArgs;
             UmiEventSource.Instance.ProjectClosed += StaleResultsOnEventArgs;
         }
@@ -83,10 +81,7 @@ namespace DistrictEnergy
 
         ///<summary>The only instance of the DHSimulateDistrictEnergy command.</summary>
         // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
-        public static DHSimulateDistrictEnergy Instance
-        {
-            get { return _instance; }
-        }
+        public static DHSimulateDistrictEnergy Instance { get; set; }
 
         public override string EnglishName
         {

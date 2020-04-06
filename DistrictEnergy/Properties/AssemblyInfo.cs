@@ -6,12 +6,12 @@ using Rhino.PlugIns;
 
 // Plug-in Description Attributes - all of these are optional
 // These will show in Rhino's option dialog, in the tab Plug-ins
-[assembly: PlugInDescription(DescriptionType.Address, "Polytechnique Montreal")]
+[assembly: PlugInDescription(DescriptionType.Address, "Sustainable Design Lab")]
 [assembly: PlugInDescription(DescriptionType.Country, "Canada")]
 [assembly: PlugInDescription(DescriptionType.Email, "samuel.letellier-duchesne@polymtl.ca")]
 [assembly: PlugInDescription(DescriptionType.Phone, "-")]
 [assembly: PlugInDescription(DescriptionType.Fax, "-")]
-[assembly: PlugInDescription(DescriptionType.Organization, "Polytechnique Montreal & MIT Sustainable Design Lab")]
+[assembly: PlugInDescription(DescriptionType.Organization, "MIT Sustainable Design Lab")]
 [assembly: PlugInDescription(DescriptionType.UpdateUrl, "-")]
 [assembly: PlugInDescription(DescriptionType.WebSite, "-")]
 
@@ -25,7 +25,7 @@ using Rhino.PlugIns;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyProduct("DistricEnergyPlugIn")]
-[assembly: AssemblyVersion("1.4.0.*")]
+[assembly: AssemblyVersion("2.0.0.*")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
