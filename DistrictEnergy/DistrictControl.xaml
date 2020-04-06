@@ -43,9 +43,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
-        <Grid.DataContext>
-            <vm:ResultsViewModel />
-        </Grid.DataContext>
         <StackPanel Orientation="Horizontal">
             <Label Content="daily" />
             <ToggleButton x:Name="TimeGrouped" Style="{DynamicResource MaterialDesignSwitchToggleButton}"
@@ -56,40 +53,24 @@
                 <StackPanel.Resources>
                     <helpers:ComparisonConverter x:Key="ComparisonConverter" />
                 </StackPanel.Resources>
-                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Cost}}" Checked="RadioButton_Checked">Cost</RadioButton>
-                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Carbon}}">Carbon</RadioButton>
+                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Cost}}" Checked="CostsChecked" Name="radioCost">Cost</RadioButton>
+                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Carbon}}" Checked="CarbonChecked">Carbon</RadioButton>
                 <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.FuelUse}}">Fuel</RadioButton>
-                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Load}}">Loads</RadioButton>
+                <RadioButton x:Name="radioButton" IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Load}}">Loads</RadioButton>
             </StackPanel>
         </StackPanel>
-        <lvc:CartesianChart Grid.Column="0" Grid.Row="1" DisableAnimations="True" Hoverable="False"
-                            Series="{Binding StackedSeriesCollection}" Grid.RowSpan="2" MouseMove="CartesianChart_MouseMove">
-            <lvc:CartesianChart.ToolTip>
-                <lvc:DefaultTooltip SelectionMode="Auto" />
-            </lvc:CartesianChart.ToolTip>
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True" Labels="{Binding Labels}">
-                    <lvc:Axis.Separator>
-                        <lvc:Separator IsEnabled="True" Step="1" />
-                    </lvc:Axis.Separator>
-                    <lvc:Axis.Sections>
-                        <lvc:AxisSection Value="{Binding XPointer}"
-                                         SectionWidth="0.25"
-                                         SectionOffset="-0.125"
-                                         Fill="#59FF5722"
-                                         Stroke="#ff5722"
-                                         StrokeThickness=".5"
-                                         DataLabelForeground="White"
-                                         DataLabel="True"/>
-                    </lvc:Axis.Sections>
-                </lvc:Axis>
-            </lvc:CartesianChart.AxisX>
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Energy" IsMerged="False" FontSize="14"
-                          ShowLabels="True"
-                          LabelFormatter="{Binding KWhFormatter}" />
-            </lvc:CartesianChart.AxisY>
-        </lvc:CartesianChart>
+        <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+            <TabItem Header="Costs">
+                <views:Costs/>
+            </TabItem>
+            <TabItem Header="Carbon">
+                <views:Carbon/>
+            </TabItem>
+            <TabItem Header="Loads">
+                <views:Loads />
+            </TabItem>
+        </TabControl>
+        
         <Grid Grid.Row="3" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*" />
@@ -143,7 +124,8 @@
                     <views:AbsorptionChillerView Height="auto" />
                     <views:HotWaterView Height="auto" />
                     <views:ElectricGenerationView Height="auto" />
-                    <views:CombinedHeatAndPowerView Height="auto" /></StackPanel>
+                    <views:CombinedHeatAndPowerView Height="auto" />
+                </StackPanel>
             </ScrollViewer>
         </Expander>
     </Grid>

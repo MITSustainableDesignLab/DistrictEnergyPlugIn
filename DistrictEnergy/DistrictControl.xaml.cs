@@ -26,9 +26,7 @@ namespace DistrictEnergy
         {
             InitializeComponent();
 
-
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
-
             SelectSimCase.SelectionChanged += OnSelectionChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
         }
@@ -94,38 +92,6 @@ namespace DistrictEnergy
             //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
         }
 
-        private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            var chart = (LiveCharts.Wpf.CartesianChart) sender;
-            var vm = (ResultsViewModel) chart.DataContext;
-
-            //lets get where the mouse is at our chart
-            var mouseCoordinate = e.GetPosition(chart);
-
-            //now that we know where the mouse is, lets use
-            //ConverToChartValues extension
-            //it takes a point in pixes and scales it to our chart current scale/values
-            var p = chart.ConvertToChartValues(mouseCoordinate);
-
-            //in the Y section, lets use the raw value
-            vm.YPointer = p.Y;
-
-            //for X in this case we will only highlight the closest point.
-            //lets use the already defined ClosestPointTo extension
-            //it will return the closest ChartPoint to a value according to an axis.
-            //here we get the closest point to p.X according to the X axis
-            if (chart.Series.Count > 0)
-            {
-                var series = chart.Series[0];
-                var closetsPoint = series.ClosestPointTo(p.X, AxisOrientation.X);
-
-                vm.XPointer = closetsPoint.X;
-            }
-        }
-
-        public ChartMode ChartMode { get; set; }
-
         public class ComparisonConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -164,11 +130,16 @@ namespace DistrictEnergy
             }
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void CostsChecked(object sender, RoutedEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-            var vm = PlantSettingsViewModel.Instance;
-            vm.OFF_ABS = 0;
+            // Display Costs
+        }
+
+        private void CarbonChecked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            // Display Carbon
         }
     }
 

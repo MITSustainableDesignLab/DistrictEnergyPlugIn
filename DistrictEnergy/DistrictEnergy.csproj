@@ -106,11 +106,13 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="Converter.cs" />
+    <Compile Include="CostConverterUnit.cs" />
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
     <Compile Include="DHSimulateDistrictEnergy.cs" />
+    <Compile Include="DollarConverter.cs" />
     <Compile Include="Helpers\ChartMode.cs" />
     <Compile Include="Helpers\ComparisonConverter.cs" />
     <Compile Include="Helpers\TimeGroupers.cs" />
@@ -134,7 +136,12 @@
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
     <Compile Include="Metrics\Metrics.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ReverseConverter.cs" />
+    <Compile Include="ViewModels\CarbonViewModel.cs" />
+    <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="ViewModels\KWhConverterUnit.cs" />
+    <Compile Include="ViewModels\LoadsViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
@@ -151,11 +158,17 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\Carbon.xaml.cs">
+      <DependentUpon>Carbon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ChilledWaterView.xaml.cs">
       <DependentUpon>ChilledWaterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CombinedHeatAndPowerView.xaml.cs">
       <DependentUpon>CombinedHeatAndPowerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Costs.xaml.cs">
+      <DependentUpon>Costs.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ElectricGenerationView.xaml.cs">
       <DependentUpon>ElectricGenerationView.xaml</DependentUpon>
@@ -163,9 +176,19 @@
     <Compile Include="Views\HotWaterView.xaml.cs">
       <DependentUpon>HotWaterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\StackedChart.xaml.cs">
+      <DependentUpon>StackedChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Loads.xaml.cs">
+      <DependentUpon>Loads.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Carbon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -177,11 +200,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Costs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ElectricGenerationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HotWaterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StackedChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Loads.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
