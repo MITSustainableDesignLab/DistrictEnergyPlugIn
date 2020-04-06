@@ -155,6 +155,12 @@
       <ComponentRef Id="LiveChartsDLL" />
       <ComponentRef Id="LiveChartsWpfDLL" />
       <ComponentRef Id="NewtonSoftJsonDLL" />
+      <ComponentRef Id="DeedleDLL" />
+      <ComponentRef Id="FSharpCoreDLL" />
+      <ComponentRef Id="MaterialDesignColorsDLL"/>
+      <ComponentRef Id="MaterialDesignThemesWpfDLL"/>
+      <ComponentRef Id="PresentationFrameworkDLL"/>
+      <ComponentRef Id="SystemValueTupleDLL"/>
     </ComponentGroup>
   </Fragment>
 
@@ -184,7 +190,8 @@
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="EnergyPlusWeatherDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll" Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll" />
+            <File Id="EnergyPlusWeatherDLL" Name="EnergyPlusWeather.dll"
+                  Source="$(var.ExportLoadsToFile.TargetDir)EnergyPlusWeather.dll" />
           </Component>
 
           <Component Id="LiveChartsDLL" Guid="{13DE637C-BC0C-40D9-B428-E9E6F4BD2F52}">
@@ -210,6 +217,53 @@
                   Source="$(var.DistrictEnergy.TargetDir)Newtonsoft.Json.dll" />
           </Component>
 
+          <Component Id="DeedleDLL" Guid="{AAB6518E-F030-4D4B-8D55-8D892F6CE11D}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="DeedleDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="DeedleDLL" Name="Deedle.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)Deedle.dll"></File>
+          </Component>
+
+          <Component Id="FSharpCoreDLL" Guid="{1E3C976C-3ED5-420C-8EE4-5C019AF445CC}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="FSharpCoreDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="FSharpCoreDLL" Name="FSharp.Core.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)FSharp.Core.dll"></File>
+          </Component>
+
+          <Component Id="MaterialDesignColorsDLL" Guid="{0F87F01D-E7FE-4B10-A447-C1898B59D78D}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="MaterialDesignColorsDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="MaterialDesignColorsDLL" Name="MaterialDesignColors.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)MaterialDesignColors.dll"></File>
+          </Component>
+
+          <Component Id="MaterialDesignThemesWpfDLL" Guid="{185A1F1A-2757-4994-8C51-45BAC3948629}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="MaterialDesignThemesWpfDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="MaterialDesignThemesWpfDLL" Name="MaterialDesignThemes.Wpf.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)MaterialDesignThemes.Wpf.dll"></File>
+          </Component>
+
+          <Component Id="PresentationFrameworkDLL" Guid="{013CB430-84C2-493D-90B8-E49F58723B10}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="PresentationFrameworkDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="PresentationFrameworkDLL" Name="PresentationFramework.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)PresentationFramework.dll"></File>
+          </Component>
+
+          <Component Id="SystemValueTupleDLL" Guid="{883369E9-0682-4D48-8A7C-273B67E919C9}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="SystemValueTupleDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="SystemValueTupleDLL" Name="System.ValueTuple.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)System.ValueTuple.dll"></File>
+          </Component>
 
         </Directory>
       </Directory>

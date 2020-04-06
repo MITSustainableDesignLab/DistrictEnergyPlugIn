@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -11,6 +12,8 @@ using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using LiveCharts;
 using LiveCharts.Wpf;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 using Rhino;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Helpers;
@@ -26,8 +29,10 @@ namespace DistrictEnergy
     {
         public DistrictControl()
         {
-            InitializeComponent();
             Instance = this;
+            var searchPaths = Rhino.Runtime.HostUtils.GetAssemblySearchPaths();
+            Dictionary<Guid, string> dict = Rhino.PlugIns.PlugIn.GetInstalledPlugIns();
+            InitializeComponent();
 
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
@@ -99,12 +104,14 @@ namespace DistrictEnergy
 
         public class ComparisonConverter : IValueConverter
         {
-            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            public object Convert(object value, Type targetType, object parameter,
+                System.Globalization.CultureInfo culture)
             {
                 return value?.Equals(parameter);
             }
 
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            public object ConvertBack(object value, Type targetType, object parameter,
+                System.Globalization.CultureInfo culture)
             {
                 return value?.Equals(true) == true ? parameter : Binding.DoNothing;
             }
@@ -131,6 +138,7 @@ namespace DistrictEnergy
                     PlantSettingsViewModel.Instance.AUT_BAT = 0;
                     PlantSettingsViewModel.Instance.AUT_HWT = 0;
                 }
+
                 if (item.Id == 2)
                 {
                     PlantSettingsViewModel.Instance.OFF_ABS = 0;
@@ -141,8 +149,8 @@ namespace DistrictEnergy
                     PlantSettingsViewModel.Instance.OFF_WND = 0;
                     PlantSettingsViewModel.Instance.AUT_BAT = 0;
                     PlantSettingsViewModel.Instance.AUT_HWT = 0;
-
                 }
+
                 if (item.Id == 3)
                 {
                     PlantSettingsViewModel.Instance.OFF_ABS = 100;
@@ -154,8 +162,10 @@ namespace DistrictEnergy
                     PlantSettingsViewModel.Instance.AUT_BAT = 0;
                     PlantSettingsViewModel.Instance.AUT_HWT = 0;
                 }
+
                 RhinoApp.WriteLine($"Plant settings changed to predefined case {item.DName}");
             }
+
             OnPropertyChanged();
         }
 
