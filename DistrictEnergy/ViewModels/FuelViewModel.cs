@@ -61,25 +61,54 @@ namespace DistrictEnergy.ViewModels
                 new ResultsViewModel.ChartValue
                 {
                     Key = "Chilled Water Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
-                    Value = instance.DistrictDemand.ChwN
+                    Value = instance.DistrictDemand.ChwN  // TODO: Add Additional Demand
                 },
                 new ResultsViewModel.ChartValue
                 {
                     Key = "Hot Water Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)),
-                    Value = instance.DistrictDemand.HwN
+                    Value = instance.DistrictDemand.HwN  // TODO: Add Additional Demand
                 },
                 new ResultsViewModel.ChartValue
                 {
                     Key = "Total Electricity Demand",
                     Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)),
                     Value = instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
-                        .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
+                        .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()  // TODO: Add Additional Demand
                 }
+            };
+
+            var Fuel = new List<ResultsViewModel.ChartValue>()
+            {
+                new ResultsViewModel.ChartValue
+                {
+                    Key = "NG to CHP", Fill = new SolidColorBrush(Color.FromRgb(247, 96, 21)),
+                    Value = instance.ResultsArray.NgasChp
+                },
+                new ResultsViewModel.ChartValue
+                {
+                    Key = "NG to Boiler", Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
+                    Value = instance.ResultsArray.NgasNgb
+                },
+                new ResultsViewModel.ChartValue
+                {
+                    Key = "Elec to HPs", Fill = new SolidColorBrush(Color.FromRgb(231, 71, 126)),
+                    Value = instance.ResultsArray.ElecEhp
+                },
+                new ResultsViewModel.ChartValue
+                {
+                    Key = "Elec to Chillers", Fill = new SolidColorBrush(Color.FromRgb(93, 153, 170)),
+                    Value = instance.ResultsArray.ElecEch
+                },
+                new ResultsViewModel.ChartValue
+                {
+                    Key = "Elec to Elec Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+                    Value = instance.DistrictDemand.ElecN
+                },
             };
 
             SeriesCollection.Clear();
 
-            foreach (var demand in Demand)
+            /*foreach (var demand in Demand)
                 if (Math.Abs(demand.Value.Sum()) > 0.001)
                 {
                     var series = new StackedColumnSeries
@@ -90,6 +119,21 @@ namespace DistrictEnergy.ViewModels
                         LabelPoint = KWhLabelPointFormatter,
                         //AreaLimit = 0,
                         Fill = demand.Fill
+                    };
+                    SeriesCollection.Add(series);
+                }*/
+
+            foreach (var fuel in Fuel)
+                if (Math.Abs(fuel.Value.Sum()) > 0.001)
+                {
+                    var series = new StackedColumnSeries
+                    {
+                        Values = AggregateByPeriod(fuel.Value, false, instance.PluginSettings.AggregationPeriod),
+                        Title = fuel.Key,
+                        //LineSmoothness = 0,
+                        LabelPoint = KWhLabelPointFormatter,
+                        //AreaLimit = 0,
+                        Fill = fuel.Fill
                     };
                     SeriesCollection.Add(series);
                 }
