@@ -50,7 +50,7 @@ namespace DistrictEnergy
             SimConstants = new SimConstants();
             PluginSettings = new Settings();
 
-            PlantSettingsViewModel.Instance.PropertyChanged += RerunSimulation;
+            DistrictControl.Instance.PropertyChanged += RerunSimulation;
             UmiEventSource.Instance.EnergySimulationsCompleted += StaleResultsOnEnergySimulationsCompletedEventArgs;
             UmiEventSource.Instance.ProjectClosed += StaleResultsOnEventArgs;
         }
@@ -97,6 +97,7 @@ namespace DistrictEnergy
 
         private void RerunSimulation(object sender, EventArgs e)
         {
+            SimConstants.CalculateConstants();
             MainSimulation();
         }
 

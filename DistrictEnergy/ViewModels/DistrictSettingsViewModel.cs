@@ -125,7 +125,7 @@ namespace DistrictEnergy.ViewModels
             {
                 new SimCase {Id = 1, DName = "Net Zero Community"},
                 new SimCase {Id = 2, DName = "Business As Usual"},
-                new SimCase {Id = 3, DName = "All Gas"}
+                new SimCase {Id = 3, DName = "TriGeneration (all gas)"}
             };
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SimCases)));
         }

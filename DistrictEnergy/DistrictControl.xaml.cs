@@ -2,10 +2,12 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -25,11 +27,14 @@ namespace DistrictEnergy
         public DistrictControl()
         {
             InitializeComponent();
+            Instance = this;
 
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
-            SelectSimCase.SelectionChanged += OnSelectionChanged;
+            SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
         }
+
+        public static DistrictControl Instance { get; set; }
 
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -107,28 +112,51 @@ namespace DistrictEnergy
 
         private void OnDropDownOpened(object sender, EventArgs e)
         {
-            SelectSimCase.SelectedItem = null;
+            // SelectSimCase.SelectedItem = null;
         }
 
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnSimCaseChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SelectSimCase.SelectedItem != null)
             {
                 var item = (SimCase) SelectSimCase.SelectedItem;
-                if (item.DName == "Business As Usual")
+                if (item.Id == 1)
                 {
                     PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_PV = 100;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 100;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 100;
+                    PlantSettingsViewModel.Instance.OFF_WND = 100;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                }
+                if (item.Id == 2)
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_PV = 0;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
+                    PlantSettingsViewModel.Instance.OFF_WND = 0;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
 
                 }
-                if (item.DName == "Business As Usual")
+                if (item.Id == 3)
                 {
-                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                    PlantSettingsViewModel.Instance.OFF_ABS = 100;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 100;
+                    PlantSettingsViewModel.Instance.OFF_PV = 0;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
+                    PlantSettingsViewModel.Instance.OFF_WND = 0;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
                 }
-                if (item.DName == "Business As Usual")
-                {
-                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
-                }
+                RhinoApp.WriteLine($"Plant settings changed to predefined case {item.DName}");
             }
+            OnPropertyChanged();
         }
 
         private void CostsChecked(object sender, RoutedEventArgs e)
@@ -141,6 +169,12 @@ namespace DistrictEnergy
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
             // Display Carbon
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

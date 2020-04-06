@@ -101,8 +101,8 @@ namespace DistrictEnergy.ViewModels
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "Elec to Elec Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
-                    Value = instance.DistrictDemand.ElecN
+                    Key = "Purchased Elec", Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+                    Value = instance.ResultsArray.ElecProj
                 },
             };
 
