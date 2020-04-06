@@ -1,10 +1,13 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -19,15 +22,19 @@ namespace DistrictEnergy
     /// <summary>
     ///     Interaction logic for ModuleControl.xaml
     /// </summary>
-    public partial class DistrictControl : UserControl
+    public partial class DistrictControl : UserControl, INotifyPropertyChanged
     {
         public DistrictControl()
         {
             InitializeComponent();
-
+            Instance = this;
 
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
+            SelectSimCase.SelectionChanged += OnSimCaseChanged;
+            SelectSimCase.DropDownOpened += OnDropDownOpened;
         }
+
+        public static DistrictControl Instance { get; set; }
 
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -90,38 +97,6 @@ namespace DistrictEnergy
             //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
         }
 
-        private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            var chart = (LiveCharts.Wpf.CartesianChart) sender;
-            var vm = (ResultsViewModel) chart.DataContext;
-
-            //lets get where the mouse is at our chart
-            var mouseCoordinate = e.GetPosition(chart);
-
-            //now that we know where the mouse is, lets use
-            //ConverToChartValues extension
-            //it takes a point in pixes and scales it to our chart current scale/values
-            var p = chart.ConvertToChartValues(mouseCoordinate);
-
-            //in the Y section, lets use the raw value
-            vm.YPointer = p.Y;
-
-            //for X in this case we will only highlight the closest point.
-            //lets use the already defined ClosestPointTo extension
-            //it will return the closest ChartPoint to a value according to an axis.
-            //here we get the closest point to p.X according to the X axis
-            if (chart.Series.Count > 0)
-            {
-                var series = chart.Series[0];
-                var closetsPoint = series.ClosestPointTo(p.X, AxisOrientation.X);
-
-                vm.XPointer = closetsPoint.X;
-            }
-        }
-
-        public ChartMode ChartMode { get; set; }
-
         public class ComparisonConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -135,7 +110,72 @@ namespace DistrictEnergy
             }
         }
 
+        private void OnDropDownOpened(object sender, EventArgs e)
+        {
+            // SelectSimCase.SelectedItem = null;
+        }
 
+        private void OnSimCaseChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectSimCase.SelectedItem != null)
+            {
+                var item = (SimCase) SelectSimCase.SelectedItem;
+                if (item.Id == 1)
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_PV = 100;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 100;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 100;
+                    PlantSettingsViewModel.Instance.OFF_WND = 100;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                }
+                if (item.Id == 2)
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_PV = 0;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
+                    PlantSettingsViewModel.Instance.OFF_WND = 0;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+
+                }
+                if (item.Id == 3)
+                {
+                    PlantSettingsViewModel.Instance.OFF_ABS = 100;
+                    PlantSettingsViewModel.Instance.OFF_CHP = 100;
+                    PlantSettingsViewModel.Instance.OFF_PV = 0;
+                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
+                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
+                    PlantSettingsViewModel.Instance.OFF_WND = 0;
+                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
+                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                }
+                RhinoApp.WriteLine($"Plant settings changed to predefined case {item.DName}");
+            }
+            OnPropertyChanged();
+        }
+
+        private void CostsChecked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            // Display Costs
+        }
+
+        private void CarbonChecked(object sender, RoutedEventArgs e)
+        {
+            if (DHSimulateDistrictEnergy.Instance == null) return;
+            // Display Carbon
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class DoubleRangeRule : ValidationRule

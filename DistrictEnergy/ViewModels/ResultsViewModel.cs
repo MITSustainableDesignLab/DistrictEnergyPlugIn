@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Media;
 using Deedle;
@@ -38,9 +39,9 @@ namespace DistrictEnergy.ViewModels
 
         public ResultsViewModel()
         {
-            Instance = this;
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
             UmiEventSource.Instance.ProjectClosed += OnProjectClosed;
+
             KWhFormatter = delegate(double val)
             {
                 if (val > 999)
@@ -62,13 +63,17 @@ namespace DistrictEnergy.ViewModels
                 return string.Format("{0:N1} kWh", chartPoint.Y);
             };
 
+            kgCo2LabelPointFormatter = delegate(ChartPoint chartPoint)
+            {
+                if (Math.Abs(chartPoint.Y) > 999) return string.Format("{0:N1} MWh", chartPoint.Y / 1000);
+
+                if (Math.Abs(chartPoint.Y) > 999999) return string.Format("{0:N1} GWh", chartPoint.Y / 1000000);
+                return string.Format("{0:N1} kWh", chartPoint.Y);
+            };
+
             MonthFormatter = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
 
             GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
-
-            //lets initialize in an invisible location
-            XPointer = -5;
-            YPointer = -5;
 
             //the formatter or labels property is shared 
             Formatter = x => x.ToString("N2");
@@ -78,17 +83,10 @@ namespace DistrictEnergy.ViewModels
                 "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
             };
 
+            //lets initialize in an invisible location
+            XPointer = -5;
+            YPointer = -5;
         }
-
-        public string[] Labels { get; set; }
-        public ResultsViewModel Instance { get; set; }
-        public SeriesCollection StackedSeriesCollection { get; set; } = new SeriesCollection();
-        public SeriesCollection StackedDemandSeriesCollection { get; set; } = new SeriesCollection();
-        public SeriesCollection StackedHeatingSeriesCollection { get; set; } = new SeriesCollection();
-        public SeriesCollection StackedCoolingSeriesCollection { get; set; } = new SeriesCollection();
-        public SeriesCollection StackedElecSeriesCollection { get; set; } = new SeriesCollection();
-        public SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
-        public SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
 
         public double XPointer
         {
@@ -109,6 +107,15 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged("YPointer");
             }
         }
+
+        public string[] Labels { get; set; }
+        public SeriesCollection StackedSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedDemandSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedHeatingSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedCoolingSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection StackedElecSeriesCollection { get; set; } = new SeriesCollection();
+        public SeriesCollection PieHeatingChartGraphSeries { get; set; } = new SeriesCollection();
+        public SeriesCollection PieCoolingChartGraphSeries { get; set; } = new SeriesCollection();
 
         public Func<double, string> Formatter { get; set; }
 
@@ -260,33 +267,108 @@ namespace DistrictEnergy.ViewModels
 
         public void UpdateStackedChart(object sender, EventArgs e)
         {
+            switch (ChartMode)
+            {
+                case ChartMode.Cost: break;
+                case ChartMode.Carbon:
+                {
+                    UpdateCarbonChart();
+                    break;
+                }
+                case ChartMode.FuelUse: break;
+                case ChartMode.Load:
+                {
+                    UpdateLoadsChart();
+                    break;
+                }
+            }
+        }
+
+        private void UpdateLoadsChart()
+        {
             var instance = DHSimulateDistrictEnergy.Instance;
             var Demand = new List<ChartValue>
             {
-                new ChartValue {Key = "Chilled Water Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)), Value = instance.DistrictDemand.ChwN},
-                new ChartValue {Key = "Hot Water Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)), Value = instance.DistrictDemand.HwN},
+                new ChartValue
+                {
+                    Key = "Chilled Water Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
+                    Value = instance.DistrictDemand.ChwN
+                },
+                new ChartValue
+                {
+                    Key = "Hot Water Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)),
+                    Value = instance.DistrictDemand.HwN
+                },
                 new ChartValue
                 {
                     Key = "Total Electricity Demand",
-                    Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)), 
+                    Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)),
                     Value = instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
-                            .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
+                        .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
                 }
             };
             var Supply = new List<ChartValue>
             {
-                new ChartValue {Key = "CW Absorption Chiller", Fill = new SolidColorBrush(Color.FromRgb(146,241,254)), Value = instance.ResultsArray.ChwAbs},
-                new ChartValue {Key = "CW Electric Chiller", Fill = new SolidColorBrush(Color.FromRgb(93,153,170)), Value = instance.ResultsArray.ChwEch},
-                new ChartValue {Key = "CW Evaporator Side of EHPs", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)), Value = instance.ResultsArray.ChwEhpEvap},
-                new ChartValue {Key = "HW Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251,209,39)), Value = instance.ResultsArray.HwShw},
-                new ChartValue {Key = "HW Hot Water Tank", Fill = new SolidColorBrush(Color.FromRgb(253,199,204)), Value = instance.ResultsArray.HwHwt},
-                new ChartValue {Key = "HW Electric Heat Pump", Fill = new SolidColorBrush(Color.FromRgb(231,71,126)), Value = instance.ResultsArray.HwEhp},
-                new ChartValue {Key = "HW Natural Gas Boiler", Fill = new SolidColorBrush(Color.FromRgb(189,133,74)), Value = instance.ResultsArray.HwNgb},
-                new ChartValue {Key = "HW Combined Heating and Power", Fill = new SolidColorBrush(Color.FromRgb(247,96,21)), Value = instance.ResultsArray.HwChp},
-                new ChartValue {Key = "EL Battery", Fill = new SolidColorBrush(Color.FromRgb(192,244,66)), Value = instance.ResultsArray.ElecBat},
-                new ChartValue {Key = "EL Renewables", Fill = new SolidColorBrush(Color.FromRgb(112,159,15)), Value = instance.ResultsArray.ElecRen},
-                new ChartValue {Key = "EL Combined Heat & Power", Fill = new SolidColorBrush(Color.FromRgb(253,199,204)), Value = instance.ResultsArray.ElecChp},
-                new ChartValue {Key = "EL Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0,0,0)), Value = instance.ResultsArray.ElecProj}
+                new ChartValue
+                {
+                    Key = "CW Absorption Chiller", Fill = new SolidColorBrush(Color.FromRgb(146, 241, 254)),
+                    Value = instance.ResultsArray.ChwAbs
+                },
+                new ChartValue
+                {
+                    Key = "CW Electric Chiller", Fill = new SolidColorBrush(Color.FromRgb(93, 153, 170)),
+                    Value = instance.ResultsArray.ChwEch
+                },
+                new ChartValue
+                {
+                    Key = "CW Evaporator Side of EHPs", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
+                    Value = instance.ResultsArray.ChwEhpEvap
+                },
+                new ChartValue
+                {
+                    Key = "HW Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251, 209, 39)),
+                    Value = instance.ResultsArray.HwShw
+                },
+                new ChartValue
+                {
+                    Key = "HW Hot Water Tank", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
+                    Value = instance.ResultsArray.HwHwt
+                },
+                new ChartValue
+                {
+                    Key = "HW Electric Heat Pump", Fill = new SolidColorBrush(Color.FromRgb(231, 71, 126)),
+                    Value = instance.ResultsArray.HwEhp
+                },
+                new ChartValue
+                {
+                    Key = "HW Natural Gas Boiler", Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
+                    Value = instance.ResultsArray.HwNgb
+                },
+                new ChartValue
+                {
+                    Key = "HW Combined Heating and Power", Fill = new SolidColorBrush(Color.FromRgb(247, 96, 21)),
+                    Value = instance.ResultsArray.HwChp
+                },
+                new ChartValue
+                {
+                    Key = "EL Battery", Fill = new SolidColorBrush(Color.FromRgb(192, 244, 66)),
+                    Value = instance.ResultsArray.ElecBat
+                },
+                new ChartValue
+                {
+                    Key = "EL Renewables", Fill = new SolidColorBrush(Color.FromRgb(112, 159, 15)),
+                    Value = instance.ResultsArray.ElecRen
+                },
+                new ChartValue
+                {
+                    Key = "EL Combined Heat & Power", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
+                    Value = instance.ResultsArray.ElecChp
+                },
+                new ChartValue
+                {
+                    Key = "EL Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+                    Value = instance.ResultsArray.ElecProj
+                }
             };
 
             if (StackedSeriesCollection.Count > 0)
@@ -296,7 +378,8 @@ namespace DistrictEnergy.ViewModels
 
             foreach (var demand in Demand)
             {
-                if (Math.Abs(demand.Value.Sum()) > 0.001) {
+                if (Math.Abs(demand.Value.Sum()) > 0.001)
+                {
                     var series = new StackedAreaSeries
                     {
                         Values = AggregateByPeriod(demand.Value, true, instance.PluginSettings.AggregationPeriod),
@@ -308,7 +391,6 @@ namespace DistrictEnergy.ViewModels
                     };
                     StackedSeriesCollection.Add(series);
                 }
-                
             }
 
             foreach (var supply in Supply)
@@ -327,8 +409,27 @@ namespace DistrictEnergy.ViewModels
                     StackedSeriesCollection.Add(series);
                 }
             }
+        }
 
-            
+        private void UpdateCarbonChart()
+        {
+            var instance = DHSimulateDistrictEnergy.Instance;
+            double[] array1 = instance.ResultsArray.ElecProj;
+            var array3 = new double[8760];
+
+            for (int i = 0; i <= array1.Length; i++)
+            {
+                array3[i] = (instance.ResultsArray.ElecProj[i] * UmiContext.Current.ProjectSettings.ElectricityCarbon);
+            }
+
+            var carbonSeries = new LineSeries()
+            {
+                Values = array3.AsChartValues(),
+                Title = "Total Carbon",
+                LabelPoint = kgCo2LabelPointFormatter,
+                LineSmoothness = 0,
+            };
+            StackedSeriesCollection.Add(carbonSeries);
         }
 
         private void UpdateDemandStackedChart(object sender, EventArgs e)
@@ -356,7 +457,8 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true, TimeGroupers period = TimeGroupers.Monthly)
+        private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true,
+            TimeGroupers period = TimeGroupers.Monthly)
         {
             // Using a startdate of "2018-01-01" because it starts on a Monday
             var startDate = new DateTime(2018, 01, 01, 0, 0, 0);
@@ -367,7 +469,7 @@ namespace DistrictEnergy.ViewModels
             // Iterate over each element of the array of results & create datetime index incrementally
             for (int i = 0; i < d.Length; i++)
             {
-                seriesBuilder.Add(startDate.AddHours(i), d[i] );
+                seriesBuilder.Add(startDate.AddHours(i), d[i]);
             }
 
             // To Series.
@@ -384,7 +486,7 @@ namespace DistrictEnergy.ViewModels
                 result = series.GroupBy(c => c.Key.Date)
                     .Select(g => g.Value.Values.Sum());
             }
-            
+
 
             if (negative)
             {
@@ -720,6 +822,7 @@ namespace DistrictEnergy.ViewModels
         public Func<double, string> GaugeFormatter { get; set; }
         public Func<double, string> XFormatter { get; set; }
         public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
+        public Func<ChartPoint, string> kgCo2LabelPointFormatter { get; set; }
         public Func<double, string> KWhFormatter { get; set; }
         public Func<double, string> MonthFormatter { get; set; } // Adds 1 to month index
 
@@ -760,18 +863,18 @@ namespace DistrictEnergy.ViewModels
     /// <summary>
     ///     Converts a kWh qauntity to MWh or GWh depending on magnitude of value
     /// </summary>
-    public class KWhConverterUnit : IValueConverter
+    public class kgCO2ConverterUnit : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is double d)
             {
                 if (d > 999)
-                    return "MWh";
+                    return "tCO2eq";
 
                 if (d > 999999)
-                    return "GWh";
-                return "kWh";
+                    return "MtCO2eq";
+                return "kgCO2eq";
             }
 
             return string.Empty;

@@ -82,6 +82,7 @@
     <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
@@ -91,6 +92,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\UMI\Umi.Core.dll</HintPath>
       <Private>False</Private>
@@ -105,11 +107,14 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="Converter.cs" />
+    <Compile Include="CostConverterUnit.cs" />
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
     <Compile Include="DHSimulateDistrictEnergy.cs" />
+    <Compile Include="DollarConverter.cs" />
     <Compile Include="Helpers\ChartMode.cs" />
     <Compile Include="Helpers\ComparisonConverter.cs" />
     <Compile Include="Helpers\TimeGroupers.cs" />
@@ -133,7 +138,13 @@
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
     <Compile Include="Metrics\Metrics.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ReverseConverter.cs" />
+    <Compile Include="ViewModels\CarbonViewModel.cs" />
+    <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="ViewModels\FuelViewModel.cs" />
+    <Compile Include="ViewModels\KWhConverterUnit.cs" />
+    <Compile Include="ViewModels\LoadsViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
@@ -150,17 +161,32 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
-    <Compile Include="Views\ChilledWaterView.xaml.cs">
+    <Compile Include="Views\ResultViews\Carbon.xaml.cs">
+      <DependentUpon>Carbon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlantSettings\ChilledWaterView.xaml.cs">
       <DependentUpon>ChilledWaterView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CombinedHeatAndPowerView.xaml.cs">
+    <Compile Include="Views\PlantSettings\CombinedHeatAndPowerView.xaml.cs">
       <DependentUpon>CombinedHeatAndPowerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ElectricGenerationView.xaml.cs">
+    <Compile Include="Views\ResultViews\Costs.xaml.cs">
+      <DependentUpon>Costs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlantSettings\ElectricGenerationView.xaml.cs">
       <DependentUpon>ElectricGenerationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\HotWaterView.xaml.cs">
+    <Compile Include="Views\ResultViews\Fuel.xaml.cs">
+      <DependentUpon>Fuel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlantSettings\HotWaterView.xaml.cs">
       <DependentUpon>HotWaterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StackedChart.xaml.cs">
+      <DependentUpon>StackedChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResultViews\Loads.xaml.cs">
+      <DependentUpon>Loads.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -168,19 +194,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ChilledWaterView.xaml">
+    <Page Include="Views\ResultViews\Carbon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CombinedHeatAndPowerView.xaml">
+    <Page Include="Views\PlantSettings\ChilledWaterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ElectricGenerationView.xaml">
+    <Page Include="Views\PlantSettings\CombinedHeatAndPowerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\HotWaterView.xaml">
+    <Page Include="Views\ResultViews\Costs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\ElectricGenerationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResultViews\Fuel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\HotWaterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StackedChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ResultViews\Loads.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -201,6 +247,13 @@
     <Content Include="Resources\TRNExeConsole.f90" />
     <Content Include="Resources\WixUIDialogBmp.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EnergyPlusWeatherPull\EnergyPlusWeather\EnergyPlusWeather.csproj">
+      <Project>{d8d748d7-aedf-4c88-9aa9-95498fcf87b8}</Project>
+      <Name>EnergyPlusWeather</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
