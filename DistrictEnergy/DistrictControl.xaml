@@ -53,27 +53,41 @@
                 <StackPanel.Resources>
                     <helpers:ComparisonConverter x:Key="ComparisonConverter" />
                 </StackPanel.Resources>
-                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Cost}}" Checked="CostsChecked" Name="radioCost">Cost</RadioButton>
-                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Carbon}}" Checked="CarbonChecked">Carbon</RadioButton>
-                <RadioButton IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.FuelUse}}">Fuel</RadioButton>
-                <RadioButton x:Name="radioButton" IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Load}}">Loads</RadioButton>
+                <RadioButton
+                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Cost}}"
+                    Checked="CostsChecked" Name="radioCost">
+                    Cost
+                </RadioButton>
+                <RadioButton
+                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Carbon}}"
+                    Checked="CarbonChecked">
+                    Carbon
+                </RadioButton>
+                <RadioButton
+                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.FuelUse}}">
+                    Fuel
+                </RadioButton>
+                <RadioButton x:Name="radioButton"
+                             IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Load}}">
+                    Loads
+                </RadioButton>
             </StackPanel>
         </StackPanel>
         <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
             <TabItem Header="Costs">
-                <views:Costs/>
+                <views:Costs />
             </TabItem>
             <TabItem Header="Carbon">
-                <views:Carbon/>
+                <views:Carbon />
             </TabItem>
             <TabItem Header="Fuel">
-                <views:Fuel/>
+                <views:Fuel />
             </TabItem>
             <TabItem Header="Loads">
                 <views:Loads />
             </TabItem>
         </TabControl>
-        
+
         <Grid Grid.Row="3" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*" />

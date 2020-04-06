@@ -118,6 +118,7 @@ namespace DistrictEnergy
                 if (item.DName == "Business As Usual")
                 {
                     PlantSettingsViewModel.Instance.OFF_ABS = 0;
+
                 }
                 if (item.DName == "Business As Usual")
                 {

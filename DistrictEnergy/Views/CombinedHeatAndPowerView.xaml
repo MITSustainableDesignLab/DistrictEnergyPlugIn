@@ -18,10 +18,14 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         <!--<Style x:Key="PlantComponentHeader" TargetType="{x:Type TextBlock}">
@@ -46,10 +50,10 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Grid.Column="0" 
+                        <materialDesign:PackIcon Grid.Column="0"
                                                  Kind="InfoOutline"
                                                  Height="32"
                                                  Width="32"
@@ -92,8 +96,9 @@
                                         <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
                                                VerticalContentAlignment="Center"
                                                HorizontalAlignment="Center" />
-                                        <TextBox Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0,0,1,0" />
+                                        <TextBox
+                                            Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Margin="0,0,1,0" />
                                     </StackPanel>
                                 </Grid>
                             </Expander.Header>
@@ -104,7 +109,7 @@
                                     </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Tracking mode"
                                            ToolTip="Control the generator to prioritize meeting the hot water or electricity demand" />
@@ -130,7 +135,8 @@
                                     <Label Content="%"
                                            VerticalContentAlignment="Center"
                                            HorizontalAlignment="Center" Grid.Column="1" />
-                                    <TextBox Grid.Column="2" Text="{Binding EFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding EFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 </Grid>
                                 <Grid VerticalAlignment="Top">
@@ -139,7 +145,7 @@
                                     </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="30"/>
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
                                         <ColumnDefinition Width="Auto" MinWidth="35" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Waste heat recovery effectiveness"
@@ -148,7 +154,8 @@
                                     <Label Content="%"
                                            VerticalContentAlignment="Center"
                                            HorizontalAlignment="Center" Grid.Column="1" />
-                                    <TextBox Grid.Column="2" Text="{Binding HREC_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBox Grid.Column="2"
+                                             Text="{Binding HREC_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 </Grid>
                             </StackPanel>

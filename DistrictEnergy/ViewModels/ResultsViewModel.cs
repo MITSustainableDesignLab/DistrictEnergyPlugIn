@@ -41,7 +41,7 @@ namespace DistrictEnergy.ViewModels
         {
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
             UmiEventSource.Instance.ProjectClosed += OnProjectClosed;
-            
+
             KWhFormatter = delegate(double val)
             {
                 if (val > 999)
@@ -63,7 +63,7 @@ namespace DistrictEnergy.ViewModels
                 return string.Format("{0:N1} kWh", chartPoint.Y);
             };
 
-            kgCo2LabelPointFormatter = delegate (ChartPoint chartPoint)
+            kgCo2LabelPointFormatter = delegate(ChartPoint chartPoint)
             {
                 if (Math.Abs(chartPoint.Y) > 999) return string.Format("{0:N1} MWh", chartPoint.Y / 1000);
 
@@ -86,7 +86,6 @@ namespace DistrictEnergy.ViewModels
             //lets initialize in an invisible location
             XPointer = -5;
             YPointer = -5;
-
         }
 
         public double XPointer
@@ -458,7 +457,8 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true, TimeGroupers period = TimeGroupers.Monthly)
+        private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true,
+            TimeGroupers period = TimeGroupers.Monthly)
         {
             // Using a startdate of "2018-01-01" because it starts on a Monday
             var startDate = new DateTime(2018, 01, 01, 0, 0, 0);
@@ -469,7 +469,7 @@ namespace DistrictEnergy.ViewModels
             // Iterate over each element of the array of results & create datetime index incrementally
             for (int i = 0; i < d.Length; i++)
             {
-                seriesBuilder.Add(startDate.AddHours(i), d[i] );
+                seriesBuilder.Add(startDate.AddHours(i), d[i]);
             }
 
             // To Series.
@@ -486,7 +486,7 @@ namespace DistrictEnergy.ViewModels
                 result = series.GroupBy(c => c.Key.Date)
                     .Select(g => g.Value.Values.Sum());
             }
-            
+
 
             if (negative)
             {

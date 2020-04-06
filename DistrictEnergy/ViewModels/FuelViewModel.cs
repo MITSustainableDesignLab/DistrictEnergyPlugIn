@@ -28,7 +28,7 @@ namespace DistrictEnergy.ViewModels
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
             UmiEventSource.Instance.ProjectClosed += OnProjectClosed;
 
-            KWhLabelPointFormatter = delegate (ChartPoint chartPoint)
+            KWhLabelPointFormatter = delegate(ChartPoint chartPoint)
             {
                 if (Math.Abs(chartPoint.Y) > 999) return string.Format("{0:N1} MWh", chartPoint.Y / 1000);
 

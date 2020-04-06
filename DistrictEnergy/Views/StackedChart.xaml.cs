@@ -17,6 +17,7 @@ namespace DistrictEnergy.Views
     {
         private double _xPointer;
         private double _yPointer;
+
         public StackedChart()
         {
             InitializeComponent();
@@ -61,7 +62,7 @@ namespace DistrictEnergy.Views
         private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-            var chart = (LiveCharts.Wpf.CartesianChart)sender;
+            var chart = (LiveCharts.Wpf.CartesianChart) sender;
             var vm = this;
 
             //lets get where the mouse is at our chart

@@ -60,10 +60,10 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Grid.Column="0" 
+                        <materialDesign:PackIcon Grid.Column="0"
                                                  Kind="InfoOutline"
                                                  Height="32"
                                                  Width="32"

@@ -15,20 +15,21 @@ namespace DistrictEnergy.ViewModels
 {
     public class PlantSettingsViewModel : INotifyPropertyChanged
     {
-        public static ObservableCollection<IThermalPlantSettings> ListOfPlantSettings = new ObservableCollection<IThermalPlantSettings>
-        {
-            new AbsorptionChiller(),
-            new BatteryBank(),
-            new CombinedHeatNPower(),
-            new ElectricChiller(),
-            new ElectricHeatPump(),
-            new HotWaterStorage(),
-            new NatGasBoiler(),
-            new PhotovoltaicArray(),
-            new SolarThermalCollector(),
-            new WindTurbine(),
-            new PipeNetwork()
-        };
+        public static ObservableCollection<IThermalPlantSettings> ListOfPlantSettings =
+            new ObservableCollection<IThermalPlantSettings>
+            {
+                new AbsorptionChiller(),
+                new BatteryBank(),
+                new CombinedHeatNPower(),
+                new ElectricChiller(),
+                new ElectricHeatPump(),
+                new HotWaterStorage(),
+                new NatGasBoiler(),
+                new PhotovoltaicArray(),
+                new SolarThermalCollector(),
+                new WindTurbine(),
+                new PipeNetwork()
+            };
 
         private readonly KnownTypesBinder _knownTypesBinder = new KnownTypesBinder
         {
@@ -485,10 +486,11 @@ namespace DistrictEnergy.ViewModels
                     ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 0;
                     OnPropertyChanged();
                 }
-                
             }
         }
+
         #endregion
+
         #region Pipe Network
 
         public bool UseDistrictLosses
@@ -512,7 +514,6 @@ namespace DistrictEnergy.ViewModels
                     ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 0;
                     OnPropertyChanged();
                 }
-
             }
         }
 
