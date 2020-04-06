@@ -82,6 +82,7 @@
     <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
@@ -91,6 +92,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
     <Reference Include="Umi.Core">
       <HintPath>..\..\..\UMI\Umi.Core.dll</HintPath>
       <Private>False</Private>
@@ -140,6 +142,7 @@
     <Compile Include="ReverseConverter.cs" />
     <Compile Include="ViewModels\CarbonViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="ViewModels\FuelViewModel.cs" />
     <Compile Include="ViewModels\KWhConverterUnit.cs" />
     <Compile Include="ViewModels\LoadsViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
@@ -173,6 +176,9 @@
     <Compile Include="Views\ElectricGenerationView.xaml.cs">
       <DependentUpon>ElectricGenerationView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Fuel.xaml.cs">
+      <DependentUpon>Fuel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HotWaterView.xaml.cs">
       <DependentUpon>HotWaterView.xaml</DependentUpon>
     </Compile>
@@ -205,6 +211,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ElectricGenerationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Fuel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
