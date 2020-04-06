@@ -10,6 +10,7 @@ namespace DistrictEnergy.ViewModels
     public class PlanningSettingsViewModel : INotifyPropertyChanged
     {
         public static PlanningSettings PlanningSettings = new PlanningSettings();
+
         public PlanningSettingsViewModel()
         {
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
@@ -27,15 +28,21 @@ namespace DistrictEnergy.ViewModels
         {
             LoadSettings(e);
         }
+
         private void LoadSettings(UmiContext context)
         {
-            if (context == null) { return; }
+            if (context == null)
+            {
+                return;
+            }
+
             var path = context.AuxiliaryFiles.GetFullPath("planningSettings.json");
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
                 PlanningSettings = JsonConvert.DeserializeObject<PlanningSettings>(json);
             }
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
         }
 
@@ -50,7 +57,6 @@ namespace DistrictEnergy.ViewModels
 
             var pSjson = JsonConvert.SerializeObject(PlanningSettings);
             context.AuxiliaryFiles.StoreText("planningSettings.json", pSjson);
-
         }
 
         public double C1
@@ -80,7 +86,6 @@ namespace DistrictEnergy.ViewModels
             {
                 PlanningSettings.Rate = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rate)));
-                
             }
         }
 
@@ -91,7 +96,6 @@ namespace DistrictEnergy.ViewModels
             {
                 PlanningSettings.Periods = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Periods)));
-                
             }
         }
 

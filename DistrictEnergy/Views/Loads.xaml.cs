@@ -25,7 +25,7 @@ namespace DistrictEnergy.Views
         private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-            var chart = (LiveCharts.Wpf.CartesianChart)sender;
+            var chart = (LiveCharts.Wpf.CartesianChart) sender;
             var vm = (LoadsViewModel) DataContext;
 
             //lets get where the mouse is at our chart

@@ -40,10 +40,10 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Grid.Column="0" 
+                        <materialDesign:PackIcon Grid.Column="0"
                                                  Kind="InfoOutline"
                                                  Height="32"
                                                  Width="32"
@@ -72,7 +72,7 @@
                                         <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.Resources>
-                                        <districtEnergy:DebugDataBindingConverter x:Key="DebugBinding"/>
+                                        <districtEnergy:DebugDataBindingConverter x:Key="DebugBinding" />
                                     </Grid.Resources>
                                     <Slider VerticalAlignment="Center" Maximum="100" x:Name="SliderA"
                                             Value="{Binding OFF_ABS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}"
@@ -102,7 +102,8 @@
                                        ToolTip="Average annual ratio of useful cooling delivered to natural gas consumed" />
 
                                 <TextBox
-                                    Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" />
+                                    Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Grid.Column="2" />
 
                             </Grid>
                         </Expander>
