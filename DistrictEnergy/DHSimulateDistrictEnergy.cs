@@ -15,6 +15,7 @@ using Rhino.Commands;
 using Rhino.UI;
 using Umi.Core;
 using Umi.RhinoServices.Context;
+using Umi.RhinoServices.Energy;
 using Umi.RhinoServices.UmiEvents;
 
 // ReSharper disable ArrangeAccessorOwnerBody
@@ -50,6 +51,28 @@ namespace DistrictEnergy
             PluginSettings = new Settings();
 
             PlantSettingsViewModel.Instance.PropertyChanged += RerunSimulation;
+            UmiEventSource.Instance.EnergySimulationsCompleted += StaleResultsOnEnergySimulationsCompletedEventArgs;
+            UmiEventSource.Instance.ProjectClosed += StaleResultsOnEventArgs;
+        }
+
+        /// <summary>
+        /// Mark ResultsArray as Stale
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StaleResultsOnEventArgs(object sender, EventArgs e)
+        {
+            ResultsArray.StaleResults = true;
+        }
+
+        /// <summary>
+        /// Mark ResultsArray as Stale
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StaleResultsOnEnergySimulationsCompletedEventArgs(object sender, EnergySimulationsCompletedEventArgs e)
+        {
+            ResultsArray.StaleResults = true;
         }
 
         public ResultsArray ResultsArray { get; }
@@ -197,38 +220,42 @@ namespace DistrictEnergy
                 return Result.Failure;
             }
 
-            var _idList = new List<string>();
-            foreach (var building in umiContext.Buildings.All) _idList.Add(building.Id.ToString());
-            _progressBarPos = 0;
-            // Getting the Aggregated Load Curve for all buildings
-            var contextBuildings =
-                umiContext.GetObjects()
-                    .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
-            if (contextBuildings.Count == 0)
+            if (Instance.ResultsArray.StaleResults)
             {
-                MessageBox.Show(
-                    "There are no buildings with hourly results. Please Rerun the Energy Module after turning on the Hourly Results in Advanced Options",
-                    "Cannot continue with District simulation");
-                return Result.Failure;
+                var _idList = new List<string>();
+                foreach (var building in umiContext.Buildings.All) _idList.Add(building.Id.ToString());
+                _progressBarPos = 0;
+                // Getting the Aggregated Load Curve for all buildings
+                var contextBuildings =
+                    umiContext.GetObjects()
+                        .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
+                if (contextBuildings.Count == 0)
+                {
+                    MessageBox.Show(
+                        "There are no buildings with hourly results. Please Rerun the Energy Module after turning on the Hourly Results in Advanced Options",
+                        "Cannot continue with District simulation");
+                    return Result.Failure;
+                }
+
+                DistrictDemand.ChwN = GetHourlyChilledWaterProfile(contextBuildings);
+                DistrictDemand.HwN = GetHourlyHotWaterLoadProfile(contextBuildings);
+                DistrictDemand.ElecN = GetHourlyElectricalLoadProfile(contextBuildings);
+                (DistrictDemand.AddC, DistrictDemand.AddH, DistrictDemand.AddE) = GetAdditionalLoadProfile(
+                    umiContext.GetObjects()
+                        .Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null)
+                        .ToList());
+                StatusBar.HideProgressMeter();
+                DistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
+                DistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
+                DistrictDemand.TAmbN = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
+
+
+                numberTimesteps = DistrictDemand.HwN.Length;
+
+                RhinoApp.WriteLine(
+                    $"Calculated...\n{DistrictDemand.ChwN.Length} datapoints for ColdWater profile\n{DistrictDemand.HwN.Count()} datapoints for HotWater\n{DistrictDemand.ElecN.Count()} datapoints for Electricity\n{DistrictDemand.RadN.Count()} datapoints for Solar Frad\n{DistrictDemand.WindN.Count()} datapoints for WindSpeed");
+                Instance.ResultsArray.StaleResults = false;
             }
-
-            DistrictDemand.ChwN = GetHourlyChilledWaterProfile(contextBuildings);
-            DistrictDemand.HwN = GetHourlyHotWaterLoadProfile(contextBuildings);
-            DistrictDemand.ElecN = GetHourlyElectricalLoadProfile(contextBuildings);
-            (DistrictDemand.AddC, DistrictDemand.AddH, DistrictDemand.AddE) = GetAdditionalLoadProfile(
-                umiContext.GetObjects()
-                    .Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null).ToList());
-            StatusBar.HideProgressMeter();
-            DistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
-            DistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
-            DistrictDemand.TAmbN = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
-
-
-            numberTimesteps = DistrictDemand.HwN.Length;
-
-            RhinoApp.WriteLine(
-                $"Calculated...\n{DistrictDemand.ChwN.Length} datapoints for ColdWater profile\n{DistrictDemand.HwN.Count()} datapoints for HotWater\n{DistrictDemand.ElecN.Count()} datapoints for Electricity\n{DistrictDemand.RadN.Count()} datapoints for Solar Frad\n{DistrictDemand.WindN.Count()} datapoints for WindSpeed");
-
             // Go Hour by hour and parse through the simulation routine
             SetResultsArraystoZero();
             DeleteLogFile();
@@ -983,17 +1010,6 @@ namespace DistrictEnergy
         ///     Hourly location wind speed data (m/s)
         /// </summary>
         public double[] WindN = new double[8760];
-
-        /// <summary>
-        ///     Hourly Losses through cooling network
-        /// </summary>
-        public double[] CoolingNetworkLosses = new double[8760];
-
-        /// <summary>
-        ///     Hourly Losses through heating network
-        /// </summary>
-        public double[] HeatingNetworkLosses = new double[8760];
-
     }
 
     public class ResultsArray
@@ -1124,6 +1140,7 @@ namespace DistrictEnergy
 
 
         public event EventHandler ResultsChanged;
+        public bool StaleResults { get; set; } = true;
 
 
         protected internal virtual void OnResultsChanged(EventArgs e)
