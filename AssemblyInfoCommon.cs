@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyCompany("Polytechnique Montreal")]
-[assembly: AssemblyCopyright("Copyright © Polytechnique Montreal 2017")]
+[assembly: AssemblyCompany("Samuel Letellier-Duchesne")]
+[assembly: AssemblyCopyright("Copyright © Samuel Letellier-Duchesne 2020")]
