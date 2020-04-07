@@ -143,8 +143,12 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ReverseConverter.cs" />
     <Compile Include="ViewModels\CarbonViewModel.cs" />
+    <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
+    <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="ViewModels\ElectricGenerationViewModel.cs" />
     <Compile Include="ViewModels\FuelViewModel.cs" />
+    <Compile Include="ViewModels\HotWaterViewModel.cs" />
     <Compile Include="ViewModels\KWhConverterUnit.cs" />
     <Compile Include="ViewModels\LoadsViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />

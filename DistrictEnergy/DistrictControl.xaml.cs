@@ -36,11 +36,12 @@ namespace DistrictEnergy
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
             PlantSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            ChilledWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
         }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public static DistrictControl Instance { get; set; }
@@ -133,38 +134,38 @@ namespace DistrictEnergy
                 var item = (SimCase) SelectSimCase.SelectedItem;
                 if (item.Id == 1)
                 {
-                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
-                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
-                    PlantSettingsViewModel.Instance.OFF_PV = 100;
-                    PlantSettingsViewModel.Instance.OFF_EHP = 100;
-                    PlantSettingsViewModel.Instance.OFF_SHW = 100;
-                    PlantSettingsViewModel.Instance.OFF_WND = 100;
-                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
-                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                    ChilledWaterViewModel.Instance.OFF_ABS = 0;
+                    CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 0;
+                    ElectricGenerationViewModel.Instance.OFF_PV = 100;
+                    HotWaterViewModel.Instance.OFF_EHP = 100;
+                    HotWaterViewModel.Instance.OFF_SHW = 100;
+                    ElectricGenerationViewModel.Instance.OFF_WND = 100;
+                    ElectricGenerationViewModel.Instance.AUT_BAT = 0;
+                    HotWaterViewModel.Instance.AUT_HWT = 0;
                 }
 
                 if (item.Id == 2)
                 {
-                    PlantSettingsViewModel.Instance.OFF_ABS = 0;
-                    PlantSettingsViewModel.Instance.OFF_CHP = 0;
-                    PlantSettingsViewModel.Instance.OFF_PV = 0;
-                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
-                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
-                    PlantSettingsViewModel.Instance.OFF_WND = 0;
-                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
-                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                    ChilledWaterViewModel.Instance.OFF_ABS = 0;
+                    CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 0;
+                    ElectricGenerationViewModel.Instance.OFF_PV = 0;
+                    HotWaterViewModel.Instance.OFF_EHP = 0;
+                    HotWaterViewModel.Instance.OFF_SHW = 0;
+                    ElectricGenerationViewModel.Instance.OFF_WND = 0;
+                    ElectricGenerationViewModel.Instance.AUT_BAT = 0;
+                    HotWaterViewModel.Instance.AUT_HWT = 0;
                 }
 
                 if (item.Id == 3)
                 {
-                    PlantSettingsViewModel.Instance.OFF_ABS = 100;
-                    PlantSettingsViewModel.Instance.OFF_CHP = 100;
-                    PlantSettingsViewModel.Instance.OFF_PV = 0;
-                    PlantSettingsViewModel.Instance.OFF_EHP = 0;
-                    PlantSettingsViewModel.Instance.OFF_SHW = 0;
-                    PlantSettingsViewModel.Instance.OFF_WND = 0;
-                    PlantSettingsViewModel.Instance.AUT_BAT = 0;
-                    PlantSettingsViewModel.Instance.AUT_HWT = 0;
+                    ChilledWaterViewModel.Instance.OFF_ABS = 100;
+                    CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 100;
+                    ElectricGenerationViewModel.Instance.OFF_PV = 0;
+                    HotWaterViewModel.Instance.OFF_EHP = 0;
+                    HotWaterViewModel.Instance.OFF_SHW = 0;
+                    ElectricGenerationViewModel.Instance.OFF_WND = 0;
+                    ElectricGenerationViewModel.Instance.AUT_BAT = 0;
+                    HotWaterViewModel.Instance.AUT_HWT = 0;
                 }
 
                 RhinoApp.WriteLine($"Plant settings changed to predefined case {item.DName}");

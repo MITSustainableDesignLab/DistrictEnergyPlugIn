@@ -15,7 +15,7 @@
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
-             FontFamily="{DynamicResource MaterialDesignFont}">
+             FontFamily="{DynamicResource MaterialDesignFont}" d:DataContext="{d:DesignInstance viewModels:ChilledWaterViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,9 +31,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="ChilledWaterGroup">
-        <Grid.DataContext>
-            <viewModels:PlantSettingsViewModel />
-        </Grid.DataContext>
         <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
                   HorizontalAlignment="Stretch">
             <GroupBox.HeaderTemplate>
