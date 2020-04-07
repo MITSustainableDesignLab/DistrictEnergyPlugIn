@@ -151,6 +151,7 @@
     <Compile Include="ViewModels\HotWaterViewModel.cs" />
     <Compile Include="ViewModels\KWhConverterUnit.cs" />
     <Compile Include="ViewModels\LoadsViewModel.cs" />
+    <Compile Include="ViewModels\NetworkViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
@@ -167,6 +168,9 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
+      <DependentUpon>NetworkView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ResultViews\Carbon.xaml.cs">
       <DependentUpon>Carbon.xaml</DependentUpon>
     </Compile>
@@ -197,6 +201,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\NetworkView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

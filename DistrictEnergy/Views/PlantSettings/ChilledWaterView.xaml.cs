@@ -1,7 +1,7 @@
 using System.Windows.Controls;
 using DistrictEnergy.ViewModels;
 
-namespace DistrictEnergy.Views
+namespace DistrictEnergy.Views.PlantSettings
 {
     /// <summary>
     ///     Interaction logic for AbsorptionChillerView.xaml
