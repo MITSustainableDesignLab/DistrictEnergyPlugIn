@@ -103,7 +103,7 @@ namespace DistrictEnergy
         {
             if (Instance == null) return;
             i = 0;
-            StatusBar.ShowProgressMeter(0, numberTimesteps, "Solving Thermal Plant Components", true, true);
+            // StatusBar.ShowProgressMeter(0, numberTimesteps, "Solving Thermal Plant Components", true, true);
             for (; i < numberTimesteps; i++)
             {
                 //if (i == 3473)
@@ -203,8 +203,8 @@ namespace DistrictEnergy
             }
 
             ResultsArray.OnResultsChanged(EventArgs.Empty);
-            RhinoApp.WriteLine("Distric Energy Simulation complete");
-            StatusBar.HideProgressMeter();
+            RhinoApp.WriteLine("District Energy Simulation complete");
+            //StatusBar.HideProgressMeter();
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
