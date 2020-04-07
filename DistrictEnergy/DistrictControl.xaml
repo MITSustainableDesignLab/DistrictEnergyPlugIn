@@ -47,35 +47,14 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Visibility="Hidden">
-            <Label Content="daily" />
-            <ToggleButton x:Name="TimeGrouped" Style="{DynamicResource MaterialDesignSwitchToggleButton}"
-                          HorizontalAlignment="Left" Checked="TimeGrouped_Checked" Unchecked="TimeGrouped_Unchecked"
-                          IsChecked="True" />
-            <Label Content="monthly" />
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <StackPanel.Resources>
-                    <helpers:ComparisonConverter x:Key="ComparisonConverter" />
-                </StackPanel.Resources>
-                <RadioButton
-                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Cost}}"
-                    Checked="CostsChecked" Name="radioCost">
-                    Cost
-                </RadioButton>
-                <RadioButton
-                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Carbon}}"
-                    Checked="CarbonChecked">
-                    Carbon
-                </RadioButton>
-                <RadioButton
-                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.FuelUse}}">
-                    Fuel
-                </RadioButton>
-                <RadioButton x:Name="radioButton"
-                             IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Load}}">
-                    Loads
-                </RadioButton>
-            </StackPanel>
+        <StackPanel>
+            <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
+                      SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario" Style="{StaticResource MaterialDesignComboBox}" 
+                      DisplayMemberPath="DName">
+                <ComboBox.DataContext>
+                    <vm:DistrictSettingsViewModel />
+                </ComboBox.DataContext>
+            </ComboBox>
         </StackPanel>
         <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
             <TabItem Header="Costs">
@@ -91,20 +70,12 @@
                 <views:Loads />
             </TabItem>
         </TabControl>
-
         <Grid Grid.Row="3" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*" />
                 <ColumnDefinition Width="50*" />
             </Grid.ColumnDefinitions>
-            <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}"
-                      SelectedItem="{Binding ASimCase}"
-                      DisplayMemberPath="DName">
-                <ComboBox.DataContext>
-                    <vm:DistrictSettingsViewModel />
-                </ComboBox.DataContext>
-            </ComboBox>
-            <Button Click="RunSimulationClick" Margin="5,0" Grid.Column="1" Content="Run Simulation" />
+            <Button Click="RunSimulationClick" Margin="5,0" Content="Run Simulation" Grid.ColumnSpan="2" />
         </Grid>
         <Expander Grid.Row="4" Grid.Column="0" Header="Advanced Options"
                   Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch">

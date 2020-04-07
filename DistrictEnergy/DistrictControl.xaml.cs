@@ -29,14 +29,18 @@ namespace DistrictEnergy
     {
         public DistrictControl()
         {
-            Instance = this;
-            var searchPaths = Rhino.Runtime.HostUtils.GetAssemblySearchPaths();
-            Dictionary<Guid, string> dict = Rhino.PlugIns.PlugIn.GetInstalledPlugIns();
             InitializeComponent();
+            Instance = this;
 
             UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
+            PlantSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+        }
+
+        private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public static DistrictControl Instance { get; set; }
