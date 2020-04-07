@@ -1,6 +1,7 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
+using DistrictEnergy.ViewModels;
 
-namespace DistrictEnergy.Views
+namespace DistrictEnergy.Views.PlantSettings
 {
     /// <summary>
     ///     Interaction logic for ElectricGenerationView.xaml
@@ -10,6 +11,7 @@ namespace DistrictEnergy.Views
         public ElectricGenerationView()
         {
             InitializeComponent();
+            DataContext = new ElectricGenerationViewModel();
         }
     }
 }

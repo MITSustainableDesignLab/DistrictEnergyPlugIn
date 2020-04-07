@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DistrictEnergy.Views.HotWaterView"
+﻿<UserControl x:Class="DistrictEnergy.Views.PlantSettings.HotWaterView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,7 +15,7 @@
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
-             FontFamily="{DynamicResource MaterialDesignFont}">
+             FontFamily="{DynamicResource MaterialDesignFont}" d:DataContext="{d:DesignInstance viewModels:HotWaterViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -79,9 +79,6 @@
                         <Expander>
                             <Expander.Header>
                                 <Grid VerticalAlignment="Top" Panel.ZIndex="1">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -105,9 +102,6 @@
                             </Expander.Header>
                             <StackPanel>
                                 <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -126,9 +120,6 @@
                                     </StackPanel>
                                 </Grid>
                                 <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -160,9 +151,6 @@
                         <Expander>
                             <Expander.Header>
                                 <Grid VerticalAlignment="Top" Panel.ZIndex="1">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -186,9 +174,6 @@
                             </Expander.Header>
                             <StackPanel>
                                 <Grid VerticalAlignment="Top">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -209,9 +194,6 @@
                                     </StackPanel>
                                 </Grid>
                                 <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -232,9 +214,6 @@
                                     </StackPanel>
                                 </Grid>
                                 <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -269,9 +248,6 @@
                         <Expander>
                             <Expander.Header>
                                 <Grid VerticalAlignment="Top" Panel.ZIndex="1">
-                                    <Grid.DataContext>
-                                        <viewModels:PlantSettingsViewModel />
-                                    </Grid.DataContext>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -302,9 +278,6 @@
                                 </Grid>
                             </Expander.Header>
                             <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                <Grid.DataContext>
-                                    <viewModels:PlantSettingsViewModel />
-                                </Grid.DataContext>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="Auto" MinWidth="30" />
@@ -332,9 +305,6 @@
                     <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Natural Gas Boiler</TextBlock>
                     <StackPanel Grid.Row="1" Margin="0">
                         <Grid VerticalAlignment="Top" Margin="0,0,60,0">
-                            <Grid.DataContext>
-                                <viewModels:PlantSettingsViewModel />
-                            </Grid.DataContext>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" MinWidth="30" />

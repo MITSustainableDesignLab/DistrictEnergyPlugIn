@@ -1,4 +1,4 @@
-<UserControl x:Class="DistrictEnergy.Views.AbsorptionChillerView"
+<UserControl x:Class="DistrictEnergy.Views.PlantSettings.AbsorptionChillerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,7 +15,7 @@
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
-             FontFamily="{DynamicResource MaterialDesignFont}">
+             FontFamily="{DynamicResource MaterialDesignFont}" d:DataContext="{d:DesignInstance viewModels:ChilledWaterViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,9 +31,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="ChilledWaterGroup">
-        <Grid.DataContext>
-            <viewModels:PlantSettingsViewModel />
-        </Grid.DataContext>
         <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
                   HorizontalAlignment="Stretch">
             <GroupBox.HeaderTemplate>

@@ -44,6 +44,9 @@
     <Reference Include="Deedle, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Deedle.2.1.2\lib\net45\Deedle.dll</HintPath>
     </Reference>
+    <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
+    </Reference>
     <Reference Include="Eto">
       <HintPath>..\..\..\Program Files\Rhino 6\System\Eto.dll</HintPath>
       <Private>False</Private>
@@ -143,10 +146,15 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ReverseConverter.cs" />
     <Compile Include="ViewModels\CarbonViewModel.cs" />
+    <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
+    <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="ViewModels\ElectricGenerationViewModel.cs" />
     <Compile Include="ViewModels\FuelViewModel.cs" />
+    <Compile Include="ViewModels\HotWaterViewModel.cs" />
     <Compile Include="ViewModels\KWhConverterUnit.cs" />
     <Compile Include="ViewModels\LoadsViewModel.cs" />
+    <Compile Include="ViewModels\NetworkViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
@@ -163,6 +171,9 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
+      <DependentUpon>NetworkView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ResultViews\Carbon.xaml.cs">
       <DependentUpon>Carbon.xaml</DependentUpon>
     </Compile>
@@ -193,6 +204,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\NetworkView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

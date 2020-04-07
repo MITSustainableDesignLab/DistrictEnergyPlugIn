@@ -9,6 +9,9 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:views="clr-namespace:DistrictEnergy.Views"
              xmlns:helpers="clr-namespace:DistrictEnergy.Helpers"
+             xmlns:plantSettings="clr-namespace:DistrictEnergy.Views.PlantSettings"
+             xmlns:resultViews="clr-namespace:DistrictEnergy.Views.ResultViews"
+             xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
              mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="500"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -29,10 +32,9 @@
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-                <ResourceDictionary>
-                    <vm:PlantSettingsViewModel x:Key="PlantSettingsViewModel" />
-                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -47,105 +49,46 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Visibility="Hidden">
-            <Label Content="daily" />
-            <ToggleButton x:Name="TimeGrouped" Style="{DynamicResource MaterialDesignSwitchToggleButton}"
-                          HorizontalAlignment="Left" Checked="TimeGrouped_Checked" Unchecked="TimeGrouped_Unchecked"
-                          IsChecked="True" />
-            <Label Content="monthly" />
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <StackPanel.Resources>
-                    <helpers:ComparisonConverter x:Key="ComparisonConverter" />
-                </StackPanel.Resources>
-                <RadioButton
-                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Cost}}"
-                    Checked="CostsChecked" Name="radioCost">
-                    Cost
-                </RadioButton>
-                <RadioButton
-                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Carbon}}"
-                    Checked="CarbonChecked">
-                    Carbon
-                </RadioButton>
-                <RadioButton
-                    IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.FuelUse}}">
-                    Fuel
-                </RadioButton>
-                <RadioButton x:Name="radioButton"
-                             IsChecked="{Binding Path=ChartMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static helpers:ChartMode.Load}}">
-                    Loads
-                </RadioButton>
-            </StackPanel>
-        </StackPanel>
-        <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
-            <TabItem Header="Costs">
-                <views:Costs />
-            </TabItem>
-            <TabItem Header="Carbon">
-                <views:Carbon />
-            </TabItem>
-            <TabItem Header="Fuel">
-                <views:Fuel />
-            </TabItem>
-            <TabItem Header="Loads">
-                <views:Loads />
-            </TabItem>
-        </TabControl>
-
-        <Grid Grid.Row="3" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*" />
-                <ColumnDefinition Width="50*" />
-            </Grid.ColumnDefinitions>
-            <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}"
-                      SelectedItem="{Binding ASimCase}"
+        <StackPanel>
+            <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
+                      SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario"
+                      Style="{StaticResource MaterialDesignComboBox}"
                       DisplayMemberPath="DName">
                 <ComboBox.DataContext>
                     <vm:DistrictSettingsViewModel />
                 </ComboBox.DataContext>
             </ComboBox>
-            <Button Click="RunSimulationClick" Margin="5,0" Grid.Column="1" Content="Run Simulation" />
+        </StackPanel>
+        <dragablz:TabablzControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="5">
+            <TabItem Header="Costs">
+                <resultViews:Costs Margin="0,5,0,0" />
+            </TabItem>
+            <TabItem Header="Carbon">
+                <resultViews:Carbon Margin="0,5,0,0"/>
+            </TabItem>
+            <TabItem Header="Fuel">
+                <resultViews:Fuel Margin="0,5,0,0"/>
+            </TabItem>
+            <TabItem Header="Loads">
+                <resultViews:Loads Margin="0,5,0,0"/>
+            </TabItem>
+        </dragablz:TabablzControl>
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*" />
+                <ColumnDefinition Width="50*" />
+            </Grid.ColumnDefinitions>
+            <Button Click="RunSimulationClick" Margin="5,0" Content="Run Simulation" Grid.ColumnSpan="2" />
         </Grid>
         <Expander Grid.Row="4" Grid.Column="0" Header="Advanced Options"
                   Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch">
             <ScrollViewer Height="500">
                 <StackPanel>
-                    <Grid>
-                        <Grid.DataContext>
-                            <vm:PlantSettingsViewModel />
-                        </Grid.DataContext>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                            <Label Content="Account for network losses?"
-                                   ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
-                                   Margin="0,2,3,2" />
-                            <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
-                                      VerticalAlignment="Center" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                            <Label Content="Hot"
-                                   ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
-                            <TextBox
-                                Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,5,0"
-                                VerticalContentAlignment="Center" />
-                            <Label Content="Cold"
-                                   ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
-                                   Margin="0,2,4,2" />
-                            <TextBox
-                                Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0"
-                                VerticalContentAlignment="Center" />
-                        </StackPanel>
-                    </Grid>
-
-                    <views:AbsorptionChillerView Height="auto" />
-                    <views:HotWaterView Height="auto" />
-                    <views:ElectricGenerationView Height="auto" />
-                    <views:CombinedHeatAndPowerView Height="auto" />
+                    <plantSettings:NetworkView Height="auto" />
+                    <plantSettings:AbsorptionChillerView Height="auto" />
+                    <plantSettings:HotWaterView Height="auto" />
+                    <plantSettings:ElectricGenerationView Height="auto" />
+                    <plantSettings:CombinedHeatAndPowerView Height="auto" />
                 </StackPanel>
             </ScrollViewer>
         </Expander>

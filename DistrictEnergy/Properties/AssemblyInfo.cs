@@ -8,7 +8,7 @@ using Rhino.PlugIns;
 // These will show in Rhino's option dialog, in the tab Plug-ins
 [assembly: PlugInDescription(DescriptionType.Address, "Sustainable Design Lab")]
 [assembly: PlugInDescription(DescriptionType.Country, "Canada")]
-[assembly: PlugInDescription(DescriptionType.Email, "samuel.letellier-duchesne@polymtl.ca")]
+[assembly: PlugInDescription(DescriptionType.Email, "samueld@mit.edu")]
 [assembly: PlugInDescription(DescriptionType.Phone, "-")]
 [assembly: PlugInDescription(DescriptionType.Fax, "-")]
 [assembly: PlugInDescription(DescriptionType.Organization, "MIT Sustainable Design Lab")]

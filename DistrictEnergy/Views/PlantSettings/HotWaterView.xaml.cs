@@ -1,6 +1,7 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
+using DistrictEnergy.ViewModels;
 
-namespace DistrictEnergy.Views
+namespace DistrictEnergy.Views.PlantSettings
 {
     /// <summary>
     ///     Interaction logic for HotWaterView.xaml
@@ -10,6 +11,7 @@ namespace DistrictEnergy.Views
         public HotWaterView()
         {
             InitializeComponent();
+            DataContext = new HotWaterViewModel();
         }
     }
 }
