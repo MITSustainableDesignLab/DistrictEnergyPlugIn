@@ -161,6 +161,7 @@
       <ComponentRef Id="MaterialDesignThemesWpfDLL"/>
       <ComponentRef Id="PresentationFrameworkDLL"/>
       <ComponentRef Id="SystemValueTupleDLL"/>
+      <ComponentRef Id="DragablzDLL"/>
     </ComponentGroup>
   </Fragment>
 
@@ -263,6 +264,14 @@
             </RegistryKey>
             <File Id="SystemValueTupleDLL" Name="System.ValueTuple.dll"
                   Source="$(var.DistrictEnergy.TargetDir)System.ValueTuple.dll"></File>
+          </Component>
+
+          <Component Id="DragablzDLL" Guid="{53BB9B71-B248-43BE-8695-2A40CE0A1E62}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="DragablzDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="DragablzDLL" Name="Dragablz.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)Dragablz.dll"></File>
           </Component>
 
         </Directory>

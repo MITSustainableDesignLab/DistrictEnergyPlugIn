@@ -11,6 +11,7 @@
              xmlns:helpers="clr-namespace:DistrictEnergy.Helpers"
              xmlns:plantSettings="clr-namespace:DistrictEnergy.Views.PlantSettings"
              xmlns:resultViews="clr-namespace:DistrictEnergy.Views.ResultViews"
+             xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
              mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="500"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -31,10 +32,9 @@
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-                <ResourceDictionary>
-                    <vm:PlantSettingsViewModel x:Key="PlantSettingsViewModel" />
-                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -59,20 +59,20 @@
                 </ComboBox.DataContext>
             </ComboBox>
         </StackPanel>
-        <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+        <dragablz:TabablzControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="5">
             <TabItem Header="Costs">
-                <resultViews:Costs />
+                <resultViews:Costs Margin="0,5,0,0" />
             </TabItem>
             <TabItem Header="Carbon">
-                <resultViews:Carbon />
+                <resultViews:Carbon Margin="0,5,0,0"/>
             </TabItem>
             <TabItem Header="Fuel">
-                <resultViews:Fuel />
+                <resultViews:Fuel Margin="0,5,0,0"/>
             </TabItem>
             <TabItem Header="Loads">
-                <resultViews:Loads />
+                <resultViews:Loads Margin="0,5,0,0"/>
             </TabItem>
-        </TabControl>
+        </dragablz:TabablzControl>
         <Grid Grid.Row="3" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*" />
