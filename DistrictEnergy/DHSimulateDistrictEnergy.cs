@@ -1168,7 +1168,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double CcopEch
         {
-            get { return PlantSettingsViewModel.Instance.CCOP_ECH; }
+            get { return ChilledWaterViewModel.Instance.CCOP_ECH; }
         }
 
         /// <summary>
@@ -1176,7 +1176,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double EffNgb
         {
-            get { return PlantSettingsViewModel.Instance.EFF_NGB / 100; }
+            get { return HotWaterViewModel.Instance.EFF_NGB / 100; }
         }
 
         /// <summary>
@@ -1184,7 +1184,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double OffAbs
         {
-            get { return PlantSettingsViewModel.Instance.OFF_ABS / 100; }
+            get { return ChilledWaterViewModel.Instance.OFF_ABS / 100; }
         }
 
         /// <summary>
@@ -1192,7 +1192,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double CcopAbs
         {
-            get { return PlantSettingsViewModel.Instance.CCOP_ABS; }
+            get { return ChilledWaterViewModel.Instance.CCOP_ABS; }
         }
 
         /// <summary>
@@ -1200,7 +1200,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double AutBat
         {
-            get { return PlantSettingsViewModel.Instance.AUT_BAT; }
+            get { return ElectricGenerationViewModel.Instance.AUT_BAT; }
         }
 
         /// <summary>
@@ -1208,7 +1208,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double LossBat
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_BAT / 100; }
+            get { return ElectricGenerationViewModel.Instance.LOSS_BAT / 100; }
         }
 
         /// <summary>
@@ -1216,7 +1216,7 @@ namespace DistrictEnergy
         /// </summary>
         public static string TmodChp
         {
-            get { return PlantSettingsViewModel.Instance.TMOD_CHP.ToString(); }
+            get { return CombinedHeatAndPowerViewModel.Instance.TMOD_CHP.ToString(); }
         }
 
         /// <summary>
@@ -1224,7 +1224,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double OffChp
         {
-            get { return PlantSettingsViewModel.Instance.OFF_CHP / 100; }
+            get { return CombinedHeatAndPowerViewModel.Instance.OFF_CHP / 100; }
         }
 
         /// <summary>
@@ -1232,7 +1232,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double EffChp
         {
-            get { return PlantSettingsViewModel.Instance.EFF_CHP / 100; }
+            get { return CombinedHeatAndPowerViewModel.Instance.EFF_CHP / 100; }
         }
 
         /// <summary>
@@ -1240,7 +1240,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double HrecChp
         {
-            get { return PlantSettingsViewModel.Instance.HREC_CHP / 100; }
+            get { return CombinedHeatAndPowerViewModel.Instance.HREC_CHP / 100; }
         }
 
         /// <summary>
@@ -1248,7 +1248,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double OffEhp
         {
-            get { return PlantSettingsViewModel.Instance.OFF_EHP / 100; }
+            get { return HotWaterViewModel.Instance.OFF_EHP / 100; }
         }
 
         /// <summary>
@@ -1256,7 +1256,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double HcopEhp
         {
-            get { return PlantSettingsViewModel.Instance.HCOP_EHP; }
+            get { return HotWaterViewModel.Instance.HCOP_EHP; }
         }
 
         /// <summary>
@@ -1264,7 +1264,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double AutHwt
         {
-            get { return PlantSettingsViewModel.Instance.AUT_HWT; }
+            get { return HotWaterViewModel.Instance.AUT_HWT; }
         }
 
         /// <summary>
@@ -1272,7 +1272,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double OffPv
         {
-            get { return PlantSettingsViewModel.Instance.OFF_PV / 100; }
+            get { return ElectricGenerationViewModel.Instance.OFF_PV / 100; }
         }
 
         /// <summary>
@@ -1280,7 +1280,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double UtilPv
         {
-            get { return PlantSettingsViewModel.Instance.UTIL_PV / 100; }
+            get { return ElectricGenerationViewModel.Instance.UTIL_PV / 100; }
         }
 
         /// <summary>
@@ -1288,7 +1288,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double LossPv
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_PV / 100; }
+            get { return ElectricGenerationViewModel.Instance.LOSS_PV / 100; }
         }
 
         /// <summary>
@@ -1296,7 +1296,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double EffPv
         {
-            get { return PlantSettingsViewModel.Instance.EFF_PV / 100; }
+            get { return ElectricGenerationViewModel.Instance.EFF_PV / 100; }
         }
 
         /// <summary>
@@ -1304,7 +1304,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double EffShw
         {
-            get { return PlantSettingsViewModel.Instance.EFF_SHW / 100; }
+            get { return HotWaterViewModel.Instance.EFF_SHW / 100; }
         }
 
         /// <summary>
@@ -1312,7 +1312,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double LossShw
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_SHW / 100; }
+            get { return HotWaterViewModel.Instance.LOSS_SHW / 100; }
         }
 
         /// <summary>
@@ -1320,7 +1320,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double OffShw
         {
-            get { return PlantSettingsViewModel.Instance.OFF_SHW / 100; }
+            get { return HotWaterViewModel.Instance.OFF_SHW / 100; }
         }
 
         /// <summary>
@@ -1328,7 +1328,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double UtilShw
         {
-            get { return PlantSettingsViewModel.Instance.UTIL_SHW / 100; }
+            get { return HotWaterViewModel.Instance.UTIL_SHW / 100; }
         }
 
         /// <summary>
@@ -1336,7 +1336,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double CinWnd
         {
-            get { return PlantSettingsViewModel.Instance.CIN_WND; }
+            get { return ElectricGenerationViewModel.Instance.CIN_WND; }
         }
 
         /// <summary>
@@ -1344,7 +1344,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double CopWnd
         {
-            get { return PlantSettingsViewModel.Instance.EFF_WND / 100; }
+            get { return ElectricGenerationViewModel.Instance.EFF_WND / 100; }
         }
 
         /// <summary>
@@ -1352,7 +1352,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double CoutWnd
         {
-            get { return PlantSettingsViewModel.Instance.COUT_WND; }
+            get { return ElectricGenerationViewModel.Instance.COUT_WND; }
         }
 
         /// <summary>
@@ -1360,7 +1360,7 @@ namespace DistrictEnergy
         /// </summary>
         internal static double OffWnd
         {
-            get { return PlantSettingsViewModel.Instance.OFF_WND / 100; }
+            get { return ElectricGenerationViewModel.Instance.OFF_WND / 100; }
         }
 
         /// <summary>
@@ -1368,7 +1368,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double RotWnd
         {
-            get { return PlantSettingsViewModel.Instance.ROT_WND; }
+            get { return ElectricGenerationViewModel.Instance.ROT_WND; }
         }
 
         /// <summary>
@@ -1376,7 +1376,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double LossWnd
         {
-            get { return PlantSettingsViewModel.Instance.LOSS_WND / 100; }
+            get { return ElectricGenerationViewModel.Instance.LOSS_WND / 100; }
         }
 
         /// <summary>
@@ -1384,7 +1384,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double TankStart
         {
-            get { return PlantSettingsViewModel.Instance.TANK_START / 100; }
+            get { return HotWaterViewModel.Instance.TANK_START / 100; }
         }
 
         /// <summary>
@@ -1392,7 +1392,7 @@ namespace DistrictEnergy
         /// </summary>
         public static double BatStart
         {
-            get { return PlantSettingsViewModel.Instance.BAT_START / 100; }
+            get { return ElectricGenerationViewModel.Instance.BAT_START / 100; }
         }
 
         public static double LossHwnet
@@ -1416,7 +1416,7 @@ namespace DistrictEnergy
 
         public static bool UseEhpEvap
         {
-            get { return PlantSettingsViewModel.Instance.UseEhpEvap; }
+            get { return HotWaterViewModel.Instance.UseEhpEvap; }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
