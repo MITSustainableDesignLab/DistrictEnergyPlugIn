@@ -9,6 +9,8 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:views="clr-namespace:DistrictEnergy.Views"
              xmlns:helpers="clr-namespace:DistrictEnergy.Helpers"
+             xmlns:plantSettings="clr-namespace:DistrictEnergy.Views.PlantSettings"
+             xmlns:resultViews="clr-namespace:DistrictEnergy.Views.ResultViews"
              mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="500"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -49,7 +51,8 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
-                      SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario" Style="{StaticResource MaterialDesignComboBox}" 
+                      SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario"
+                      Style="{StaticResource MaterialDesignComboBox}"
                       DisplayMemberPath="DName">
                 <ComboBox.DataContext>
                     <vm:DistrictSettingsViewModel />
@@ -58,16 +61,16 @@
         </StackPanel>
         <TabControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
             <TabItem Header="Costs">
-                <views:Costs />
+                <resultViews:Costs />
             </TabItem>
             <TabItem Header="Carbon">
-                <views:Carbon />
+                <resultViews:Carbon />
             </TabItem>
             <TabItem Header="Fuel">
-                <views:Fuel />
+                <resultViews:Fuel />
             </TabItem>
             <TabItem Header="Loads">
-                <views:Loads />
+                <resultViews:Loads />
             </TabItem>
         </TabControl>
         <Grid Grid.Row="3" Grid.Column="0">
@@ -81,42 +84,11 @@
                   Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch">
             <ScrollViewer Height="500">
                 <StackPanel>
-                    <Grid>
-                        <Grid.DataContext>
-                            <vm:PlantSettingsViewModel />
-                        </Grid.DataContext>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                            <Label Content="Account for network losses?"
-                                   ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
-                                   Margin="0,2,3,2" />
-                            <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
-                                      VerticalAlignment="Center" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                            <Label Content="Hot"
-                                   ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
-                            <TextBox
-                                Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,5,0"
-                                VerticalContentAlignment="Center" />
-                            <Label Content="Cold"
-                                   ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
-                                   Margin="0,2,4,2" />
-                            <TextBox
-                                Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0"
-                                VerticalContentAlignment="Center" />
-                        </StackPanel>
-                    </Grid>
-
-                    <views:AbsorptionChillerView Height="auto" />
-                    <views:HotWaterView Height="auto" />
-                    <views:ElectricGenerationView Height="auto" />
-                    <views:CombinedHeatAndPowerView Height="auto" />
+                    <plantSettings:NetworkView Height="auto" />
+                    <plantSettings:AbsorptionChillerView Height="auto" />
+                    <plantSettings:HotWaterView Height="auto" />
+                    <plantSettings:ElectricGenerationView Height="auto" />
+                    <plantSettings:CombinedHeatAndPowerView Height="auto" />
                 </StackPanel>
             </ScrollViewer>
         </Expander>

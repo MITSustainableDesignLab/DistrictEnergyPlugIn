@@ -32,16 +32,26 @@ namespace DistrictEnergy
             InitializeComponent();
             Instance = this;
 
-            UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
             PlantSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            
+
+            // For the different PlantSettingViewModel Children, listen for PropertyChanged
             ChilledWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            CombinedHeatAndPowerViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            ElectricGenerationViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            HotWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            NetworkViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
         }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // throw new NotImplementedException();
+            if (e.PropertyName == "UseDistrictLosses") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
+            if (e.PropertyName == "RelDistHeatLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
+            if (e.PropertyName == "RelDistCoolLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
+
+            // DHSimulateDistrictEnergy.Instance.RerunSimulation(); // Todo: Uncomment this to activate dynamic refresh of results
         }
 
         public static DistrictControl Instance { get; set; }
@@ -59,21 +69,6 @@ namespace DistrictEnergy
                 : Visibility.Visible;
         }
 
-        /*private void ListBox_OnUpdatedArrays(object sender, EventArgs e)
-        {
-            HeatingListBox.InvalidateArrange();
-            HeatingListBox.ItemsSource = ResultsViewModel.StackedHeatingSeriesCollection;
-            HeatingListBox.UpdateLayout();
-
-            CoolingListBox.InvalidateArrange();
-            CoolingListBox.ItemsSource = ResultsViewModel.StackedCoolingSeriesCollection;
-            CoolingListBox.UpdateLayout();
-            ElecListBox.InvalidateArrange();
-            ElecListBox.ItemsSource = ResultsViewModel.StackedElecSeriesCollection;
-            ElecListBox.UpdateLayout();
-
-        }*/
-
         private void RunSimulationClick(object sender, RoutedEventArgs e)
         {
             RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
@@ -82,13 +77,6 @@ namespace DistrictEnergy
         private void AdditionalProfileClick(object sender, RoutedEventArgs e)
         {
             RhinoApp.RunScript("DHLoadAdditionalProfile", true);
-        }
-
-        private void SubscribeEvents(object sender, UmiContext e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-
-            // DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += ListBox_OnUpdatedArrays;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

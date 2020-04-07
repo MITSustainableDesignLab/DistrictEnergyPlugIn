@@ -90,7 +90,7 @@ namespace DistrictEnergy
 
         private int numberTimesteps { get; set; }
 
-        private void RerunSimulation(object sender, EventArgs e)
+        public void RerunSimulation()
         {
             SimConstants.CalculateConstants();
             MainSimulation();
@@ -1397,21 +1397,21 @@ namespace DistrictEnergy
 
         public static double LossHwnet
         {
-            get { return PlantSettingsViewModel.Instance.RelDistHeatLoss / 100; }
+            get { return NetworkViewModel.Instance.RelDistHeatLoss / 100; }
         }
 
         /// <summary>
         /// </summary>
         public static double LossChwnet
         {
-            get { return PlantSettingsViewModel.Instance.RelDistCoolLoss / 100; }
+            get { return NetworkViewModel.Instance.RelDistCoolLoss / 100; }
         }
 
         /// <summary>
         /// </summary>
         public static bool UseDistrictLosses
         {
-            get { return PlantSettingsViewModel.Instance.UseDistrictLosses; }
+            get { return NetworkViewModel.Instance.UseDistrictLosses; }
         }
 
         public static bool UseEhpEvap

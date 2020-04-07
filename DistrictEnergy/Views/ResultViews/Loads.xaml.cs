@@ -1,14 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
 using DistrictEnergy.ViewModels;
 using LiveCharts;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 
-namespace DistrictEnergy.Views
+namespace DistrictEnergy.Views.ResultViews
 {
     /// <summary>
     /// Interaction logic for Loads.xaml

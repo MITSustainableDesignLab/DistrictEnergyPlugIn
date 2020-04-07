@@ -1,10 +1,7 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using DistrictEnergy.ViewModels;
-using LiveCharts;
-using LiveCharts.Wpf;
 
-namespace DistrictEnergy.Views
+namespace DistrictEnergy.Views.ResultViews
 {
     /// <summary>
     /// Interaction logic for Carbon.xaml
