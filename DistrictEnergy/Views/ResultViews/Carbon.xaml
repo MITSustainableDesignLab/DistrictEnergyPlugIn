@@ -10,18 +10,38 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="0.15*" />
+            <ColumnDefinition Width="0.15*" MinWidth="100"/>
         </Grid.ColumnDefinitions>
-        <Grid.Resources>
-            <viewModels:KWhConverter x:Key="KWhConverter" />
-            <viewModels:kgCO2ConverterUnit x:Key="kgCO2ConverterUnit" />
-        </Grid.Resources>
         <StackPanel Grid.Column="1" Background="#4CFFFFFF" Height="auto" VerticalAlignment="Top">
-            <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center">Total</TextBlock>
-            <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
-                       Text="{Binding TotalCarbon, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource KWhConverter}}" />
-            <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
-                       Text="{Binding TotalCarbon, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource kgCO2ConverterUnit}}" />
+            <StackPanel.Resources>
+                <viewModels:KWhConverter x:Key="KWhConverter" />
+                <viewModels:kgCO2ConverterUnit x:Key="kgCO2ConverterUnit" />
+                <viewModels:NormalizedkgCO2ConverterUnit x:Key="NormalizedkgCO2ConverterUnit" />
+            </StackPanel.Resources>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center" Grid.ColumnSpan="2">Total</TextBlock>
+                <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
+                           Text="{Binding TotalCarbon, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource KWhConverter}}"
+                           Grid.Row="1" Grid.Column="0" />
+                <TextBlock Foreground="Black" FontSize="8" HorizontalAlignment="Center"
+                           Text="{Binding TotalCarbon, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource kgCO2ConverterUnit}}"
+                           Grid.Row="2" Grid.Column="0" />
+                <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
+                           Text="{Binding NormalizedTotalCarbon, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource KWhConverter}}"
+                           Grid.Row="1" Grid.Column="1" />
+                <TextBlock Foreground="Black" FontSize="8" HorizontalAlignment="Center"
+                           Text="{Binding NormalizedTotalCarbon, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NormalizedkgCO2ConverterUnit}}"
+                           Grid.Column="1" Grid.Row="2" />
+            </Grid>
         </StackPanel>
         <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Left" Grid.ColumnSpan="2"
                             Grid.Column="0" DisableAnimations="True">

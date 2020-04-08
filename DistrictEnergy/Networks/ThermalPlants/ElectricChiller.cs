@@ -10,5 +10,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(4.40)] public double CCOP_ECH { get; set; } = 4.40;
+
+        [DataMember] [DefaultValue(164.1)] public double F { get; set; } = 164.1;
+        [DataMember] [DefaultValue(0)] public double V { get; set; }
     }
 }

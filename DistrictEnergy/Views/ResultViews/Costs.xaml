@@ -11,7 +11,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="0.15*" />
+            <ColumnDefinition Width="0.15*" MinWidth="100"/>
         </Grid.ColumnDefinitions>
         <Grid.Resources>
 
@@ -20,17 +20,37 @@
             <StackPanel.Resources>
                 <districtEnergy:DollarConverter x:Key="DollarConverter" />
                 <districtEnergy:CostConverterUnit x:Key="CostConverterUnit" />
+                <districtEnergy:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
             </StackPanel.Resources>
-            <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center">Total</TextBlock>
-            <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
-                       Text="{Binding TotalCost, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DollarConverter}}" />
-            <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
-                       Text="{Binding TotalCost, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CostConverterUnit}}" />
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center" Grid.ColumnSpan="2">Total</TextBlock>
+                <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
+                           Text="{Binding TotalCost, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DollarConverter}}"
+                           Grid.Row="1" Grid.Column="0" />
+                <TextBlock Foreground="Black" FontSize="8" HorizontalAlignment="Center"
+                           Text="{Binding TotalCost, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CostConverterUnit}}"
+                           Grid.Row="2" Grid.Column="0"/>
+                <TextBlock Foreground="Black" FontSize="12" HorizontalAlignment="Center"
+                           Text="{Binding NormalizedTotalCost, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DollarConverter}}"
+                           Grid.Row="1" Grid.Column="1" />
+                <TextBlock Foreground="Black" FontSize="8" HorizontalAlignment="Center"
+                           Text="{Binding NormalizedTotalCost, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NormalizedCostConverterUnit}}"
+                           Grid.Row="2" Grid.Column="1" />
+            </Grid>
         </StackPanel>
         <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Left" Grid.ColumnSpan="2"
                             Grid.Column="0">
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Fuel Source" Labels="{Binding Labels}" />
+                <lvc:Axis Title="Current Simulation Results" Labels="{Binding Labels}" />
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis Title="Cost by Fuel Source" LabelFormatter="{Binding Formatter}" />

@@ -113,7 +113,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Cell efficiency"
                                            ToolTip="Average annual ratio of electricity output from array divided by received solar radiation" />
@@ -124,11 +124,11 @@
                                     <TextBox Grid.Column="2"
                                              Text="{Binding EFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </Grid>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Area utilization factor"
                                            ToolTip="Accounts for module frames and other infrastructural requirements" />
@@ -137,13 +137,13 @@
                                            VerticalContentAlignment="Center"
                                            HorizontalAlignment="Center" Grid.Column="1" />
                                     <TextBox Grid.Column="2"
-                                             Text="{Binding UTIL_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                             Text="{Binding UTIL_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </Grid>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Miscellaneous losses"
                                            ToolTip="Accounts for other losses including line losses and balance of system" />
@@ -154,6 +154,36 @@
                                     <TextBox Grid.Column="2"
                                              Text="{Binding LOSS_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
                                 </Grid>
                             </StackPanel>
                         </Expander>
@@ -193,11 +223,11 @@
                                 </Grid>
                             </Expander.Header>
                             <StackPanel>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Turbine efficiency"
                                            ToolTip="Average annual ratio of power captured by turbine to total power available in the wind (Theoretical maximum is 59%)" />
@@ -221,11 +251,11 @@
                                         </TextBox.Text>
                                     </TextBox>
                                 </Grid>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Cut-in speed "
                                            ToolTip="Minimum wind speed at which the turbine blades overcome friction and begin to rotate" />
@@ -238,11 +268,11 @@
 
 
                                 </Grid>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Cut-out speed"
                                            ToolTip="Speed at which the turbine blades are brought to rest to avoid damage from high winds" />
@@ -254,11 +284,11 @@
                                              Text="{Binding COUT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 </Grid>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Rotor area per turbine"
                                            ToolTip="The swept area is the plane of wind intersected by the turbine" />
@@ -270,11 +300,11 @@
                                              Text="{Binding ROT_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 </Grid>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Miscellaneous losses" />
 
@@ -283,6 +313,36 @@
                                            HorizontalAlignment="Center" Grid.Column="1" />
                                     <TextBox Grid.Column="2"
                                              Text="{Binding LOSS_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
                                 </Grid>
                             </StackPanel>
                         </Expander>
@@ -305,7 +365,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="50" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
                                             Value="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -332,11 +392,11 @@
                                 </Grid>
                             </Expander.Header>
                             <StackPanel>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Miscellaneous losses"
                                            ToolTip="Accounts for other losses including line losses and balance of system" />
@@ -348,11 +408,11 @@
                                              Text="{Binding LOSS_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 </Grid>
-                                <Grid VerticalAlignment="Top">
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Label Content="Beginning Charged State" />
 
@@ -362,6 +422,36 @@
                                     <TextBox Grid.Column="2"
                                              Text="{Binding BAT_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
                                 </Grid>
                             </StackPanel>
                         </Expander>

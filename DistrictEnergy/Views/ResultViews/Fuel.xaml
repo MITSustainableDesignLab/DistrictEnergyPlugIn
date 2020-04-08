@@ -19,7 +19,7 @@
                 <lvc:Axis Title="Month" IsEnabled="False" ShowLabels="True" Labels="{Binding Labels}" />
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Load &lt;-- Energy --&gt; Fuel Demand" IsMerged="False" FontSize="14"
+                <lvc:Axis Title="Purchased Fuel" IsMerged="False" FontSize="14" LabelFormatter="{Binding Formatter}"
                           ShowLabels="True" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>

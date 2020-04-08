@@ -15,7 +15,8 @@
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
-             FontFamily="{DynamicResource MaterialDesignFont}" d:DataContext="{d:DesignInstance viewModels:HotWaterViewModel}">
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             d:DataContext="{d:DesignInstance viewModels:HotWaterViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -105,7 +106,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel HorizontalAlignment="Left">
                                         <Label Content="Heating coefficient of performance"
@@ -123,7 +124,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel HorizontalAlignment="Left">
                                         <Label Content="Use Heating and Cooling simultaneously"
@@ -134,6 +135,36 @@
                                                 HorizontalAlignment="Right" Margin="0">
                                         <CheckBox IsChecked="{Binding UseEhpEvap, Mode=TwoWay}" />
                                     </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
                                 </Grid>
                             </StackPanel>
                         </Expander>
@@ -177,7 +208,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel HorizontalAlignment="Left">
                                         <Label Content="Collector efficiency"
@@ -197,7 +228,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel HorizontalAlignment="Left">
                                         <Label Content="Area utilization factor "
@@ -217,7 +248,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel HorizontalAlignment="Left">
                                         <Label Content="Miscellaneous losses"
@@ -232,6 +263,36 @@
                                         <TextBox
                                             Text="{Binding LOSS_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
                                 </Grid>
                             </StackPanel>
                         </Expander>
@@ -251,7 +312,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
                                             Value="{Binding AUT_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -277,22 +338,54 @@
                                     </StackPanel>
                                 </Grid>
                             </Expander.Header>
-                            <Grid Margin="0,3,0,0" VerticalAlignment="Top">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                    <ColumnDefinition Width="Auto" MinWidth="35" />
-                                </Grid.ColumnDefinitions>
-                                <Label Content="Beginning Charged State"
-                                       ToolTip="The Charging State of the tank at the begining of the simulatino year (0: empty, 100: full)" />
+                            <Grid VerticalAlignment="Top">
+                                <StackPanel>
+                                    <Grid Margin="0,8,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                            <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Beginning Charged State"
+                                               ToolTip="The Charging State of the tank at the begining of the simulatino year (0: empty, 100: full)" />
 
-                                <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                       VerticalContentAlignment="Center"
-                                       HorizontalAlignment="Center" Grid.Column="1" />
-                                <TextBox Grid.Column="2"
-                                         Text="{Binding TANK_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-
+                                        <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                               VerticalContentAlignment="Center"
+                                               HorizontalAlignment="Center" Grid.Column="1" />
+                                        <TextBox Grid.Column="2"
+                                                 Text="{Binding TANK_START, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Grid>
+                                    <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                            <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Fixed cost per capacity unit"
+                                               ToolTip="The installed capital cost of the technology per capacity unit" />
+                                        <Label Content="$/kW"
+                                               VerticalContentAlignment="Center"
+                                               HorizontalAlignment="Center" Grid.Column="1" />
+                                        <TextBox
+                                            Text="{Binding F_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Grid.Column="2" />
+                                    </Grid>
+                                    <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                            <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="Variable cost per energy unit"
+                                               ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                        <Label Content="$/kWh"
+                                               VerticalContentAlignment="Center"
+                                               HorizontalAlignment="Center" Grid.Column="1" />
+                                        <TextBox
+                                            Text="{Binding V_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Grid.Column="2" />
+                                    </Grid>
+                                </StackPanel>
                             </Grid>
                         </Expander>
                     </StackPanel>
@@ -304,27 +397,66 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Natural Gas Boiler</TextBlock>
                     <StackPanel Grid.Row="1" Margin="0">
-                        <Grid VerticalAlignment="Top" Margin="0,0,60,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" MinWidth="30" />
-                                <ColumnDefinition Width="Auto" MinWidth="35" />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel HorizontalAlignment="Left">
-                                <Label Content="Heating efficiency"
-                                       ToolTip="Average annual ratio of useful heating delivered to fuel consumed " />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                        Grid.ColumnSpan="2"
-                                        HorizontalAlignment="Right" Margin="0">
-                                <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
-                                       VerticalContentAlignment="Center"
-                                       HorizontalAlignment="Center" />
-                                <TextBox
-                                    Text="{Binding EFF_NGB, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Expander>
+                            <Expander.Header>
+                                <StackPanel>
+                                    <Grid VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                            <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel HorizontalAlignment="Left">
+                                            <Label Content="Heating efficiency"
+                                                   ToolTip="Average annual ratio of useful heating delivered to fuel consumed " />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                    Grid.ColumnSpan="2"
+                                                    HorizontalAlignment="Right" Margin="0">
+                                            <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
+                                                   VerticalContentAlignment="Center"
+                                                   HorizontalAlignment="Center" />
+                                            <TextBox
+                                                Text="{Binding EFF_NGB, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+                                        </StackPanel>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_NGB, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_NGB, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
                             </StackPanel>
-                        </Grid>
+                        </Expander>
                     </StackPanel>
                 </Grid>
             </StackPanel>
