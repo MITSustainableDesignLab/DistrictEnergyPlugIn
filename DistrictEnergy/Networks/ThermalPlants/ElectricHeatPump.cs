@@ -21,5 +21,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Should the evaporator side be used as a cold source?
         /// </summary>
         [DataMember] [DefaultValue(0)] public int UseEhpEvap { get; set; } = 0;
+
+        [DataMember] [DefaultValue(0)] public double F { get; set; }
+        [DataMember] [DefaultValue(0)] public double V { get; set; }
     }
 }

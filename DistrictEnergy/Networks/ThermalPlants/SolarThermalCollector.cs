@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -33,5 +33,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         [DefaultValue(0.15)] public double LOSS_SHW { get; set; } = 0.15;
+
+        [DataMember] [DefaultValue(0)] public double F { get; set; }
+        [DataMember] [DefaultValue(0)] public double V { get; set; }
     }
 }

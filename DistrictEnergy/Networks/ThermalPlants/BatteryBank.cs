@@ -18,9 +18,21 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.15)] public double LOSS_BAT { get; set; } = 0.15;
 
         /// <summary>
-        ///     The Battery charged state at the begining of the simulation. Assumed at 0%.
+        ///     The Battery charged state at the beginning of the simulation. Assumed at 0%.
         /// </summary>
         [DataMember]
-        [DefaultValue(0.80)] public double BAT_START { get; set; } = 0.0;
+        [DefaultValue(0.80)] public double BAT_START { get; set; } = 0.80;
+
+        /// <summary>
+        /// Specific capacity cost per capacity unit f [$/kW]
+        /// </summary>
+        [DataMember]
+        [DefaultValue(1606)] public double F { get; set; } = 1383;
+
+        /// <summary>
+        /// Variable cost per energy unit f [$/kWh]
+        /// </summary>
+        [DataMember]
+        [DefaultValue(0)] public double V { get; set; } = 0;
     }
 }
