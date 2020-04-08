@@ -29,6 +29,18 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0.29)] public double HREC_CHP { get; set; } = 0.29;
+
+        /// <summary>
+        /// Specific capacity cost per capacity unit f [$/kW]
+        /// </summary>
+        [DataMember]
+        [DefaultValue(1606)] public double F { get; set; } = 1606;
+
+        /// <summary>
+        /// Variable cost per energy unit f [$/kWh]
+        /// </summary>
+        [DataMember]
+        [DefaultValue(0.010)] public double V { get; set; } = 0.010;
     }
 
     [DataContract(Name = "TMOD_CHP")]

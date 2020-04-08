@@ -15,7 +15,8 @@
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
-             FontFamily="{DynamicResource MaterialDesignFont}" d:DataContext="{d:DesignInstance viewModels:ChilledWaterViewModel}">
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             d:DataContext="{d:DesignInstance viewModels:ChilledWaterViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -89,20 +90,51 @@
                                     </StackPanel>
                                 </Grid>
                             </Expander.Header>
-                            <Grid Margin="0,8,0,0" VerticalAlignment="Top">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto" MinWidth="30" />
-                                    <ColumnDefinition Width="Auto" MinWidth="40" />
-                                </Grid.ColumnDefinitions>
-                                <Label Content="Cooling coefficient of performance"
-                                       ToolTip="Average annual ratio of useful cooling delivered to natural gas consumed" />
+                            <StackPanel>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Cooling coefficient of performance"
+                                           ToolTip="Average annual ratio of useful cooling delivered to natural gas consumed" />
+                                    <TextBox
+                                        Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                            </StackPanel>
 
-                                <TextBox
-                                    Text="{Binding CCOP_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Grid.Column="2" />
-
-                            </Grid>
                         </Expander>
                     </StackPanel>
                 </Grid>
@@ -115,24 +147,63 @@
                     <TextBlock Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Grid.Row="0">Electric Chiller</TextBlock>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto"
                                 Grid.Row="1">
-                        <Grid VerticalAlignment="Top" Margin="0,0,60,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" MinWidth="30" />
-                                <ColumnDefinition Width="Auto" MinWidth="35" />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel HorizontalAlignment="Left">
-                                <Label Content="Cooling coefficient of performance"
-                                       ToolTip="Average annual ratio of useful cooling delivered to electricity consumed" />
+                        <Expander>
+                            <Expander.Header>
+                                <StackPanel>
+                                    <Grid VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" MinWidth="30" />
+                                            <ColumnDefinition Width="Auto" MinWidth="35" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel HorizontalAlignment="Left">
+                                            <Label Content="Cooling coefficient of performance"
+                                                   ToolTip="Average annual ratio of useful cooling delivered to electricity consumed" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                                    Grid.ColumnSpan="2"
+                                                    HorizontalAlignment="Right" Margin="0">
+                                            <TextBox
+                                                Text="{Binding CCOP_ECH, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                UndoLimit="10" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Expander.Header>
+                            <StackPanel>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Fixed cost per capacity unit"
+                                           ToolTip="The installed capital cost of the technology per capacity unit" />
+                                    <Label Content="$/kW"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding F_ECH, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
+                                <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" MinWidth="30" />
+                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Variable cost per energy unit"
+                                           ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                                    <Label Content="$/kWh"
+                                           VerticalContentAlignment="Center"
+                                           HorizontalAlignment="Center" Grid.Column="1" />
+                                    <TextBox
+                                        Text="{Binding V_ECH, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Grid.Column="2" />
+                                </Grid>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                        Grid.ColumnSpan="2"
-                                        HorizontalAlignment="Right" Margin="0">
-                                <TextBox
-                                    Text="{Binding CCOP_ECH, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    UndoLimit="10" />
-                            </StackPanel>
-                        </Grid>
+                        </Expander>
+                        
                     </StackPanel>
                 </Grid>
             </StackPanel>

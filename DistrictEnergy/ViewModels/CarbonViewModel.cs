@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -13,6 +14,7 @@ namespace DistrictEnergy.ViewModels
     internal class CarbonViewModel : INotifyPropertyChanged
     {
         private double _totalCarbon;
+        private double _normalizedTotalCarbon;
 
         public CarbonViewModel()
         {
@@ -34,6 +36,16 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 _totalCarbon = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double NormalizedTotalCarbon
+        {
+            get => _normalizedTotalCarbon;
+            set
+            {
+                _normalizedTotalCarbon = value;
                 OnPropertyChanged();
             }
         }
@@ -65,7 +77,8 @@ namespace DistrictEnergy.ViewModels
                 Values = new ChartValues<double>
                 {
                     gasCarbon
-                }
+                },
+                Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
             });
             var electricityCarbon = instance.ResultsArray.ElecProj.Sum() *
                                     UmiContext.Current.ProjectSettings.ElectricityCarbon;
@@ -75,9 +88,16 @@ namespace DistrictEnergy.ViewModels
                 Values = new ChartValues<double>
                 {
                     electricityCarbon
-                }
+                },
+                Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
             });
             TotalCarbon = electricityCarbon + gasCarbon;
+            NormalizedTotalCarbon = TotalCarbon / FloorArea;
+        }
+
+        private double FloorArea
+        {
+            get { return UmiContext.Current.Buildings.All.Select(b => b.GrossFloorArea).Sum().Value; }
         }
 
         [NotifyPropertyChangedInvocator]

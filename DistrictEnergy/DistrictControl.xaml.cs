@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Wpf;
 using MaterialDesignColors;
@@ -148,6 +149,7 @@ namespace DistrictEnergy
                 {
                     ChilledWaterViewModel.Instance.OFF_ABS = 100;
                     CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 100;
+                    CombinedHeatAndPowerViewModel.Instance.TMOD_CHP = TrakingModeEnum.Electrical;
                     ElectricGenerationViewModel.Instance.OFF_PV = 0;
                     HotWaterViewModel.Instance.OFF_EHP = 0;
                     HotWaterViewModel.Instance.OFF_SHW = 0;

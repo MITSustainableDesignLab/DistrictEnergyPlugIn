@@ -16,5 +16,17 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0.90)] public double CCOP_ABS { get; set; } = 0.90;
+
+        /// <summary>
+        /// Specific capacity cost per capacity unit f [$/kW]
+        /// </summary>
+        [DataMember]
+        [DefaultValue(633)] public double F { get; set; } = 633;
+
+        /// <summary>
+        /// Variable cost per energy unit f [$/kWh]
+        /// </summary>
+        [DataMember]
+        [DefaultValue(0.0004)] public double V { get; set; } = 0.0004;
     }
 }

@@ -22,5 +22,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0.8)] public double TANK_START { get; set; } = 0.0;
+
+        [DataMember] [DefaultValue(0)] public double F { get; set; } = 0;
+        [DataMember] [DefaultValue(0.167)] public double V { get; set; } = 0.167;
     }
 }

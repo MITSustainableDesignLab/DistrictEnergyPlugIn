@@ -43,5 +43,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0.15)] public double LOSS_WND { get; set; } = 0.15;
+
+        [DataMember] [DefaultValue(1347)] public double F { get; set; } = 1347;
+        [DataMember] [DefaultValue(0)] public double V { get; set; }
     }
 }
