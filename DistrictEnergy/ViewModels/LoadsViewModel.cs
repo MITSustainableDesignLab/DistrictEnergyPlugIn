@@ -42,6 +42,12 @@ namespace DistrictEnergy.ViewModels
                 if (Math.Abs(chartPoint.Y) > 999999) return string.Format("{0:N1} GWh", chartPoint.Y / 1000000);
                 return string.Format("{0:N1} kWh", chartPoint.Y);
             };
+            Formatter = delegate(double value)
+            {
+                if (Math.Abs(value) > 999) return string.Format("{0:N0} MWh", value / 1000);
+                if (Math.Abs(value) > 999999) return string.Format("{0:N0} GWh", value / 1000000);
+                return string.Format("{0:N0} kWh", value);
+            };
         }
 
         public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
@@ -72,6 +78,7 @@ namespace DistrictEnergy.ViewModels
         public Func<double, string> XFormatter { get; set; }
         public Func<double, string> YFormatter { get; set; }
 
+        public Func<double, string> Formatter { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,17 +102,17 @@ namespace DistrictEnergy.ViewModels
             {
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "CW Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
+                    Key = "Cooling Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
                     Value = instance.DistrictDemand.ChwN
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "HW Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)),
+                    Key = "Heating Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)),
                     Value = instance.DistrictDemand.HwN
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "Elec Demand",
+                    Key = "Electricity Demand",
                     Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)),
                     Value = instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
                         .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
@@ -115,62 +122,62 @@ namespace DistrictEnergy.ViewModels
             {
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "CW from Absorption Chiller", Fill = new SolidColorBrush(Color.FromRgb(146, 241, 254)),
+                    Key = "Cooling from Absorption Chiller", Fill = new SolidColorBrush(Color.FromRgb(146, 241, 254)),
                     Value = instance.ResultsArray.ChwAbs
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "CW from Electric Chiller", Fill = new SolidColorBrush(Color.FromRgb(93, 153, 170)),
+                    Key = "Cooling from Electric Chiller", Fill = new SolidColorBrush(Color.FromRgb(93, 153, 170)),
                     Value = instance.ResultsArray.ChwEch
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "CW from Evaporator Side of EHPs", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
+                    Key = "Cooling from Evaporator Side of EHPs", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
                     Value = instance.ResultsArray.ChwEhpEvap
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "HW from Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251, 209, 39)),
+                    Key = "Heating from Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251, 209, 39)),
                     Value = instance.ResultsArray.HwShw
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "HW from Hot Water Tank", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
+                    Key = "Heating from Hot Water Tank", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
                     Value = instance.ResultsArray.HwHwt
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "HW from Electric Heat Pump", Fill = new SolidColorBrush(Color.FromRgb(231, 71, 126)),
+                    Key = "Heating from Electric Heat Pump", Fill = new SolidColorBrush(Color.FromRgb(231, 71, 126)),
                     Value = instance.ResultsArray.HwEhp
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "HW from Natural Gas Boiler", Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
+                    Key = "Heating from Natural Gas Boiler", Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
                     Value = instance.ResultsArray.HwNgb
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "HW from Combined Heating and Power", Fill = new SolidColorBrush(Color.FromRgb(247, 96, 21)),
+                    Key = "Heating from Combined Heating and Power", Fill = new SolidColorBrush(Color.FromRgb(247, 96, 21)),
                     Value = instance.ResultsArray.HwChp
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "EL from Battery", Fill = new SolidColorBrush(Color.FromRgb(192, 244, 66)),
+                    Key = "Electricity from Battery", Fill = new SolidColorBrush(Color.FromRgb(192, 244, 66)),
                     Value = instance.ResultsArray.ElecBat
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "EL from Renewables", Fill = new SolidColorBrush(Color.FromRgb(112, 159, 15)),
+                    Key = "Electricity from Renewables", Fill = new SolidColorBrush(Color.FromRgb(112, 159, 15)),
                     Value = instance.ResultsArray.ElecRen
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "EL from Combined Heat & Power", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
+                    Key = "Electricity from Combined Heat & Power", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
                     Value = instance.ResultsArray.ElecChp
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "EL from Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+                    Key = "Electricity from Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
                     Value = instance.ResultsArray.ElecProj
                 }
             };

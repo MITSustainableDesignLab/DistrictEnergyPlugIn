@@ -16,6 +16,8 @@ namespace DistrictEnergy.ViewModels
 
         public new static ElectricGenerationViewModel Instance { get; set; }
 
+        #region PV
+
         public double OFF_PV
         {
             get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV * 100;
@@ -55,6 +57,29 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+        public double F_PV
+        {
+            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_PV
+        {
+            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Wind
 
         public double OFF_WND
         {
@@ -116,6 +141,30 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public double F_WND
+        {
+            get => ListOfPlantSettings.OfType<WindTurbine>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<WindTurbine>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_WND
+        {
+            get => ListOfPlantSettings.OfType<WindTurbine>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<WindTurbine>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region BatteryBank
+
         public double AUT_BAT
         {
             get => ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT;
@@ -145,5 +194,27 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public double F_BAT
+        {
+            get => ListOfPlantSettings.OfType<BatteryBank>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<BatteryBank>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_BAT
+        {
+            get => ListOfPlantSettings.OfType<BatteryBank>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<BatteryBank>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
     }
 }

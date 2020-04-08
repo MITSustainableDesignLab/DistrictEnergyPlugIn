@@ -34,7 +34,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         [DefaultValue(0.15)] public double LOSS_SHW { get; set; } = 0.15;
 
-        [DataMember] [DefaultValue(0)] public double F { get; set; }
-        [DataMember] [DefaultValue(0)] public double V { get; set; }
+        [DataMember] [DefaultValue(7191)] public double F { get; set; } = 7191;
+        [DataMember] [DefaultValue(0.00887)] public double V { get; set; } = 0.00887;
     }
 }

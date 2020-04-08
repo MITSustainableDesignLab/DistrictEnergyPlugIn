@@ -59,5 +59,25 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public double F
+        {
+            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V
+        {
+            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

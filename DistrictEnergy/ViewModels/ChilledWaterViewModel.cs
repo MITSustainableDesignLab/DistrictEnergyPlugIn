@@ -17,6 +17,8 @@ namespace DistrictEnergy.ViewModels
 
         public new static ChilledWaterViewModel Instance { get; set; }
 
+        #region Chiller
+
         public double CCOP_ECH
         {
             get => ListOfPlantSettings.OfType<ElectricChiller>().First().CCOP_ECH;
@@ -26,6 +28,30 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public double F_ECH
+        {
+            get => ListOfPlantSettings.OfType<ElectricChiller>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<ElectricChiller>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_ECH
+        {
+            get => ListOfPlantSettings.OfType<ElectricChiller>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<ElectricChiller>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region AbsorptionChiller
 
         public double OFF_ABS
         {
@@ -46,5 +72,27 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public double F_ABS
+        {
+            get => ListOfPlantSettings.OfType<AbsorptionChiller>().First().F;
+            set 
+            { 
+                ListOfPlantSettings.OfType<AbsorptionChiller>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_ABS
+        {
+            get => ListOfPlantSettings.OfType<AbsorptionChiller>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<AbsorptionChiller>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
     }
 }

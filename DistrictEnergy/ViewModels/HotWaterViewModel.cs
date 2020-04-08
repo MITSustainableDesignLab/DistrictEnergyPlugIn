@@ -16,6 +16,8 @@ namespace DistrictEnergy.ViewModels
 
         public new static HotWaterViewModel Instance { get; set; }
 
+        #region NatGAs
+
         public double EFF_NGB
         {
             get => ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB * 100;
@@ -25,6 +27,30 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public double F_NGB
+        {
+            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<NatGasBoiler>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_NGB
+        {
+            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<NatGasBoiler>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region HPs
 
         public double OFF_EHP
         {
@@ -46,6 +72,54 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool UseEhpEvap
+        {
+            get
+            {
+                if (ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap == 1)
+                    return true;
+                else
+                    return false;
+            }
+            set
+            {
+                if (value)
+                {
+                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 1;
+                    OnPropertyChanged();
+                }
+                else
+                {
+                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 0;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public double F_EHP
+        {
+            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<ElectricHeatPump>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_EHP
+        {
+            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<ElectricHeatPump>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region HWSto
+
         public double AUT_HWT
         {
             get => ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT;
@@ -65,6 +139,30 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public double F_HWT
+        {
+            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().F;
+            set
+            {
+                ListOfPlantSettings.OfType<HotWaterStorage>().First().F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V_HWT
+        {
+            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<HotWaterStorage>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region SolarThermal
 
         public double EFF_SHW
         {
@@ -106,28 +204,26 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public bool UseEhpEvap
+        public double F_SHW
         {
-            get
-            {
-                if (ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap == 1)
-                    return true;
-                else
-                    return false;
-            }
+            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().F;
             set
             {
-                if (value)
-                {
-                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 1;
-                    OnPropertyChanged();
-                }
-                else
-                {
-                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 0;
-                    OnPropertyChanged();
-                }
+                ListOfPlantSettings.OfType<SolarThermalCollector>().First().F = value;
+                OnPropertyChanged();
             }
         }
+
+        public double V_SHW
+        {
+            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().V;
+            set
+            {
+                ListOfPlantSettings.OfType<SolarThermalCollector>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
     }
 }

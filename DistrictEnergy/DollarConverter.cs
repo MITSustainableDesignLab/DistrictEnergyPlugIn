@@ -15,8 +15,8 @@ namespace DistrictEnergy
             if (value is double d)
             {
                 if (d > 999999)
-                    return (d / 1000000).ToString("N0", culture); // for M$
-                return d.ToString("N0", culture); // for $;
+                    return (d / 1000000).ToString("N", culture); // for M$
+                return d.ToString("N", culture); // for $;
             }
 
             return string.Empty;

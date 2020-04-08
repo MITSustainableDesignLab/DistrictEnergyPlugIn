@@ -27,7 +27,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// Specific capacity cost per capacity unit f [$/kW]
         /// </summary>
         [DataMember]
-        [DefaultValue(1606)] public double F { get; set; } = 1383;
+        [DefaultValue(1383)] public double F { get; set; } = 1383;
 
         /// <summary>
         /// Variable cost per energy unit f [$/kWh]

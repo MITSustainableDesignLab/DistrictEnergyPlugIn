@@ -33,7 +33,7 @@
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis Title="Load &lt;-- Energy --&gt; Source" IsMerged="False" FontSize="14"
-                          ShowLabels="True" />
+                          ShowLabels="True" LabelFormatter="{Binding Formatter}" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
     </Grid>

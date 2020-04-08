@@ -68,7 +68,8 @@ namespace DistrictEnergy
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void StaleResultsOnEnergySimulationsCompletedEventArgs(object sender, EnergySimulationsCompletedEventArgs e)
+        private void StaleResultsOnEnergySimulationsCompletedEventArgs(object sender,
+            EnergySimulationsCompletedEventArgs e)
         {
             ResultsArray.StaleResults = true;
         }
@@ -148,7 +149,8 @@ namespace DistrictEnergy
                 // We continue...
                 eqELEC_REN(ResultsArray.ElecPv[i], ResultsArray.ElecWnd[i], DistrictDemand.ElecN[i],
                     ResultsArray.ElecEch[i], ResultsArray.ElecEhp[i], out ResultsArray.ElecRen[i],
-                    out ResultsArray.ElecBal[i]); // OK
+                    out ResultsArray.ElecBal[i], out ResultsArray.ElecPvUsed[i], 
+                    out ResultsArray.ElecWndUsed[i]); // OK
                 if (i == 0) ResultsArray.BatChgN[0] = SimConstants.CapBat * DistrictEnergy.Settings.BatStart;
                 if (i > 0)
                     eqBAT_CHG_n(ResultsArray.BatChgN[i - 1], ResultsArray.ElecBal[i],
@@ -252,6 +254,7 @@ namespace DistrictEnergy
                     $"Calculated...\n{DistrictDemand.ChwN.Length} datapoints for ColdWater profile\n{DistrictDemand.HwN.Count()} datapoints for HotWater\n{DistrictDemand.ElecN.Count()} datapoints for Electricity\n{DistrictDemand.RadN.Count()} datapoints for Solar Frad\n{DistrictDemand.WindN.Count()} datapoints for WindSpeed");
                 Instance.ResultsArray.StaleResults = false;
             }
+
             // Go Hour by hour and parse through the simulation routine
             SetResultsArraystoZero();
             DeleteLogFile();
@@ -772,16 +775,21 @@ namespace DistrictEnergy
         /// <summary>
         ///     Equation 10 : The total renewable electricity
         /// </summary>
-        /// <param name="elecPv"></param>
-        /// <param name="elecWnd"></param>
+        /// <param name="elecPv">Total PV electricity generation</param>
+        /// <param name="elecWnd">Total Wind electricity generation</param>
         /// <param name="elecN"></param>
         /// <param name="elecEch"></param>
         /// <param name="elecEhp"></param>
         /// <param name="elecRen"></param>
         /// <param name="elecBalance"></param>
+        /// <param name="elecUsedPv"></param>
+        /// <param name="elecUsedWind"></param>
         private void eqELEC_REN(double elecPv, double elecWnd, double elecN,
-            double elecEch, double elecEhp, out double elecRen, out double elecBalance)
+            double elecEch, double elecEhp, out double elecRen, out double elecBalance, out double elecUsedPv,
+            out double elecUsedWind)
         {
+            elecUsedPv = Math.Min(elecPv, elecN + elecEch + elecEhp);
+            elecUsedWind = Math.Min(elecN + elecEch + elecEhp - elecUsedPv, elecWnd);
             elecRen = Math.Min(elecPv + elecWnd, elecN + elecEch + elecEhp);
             elecBalance = elecPv + elecWnd - elecN - elecEch - elecEhp;
         }
@@ -1137,6 +1145,12 @@ namespace DistrictEnergy
 
         public event EventHandler ResultsChanged;
         public bool StaleResults { get; set; } = true;
+        internal readonly double[] ElecWndUsed = new double[8760];
+
+        /// <summary>
+        ///     Userful PV generated electricity
+        /// </summary>
+        internal readonly double[] ElecPvUsed = new double[8760];
 
 
         protected internal virtual void OnResultsChanged(EventArgs e)
@@ -1417,6 +1431,16 @@ namespace DistrictEnergy
         public static bool UseEhpEvap
         {
             get { return HotWaterViewModel.Instance.UseEhpEvap; }
+        }
+
+        public static double AnnuityFactor
+        {
+            get
+            {
+                double i = 0.1;
+                double n = 40;
+                return (Math.Pow(1 + i, n) * i) / ((Math.Pow(1 + i, n) - 1));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
