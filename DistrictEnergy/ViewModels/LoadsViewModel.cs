@@ -108,7 +108,7 @@ namespace DistrictEnergy.ViewModels
                 new ResultsViewModel.ChartValue
                 {
                     Key = "Heating Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)),
-                    Value = instance.DistrictDemand.HwN
+                    Value = instance.DistrictDemand.HwN.Zip(instance.ResultsArray.HwAbs, (x, y)=> x+y).ToArray()
                 },
                 new ResultsViewModel.ChartValue
                 {
@@ -116,7 +116,8 @@ namespace DistrictEnergy.ViewModels
                     Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)),
                     Value = instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
                         .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
-                }
+                },
+                // todo Add demand by Battery and Thermal Storage
             };
             var Supply = new List<ResultsViewModel.ChartValue>
             {
@@ -132,7 +133,8 @@ namespace DistrictEnergy.ViewModels
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "Cooling from Evaporator Side of EHPs", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
+                    Key = "Cooling from Evaporator Side of EHPs",
+                    Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
                     Value = instance.ResultsArray.ChwEhpEvap
                 },
                 new ResultsViewModel.ChartValue
@@ -157,7 +159,8 @@ namespace DistrictEnergy.ViewModels
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "Heating from Combined Heating and Power", Fill = new SolidColorBrush(Color.FromRgb(247, 96, 21)),
+                    Key = "Heating from CHP",
+                    Fill = new SolidColorBrush(Color.FromRgb(247, 96, 21)),
                     Value = instance.ResultsArray.HwChp
                 },
                 new ResultsViewModel.ChartValue
@@ -172,7 +175,8 @@ namespace DistrictEnergy.ViewModels
                 },
                 new ResultsViewModel.ChartValue
                 {
-                    Key = "Electricity from Combined Heat & Power", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
+                    Key = "Electricity from CHP",
+                    Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
                     Value = instance.ResultsArray.ElecChp
                 },
                 new ResultsViewModel.ChartValue

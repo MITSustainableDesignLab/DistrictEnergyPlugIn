@@ -275,9 +275,12 @@ namespace DistrictEnergy
                 "Aggregating Cooling Loads", true, true);
 
             foreach (var umiObject in contextObjects)
+            {
+                var objectCop = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter.Conditioning.CoolingCoeffOfPerf;
                 for (var i = 0; i < nbDataPoint; i++)
                 {
-                    var d = umiObject.Data["SDL/Cooling"].Data[i];
+                    // Cooling is multiplied by objectCop to transform into space cooling demand
+                    var d = umiObject.Data["SDL/Cooling"].Data[i] * objectCop;
                     if (DistrictEnergy.Settings.UseDistrictLosses)
                         // If distribution losses, increase demand
 
@@ -291,6 +294,7 @@ namespace DistrictEnergy
                     _progressBarPos += 1;
                     StatusBar.UpdateProgressMeter(_progressBarPos, true);
                 }
+            }
 
             return aggregationArray;
         }
@@ -304,9 +308,12 @@ namespace DistrictEnergy
             StatusBar.ShowProgressMeter(0, nbDataPoint * contextObjects.Count * 3,
                 "Aggregating Hot Water Loads", true, true);
             foreach (var umiObject in contextObjects)
+            {
+                var objectEff = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter.Conditioning.HeatingCoeffOfPerf;
                 for (var i = 0; i < nbDataPoint; i++)
                 {
-                    var d = umiObject.Data["SDL/Heating"].Data[i] + umiObject.Data["SDL/Domestic Hot Water"].Data[i];
+                    // Heating is multiplied by objectEff to transform into space heating demand
+                    var d = umiObject.Data["SDL/Heating"].Data[i] * objectEff + umiObject.Data["SDL/Domestic Hot Water"].Data[i];
 
                     if (DistrictEnergy.Settings.UseDistrictLosses)
                     {
@@ -319,6 +326,7 @@ namespace DistrictEnergy
                     _progressBarPos += 1;
                     StatusBar.UpdateProgressMeter(_progressBarPos, true);
                 }
+            }
 
             return aggregationArray;
         }
