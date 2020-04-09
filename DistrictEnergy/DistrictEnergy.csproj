@@ -58,6 +58,9 @@
     <Reference Include="FSharp.Core, Version=4.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Google.OrTools, Version=4.4.6107.17129, Culture=neutral, PublicKeyToken=7a052e3db761d3be, processorArchitecture=AMD64">
+      <HintPath>..\packages\Google.OrTools.4.4.3842\lib\net40\Google.OrTools.dll</HintPath>
+    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
@@ -122,6 +125,7 @@
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
+    <Compile Include="DHRunLPModel.cs" />
     <Compile Include="DHSimulateDistrictEnergy.cs" />
     <Compile Include="DollarConverter.cs" />
     <Compile Include="Helpers\ChartMode.cs" />
