@@ -37,6 +37,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Basilisk">
+      <HintPath>..\..\..\UMI\Basilisk.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="CsvHelper">
       <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
       <Private>False</Private>
