@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- The name of the product -->
+<?define Name = "District Energy Plugin" ?>
+
+<!-- The Description of the product -->
+<?define Description = "Simulate district energy systems in UMI" ?>
+
+<!-- The manufacturer, for setup package publisher and folder info -->
+<?define Manufacturer = "Samuel Letellier-Duchesne" ?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
      xmlns:ui="http://schemas.microsoft.com/wix/">
   <!-- Use Id=* to generate a new GUID each time. Note that UpgradeCode MUST always stay the same for ever and ever. -->
   <?define ProductVersion="$(fileVersion.ProductVersion($(var.DistrictEnergy.TargetPath)))" ?>
-  <Product Id="*" Name="District Energy Plug-In" Language="1033" Version="$(var.ProductVersion)"
-           Manufacturer="Samuel Letellier-Duchesne" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
+  <Product Id="*" Name="$(var.Name)" Language="1033" Version="$(var.ProductVersion)"
+           Manufacturer="$(var.Manufacturer)" UpgradeCode="{8A63E6EB-06B2-4C59-9E1E-3779A488C225}">
     <!-- Install perUser -->
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited"
+             Description="$(var.Name)" Manufacturer="$(var.Manufacturer)" />
 
     <!-- Customized UI taken literally from http://neilsleightholm.blogspot.nl/2008/08/customised-uis-for-wix.html -->
     <UI Id="WixUI_MondoNoLicense">
@@ -124,11 +134,11 @@
       <![CDATA[Installed OR RHINOX64]]>
     </Condition>
 
-    <Feature Id="DistrictEnergyPlugin" Title="District Energy Plug-In" Level="1">
+    <Feature Id="DistrictEnergyPlugin" Title="$(var.Name)" Level="1">
       <!-- The DLL dependencies -->
       <ComponentGroupRef Id="CMPGRP_Dependencies" />
       <!-- DH plug-in -->
-      <Feature Id="DHcommon" Title="District Energy Plug-In" Level="2" Absent="disallow">
+      <Feature Id="DHcommon" Title="$(var.Name)" Level="2" Absent="disallow">
         <MergeRef Id="DistrictEnergyMM" />
         <MergeRef Id="ExportLoadsToFileMM" />
       </Feature>
@@ -157,18 +167,18 @@
       <ComponentRef Id="NewtonSoftJsonDLL" />
       <ComponentRef Id="DeedleDLL" />
       <ComponentRef Id="FSharpCoreDLL" />
-      <ComponentRef Id="MaterialDesignColorsDLL"/>
-      <ComponentRef Id="MaterialDesignThemesWpfDLL"/>
-      <ComponentRef Id="PresentationFrameworkDLL"/>
-      <ComponentRef Id="SystemValueTupleDLL"/>
-      <ComponentRef Id="DragablzDLL"/>
+      <ComponentRef Id="MaterialDesignColorsDLL" />
+      <ComponentRef Id="MaterialDesignThemesWpfDLL" />
+      <ComponentRef Id="PresentationFrameworkDLL" />
+      <ComponentRef Id="SystemValueTupleDLL" />
+      <ComponentRef Id="DragablzDLL" />
     </ComponentGroup>
   </Fragment>
 
   <Fragment Id="FRG_Dependencies">
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="CommonAppDataFolder" Name="CommonAppDataFolder">
-        <Directory Id="PLUGINFOLDER" Name="District Energy Plug-In">
+      <Directory Id="AppDataFolder" Name="AppDataFolder">
+        <Directory Id="PLUGINFOLDER" Name="$(var.Name)">
 
 
           <Component Id="DistrictEnergyDLL" Guid="{3bf81a6b-26c7-4c52-a9f9-0aef080d4a0a}">
@@ -223,7 +233,8 @@
               <RegistryValue Name="DeedleDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
             </RegistryKey>
             <File Id="DeedleDLL" Name="Deedle.dll"
-                  Source="$(var.DistrictEnergy.TargetDir)Deedle.dll"></File>
+                  Source="$(var.DistrictEnergy.TargetDir)Deedle.dll">
+            </File>
           </Component>
 
           <Component Id="FSharpCoreDLL" Guid="{1E3C976C-3ED5-420C-8EE4-5C019AF445CC}">
@@ -231,7 +242,8 @@
               <RegistryValue Name="FSharpCoreDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
             </RegistryKey>
             <File Id="FSharpCoreDLL" Name="FSharp.Core.dll"
-                  Source="$(var.DistrictEnergy.TargetDir)FSharp.Core.dll"></File>
+                  Source="$(var.DistrictEnergy.TargetDir)FSharp.Core.dll">
+            </File>
           </Component>
 
           <Component Id="MaterialDesignColorsDLL" Guid="{0F87F01D-E7FE-4B10-A447-C1898B59D78D}">
@@ -239,7 +251,8 @@
               <RegistryValue Name="MaterialDesignColorsDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
             </RegistryKey>
             <File Id="MaterialDesignColorsDLL" Name="MaterialDesignColors.dll"
-                  Source="$(var.DistrictEnergy.TargetDir)MaterialDesignColors.dll"></File>
+                  Source="$(var.DistrictEnergy.TargetDir)MaterialDesignColors.dll">
+            </File>
           </Component>
 
           <Component Id="MaterialDesignThemesWpfDLL" Guid="{185A1F1A-2757-4994-8C51-45BAC3948629}">
@@ -247,7 +260,8 @@
               <RegistryValue Name="MaterialDesignThemesWpfDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
             </RegistryKey>
             <File Id="MaterialDesignThemesWpfDLL" Name="MaterialDesignThemes.Wpf.dll"
-                  Source="$(var.DistrictEnergy.TargetDir)MaterialDesignThemes.Wpf.dll"></File>
+                  Source="$(var.DistrictEnergy.TargetDir)MaterialDesignThemes.Wpf.dll">
+            </File>
           </Component>
 
           <Component Id="PresentationFrameworkDLL" Guid="{013CB430-84C2-493D-90B8-E49F58723B10}">
@@ -255,7 +269,8 @@
               <RegistryValue Name="PresentationFrameworkDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
             </RegistryKey>
             <File Id="PresentationFrameworkDLL" Name="PresentationFramework.dll"
-                  Source="$(var.DistrictEnergy.TargetDir)PresentationFramework.dll"></File>
+                  Source="$(var.DistrictEnergy.TargetDir)PresentationFramework.dll">
+            </File>
           </Component>
 
           <Component Id="SystemValueTupleDLL" Guid="{883369E9-0682-4D48-8A7C-273B67E919C9}">
@@ -263,7 +278,8 @@
               <RegistryValue Name="SystemValueTupleDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
             </RegistryKey>
             <File Id="SystemValueTupleDLL" Name="System.ValueTuple.dll"
-                  Source="$(var.DistrictEnergy.TargetDir)System.ValueTuple.dll"></File>
+                  Source="$(var.DistrictEnergy.TargetDir)System.ValueTuple.dll">
+            </File>
           </Component>
 
           <Component Id="DragablzDLL" Guid="{53BB9B71-B248-43BE-8695-2A40CE0A1E62}">
@@ -271,7 +287,8 @@
               <RegistryValue Name="DragablzDLL" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
             </RegistryKey>
             <File Id="DragablzDLL" Name="Dragablz.dll"
-                  Source="$(var.DistrictEnergy.TargetDir)Dragablz.dll"></File>
+                  Source="$(var.DistrictEnergy.TargetDir)Dragablz.dll">
+            </File>
           </Component>
 
         </Directory>
