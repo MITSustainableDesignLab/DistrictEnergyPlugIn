@@ -23,6 +23,7 @@ using Umi.RhinoServices.UmiEvents;
 namespace DistrictEnergy
 {
     [Guid("929185AA-DB2C-4AA5-B1C0-E89C93F0704D")]
+    [CommandStyle(Rhino.Commands.Style.ScriptRunner)]
     public class DHSimulateDistrictEnergy : Command
     {
         public enum LoadTypes
@@ -227,11 +228,20 @@ namespace DistrictEnergy
                 var contextBuildings =
                     umiContext.GetObjects()
                         .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
+                MessageBoxButton buttons = MessageBoxButton.YesNo;
                 if (contextBuildings.Count == 0)
                 {
-                    MessageBox.Show(
-                        "There are no buildings with hourly results. Please Rerun the Energy Module after turning on the Hourly Results in Advanced Options",
-                        "Cannot continue with District simulation");
+                    MessageBoxResult result;
+                    result = MessageBox.Show(
+                        "There are no buildings with hourly results. Would you like to run an hourly energy simulation now?",
+                        "Cannot continue with District simulation", buttons);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // Sets hourly results true and calls UMISimulateEnergy
+                        umiContext.ProjectSettings.GenerateHourlyEnergyResults = true;
+                        RhinoApp.RunScript("-UmiSimulateEnergy", true);
+                    }
+
                     return Result.Failure;
                 }
 
