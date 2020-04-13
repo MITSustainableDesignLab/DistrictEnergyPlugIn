@@ -23,6 +23,7 @@ using Umi.RhinoServices.UmiEvents;
 namespace DistrictEnergy
 {
     [Guid("929185AA-DB2C-4AA5-B1C0-E89C93F0704D")]
+    [CommandStyle(Rhino.Commands.Style.ScriptRunner)]
     public class DHSimulateDistrictEnergy : Command
     {
         public enum LoadTypes
@@ -149,7 +150,7 @@ namespace DistrictEnergy
                 // We continue...
                 eqELEC_REN(ResultsArray.ElecPv[i], ResultsArray.ElecWnd[i], DistrictDemand.ElecN[i],
                     ResultsArray.ElecEch[i], ResultsArray.ElecEhp[i], out ResultsArray.ElecRen[i],
-                    out ResultsArray.ElecBal[i], out ResultsArray.ElecPvUsed[i], 
+                    out ResultsArray.ElecBal[i], out ResultsArray.ElecPvUsed[i],
                     out ResultsArray.ElecWndUsed[i]); // OK
                 if (i == 0) ResultsArray.BatChgN[0] = SimConstants.CapBat * DistrictEnergy.Settings.BatStart;
                 if (i > 0)
@@ -227,11 +228,20 @@ namespace DistrictEnergy
                 var contextBuildings =
                     umiContext.GetObjects()
                         .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
+                MessageBoxButton buttons = MessageBoxButton.YesNo;
                 if (contextBuildings.Count == 0)
                 {
-                    MessageBox.Show(
-                        "There are no buildings with hourly results. Please Rerun the Energy Module after turning on the Hourly Results in Advanced Options",
-                        "Cannot continue with District simulation");
+                    MessageBoxResult result;
+                    result = MessageBox.Show(
+                        "There are no buildings with hourly results. Would you like to run an hourly energy simulation now?",
+                        "Cannot continue with District simulation", buttons);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // Sets hourly results true and calls UMISimulateEnergy
+                        umiContext.ProjectSettings.GenerateHourlyEnergyResults = true;
+                        RhinoApp.RunScript("-UmiSimulateEnergy", true);
+                    }
+
                     return Result.Failure;
                 }
 
@@ -276,7 +286,8 @@ namespace DistrictEnergy
 
             foreach (var umiObject in contextObjects)
             {
-                var objectCop = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter.Conditioning.CoolingCoeffOfPerf;
+                var objectCop = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter
+                    .Conditioning.CoolingCoeffOfPerf;
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     // Cooling is multiplied by objectCop to transform into space cooling demand
@@ -309,11 +320,13 @@ namespace DistrictEnergy
                 "Aggregating Hot Water Loads", true, true);
             foreach (var umiObject in contextObjects)
             {
-                var objectEff = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter.Conditioning.HeatingCoeffOfPerf;
+                var objectEff = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter
+                    .Conditioning.HeatingCoeffOfPerf;
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     // Heating is multiplied by objectEff to transform into space heating demand
-                    var d = umiObject.Data["SDL/Heating"].Data[i] * objectEff + umiObject.Data["SDL/Domestic Hot Water"].Data[i];
+                    var d = umiObject.Data["SDL/Heating"].Data[i] * objectEff +
+                            umiObject.Data["SDL/Domestic Hot Water"].Data[i];
 
                     if (DistrictEnergy.Settings.UseDistrictLosses)
                     {
