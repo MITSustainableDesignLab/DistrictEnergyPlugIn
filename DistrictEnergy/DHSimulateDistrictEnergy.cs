@@ -150,7 +150,7 @@ namespace DistrictEnergy
                 // We continue...
                 eqELEC_REN(ResultsArray.ElecPv[i], ResultsArray.ElecWnd[i], DistrictDemand.ElecN[i],
                     ResultsArray.ElecEch[i], ResultsArray.ElecEhp[i], out ResultsArray.ElecRen[i],
-                    out ResultsArray.ElecBal[i], out ResultsArray.ElecPvUsed[i], 
+                    out ResultsArray.ElecBal[i], out ResultsArray.ElecPvUsed[i],
                     out ResultsArray.ElecWndUsed[i]); // OK
                 if (i == 0) ResultsArray.BatChgN[0] = SimConstants.CapBat * DistrictEnergy.Settings.BatStart;
                 if (i > 0)
@@ -286,7 +286,8 @@ namespace DistrictEnergy
 
             foreach (var umiObject in contextObjects)
             {
-                var objectCop = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter.Conditioning.CoolingCoeffOfPerf;
+                var objectCop = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter
+                    .Conditioning.CoolingCoeffOfPerf;
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     // Cooling is multiplied by objectCop to transform into space cooling demand
@@ -319,11 +320,13 @@ namespace DistrictEnergy
                 "Aggregating Hot Water Loads", true, true);
             foreach (var umiObject in contextObjects)
             {
-                var objectEff = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter.Conditioning.HeatingCoeffOfPerf;
+                var objectEff = UmiContext.Current.Buildings.TryGet(Guid.Parse(umiObject.Id)).Template.Perimeter
+                    .Conditioning.HeatingCoeffOfPerf;
                 for (var i = 0; i < nbDataPoint; i++)
                 {
                     // Heating is multiplied by objectEff to transform into space heating demand
-                    var d = umiObject.Data["SDL/Heating"].Data[i] * objectEff + umiObject.Data["SDL/Domestic Hot Water"].Data[i];
+                    var d = umiObject.Data["SDL/Heating"].Data[i] * objectEff +
+                            umiObject.Data["SDL/Domestic Hot Water"].Data[i];
 
                     if (DistrictEnergy.Settings.UseDistrictLosses)
                     {
