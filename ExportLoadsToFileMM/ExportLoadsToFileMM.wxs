@@ -6,9 +6,9 @@
     <!-- This next bit defines the plug-in file and registry entry for Rhino -->
     <Directory Id="TARGETDIR" Name="SourceDir">
       <!-- We do a per-user installation to the Roaming AppData folder -->
-      <Directory Id="CommonAppDataFolder" Name="CommonAppDataFolder">
+      <Directory Id="AppDataFolder" Name="AppDataFolder">
         <!-- Our directory is called MARIN Rhino Plug-Ins -->
-        <Directory Id="PLUGINFOLDER" Name="District Energy Plug-In" >
+        <Directory Id="PLUGINFOLDER" Name="District Energy Plugin" >
           <!-- this defines the RHP file -->
           <Component Id="ExportLoadsToFile" Guid="{C54AFCE9-C674-4895-8E0A-3BE0454CD1C3}">
             <!-- Install the plug-in from dev/bin/win64/Release to the plug-in folder-->
