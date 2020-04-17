@@ -146,10 +146,12 @@
     <Compile Include="Metrics\Metrics.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ReverseConverter.cs" />
+    <Compile Include="ViewModels\ACustomModuleViewModel.cs" />
     <Compile Include="ViewModels\CarbonViewModel.cs" />
     <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
     <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomEnergySupplyModule.cs" />
     <Compile Include="ViewModels\ElectricGenerationViewModel.cs" />
     <Compile Include="ViewModels\FuelViewModel.cs" />
     <Compile Include="ViewModels\HotWaterViewModel.cs" />
@@ -172,6 +174,12 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
+      <DependentUpon>ACustomModuleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlantSettings\CustomModuleView.xaml.cs">
+      <DependentUpon>CustomModuleView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
       <DependentUpon>NetworkView.xaml</DependentUpon>
     </Compile>
@@ -205,6 +213,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\ACustomModuleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\CustomModuleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
