@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
@@ -44,6 +45,28 @@ namespace DistrictEnergy
             ElectricGenerationViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             HotWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             NetworkViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+
+            starHeight = new GridLength[expanderGrid.RowDefinitions.Count];
+            starHeight[0] = expanderGrid.RowDefinitions[0].Height;
+            starHeight[1] = expanderGrid.RowDefinitions[1].Height;
+            starHeight[3] = expanderGrid.RowDefinitions[3].Height;
+
+            ExpandedOrCollapsed(MyExpander);
+            // InitializeComponent calls topExpander.Expanded
+            // while bottomExpander is null, if we hook this up in the xaml
+            MyExpander.Expanded += ExpandedOrCollapsed;
+            MyExpander.Collapsed += ExpandedOrCollapsed;
+        }
+
+        private double _minHeight;
+        public double MinHeight
+        {
+            get { return _minHeight; }
+            set
+            {
+                _minHeight = value;
+                OnPropertyChanged("MinHeight");
+            }
         }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -164,6 +187,8 @@ namespace DistrictEnergy
             OnPropertyChanged();
         }
 
+        GridLength[] starHeight;
+
         private void CostsChecked(object sender, RoutedEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
@@ -180,6 +205,39 @@ namespace DistrictEnergy
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        /// <summary>
+        /// See http://csuporj2.blogspot.com/2009/12/wpf-expanders-with-stretching-height.html for more information
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExpandedOrCollapsed(object sender, RoutedEventArgs e)
+        {
+            ExpandedOrCollapsed(sender as Expander);
+        }
+
+        void ExpandedOrCollapsed(Expander expander)
+        {
+            if (expander.Parent is Grid grid)
+            {
+                var rowIndex = Grid.GetRow(grid);
+                var row = expanderGrid.RowDefinitions[rowIndex];
+                if (expander.IsExpanded)
+                {
+                    row.Height = starHeight[rowIndex];
+                    row.MinHeight = 88;
+                }
+                else
+                {
+                    starHeight[rowIndex] = row.Height;
+                    row.Height = GridLength.Auto;
+                    row.MinHeight = 0;
+                }
+            }
+
+            var isExpanded = MyExpander.IsExpanded;
+            splitter.Visibility = isExpanded ?
+                Visibility.Visible : Visibility.Collapsed;
         }
     }
 
