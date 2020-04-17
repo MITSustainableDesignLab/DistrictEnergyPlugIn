@@ -69,6 +69,9 @@
             <TabItem Header="Loads">
                 <resultViews:Loads Margin="0,5,0,0" />
             </TabItem>
+            <TabItem Header="Summary">
+                <resultViews:Summary  Margin="0,5,0,0" />
+            </TabItem>
         </dragablz:TabablzControl>
 
 

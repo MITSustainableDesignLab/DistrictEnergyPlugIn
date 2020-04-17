@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug64</Configuration>
@@ -156,6 +156,7 @@
     <Compile Include="ViewModels\Converters\KWConverterUnit.cs" />
     <Compile Include="ViewModels\Converters\KWhConverter.cs" />
     <Compile Include="ViewModels\Converters\NormalizedkgCO2ConverterUnit.cs" />
+    <Compile Include="ViewModels\SummaryViewModel.cs" />
     <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
     <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
@@ -211,6 +212,9 @@
     <Compile Include="Views\ResultViews\Loads.xaml.cs">
       <DependentUpon>Loads.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ResultViews\Summary.xaml.cs">
+      <DependentUpon>Summary.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
@@ -254,6 +258,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ResultViews\Loads.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResultViews\Summary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
