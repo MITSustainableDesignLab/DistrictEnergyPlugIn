@@ -265,7 +265,7 @@ namespace DistrictEnergy
             // Go Hour by hour and parse through the simulation routine
             SetResultsArraystoZero();
             DeleteLogFile();
-            SummaryViewModel.Instance.CalculateConstants();
+            SummaryViewModel.Instance.CalculateUserConstants();
             MainSimulation();
             //SimulationResultsToCsv();
 

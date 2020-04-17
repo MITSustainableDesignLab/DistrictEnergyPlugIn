@@ -9,142 +9,205 @@
     xmlns:converters="clr-namespace:DistrictEnergy.ViewModels.Converters"
     x:Class="DistrictEnergy.Views.ResultViews.Summary"
     mc:Ignorable="d"
-    d:DesignHeight="334.087" d:DesignWidth="376.219"
+    d:DesignHeight="323.834" d:DesignWidth="388.75"
     d:DataContext="{d:DesignInstance {x:Type viewModels:SummaryViewModel}}">
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
-        <Grid>
+        <Grid VerticalAlignment="Top">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
+                <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.Resources>
-                <converters:DollarConverter x:Key="DollarConverter" />
-                <converters:CostConverterUnit x:Key="CostConverterUnit" />
-                <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
-                <converters:AreaConverter x:Key="AreaConverter" />
-                <converters:AreaConverterUnit x:Key="AreaConverterUnit" />
-                <converters:KWConverter x:Key="KwConverter" />
-                <converters:KWConverterUnit x:Key="KwConverterUnit" />
-                <converters:KwPerHourConverter x:Key="KwPerHourConverter" />
-                <converters:KwPerHourConverterUnit x:Key="KwPerHourConverterUnit" />
-            </Grid.Resources>
-            <TextBlock Text="UserDefined" Grid.Column="1" Grid.ColumnSpan="2" />
-            <TextBlock Text="Computed" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
-            <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="0">
-                <TextBlock Text="Cooling capacity of absorption chillers" />
-                <TextBlock Text="Capacity of Electrical Heat Pumps" />
-                <TextBlock Text="Capacity of Battery"
-                           ToolTip="Capacity of Battery, defined as the average demand times the desired autonomy" />
-                <TextBlock Text="Capacity of Hot Water Tank" />
-                <TextBlock Text="Electricity Output Capacity of CHP plant" />
-                <TextBlock Text="Heating Output Capacity of CHP plant"
-                           ToolTip=" Capacity of CHP plant in hot water production (max over the year)" />
-                <TextBlock Text="Natural Gas Boiler Capacity" />
-                <TextBlock Text="Capacity of the solar hot water array" />
-                <TextBlock Text="Capacity of the Electric Chiller" />
-                <TextBlock Text="Peak Grid Electricity Demand" />
-                <TextBlock Text="Capacity of the PV array" />
-                <TextBlock Text="Capacity of the wind turbine field" />
-                <TextBlock Text="Required Solar Thermal Panel Area" />
-                <TextBlock Text="Required PV Collectors Area" />
-                <TextBlock Text="Number of Wind Turbines"
-                           ToolTip="Number of turbines needed: Annual electricity needed divided by how much one turbine generates. [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and cut-out speeds x COP)]" />
-                <TextBlock Text="Hot Water Tank Charge Rate" />
-                <TextBlock Text="Battery Charge Rate" />
-                <TextBlock Text="Hot Water Tank Discharge Rate" />
-                <TextBlock Text="Battery Discharge Rate" />
-            </StackPanel>
-            <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="1">
-                <TextBlock Text="{Binding CapAbs, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapEhp, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapBat, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapHwt, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapChpElec, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapChpHeat, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapNgb, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapShw, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapEch, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapElecProj, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapPv, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapWnd, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding AreaShw, Converter={StaticResource AreaConverter}}" />
-                <TextBlock Text="{Binding AreaPv, Converter={StaticResource AreaConverter}}" />
-                <TextBlock Text="{Binding NumWnd}" />
-                <TextBlock Text="{Binding ChgrHwt, Converter={StaticResource KwPerHourConverter}}" />
-                <TextBlock Text="{Binding ChgrBat, Converter={StaticResource KwPerHourConverter}}" />
-                <TextBlock Text="{Binding DchgrHwt, Converter={StaticResource KwPerHourConverter}}" />
-                <TextBlock Text="{Binding DchgBat, Converter={StaticResource KwPerHourConverter}}" />
-            </StackPanel>
-            <StackPanel x:Name="UserUnits" Margin="2,0" Grid.Row="1" Grid.Column="2">
-                <TextBlock Text="{Binding CapAbs, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapEhp, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapBat, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapHwt, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapChpElec, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapChpHeat, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapNgb, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapShw, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapEch, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapElecProj, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapPv, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding CapWnd, Converter={StaticResource KwConverterUnit}}" />
-                <TextBlock Text="{Binding AreaShw, Converter={StaticResource AreaConverterUnit}}" />
-                <TextBlock Text="{Binding AreaPv, Converter={StaticResource AreaConverterUnit}}" />
-                <TextBlock Text="#" />
-                <TextBlock Text="{Binding ChgrHwt, Converter={StaticResource KwPerHourConverterUnit}}" />
-                <TextBlock Text="{Binding ChgrBat, Converter={StaticResource KwPerHourConverterUnit}}" />
-                <TextBlock Text="{Binding DchgrHwt, Converter={StaticResource KwPerHourConverterUnit}}" />
-                <TextBlock Text="{Binding DchgBat, Converter={StaticResource KwPerHourConverterUnit}}" />
-            </StackPanel>
-            <StackPanel Grid.Column="3" Margin="2,0" Grid.Row="1">
-                <TextBlock Text="{Binding CapAbs, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapEhp, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapBat, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapHwt, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapChpElec, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapChpHeat, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapNgb, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapShw, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapEch, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapElecProj, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapPv, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapWnd, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding AreaShw, Converter={StaticResource AreaConverter}}" />
-                <TextBlock Text="{Binding AreaPv, Converter={StaticResource AreaConverter}}" />
-                <TextBlock Text="{Binding NumWnd}" />
-                <TextBlock Text="{Binding ChgrHwt}" />
-                <TextBlock Text="{Binding ChgrBat}" />
-                <TextBlock Text="{Binding DchgrHwt}" />
-                <TextBlock Text="{Binding DchgBat}" />
-            </StackPanel>
-            <StackPanel Grid.Column="4" Margin="2,0" Grid.Row="1">
-                <TextBlock Text="{Binding CapAbs, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapEhp, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapBat, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapHwt, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapChpElec, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapChpHeat, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapNgb, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapShw, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapEch, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapElecProj, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapPv, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding CapWnd, Converter={StaticResource KwConverter}}" />
-                <TextBlock Text="{Binding AreaShw, Converter={StaticResource AreaConverter}}" />
-                <TextBlock Text="{Binding AreaPv, Converter={StaticResource AreaConverter}}" />
-                <TextBlock Text="{Binding NumWnd}" />
-                <TextBlock Text="{Binding ChgrHwt}" />
-                <TextBlock Text="{Binding ChgrBat}" />
-                <TextBlock Text="{Binding DchgrHwt}" />
-                <TextBlock Text="{Binding DchgBat}" />
-            </StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="200"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <converters:DollarConverter x:Key="DollarConverter" />
+                    <converters:CostConverterUnit x:Key="CostConverterUnit" />
+                    <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
+                    <converters:AreaConverter x:Key="AreaConverter" />
+                    <converters:AreaConverterUnit x:Key="AreaConverterUnit" />
+                    <converters:KWConverter x:Key="KwConverter" />
+                    <converters:KWConverterUnit x:Key="KwConverterUnit" />
+                    <converters:KwPerHourConverter x:Key="KwPerHourConverter" />
+                    <converters:KwPerHourConverterUnit x:Key="KwPerHourConverterUnit" />
+                    <converters:KWhConverter x:Key="KWhConverter" />
+                    <converters:KWhConverterUnit x:Key="KWhConverterUnit" />
+                </Grid.Resources>
+
+                <TextBlock Text="Demands" Grid.Column="0" Grid.ColumnSpan="2" />
+                <TextBlock Text="Peak" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
+                <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
+                <StackPanel Margin="2,0" Grid.Column="0" Grid.Row="1">
+                    <TextBlock Text="Cooling" />
+                    <TextBlock Text="Heating" />
+                    <TextBlock Text="Electricity" />
+                </StackPanel>
+                <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="1">
+                    <TextBlock Text="{Binding ModelCoolingDemand, Converter={StaticResource KwConverter}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelHeatingDemand, Converter={StaticResource KwConverter}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelElectricityDemand, Converter={StaticResource KwConverter}}"></TextBlock>
+                </StackPanel>
+                <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="2">
+                    <TextBlock Text="{Binding ModelCoolingDemand, Converter={StaticResource KwConverterUnit}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelHeatingDemand, Converter={StaticResource KwConverterUnit}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelElectricityDemand, Converter={StaticResource KwConverterUnit}}"></TextBlock>
+                </StackPanel>
+                <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="3">
+                    <TextBlock Text="{Binding ModelCoolingEnergy, Converter={StaticResource KWhConverter}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelHeatingEnergy, Converter={StaticResource KWhConverter}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelElectricityEnergy, Converter={StaticResource KWhConverter}}"></TextBlock>
+                </StackPanel>
+                <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="4">
+                    <TextBlock Text="{Binding ModelCoolingEnergy, Converter={StaticResource KWhConverterUnit}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelHeatingEnergy, Converter={StaticResource KWhConverterUnit}}"></TextBlock>
+                    <TextBlock Text="{Binding ModelElectricityEnergy, Converter={StaticResource KWhConverterUnit}}"></TextBlock>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <converters:DollarConverter x:Key="DollarConverter" />
+                    <converters:CostConverterUnit x:Key="CostConverterUnit" />
+                    <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
+                    <converters:AreaConverter x:Key="AreaConverter" />
+                    <converters:AreaConverterUnit x:Key="AreaConverterUnit" />
+                    <converters:KWConverter x:Key="KwConverter" />
+                    <converters:KWConverterUnit x:Key="KwConverterUnit" />
+                    <converters:KwPerHourConverter x:Key="KwPerHourConverter" />
+                    <converters:KwPerHourConverterUnit x:Key="KwPerHourConverterUnit" />
+                    <converters:KWhConverter x:Key="KWhConverter" />
+                    <converters:KWhConverterUnit x:Key="KWhConverterUnit" />
+                </Grid.Resources>
+                <TextBlock Text="UserDefined" Grid.Column="1" Grid.ColumnSpan="2" />
+                <TextBlock Text="Computed" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
+                <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Text="Cooling capacity of absorption chillers" />
+                    <TextBlock Text="Capacity of Electrical Heat Pumps" />
+                    <TextBlock Text="Capacity of Battery"
+                               ToolTip="Capacity of Battery, defined as the average demand times the desired autonomy" />
+                    <TextBlock Text="Capacity of Hot Water Tank" />
+                    <TextBlock Text="Electricity Output Capacity of CHP plant" />
+                    <TextBlock Text="Heating Output Capacity of CHP plant"
+                               ToolTip=" Capacity of CHP plant in hot water production (max over the year)" />
+                    <TextBlock Text="Natural Gas Boiler Capacity" />
+                    <TextBlock Text="Capacity of the solar hot water array" />
+                    <TextBlock Text="Capacity of the Electric Chiller" />
+                    <TextBlock Text="Peak Grid Electricity Demand" />
+                    <TextBlock Text="Capacity of the PV array" />
+                    <TextBlock Text="Capacity of the wind turbine field" />
+                    <TextBlock Text="Required Solar Thermal Panel Area" />
+                    <TextBlock Text="Required PV Collectors Area" />
+                    <TextBlock Text="Number of Wind Turbines"
+                               ToolTip="Number of turbines needed: Annual electricity needed divided by how much one turbine generates. [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and cut-out speeds x COP)]" />
+                    <TextBlock Text="Hot Water Tank Charge Rate" />
+                    <TextBlock Text="Battery Charge Rate" />
+                    <TextBlock Text="Hot Water Tank Discharge Rate" />
+                    <TextBlock Text="Battery Discharge Rate" />
+                </StackPanel>
+                <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="1">
+                    <TextBlock Text="{Binding CapAbs, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapEhp, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapBat, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapHwt, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapChpElec, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapChpHeat, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapNgb, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapShw, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapEch, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapElecProj, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding CapPv, Converter={StaticResource KWhConverter}}" />
+                    <TextBlock Text="{Binding CapWnd, Converter={StaticResource KWhConverter}}" />
+                    <TextBlock Text="{Binding AreaShw, Converter={StaticResource AreaConverter}}" />
+                    <TextBlock Text="{Binding AreaPv, Converter={StaticResource AreaConverter}}" />
+                    <TextBlock Text="{Binding NumWnd}" />
+                    <TextBlock Text="{Binding ChgrHwt, Converter={StaticResource KwPerHourConverter}}" />
+                    <TextBlock Text="{Binding ChgrBat, Converter={StaticResource KwPerHourConverter}}" />
+                    <TextBlock Text="{Binding DchgrHwt, Converter={StaticResource KwPerHourConverter}}" />
+                    <TextBlock Text="{Binding DchgBat, Converter={StaticResource KwPerHourConverter}}" />
+                </StackPanel>
+                <StackPanel x:Name="UserUnits" Margin="2,0" Grid.Row="1" Grid.Column="2">
+                    <TextBlock Text="{Binding CapAbs, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapEhp, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapBat, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapHwt, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapChpElec, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapChpHeat, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapNgb, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapShw, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapEch, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapElecProj, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding CapPv, Converter={StaticResource KWhConverterUnit}}" />
+                    <TextBlock Text="{Binding CapWnd, Converter={StaticResource KWhConverterUnit}}" />
+                    <TextBlock Text="{Binding AreaShw, Converter={StaticResource AreaConverterUnit}}" />
+                    <TextBlock Text="{Binding AreaPv, Converter={StaticResource AreaConverterUnit}}" />
+                    <TextBlock Text="#" />
+                    <TextBlock Text="{Binding ChgrHwt, Converter={StaticResource KwPerHourConverterUnit}}" />
+                    <TextBlock Text="{Binding ChgrBat, Converter={StaticResource KwPerHourConverterUnit}}" />
+                    <TextBlock Text="{Binding DchgrHwt, Converter={StaticResource KwPerHourConverterUnit}}" />
+                    <TextBlock Text="{Binding DchgBat, Converter={StaticResource KwPerHourConverterUnit}}" />
+                </StackPanel>
+                <StackPanel Grid.Column="3" Margin="2,0" Grid.Row="1">
+                    <TextBlock Text="{Binding ModelCapAbs, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapEhp, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapBat, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapHwt, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapChpElec, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapChpHeat, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapNgb, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapShw, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapEch, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapElecProj, Converter={StaticResource KwConverter}}" />
+                    <TextBlock Text="{Binding ModelCapPv, Converter={StaticResource KWhConverter}}" />
+                    <TextBlock Text="{Binding ModelCapWnd, Converter={StaticResource KWhConverter}}" />
+                    <TextBlock Text="{Binding ModelAreaShw, Converter={StaticResource AreaConverter}}" />
+                    <TextBlock Text="{Binding ModelAreaPv, Converter={StaticResource AreaConverter}}" />
+                    <TextBlock Text="{Binding ModelNumWnd}" />
+                    <TextBlock Text="{Binding ModelChgrHwt, Converter={StaticResource KwPerHourConverter}}" />
+                    <TextBlock Text="{Binding ModelChgrBat, Converter={StaticResource KwPerHourConverter}}" />
+                    <TextBlock Text="{Binding ModelDchgrHwt, Converter={StaticResource KwPerHourConverter}}" />
+                    <TextBlock Text="{Binding ModelDchgBat, Converter={StaticResource KwPerHourConverter}}" />
+                </StackPanel>
+                <StackPanel Grid.Column="4" Margin="2,0" Grid.Row="1">
+                    <TextBlock Text="{Binding ModelCapAbs, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapEhp, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapBat, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapHwt, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapChpElec, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapChpHeat, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapNgb, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapShw, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapEch, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapElecProj, Converter={StaticResource KwConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapPv, Converter={StaticResource KWhConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelCapWnd, Converter={StaticResource KWhConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelAreaShw, Converter={StaticResource AreaConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelAreaPv, Converter={StaticResource AreaConverterUnit}}" />
+                    <TextBlock Text="#" />
+                    <TextBlock Text="{Binding ModelChgrHwt, Converter={StaticResource KwPerHourConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelChgrBat, Converter={StaticResource KwPerHourConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelDchgrHwt, Converter={StaticResource KwPerHourConverterUnit}}" />
+                    <TextBlock Text="{Binding ModelDchgBat, Converter={StaticResource KwPerHourConverterUnit}}" />
+                </StackPanel>
+            </Grid>
         </Grid>
     </ScrollViewer>
 </UserControl>

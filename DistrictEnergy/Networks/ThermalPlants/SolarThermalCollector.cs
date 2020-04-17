@@ -7,7 +7,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
     public class SolarThermalCollector : IThermalPlantSettings
     {
         /// <summary>
-        ///     Target offset as percent of annual energy (%)
+        ///     Target offset as percent of annual energy (%) Todo: Annual Energy?
         /// </summary>
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
