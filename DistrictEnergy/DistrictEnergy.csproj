@@ -139,6 +139,8 @@
     <Compile Include="Networks\ThermalPlants\SolarThermalCollector.cs" />
     <Compile Include="Networks\ThermalPlants\PipeNetwork.cs" />
     <Compile Include="Networks\ThermalPlants\WindTurbine.cs" />
+    <Compile Include="ViewModels\Converters\KwPerHourConverter.cs" />
+    <Compile Include="ViewModels\Converters\KwPerHourConverterUnit.cs" />
     <Compile Include="ViewModels\Converters\OpacityConverter.cs" />
     <Compile Include="PlanningSettings.cs" />
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
