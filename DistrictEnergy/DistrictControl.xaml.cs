@@ -44,6 +44,27 @@ namespace DistrictEnergy
             ElectricGenerationViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             HotWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             NetworkViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+
+            starHeight = new GridLength[expanderGrid.RowDefinitions.Count];
+            starHeight[1] = expanderGrid.RowDefinitions[1].Height;
+            starHeight[4] = expanderGrid.RowDefinitions[4].Height;
+
+            ExpandedOrCollapsed(MyExpander);
+            // InitializeComponent calls topExpander.Expanded
+            // while bottomExpander is null, if we hook this up in the xaml
+            MyExpander.Expanded += ExpandedOrCollapsed;
+            MyExpander.Collapsed += ExpandedOrCollapsed;
+        }
+
+        private double _minHeight;
+        public double MinHeight
+        {
+            get { return _minHeight; }
+            set
+            {
+                _minHeight = value;
+                OnPropertyChanged("MinHeight");
+            }
         }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -164,6 +185,8 @@ namespace DistrictEnergy
             OnPropertyChanged();
         }
 
+        GridLength[] starHeight;
+
         private void CostsChecked(object sender, RoutedEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
@@ -180,6 +203,32 @@ namespace DistrictEnergy
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void ExpandedOrCollapsed(object sender, RoutedEventArgs e)
+        {
+            ExpandedOrCollapsed(sender as Expander);
+        }
+
+        void ExpandedOrCollapsed(Expander expander)
+        {
+            var rowIndex = Grid.GetRow(expander);
+            var row = expanderGrid.RowDefinitions[rowIndex];
+            if (expander.IsExpanded)
+            {
+                row.Height = starHeight[rowIndex];
+                row.MinHeight = 88;
+            }
+            else
+            {
+                starHeight[rowIndex] = row.Height;
+                row.Height = GridLength.Auto;
+                row.MinHeight = 0;
+            }
+
+            var isExpanded = MyExpander.IsExpanded;
+            splitter.Visibility = isExpanded ?
+                Visibility.Visible : Visibility.Collapsed;
         }
     }
 
