@@ -73,13 +73,7 @@
                 <resultViews:Loads Margin="0,5,0,0"/>
             </TabItem>
         </dragablz:TabablzControl>
-        <Grid Grid.Row="3" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*" />
-                <ColumnDefinition Width="50*" />
-            </Grid.ColumnDefinitions>
-            <Button Click="RunSimulationClick" Margin="5,0" Content="Run Simulation" Grid.ColumnSpan="2" />
-        </Grid>
+        <Button Click="RunSimulationClick" Margin="5,0" Content="Run Simulation" Grid.Row="3"/>
         <Expander Grid.Row="4" Grid.Column="0" Header="Advanced Options"
                   Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch">
             <ScrollViewer Height="500">
