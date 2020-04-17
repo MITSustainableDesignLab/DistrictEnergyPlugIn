@@ -2,23 +2,23 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace DistrictEnergy.ViewModels
+namespace DistrictEnergy.ViewModels.Converters
 {
     /// <summary>
-    ///     Converts a kWh qauntity to MWh or GWh depending on magnitude of value
+    ///     Converts a kWh quantity to MWh or GWh depending on magnitude of value
     /// </summary>
-    public class KWhConverterUnit : IValueConverter
+    public class kgCO2ConverterUnit : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is double d)
             {
                 if (d > 999)
-                    return "MWh";
+                    return "tCO2eq";
 
                 if (d > 999999)
-                    return "GWh";
-                return "kWh";
+                    return "MtCO2eq";
+                return "kgCO2eq";
             }
 
             return string.Empty;
