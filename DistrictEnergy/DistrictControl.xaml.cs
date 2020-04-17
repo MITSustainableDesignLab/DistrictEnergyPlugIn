@@ -206,7 +206,11 @@ namespace DistrictEnergy
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
+        /// <summary>
+        /// See http://csuporj2.blogspot.com/2009/12/wpf-expanders-with-stretching-height.html for more information
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExpandedOrCollapsed(object sender, RoutedEventArgs e)
         {
             ExpandedOrCollapsed(sender as Expander);
@@ -226,7 +230,7 @@ namespace DistrictEnergy
                 else
                 {
                     starHeight[rowIndex] = row.Height;
-                    //row.Height = GridLength.Auto;
+                    row.Height = GridLength.Auto;
                     row.MinHeight = 0;
                 }
             }
