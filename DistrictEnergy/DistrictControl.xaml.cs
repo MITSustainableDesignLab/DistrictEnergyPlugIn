@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
@@ -46,8 +47,9 @@ namespace DistrictEnergy
             NetworkViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
 
             starHeight = new GridLength[expanderGrid.RowDefinitions.Count];
+            starHeight[0] = expanderGrid.RowDefinitions[0].Height;
             starHeight[1] = expanderGrid.RowDefinitions[1].Height;
-            starHeight[4] = expanderGrid.RowDefinitions[4].Height;
+            starHeight[3] = expanderGrid.RowDefinitions[3].Height;
 
             ExpandedOrCollapsed(MyExpander);
             // InitializeComponent calls topExpander.Expanded
@@ -212,18 +214,21 @@ namespace DistrictEnergy
 
         void ExpandedOrCollapsed(Expander expander)
         {
-            var rowIndex = Grid.GetRow(expander);
-            var row = expanderGrid.RowDefinitions[rowIndex];
-            if (expander.IsExpanded)
+            if (expander.Parent is Grid grid)
             {
-                row.Height = starHeight[rowIndex];
-                row.MinHeight = 88;
-            }
-            else
-            {
-                starHeight[rowIndex] = row.Height;
-                row.Height = GridLength.Auto;
-                row.MinHeight = 0;
+                var rowIndex = Grid.GetRow(grid);
+                var row = expanderGrid.RowDefinitions[rowIndex];
+                if (expander.IsExpanded)
+                {
+                    row.Height = starHeight[rowIndex];
+                    row.MinHeight = 88;
+                }
+                else
+                {
+                    starHeight[rowIndex] = row.Height;
+                    //row.Height = GridLength.Auto;
+                    row.MinHeight = 0;
+                }
             }
 
             var isExpanded = MyExpander.IsExpanded;

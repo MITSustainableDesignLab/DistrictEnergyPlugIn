@@ -41,15 +41,14 @@
 
     <Grid Name="expanderGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" /><!-- Scenarios -->
-            <RowDefinition /><!-- Charts -->
+            <RowDefinition Height="Auto"/><!-- Scenarios -->
+            <RowDefinition Height="2*"/><!-- LiveChart -->
             <RowDefinition Height="Auto" /><!-- GridSplitter -->
-            <RowDefinition Height="Auto" /><!-- Button -->
-            <RowDefinition /><!-- Expander -->
+            <RowDefinition /><!-- Button --><!-- Expander -->
         </Grid.RowDefinitions>
         <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
                   SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario"
-                  Style="{StaticResource MaterialDesignComboBox}" Grid.Row="0"
+                  Style="{StaticResource MaterialDesignComboBox}"
                   DisplayMemberPath="DName">
             <ComboBox.DataContext>
                 <vm:DistrictSettingsViewModel />
@@ -57,7 +56,7 @@
         </ComboBox>
 
 
-        <dragablz:TabablzControl Grid.Row="1" Margin="5">
+        <dragablz:TabablzControl Margin="5" Grid.Row="1">
             <TabItem Header="Costs">
                 <resultViews:Costs Margin="0,5,0,0" />
             </TabItem>
@@ -78,20 +77,26 @@
                       HorizontalAlignment="Stretch" Height="5" />
 
 
-        <Button Click="RunSimulationClick" Margin="5,5" Content="Run Simulation" Grid.Row="3" />
-        <Expander Header="Advanced Options" x:Name="MyExpander" IsExpanded="False" Grid.Row="4"
-                  Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch"
-                  Expanded="ExpandedOrCollapsed">
-            <ScrollViewer>
-                <StackPanel>
-                    <plantSettings:NetworkView Height="auto" />
-                    <plantSettings:AbsorptionChillerView Height="auto" />
-                    <plantSettings:HotWaterView Height="auto" />
-                    <plantSettings:ElectricGenerationView Height="auto" />
-                    <plantSettings:CombinedHeatAndPowerView Height="auto" />
-                </StackPanel>
-            </ScrollViewer>
-        </Expander>
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button Click="RunSimulationClick" Margin="5,5" Content="Run Simulation" />
+            <Expander Header="Advanced Options" x:Name="MyExpander" IsExpanded="False"
+                      Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch"
+                      Expanded="ExpandedOrCollapsed" Grid.Row="1">
+                <ScrollViewer Height="Auto">
+                    <StackPanel>
+                        <plantSettings:NetworkView Height="auto" />
+                        <plantSettings:AbsorptionChillerView Height="auto" />
+                        <plantSettings:HotWaterView Height="auto" />
+                        <plantSettings:ElectricGenerationView Height="auto" />
+                        <plantSettings:CombinedHeatAndPowerView Height="auto" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Expander>
+        </Grid>
 
     </Grid>
 
