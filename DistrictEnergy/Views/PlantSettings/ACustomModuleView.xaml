@@ -36,7 +36,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Text="{Binding Name}" />
-        <StackPanel x:Name="panel1" Grid.Row="1">
+        <StackPanel Grid.Row="1">
             <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
                 <Expander.Header>
                     <Grid VerticalAlignment="Top" Panel.ZIndex="1">
@@ -45,11 +45,12 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="delete" Style="{DynamicResource MaterialDesignToolButton}" Click="delete_Click">
+                        <Button x:Name="Delete" Style="{DynamicResource MaterialDesignToolButton}" Click="delete_Click">
                             <materialDesign:PackIcon Kind="delete" VerticalAlignment="Center" />
                         </Button>
                         <Button Grid.Column="2" Margin="5,0" Click="LoadCSV_Click">Load CSV</Button>
-                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Style="{DynamicResource MaterialDesignTextBox}"
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"
+                                 Style="{DynamicResource MaterialDesignTextBox}"
                                  Margin="5,0,0,0" VerticalAlignment="Center" Height="32" />
                     </Grid>
                 </Expander.Header>
