@@ -41,9 +41,8 @@
       <HintPath>..\..\..\UMI\Basilisk.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CsvHelper">
-      <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.15.0.5\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="Deedle, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Deedle.2.1.2\lib\net45\Deedle.dll</HintPath>
@@ -266,6 +265,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\TabHeaderIcon.ico" />
   </ItemGroup>
