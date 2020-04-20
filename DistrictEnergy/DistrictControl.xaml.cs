@@ -74,19 +74,7 @@ namespace DistrictEnergy
             MyExpander.Collapsed += ExpandedOrCollapsed;
         }
 
-        private double _minHeight;
-
         public ObservableCollection<IThermalPlantSettings> ListOfPlantSettings { get; set; }
-
-        public double MinHeight
-        {
-            get { return _minHeight; }
-            set
-            {
-                _minHeight = value;
-                OnPropertyChanged("MinHeight");
-            }
-        }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
