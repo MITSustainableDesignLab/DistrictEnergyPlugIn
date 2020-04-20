@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using CsvHelper;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
 using Rhino;
@@ -161,6 +162,9 @@ namespace DistrictEnergy
                     ResultsArray.ElecEhp[i], out ResultsArray.ElecBat[i], ResultsArray.ElecRen[i],
                     ResultsArray.ElecChp[i]); // OK
 
+                //Custom modules before CHP
+                eqHW_CustomModules(DistrictDemand.HwN[i], ResultsArray.HwAbs[i], ResultsArray.HwShw[i], i);
+
                 if (string.Equals(DistrictEnergy.Settings.TmodChp, "Thermal"))
                 {
                     // ignore NgasChp
@@ -209,6 +213,21 @@ namespace DistrictEnergy
             ResultsArray.OnResultsChanged(EventArgs.Empty);
             RhinoApp.WriteLine("District Energy Simulation complete");
             //StatusBar.HideProgressMeter();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="demand">Hourly Hot Water Profile</param>
+        /// <param name="chiller">Hot water required for Absorption Chiller</param>
+        /// <param name="solar">Energy met by Solar Hot Water Generation</param>
+        /// <param name="i">Time step</param>
+        private void eqHW_CustomModules(double demand, double chiller, double solar, int i)
+        {
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>())
+            {
+                demand = plant.ComputeHeatBalance(demand, chiller, solar, i);
+            }
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)

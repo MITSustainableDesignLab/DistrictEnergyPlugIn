@@ -91,5 +91,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
             return records;
         }
+
+        public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
+        {
+            var custom = Data[i];
+            var excess = Math.Max((chiller + solar + custom) - demand, 0);
+            var balance = demand - (chiller + solar + custom - excess);
+            return balance;
+        }
     }
 }
