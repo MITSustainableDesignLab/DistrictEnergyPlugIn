@@ -14,7 +14,8 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:ACustomModuleViewModel}">
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance viewModels:ACustomModuleViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -34,19 +35,22 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Text="{Binding Name}"/>
+        <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Text="{Binding Name}" />
         <StackPanel x:Name="panel1" Grid.Row="1">
             <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
                 <Expander.Header>
                     <Grid VerticalAlignment="Top" Panel.ZIndex="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" MinWidth="40" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Button x:Name="delete" Style="{DynamicResource MaterialDesignToolButton}" Click="delete_Click">
-                            <materialDesign:PackIcon Kind="delete" VerticalAlignment="Center" /></Button>
-                        <Button Grid.Column="1" Margin="10,0,0,0">Load CSV</Button>
+                            <materialDesign:PackIcon Kind="delete" VerticalAlignment="Center" />
+                        </Button>
+                        <Button Grid.Column="2" Margin="5,0" Click="LoadCSV_Click">Load CSV</Button>
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Style="{DynamicResource MaterialDesignTextBox}"
+                                 Margin="5,0,0,0" VerticalAlignment="Center" Height="32" />
                     </Grid>
                 </Expander.Header>
                 <StackPanel>
@@ -62,7 +66,7 @@
                                VerticalContentAlignment="Center"
                                HorizontalAlignment="Center" Grid.Column="1" />
                         <TextBox
-                            Text="{Binding F_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding F, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Grid.Column="2" />
                     </Grid>
                     <Grid Margin="0,8,0,0" VerticalAlignment="Top">
@@ -77,7 +81,7 @@
                                VerticalContentAlignment="Center"
                                HorizontalAlignment="Center" Grid.Column="1" />
                         <TextBox
-                            Text="{Binding V_ABS, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding V, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Grid.Column="2" />
                     </Grid>
                 </StackPanel>

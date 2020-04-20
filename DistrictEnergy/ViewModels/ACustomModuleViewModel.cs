@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
 {
@@ -16,6 +13,75 @@ namespace DistrictEnergy.ViewModels
 
         public new static ACustomModuleViewModel Instance { get; set; }
 
-        public String Name { get; set; }
+        public int Id { get; set; }
+
+        public String Name
+        {
+            get
+            {
+                try
+                {
+                    return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
+                        .First(x => x.Id == Id).Name;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return "Unammed";
+                }
+            }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
+                    .Name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double F
+        {
+            get
+            {
+                try
+                {
+                    return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
+                        .First(x => x.Id == Id).F;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return 0;
+                }
+            }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
+                    .F = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double V
+        {
+            get
+            {
+                try
+                {
+                    return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
+                        .First(x => x.Id == Id).V;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return 0;
+                }
+            }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
+                    .V = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

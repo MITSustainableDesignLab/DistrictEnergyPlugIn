@@ -23,6 +23,7 @@ namespace DistrictEnergy.Views.PlantSettings
         public CustomModuleView()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         private void btnAddCustomEnergyModule_Click(object sender, RoutedEventArgs e)

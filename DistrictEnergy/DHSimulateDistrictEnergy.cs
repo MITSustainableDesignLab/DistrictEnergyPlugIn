@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -469,7 +470,7 @@ namespace DistrictEnergy
         {
             var file_name = @"C:\UMI\temp\DHSimulationResults.csv";
             using (var writer = new StreamWriter(file_name))
-            using (var csvWriter = new CsvWriter(writer))
+            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
                 var Headers = new List<string>();
                 Headers.Add("DateTime"); // 1
