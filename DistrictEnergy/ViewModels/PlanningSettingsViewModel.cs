@@ -10,11 +10,17 @@ namespace DistrictEnergy.ViewModels
     public class PlanningSettingsViewModel : INotifyPropertyChanged
     {
         public static PlanningSettings PlanningSettings = new PlanningSettings();
+        private double _annuity;
 
         public PlanningSettingsViewModel()
         {
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
+        }
+
+        private void UpdateAnnuity(object sender, PropertyChangedEventArgs e)
+        {
+            Annuity = Metrics.Metrics.AnnuityPayment(PlanningSettings.Rate, PlanningSettings.Periods);
         }
 
         private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
@@ -86,6 +92,7 @@ namespace DistrictEnergy.ViewModels
             {
                 PlanningSettings.Rate = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rate)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Annuity)));
             }
         }
 
@@ -96,12 +103,18 @@ namespace DistrictEnergy.ViewModels
             {
                 PlanningSettings.Periods = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Periods)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Annuity)));
             }
         }
 
         public double Annuity
         {
             get { return Metrics.Metrics.AnnuityPayment(PlanningSettings.Rate, PlanningSettings.Periods); }
+            set
+            {
+                _annuity = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Annuity)));
+            }
         }
 
         public double PumpEfficiency

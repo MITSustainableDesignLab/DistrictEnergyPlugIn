@@ -6,8 +6,13 @@
              xmlns:local="clr-namespace:DistrictEnergy.Views.PlantSettings"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="29.193" d:DesignWidth="604.245" d:DataContext="{d:DesignInstance viewModels:NetworkViewModel}">
+             d:DesignHeight="62.651" d:DesignWidth="604.245"
+             d:DataContext="{d:DesignInstance viewModels:NetworkViewModel}">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -33,6 +38,24 @@
                 Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0"
                 VerticalContentAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
+            <StackPanel.DataContext>
+                <viewModels:PlanningSettingsViewModel />
+            </StackPanel.DataContext>
+            <Label Content="Annuity"
+                   ToolTip="Annuity Payment Factor"
+                   Margin="0,2,3,2" />
+            <TextBox
+                Text="{Binding Rate, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Margin="0,0,10,0" ToolTip="Rate per period"
+                VerticalContentAlignment="Center" />
+            <TextBox
+                Text="{Binding Periods, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Margin="0,0,10,0" ToolTip="Number of periods"
+                VerticalContentAlignment="Center" />
+            <TextBlock Text="{Binding Annuity, StringFormat=N4}" VerticalAlignment="Center" Foreground="#FF969696"
+                       ToolTip="Computed Annuity Payment Factor" />
         </StackPanel>
     </Grid>
 </UserControl>
