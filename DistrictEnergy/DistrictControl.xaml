@@ -93,7 +93,7 @@
                         <plantSettings:HotWaterView Height="auto" />
                         <plantSettings:ElectricGenerationView Height="auto" />
                         <plantSettings:CombinedHeatAndPowerView Height="auto" />
-                        <plantSettings:CustomModuleView Height="auto" />
+                        <!--<plantSettings:CustomModuleView Height="auto" />-->
                     </StackPanel>
                 </ScrollViewer>
             </Expander>

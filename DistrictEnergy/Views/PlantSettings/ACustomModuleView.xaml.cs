@@ -17,6 +17,7 @@ using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
 using Rhino;
 using Rhino.DocObjects.Tables;
+using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Views.PlantSettings
 {
@@ -25,14 +26,34 @@ namespace DistrictEnergy.Views.PlantSettings
     /// </summary>
     public partial class ACustomModuleView : UserControl
     {
-        private static int _id;
+        private static Guid _id;
 
         public ACustomModuleView()
         {
-            _id = Interlocked.Increment(ref _id);
+            _id = new Guid();
             DistrictControl.Instance.ListOfPlantSettings.Add(new CustomEnergySupplyModule() {Id = _id});
             InitializeComponent();
-            DataContext = new ACustomModuleViewModel() {Id = _id};
+            DataContext = new ACustomModuleViewModel() {Id = _id, Name = "New Supply Module"};
+        }
+
+        public ACustomModuleView(LoadTypes type)
+        {
+            _id = new Guid();
+            switch (type)
+            {
+                // Todo: case for each
+                case LoadTypes.Cooling:
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new CustomCoolingSupplyModule() { Id = _id, Name= "New Cooling Supply Module" });
+                    break;
+                case LoadTypes.Elec:
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new CustomElectricitySupplyModule() { Id = _id, Name= "New Electricity Supply Module" });
+                    break;
+                case LoadTypes.Heating:
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new CustomHeatingSupplyModule() { Id = _id, Name = "New Heating Supply Module" });
+                    break;
+            }
+            InitializeComponent();
+            DataContext = new ACustomModuleViewModel() { Id = _id };
         }
 
         /// <summary>

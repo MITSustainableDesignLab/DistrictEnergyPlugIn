@@ -1,26 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
 using CsvHelper;
 using Rhino;
-using Rhino.Commands;
-using Umi.Core;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class CustomEnergySupplyModule : IThermalPlantSettings
     {
-        private double _data;
-        public double F { get; set; }
-        public double V { get; set; }
-
         /// <summary>
         /// Path of the CSV File
         /// </summary>
@@ -34,7 +24,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <summary>
         /// Unique identifier 
         /// </summary>
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+
         /// <summary>
         /// Name of the Custom Energy Supply Module
         /// </summary>
@@ -61,13 +52,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
                     //Get the path of specified file and assign to class instance
                     filePath = openFileDialog.FileName;
                     Path = filePath;
+                    //Read the contents of the file into the umi db
+
+                    Data = LoadCustomDemand(filePath, context);
+                    RhinoApp.WriteLine($"Added additional load from '{filePath}'");
                 }
             }
-
-            //Read the contents of the file into the umi db
-            Data = LoadCustomDemand(filePath, context);
-
-            RhinoApp.WriteLine($"Added additional load from '{filePath}'");
         }
 
         /// <summary>
@@ -91,6 +81,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
             return records;
         }
+
+        public double F { get; set; }
+        public double V { get; set; }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

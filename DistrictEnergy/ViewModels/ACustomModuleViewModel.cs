@@ -13,7 +13,7 @@ namespace DistrictEnergy.ViewModels
 
         public new static ACustomModuleViewModel Instance { get; set; }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public String Name
         {
@@ -32,8 +32,7 @@ namespace DistrictEnergy.ViewModels
             }
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
-                    .Name = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id).Name = value;
                 OnPropertyChanged();
             }
         }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug64</Configuration>
@@ -129,9 +129,13 @@
     <Compile Include="Networks\ThermalPlants\AbsorptionChiller.cs" />
     <Compile Include="Networks\ThermalPlants\BatteryBank.cs" />
     <Compile Include="Networks\ThermalPlants\CombinedHeatNPower.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomCoolingSupplyModule.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomElectricitySupplyModule.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomHeatingSupplyModule.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricChiller.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricHeatPump.cs" />
     <Compile Include="Networks\ThermalPlants\HotWaterStorage.cs" />
+    <Compile Include="Networks\ThermalPlants\ICustomEnergySupplyModule.cs" />
     <Compile Include="Networks\ThermalPlants\IThermalPlantSettings.cs" />
     <Compile Include="Networks\ThermalPlants\NatGasBoiler.cs" />
     <Compile Include="Networks\PlantTemplate.cs" />
