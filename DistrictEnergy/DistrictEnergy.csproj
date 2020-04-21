@@ -112,14 +112,14 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
-    <Compile Include="Converter.cs" />
-    <Compile Include="CostConverterUnit.cs" />
+    <Compile Include="ViewModels\Converters\Converter.cs" />
+    <Compile Include="ViewModels\Converters\CostConverterUnit.cs" />
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
     <Compile Include="DHSimulateDistrictEnergy.cs" />
-    <Compile Include="DollarConverter.cs" />
+    <Compile Include="ViewModels\Converters\DollarConverter.cs" />
     <Compile Include="Helpers\ChartMode.cs" />
     <Compile Include="Helpers\ComparisonConverter.cs" />
     <Compile Include="Helpers\LoadTypes.cs" />
@@ -142,15 +142,25 @@
     <Compile Include="Networks\ThermalPlants\SolarThermalCollector.cs" />
     <Compile Include="Networks\ThermalPlants\PipeNetwork.cs" />
     <Compile Include="Networks\ThermalPlants\WindTurbine.cs" />
-    <Compile Include="OpacityConverter.cs" />
+    <Compile Include="ViewModels\Converters\KwPerHourConverter.cs" />
+    <Compile Include="ViewModels\Converters\KwPerHourConverterUnit.cs" />
+    <Compile Include="ViewModels\Converters\OpacityConverter.cs" />
     <Compile Include="PlanningSettings.cs" />
     <Compile Include="Metrics\DHCapacityFactorCommand.cs" />
     <Compile Include="Metrics\DHEffectiveThermalWidthCommand.cs" />
     <Compile Include="Metrics\Metrics.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ReverseConverter.cs" />
+    <Compile Include="ViewModels\Converters\ReverseConverter.cs" />
+    <Compile Include="ViewModels\Converters\AreaConverter.cs" />
+    <Compile Include="ViewModels\Converters\AreaConverterUnit.cs" />
     <Compile Include="ViewModels\ACustomModuleViewModel.cs" />
     <Compile Include="ViewModels\CarbonViewModel.cs" />
+    <Compile Include="ViewModels\Converters\kgCO2ConverterUnit.cs" />
+    <Compile Include="ViewModels\Converters\KWConverter.cs" />
+    <Compile Include="ViewModels\Converters\KWConverterUnit.cs" />
+    <Compile Include="ViewModels\Converters\KWhConverter.cs" />
+    <Compile Include="ViewModels\Converters\NormalizedkgCO2ConverterUnit.cs" />
+    <Compile Include="ViewModels\SummaryViewModel.cs" />
     <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
     <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
@@ -158,7 +168,7 @@
     <Compile Include="ViewModels\ElectricGenerationViewModel.cs" />
     <Compile Include="ViewModels\FuelViewModel.cs" />
     <Compile Include="ViewModels\HotWaterViewModel.cs" />
-    <Compile Include="ViewModels\KWhConverterUnit.cs" />
+    <Compile Include="ViewModels\Converters\KWhConverterUnit.cs" />
     <Compile Include="ViewModels\LoadsViewModel.cs" />
     <Compile Include="ViewModels\NetworkViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
@@ -210,6 +220,9 @@
     <Compile Include="Views\ResultViews\Loads.xaml.cs">
       <DependentUpon>Loads.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ResultViews\Summary.xaml.cs">
+      <DependentUpon>Summary.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
@@ -257,6 +270,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ResultViews\Loads.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResultViews\Summary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

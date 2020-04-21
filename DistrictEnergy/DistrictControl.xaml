@@ -69,6 +69,9 @@
             <TabItem Header="Loads">
                 <resultViews:Loads Margin="0,5,0,0" />
             </TabItem>
+            <TabItem Header="Summary">
+                <resultViews:Summary  Margin="0,5,0,0" />
+            </TabItem>
         </dragablz:TabablzControl>
 
 
@@ -83,7 +86,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Button Click="RunSimulationClick" Margin="5,5" Content="Run Simulation" />
-            <Expander Header="Advanced Options" x:Name="MyExpander" IsExpanded="False"
+            <Expander Header="Advanced Options" x:Name="MyExpander" IsExpanded="False" Expanded="ExpandedOrCollapsed"
                       Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch"
                       Grid.Row="1">
                 <ScrollViewer Height="Auto">
