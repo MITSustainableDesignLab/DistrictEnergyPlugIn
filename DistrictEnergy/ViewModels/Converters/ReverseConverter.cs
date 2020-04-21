@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Data;
 using LiveCharts;
 
-namespace DistrictEnergy
+namespace DistrictEnergy.ViewModels.Converters
 {
     public class ReverseConverter : IValueConverter
     {

@@ -1,9 +1,8 @@
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
-namespace DistrictEnergy
+namespace DistrictEnergy.ViewModels.Converters
 {
     /// <summary>
     ///     Converts a $ quantity to M$ depending on magnitude of value

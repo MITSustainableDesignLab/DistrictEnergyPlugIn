@@ -1,24 +1,22 @@
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
-namespace DistrictEnergy.ViewModels
+namespace DistrictEnergy.ViewModels.Converters
 {
-    /// <summary>
-    ///     Converts a kWh qauntity to MWh or GWh depending on magnitude of value
-    /// </summary>
-    public class KWhConverterUnit : IValueConverter
+    public class KwPerHourConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is double d)
             {
                 if (d > 999)
-                    return "MWh";
+                    return (d / 1000).ToString("N1", culture); // for MWh
 
                 if (d > 999999)
-                    return "GWh";
-                return "kWh";
+                    return (d / 1000000).ToString("N1", culture); // for GWh
+                return d.ToString("N1", culture); // for kWh;
             }
 
             return string.Empty;
@@ -26,7 +24,10 @@ namespace DistrictEnergy.ViewModels
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return "kWh";
+            double d;
+            if (double.TryParse((string)value, out d))
+                return d;
+            return 0.0;
         }
     }
 }
