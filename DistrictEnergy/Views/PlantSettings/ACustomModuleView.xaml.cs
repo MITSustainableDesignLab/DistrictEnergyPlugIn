@@ -30,7 +30,7 @@ namespace DistrictEnergy.Views.PlantSettings
 
         public ACustomModuleView()
         {
-            _id = new Guid();
+            _id = Guid.NewGuid(); ;
             DistrictControl.Instance.ListOfPlantSettings.Add(new CustomEnergySupplyModule() {Id = _id});
             InitializeComponent();
             DataContext = new ACustomModuleViewModel() {Id = _id, Name = "New Supply Module"};
@@ -38,7 +38,7 @@ namespace DistrictEnergy.Views.PlantSettings
 
         public ACustomModuleView(LoadTypes type)
         {
-            _id = new Guid();
+            _id = Guid.NewGuid(); ;
             switch (type)
             {
                 // Todo: case for each
