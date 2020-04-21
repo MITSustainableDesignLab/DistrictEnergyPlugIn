@@ -84,6 +84,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public double F { get; set; }
         public double V { get; set; }
+        public double Norm { get; set; } = 1;
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

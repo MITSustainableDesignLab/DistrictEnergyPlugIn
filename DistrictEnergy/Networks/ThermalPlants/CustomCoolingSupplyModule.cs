@@ -1,4 +1,5 @@
 ﻿using System;
+using Rhino.Render;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -23,12 +24,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public CustomCoolingSupplyModule Instance { get; set; }
 
-        public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
+        public double ComputeHeatBalance(double demand, int i)
         {
-            var custom = Data[i];
-            var excess = Math.Max((chiller + solar + custom) - demand, 0);
-            var balance = demand - (chiller + solar + custom - excess);
-            return balance;
+            var custom = Data[i] * Math.Abs(1 / Norm);
+            var excess = Math.Max(custom - demand, 0);
+            var used = Math.Min(demand, custom);
+            var balance = demand - (custom - excess);
+            return used;
         }
     }
 }

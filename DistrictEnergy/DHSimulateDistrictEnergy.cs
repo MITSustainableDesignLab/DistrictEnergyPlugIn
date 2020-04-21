@@ -106,7 +106,8 @@ namespace DistrictEnergy
                 //    Debugger.Break();
                 eqHW_ABS(DistrictDemand.ChwN[i], out ResultsArray.HwAbs[i], out ResultsArray.ChwAbs[i],
                     ResultsArray.EhpEvap[i]); //OK
-                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], out ResultsArray.ElecEch[i],
+                eqCHW_CustomModules(DistrictDemand.ChwN[i], out ResultsArray.ChwCustom[i]);
+                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i], ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
                     out ResultsArray.ChwEch[i], out ResultsArray.ChwEhpEvap[i]); //OK
                 eqHW_SHW(DistrictDemand.RadN[i], DistrictDemand.HwN[i], ResultsArray.HwAbs[i],
                     out ResultsArray.HwShw[i],
@@ -127,7 +128,7 @@ namespace DistrictEnergy
                 // Call ABS & ECH a second time to calculate new Absoprtion & Electric chiller loads since heat pumps may have reduced the load
                 eqHW_ABS(DistrictDemand.ChwN[i], out ResultsArray.HwAbs[i], out ResultsArray.ChwAbs[i],
                     ResultsArray.EhpEvap[i]);
-                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], out ResultsArray.ElecEch[i],
+                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i], ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
                     out ResultsArray.ChwEch[i], out ResultsArray.ChwEhpEvap[i]); //OK
                 eqHW_SHW(DistrictDemand.RadN[i], DistrictDemand.HwN[i], ResultsArray.HwAbs[i],
                     out ResultsArray.HwShw[i],
@@ -220,6 +221,22 @@ namespace DistrictEnergy
             {
                 demand = plant.ComputeHeatBalance(demand, chiller, solar, i);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="demand">Hourly Hot Water Profile</param>
+        /// <param name="i">Time step</param>
+        private void eqCHW_CustomModules(double demand, out double chwCustom)
+        {
+            var demand_i = demand;
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomCoolingSupplyModule>())
+            {
+                demand -= plant.ComputeHeatBalance(demand, i);
+            }
+
+            chwCustom = demand_i - demand;
         }
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
@@ -650,19 +667,22 @@ namespace DistrictEnergy
         /// </summary>
         /// <param name="chwN">Hourly chilled water load profile (kWh)</param>
         /// <param name="ehpEvap">All evaporator-side energy</param>
+        /// <param name="chwAbs"></param>
+        /// <param name="chwCustom"></param>
         /// <param name="elecEch">Electricity Consumption to generate chilled water from chillers</param>
         /// <param name="chwEch"></param>
         /// <param name="chwEhpEvap"></param>
-        private void eqELEC_ECH(double chwN, double ehpEvap, out double elecEch, out double chwEch,
+        private void eqELEC_ECH(double chwN, double ehpEvap, double chwAbs, double chwCustom, out double elecEch,
+            out double chwEch,
             out double chwEhpEvap)
         {
-            if (chwN > SimConstants.CapAbs)
+            if (chwN >= SimConstants.CapAbs)
             {
-                elecEch = Math.Max(chwN - SimConstants.CapAbs - ehpEvap, 0) / DistrictEnergy.Settings.CcopEch;
-                chwEch = Math.Max(chwN - SimConstants.CapAbs - ehpEvap, 0);
+                elecEch = Math.Max(chwN - chwAbs - ehpEvap - chwCustom, 0) / DistrictEnergy.Settings.CcopEch;
+                chwEch = Math.Max(chwN - chwAbs - ehpEvap - chwCustom, 0);
 
-                if (ehpEvap > chwN - SimConstants.CapAbs)
-                    chwEhpEvap = chwN - SimConstants.CapAbs;
+                if (ehpEvap > chwN - chwAbs - chwCustom)
+                    chwEhpEvap = chwN - chwAbs - chwCustom;
                 else
                     chwEhpEvap = ehpEvap;
             }
@@ -1051,6 +1071,11 @@ namespace DistrictEnergy
 
     public class ResultsArray
     {
+        /// <summary>
+        ///     Chilled Water met by Custom Cooling Supply Modules
+        /// </summary>
+        internal readonly double[] ChwCustom = new double[8760];
+
         /// <summary>
         ///     eq11 The battery charge for each hour
         /// </summary>

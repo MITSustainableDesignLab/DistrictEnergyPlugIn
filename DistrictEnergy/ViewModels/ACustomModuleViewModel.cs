@@ -32,7 +32,8 @@ namespace DistrictEnergy.ViewModels
             }
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id).Name = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
+                    .Name = value;
                 OnPropertyChanged();
             }
         }
@@ -79,6 +80,29 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
                     .V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double Norm
+        {
+            get
+            {
+                try
+                {
+                    return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
+                        .First(x => x.Id == Id).Norm * 100;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return 0;
+                }
+            }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
+                    .Norm = value / 100;
                 OnPropertyChanged();
             }
         }

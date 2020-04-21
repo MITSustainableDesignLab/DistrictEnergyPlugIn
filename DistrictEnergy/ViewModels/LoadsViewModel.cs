@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Deedle;
 using DistrictEnergy.Annotations;
@@ -136,6 +137,11 @@ namespace DistrictEnergy.ViewModels
                     Key = "Cooling from Evaporator Side of EHPs",
                     Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
                     Value = instance.ResultsArray.ChwEhpEvap
+                },
+                new ResultsViewModel.ChartValue
+                {
+                    Key = "Cooling from Custom Supply",
+                    Value = instance.ResultsArray.ChwCustom
                 },
                 new ResultsViewModel.ChartValue
                 {
