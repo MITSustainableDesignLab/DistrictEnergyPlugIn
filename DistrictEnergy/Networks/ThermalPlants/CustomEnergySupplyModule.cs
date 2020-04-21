@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media;
 using CsvHelper;
 using Rhino;
 using Umi.RhinoServices.Context;
@@ -85,6 +86,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double F { get; set; }
         public double V { get; set; }
         public double Norm { get; set; } = 1;
+
+        public SolidColorBrush Fill => new SolidColorBrush(Color);
+
+        public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

@@ -135,7 +135,6 @@
     <Compile Include="Networks\ThermalPlants\ElectricChiller.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricHeatPump.cs" />
     <Compile Include="Networks\ThermalPlants\HotWaterStorage.cs" />
-    <Compile Include="Networks\ThermalPlants\ICustomEnergySupplyModule.cs" />
     <Compile Include="Networks\ThermalPlants\IThermalPlantSettings.cs" />
     <Compile Include="Networks\ThermalPlants\NatGasBoiler.cs" />
     <Compile Include="Networks\PlantTemplate.cs" />
@@ -181,9 +180,6 @@
     <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
       <DependentUpon>ACustomModuleView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlantSettings\CustomModuleView.xaml.cs">
-      <DependentUpon>CustomModuleView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
       <DependentUpon>NetworkView.xaml</DependentUpon>
     </Compile>
@@ -221,10 +217,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PlantSettings\ACustomModuleView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PlantSettings\CustomModuleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,21 +1,11 @@
 ﻿using System;
+using System.Windows.Media;
 using Rhino.Render;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class CustomCoolingSupplyModule : CustomEnergySupplyModule
     {
-        public new double F
-        {
-            set { Instance.F = value; }
-            get { return Instance.F; }
-        }
-
-        public new double V
-        {
-            set { Instance.V = value; }
-            get { return Instance.V; }
-        }
 
         public CustomCoolingSupplyModule()
         {
@@ -30,7 +20,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
             var excess = Math.Max(custom - demand, 0);
             var used = Math.Min(demand, custom);
             var balance = demand - (custom - excess);
+            Used[i] = used;
             return used;
         }
+
+        public double[] Used = new double[8760];
     }
 }

@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Deedle;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
@@ -191,6 +192,17 @@ namespace DistrictEnergy.ViewModels
                     Value = instance.ResultsArray.ElecProj
                 }
             };
+
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomCoolingSupplyModule>())
+            {
+                Supply.Add(new ResultsViewModel.ChartValue()
+                {
+                    Key = plant.Name,
+                    Value = plant.Used,
+                    Fill = plant.Fill
+                });
+                
+            }
 
             SeriesCollection.Clear();
 

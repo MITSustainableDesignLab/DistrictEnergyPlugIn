@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Media;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -103,6 +104,23 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
                     .Norm = value / 100;
+                OnPropertyChanged();
+            }
+        }
+
+        public Color Color
+        {
+            get
+            {
+
+                    return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
+                        .First(x => x.Id == Id).Color;
+                
+            }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
+                    .Color = value;
                 OnPropertyChanged();
             }
         }

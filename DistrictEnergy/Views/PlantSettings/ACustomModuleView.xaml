@@ -55,6 +55,7 @@
                     </Grid>
                 </Expander.Header>
                 <StackPanel>
+                    <materialDesign:ColorPicker Color="{Binding Color}" HueSliderPosition="Bottom" />
                     <Grid VerticalAlignment="Top" Panel.ZIndex="1" Height="25">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
