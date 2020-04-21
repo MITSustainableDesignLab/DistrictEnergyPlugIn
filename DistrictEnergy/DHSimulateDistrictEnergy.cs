@@ -28,14 +28,6 @@ namespace DistrictEnergy
     [CommandStyle(Rhino.Commands.Style.ScriptRunner)]
     public class DHSimulateDistrictEnergy : Command
     {
-        public enum LoadTypes
-        {
-            Cooling,
-            Heating,
-            Elec
-        }
-
-
         /// <summary>
         ///     Simulation Timestep
         /// </summary>
