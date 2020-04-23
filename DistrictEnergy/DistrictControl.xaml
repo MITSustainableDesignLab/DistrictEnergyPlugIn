@@ -34,64 +34,73 @@
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
+            <Style TargetType="{x:Type dragablz:TabablzControl}"
+                   BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Name="expanderGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="32" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="Auto"/><!-- Scenarios -->
+            <RowDefinition Height="2*"/><!-- LiveChart -->
+            <RowDefinition Height="Auto" /><!-- GridSplitter -->
+            <RowDefinition /><!-- Button --><!-- Expander -->
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100*" />
-        </Grid.ColumnDefinitions>
-        <StackPanel>
-            <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
-                      SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario"
-                      Style="{StaticResource MaterialDesignComboBox}"
-                      DisplayMemberPath="DName">
-                <ComboBox.DataContext>
-                    <vm:DistrictSettingsViewModel />
-                </ComboBox.DataContext>
-            </ComboBox>
-        </StackPanel>
-        <dragablz:TabablzControl Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="5">
+        <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
+                  SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario"
+                  Style="{StaticResource MaterialDesignComboBox}"
+                  DisplayMemberPath="DName">
+            <ComboBox.DataContext>
+                <vm:DistrictSettingsViewModel />
+            </ComboBox.DataContext>
+        </ComboBox>
+
+
+        <dragablz:TabablzControl Margin="5" Grid.Row="1">
             <TabItem Header="Costs">
                 <resultViews:Costs Margin="0,5,0,0" />
             </TabItem>
             <TabItem Header="Carbon">
-                <resultViews:Carbon Margin="0,5,0,0"/>
+                <resultViews:Carbon Margin="0,5,0,0" />
             </TabItem>
             <TabItem Header="Fuel">
-                <resultViews:Fuel Margin="0,5,0,0"/>
+                <resultViews:Fuel Margin="0,5,0,0" />
             </TabItem>
             <TabItem Header="Loads">
-                <resultViews:Loads Margin="0,5,0,0"/>
+                <resultViews:Loads Margin="0,5,0,0" />
+            </TabItem>
+            <TabItem Header="Summary">
+                <resultViews:Summary  Margin="0,5,0,0" />
             </TabItem>
         </dragablz:TabablzControl>
-        <Grid Grid.Row="3" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*" />
-                <ColumnDefinition Width="50*" />
-            </Grid.ColumnDefinitions>
-            <Button Click="RunSimulationClick" Margin="5,0" Content="Run Simulation" Grid.ColumnSpan="2" />
+
+
+        <GridSplitter Grid.Row="2" Name="splitter"
+                      ResizeDirection="Rows" VerticalContentAlignment="Bottom"
+                      HorizontalAlignment="Stretch" Height="5" />
+
+
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button Click="RunSimulationClick" Margin="5,5" Content="Run Simulation" />
+            <Expander Header="Advanced Options" x:Name="MyExpander" IsExpanded="False"
+                      Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch"
+                      Expanded="ExpandedOrCollapsed" Grid.Row="1">
+                <ScrollViewer Height="Auto">
+                    <StackPanel>
+                        <plantSettings:NetworkView Height="auto" />
+                        <plantSettings:AbsorptionChillerView Height="auto" />
+                        <plantSettings:HotWaterView Height="auto" />
+                        <plantSettings:ElectricGenerationView Height="auto" />
+                        <plantSettings:CombinedHeatAndPowerView Height="auto" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Expander>
         </Grid>
-        <Expander Grid.Row="4" Grid.Column="0" Header="Advanced Options"
-                  Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch">
-            <ScrollViewer Height="500">
-                <StackPanel>
-                    <plantSettings:NetworkView Height="auto" />
-                    <plantSettings:AbsorptionChillerView Height="auto" />
-                    <plantSettings:HotWaterView Height="auto" />
-                    <plantSettings:ElectricGenerationView Height="auto" />
-                    <plantSettings:CombinedHeatAndPowerView Height="auto" />
-                </StackPanel>
-            </ScrollViewer>
-        </Expander>
+
     </Grid>
 
 </UserControl>

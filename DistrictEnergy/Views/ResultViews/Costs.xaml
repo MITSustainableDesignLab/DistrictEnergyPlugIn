@@ -6,15 +6,16 @@
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
+             xmlns:converters="clr-namespace:DistrictEnergy.ViewModels.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:CostsViewModel}">
     <Grid>
         <StackPanel Background="#4CFFFFFF" Height="auto" VerticalAlignment="Top"
                     HorizontalAlignment="Right">
             <StackPanel.Resources>
-                <districtEnergy:DollarConverter x:Key="DollarConverter" />
-                <districtEnergy:CostConverterUnit x:Key="CostConverterUnit" />
-                <districtEnergy:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
+                <converters:DollarConverter x:Key="DollarConverter" />
+                <converters:CostConverterUnit x:Key="CostConverterUnit" />
+                <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
             </StackPanel.Resources>
             <Grid>
                 <Grid.RowDefinitions>
