@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Deedle;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
@@ -139,6 +141,11 @@ namespace DistrictEnergy.ViewModels
                 },
                 new ResultsViewModel.ChartValue
                 {
+                    Key = "Cooling from Custom Supply",
+                    Value = instance.ResultsArray.ChwCustom
+                },
+                new ResultsViewModel.ChartValue
+                {
                     Key = "Heating from Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251, 209, 39)),
                     Value = instance.ResultsArray.HwShw
                 },
@@ -185,6 +192,17 @@ namespace DistrictEnergy.ViewModels
                     Value = instance.ResultsArray.ElecProj
                 }
             };
+
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomCoolingSupplyModule>())
+            {
+                Supply.Add(new ResultsViewModel.ChartValue()
+                {
+                    Key = plant.Name,
+                    Value = plant.Used,
+                    Fill = plant.Fill
+                });
+                
+            }
 
             SeriesCollection.Clear();
 

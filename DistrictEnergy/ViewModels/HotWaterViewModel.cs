@@ -20,30 +20,30 @@ namespace DistrictEnergy.ViewModels
 
         public double EFF_NGB
         {
-            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB * 100;
             set
             {
-                ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<NatGasBoiler>().First().EFF_NGB = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double F_NGB
         {
-            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<NatGasBoiler>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<NatGasBoiler>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<NatGasBoiler>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V_NGB
         {
-            get => ListOfPlantSettings.OfType<NatGasBoiler>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<NatGasBoiler>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<NatGasBoiler>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<NatGasBoiler>().First().V = value;
                 OnPropertyChanged();
             }
         }
@@ -54,20 +54,20 @@ namespace DistrictEnergy.ViewModels
 
         public double OFF_EHP
         {
-            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double HCOP_EHP
         {
-            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().HCOP_EHP;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().HCOP_EHP;
             set
             {
-                ListOfPlantSettings.OfType<ElectricHeatPump>().First().HCOP_EHP = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().HCOP_EHP = value;
                 OnPropertyChanged();
             }
         }
@@ -76,7 +76,7 @@ namespace DistrictEnergy.ViewModels
         {
             get
             {
-                if (ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap == 1)
+                if (DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap == 1)
                     return true;
                 else
                     return false;
@@ -85,12 +85,12 @@ namespace DistrictEnergy.ViewModels
             {
                 if (value)
                 {
-                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 1;
+                    DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 1;
                     OnPropertyChanged();
                 }
                 else
                 {
-                    ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 0;
+                    DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap = 0;
                     OnPropertyChanged();
                 }
             }
@@ -98,20 +98,20 @@ namespace DistrictEnergy.ViewModels
 
         public double F_EHP
         {
-            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<ElectricHeatPump>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V_EHP
         {
-            get => ListOfPlantSettings.OfType<ElectricHeatPump>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<ElectricHeatPump>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().V = value;
                 OnPropertyChanged();
             }
         }
@@ -122,40 +122,40 @@ namespace DistrictEnergy.ViewModels
 
         public double AUT_HWT
         {
-            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT;
             set
             {
-                ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT = value;
                 OnPropertyChanged();
             }
         }
 
         public double TANK_START
         {
-            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START * 100;
             set
             {
-                ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().TANK_START = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double F_HWT
         {
-            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<HotWaterStorage>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V_HWT
         {
-            get => ListOfPlantSettings.OfType<HotWaterStorage>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<HotWaterStorage>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().V = value;
                 OnPropertyChanged();
             }
         }
@@ -166,60 +166,60 @@ namespace DistrictEnergy.ViewModels
 
         public double EFF_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double OFF_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double UTIL_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double LOSS_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW * 100;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double F_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V_SHW
         {
-            get => ListOfPlantSettings.OfType<SolarThermalCollector>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<SolarThermalCollector>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().V = value;
                 OnPropertyChanged();
             }
         }

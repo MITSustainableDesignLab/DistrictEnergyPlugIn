@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -31,13 +32,28 @@ namespace DistrictEnergy
     {
         public DistrictControl()
         {
+            ListOfPlantSettings = new ObservableCollection<IThermalPlantSettings>
+            {
+                new AbsorptionChiller(),
+                new BatteryBank(),
+                new CombinedHeatNPower(),
+                new ElectricChiller(),
+                new ElectricHeatPump(),
+                new HotWaterStorage(),
+                new NatGasBoiler(),
+                new PhotovoltaicArray(),
+                new SolarThermalCollector(),
+                new WindTurbine(),
+                new PipeNetwork()
+            };
+
             InitializeComponent();
             Instance = this;
 
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
             PlantSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
-            
+
 
             // For the different PlantSettingViewModel Children, listen for PropertyChanged
             ChilledWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
@@ -58,20 +74,12 @@ namespace DistrictEnergy
             MyExpander.Collapsed += ExpandedOrCollapsed;
         }
 
-        private double _minHeight;
-        public double MinHeight
-        {
-            get { return _minHeight; }
-            set
-            {
-                _minHeight = value;
-                OnPropertyChanged("MinHeight");
-            }
-        }
+        public ObservableCollection<IThermalPlantSettings> ListOfPlantSettings { get; set; }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "UseDistrictLosses") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
+            if (e.PropertyName == "UseDistrictLosses")
+                DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
             if (e.PropertyName == "RelDistHeatLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
             if (e.PropertyName == "RelDistCoolLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
 
@@ -206,6 +214,7 @@ namespace DistrictEnergy
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         /// <summary>
         /// See http://csuporj2.blogspot.com/2009/12/wpf-expanders-with-stretching-height.html for more information
         /// </summary>
@@ -236,8 +245,7 @@ namespace DistrictEnergy
             }
 
             var isExpanded = MyExpander.IsExpanded;
-            splitter.Visibility = isExpanded ?
-                Visibility.Visible : Visibility.Collapsed;
+            splitter.Visibility = isExpanded ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 

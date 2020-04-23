@@ -457,6 +457,9 @@
                         </Expander>
                     </StackPanel>
                 </Grid>
+                <StackPanel x:Name="stackCustomCW">
+                    <Button Name="btnAddCustomElectricityModule" Margin="0,20,0,0" Click="btnAddCustomElectricityModule_Click">Add Custom Chilled Water Supply Module</Button>
+                </StackPanel>
 
             </StackPanel>
         </GroupBox>

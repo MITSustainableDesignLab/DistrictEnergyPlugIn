@@ -41,8 +41,8 @@
 
     <Grid Name="expanderGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/><!-- Scenarios -->
-            <RowDefinition Height="2*"/><!-- LiveChart -->
+            <RowDefinition Height="Auto" /><!-- Scenarios -->
+            <RowDefinition /><!-- LiveChart -->
             <RowDefinition Height="Auto" /><!-- GridSplitter -->
             <RowDefinition /><!-- Button --><!-- Expander -->
         </Grid.RowDefinitions>
@@ -82,13 +82,13 @@
 
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Button Click="RunSimulationClick" Margin="5,5" Content="Run Simulation" />
-            <Expander Header="Advanced Options" x:Name="MyExpander" IsExpanded="False"
+            <Expander Header="Advanced Options" x:Name="MyExpander" IsExpanded="False" Expanded="ExpandedOrCollapsed"
                       Style="{DynamicResource MaterialDesignExpander}" HorizontalContentAlignment="Stretch"
-                      Expanded="ExpandedOrCollapsed" Grid.Row="1">
+                      Grid.Row="1">
                 <ScrollViewer Height="Auto">
                     <StackPanel>
                         <plantSettings:NetworkView Height="auto" />
@@ -96,6 +96,7 @@
                         <plantSettings:HotWaterView Height="auto" />
                         <plantSettings:ElectricGenerationView Height="auto" />
                         <plantSettings:CombinedHeatAndPowerView Height="auto" />
+                        <!--<plantSettings:CustomModuleView Height="auto" />-->
                     </StackPanel>
                 </ScrollViewer>
             </Expander>

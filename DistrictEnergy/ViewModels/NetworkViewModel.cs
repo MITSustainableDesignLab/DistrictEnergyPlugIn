@@ -20,7 +20,7 @@ namespace DistrictEnergy.ViewModels
         {
             get
             {
-                if (ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses == 1)
+                if (DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses == 1)
                     return true;
                 else
                     return false;
@@ -29,12 +29,12 @@ namespace DistrictEnergy.ViewModels
             {
                 if (value)
                 {
-                    ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 1;
+                    DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 1;
                     OnPropertyChanged();
                 }
                 else
                 {
-                    ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 0;
+                    DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 0;
                     OnPropertyChanged();
                 }
             }
@@ -42,20 +42,20 @@ namespace DistrictEnergy.ViewModels
 
         public double RelDistHeatLoss
         {
-            get => ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss * 100;
             set
             {
-                ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double RelDistCoolLoss
         {
-            get => ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss * 100;
             set
             {
-                ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss = value / 100;
                 OnPropertyChanged();
             }
         }

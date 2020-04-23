@@ -22,60 +22,60 @@ namespace DistrictEnergy.ViewModels
 
         public TrakingModeEnum TMOD_CHP
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP = value;
                 OnPropertyChanged();
             }
         }
 
         public double OFF_CHP
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double EFF_CHP
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().EFF_CHP = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double HREC_CHP
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP * 100;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double F
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V
         {
-            get => ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V = value;
                 OnPropertyChanged();
             }
         }

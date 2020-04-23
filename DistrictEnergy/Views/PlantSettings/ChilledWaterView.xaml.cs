@@ -1,4 +1,5 @@
 using System.Windows.Controls;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
 
 namespace DistrictEnergy.Views.PlantSettings
@@ -12,6 +13,12 @@ namespace DistrictEnergy.Views.PlantSettings
         {
             InitializeComponent();
             DataContext = new ChilledWaterViewModel();
+        }
+
+        private void btnAddCustomChilledWaterModule_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ACustomModuleView newBtn = new ACustomModuleView(LoadTypes.Cooling);
+            stackCustomCW.Children.Add(newBtn);
         }
     }
 }

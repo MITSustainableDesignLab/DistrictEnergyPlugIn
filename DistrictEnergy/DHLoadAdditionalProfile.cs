@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -85,7 +86,7 @@ namespace DistrictEnergy
             using (var reader = new StreamReader(filePath))
             {
                 // Using CSV reader class
-                using (var csv = new CsvReader(reader))
+                using (var csv = new CsvReader(reader, CultureInfo.CurrentCulture))
                 {
                     records = new Collection<IUmiObject>();
                     var name = "Additional Loads";

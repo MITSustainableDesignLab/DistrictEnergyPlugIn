@@ -41,9 +41,8 @@
       <HintPath>..\..\..\UMI\Basilisk.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CsvHelper">
-      <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.15.0.5\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="Deedle, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Deedle.2.1.2\lib\net45\Deedle.dll</HintPath>
@@ -65,6 +64,9 @@
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Geared, Version=1.2.8.2, Culture=neutral, PublicKeyToken=7292f245d14ab8bf, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Geared.1.2.9\lib\net45\LiveCharts.Geared.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
@@ -142,12 +144,16 @@
     <Compile Include="ViewModels\Converters\DollarConverter.cs" />
     <Compile Include="Helpers\ChartMode.cs" />
     <Compile Include="Helpers\ComparisonConverter.cs" />
+    <Compile Include="Helpers\LoadTypes.cs" />
     <Compile Include="Helpers\TimeGroupers.cs" />
     <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
     <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
     <Compile Include="Networks\ThermalPlants\AbsorptionChiller.cs" />
     <Compile Include="Networks\ThermalPlants\BatteryBank.cs" />
     <Compile Include="Networks\ThermalPlants\CombinedHeatNPower.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomCoolingSupplyModule.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomElectricitySupplyModule.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomHeatingSupplyModule.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricChiller.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricHeatPump.cs" />
     <Compile Include="Networks\ThermalPlants\HotWaterStorage.cs" />
@@ -169,6 +175,7 @@
     <Compile Include="ViewModels\Converters\ReverseConverter.cs" />
     <Compile Include="ViewModels\Converters\AreaConverter.cs" />
     <Compile Include="ViewModels\Converters\AreaConverterUnit.cs" />
+    <Compile Include="ViewModels\ACustomModuleViewModel.cs" />
     <Compile Include="ViewModels\CarbonViewModel.cs" />
     <Compile Include="ViewModels\Converters\kgCO2ConverterUnit.cs" />
     <Compile Include="ViewModels\Converters\KWConverter.cs" />
@@ -179,6 +186,7 @@
     <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
     <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomEnergySupplyModule.cs" />
     <Compile Include="ViewModels\ElectricGenerationViewModel.cs" />
     <Compile Include="ViewModels\FuelViewModel.cs" />
     <Compile Include="ViewModels\HotWaterViewModel.cs" />
@@ -201,6 +209,9 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
+      <DependentUpon>ACustomModuleView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
       <DependentUpon>NetworkView.xaml</DependentUpon>
     </Compile>
@@ -237,6 +248,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\ACustomModuleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -286,6 +301,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="bop\bop_parameters.proto" />
     <None Include="constraint_solver\assignment.proto" />
     <None Include="constraint_solver\demon_profiler.proto" />
