@@ -18,11 +18,6 @@ namespace DistrictEnergy.ViewModels
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
-        private void UpdateAnnuity(object sender, PropertyChangedEventArgs e)
-        {
-            Annuity = Metrics.Metrics.AnnuityPayment(PlanningSettings.Rate, PlanningSettings.Periods);
-        }
-
         private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
         {
             SaveSettings(e);

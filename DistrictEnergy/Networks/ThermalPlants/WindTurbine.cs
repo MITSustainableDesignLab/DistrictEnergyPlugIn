@@ -46,5 +46,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1347)] public double F { get; set; } = 1347;
         [DataMember] [DefaultValue(0)] public double V { get; set; }
+        public double Capacity { get; set; } = double.PositiveInfinity;
+        public string Name { get; set; } = "Wind Turbines";
+        public Guid Id { get; set; } = Guid.NewGuid();
     }
 }

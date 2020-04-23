@@ -4,11 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DistrictEnergy.Networks.ThermalPlants;
+using Umi.RhinoServices.Context;
+using Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy.ViewModels
 {
     public class ElectricGenerationViewModel : PlantSettingsViewModel
     {
+        private double _pvCapacity;
+        private double _windCapacity;
+
         public ElectricGenerationViewModel()
         {
             Instance = this;
@@ -25,6 +30,7 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value / 100;
                 OnPropertyChanged();
+                CalcCapacity();
             }
         }
 
@@ -57,6 +63,7 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
         public double F_PV
         {
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().F;
@@ -77,6 +84,22 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public double PvCapacity
+        {
+            get { return _pvCapacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcCapacity()
+        {
+            PvCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV *
+                         DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum();
+        }
+
         #endregion
 
         #region Wind
@@ -88,6 +111,7 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
                 OnPropertyChanged();
+                CalcWindCapacity();
             }
         }
 
@@ -161,6 +185,22 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public double WindCapacity
+        {
+            get { return _windCapacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcWindCapacity()
+        {
+            WindCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND *
+                           DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum();
+        }
+
         #endregion
 
         #region BatteryBank
@@ -172,6 +212,7 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT = value;
                 OnPropertyChanged();
+                CalcBatCapacity();
             }
         }
 
@@ -213,6 +254,23 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().V = value;
                 OnPropertyChanged();
             }
+        }
+
+        public double BatCapacity
+        {
+            get { return _windCapacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcBatCapacity()
+        {
+            // todo Define a more advanced capacity formulation
+            BatCapacity = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Average() *
+                          DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT * 24;
         }
 
         #endregion

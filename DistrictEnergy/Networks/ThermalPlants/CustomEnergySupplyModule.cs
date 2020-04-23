@@ -25,12 +25,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <summary>
         /// Unique identifier 
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Name of the Custom Energy Supply Module
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "Unnamed";
 
         public void LoadCsv()
         {
@@ -85,6 +85,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public double F { get; set; }
         public double V { get; set; }
+        public double Capacity { get; set; } = double.PositiveInfinity;
         public double Norm { get; set; } = 1;
 
         public SolidColorBrush Fill => new SolidColorBrush(Color);

@@ -104,14 +104,16 @@ namespace DistrictEnergy
                 eqHW_ABS(DistrictDemand.ChwN[i], out ResultsArray.HwAbs[i], out ResultsArray.ChwAbs[i],
                     ResultsArray.EhpEvap[i]); //OK
                 eqCHW_CustomModules(DistrictDemand.ChwN[i], out ResultsArray.ChwCustom[i]);
-                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i], ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
+                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i],
+                    ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
                     out ResultsArray.ChwEch[i], out ResultsArray.ChwEhpEvap[i]); //OK
                 eqHW_SHW(DistrictDemand.RadN[i], DistrictDemand.HwN[i], ResultsArray.HwAbs[i],
                     out ResultsArray.HwShw[i],
                     out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
                 eqELEC_PV(DistrictDemand.RadN[i], out ResultsArray.ElecPv[i]); // OK
                 eqELEC_WND(DistrictDemand.WindN[i], out ResultsArray.ElecWnd[i]); // OK
-                if (i == 0) ResultsArray.TANK_CHG_n[i] = SummaryViewModel.Instance.CapHwt * DistrictEnergy.Settings.TankStart;
+                if (i == 0)
+                    ResultsArray.TANK_CHG_n[i] = SummaryViewModel.Instance.CapHwt * DistrictEnergy.Settings.TankStart;
                 if (i > 0)
                     eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], DistrictDemand.TAmbN[i],
                         out ResultsArray.TANK_CHG_n[i]); // OK
@@ -125,14 +127,16 @@ namespace DistrictEnergy
                 // Call ABS & ECH a second time to calculate new Absoprtion & Electric chiller loads since heat pumps may have reduced the load
                 eqHW_ABS(DistrictDemand.ChwN[i], out ResultsArray.HwAbs[i], out ResultsArray.ChwAbs[i],
                     ResultsArray.EhpEvap[i]);
-                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i], ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
+                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i],
+                    ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
                     out ResultsArray.ChwEch[i], out ResultsArray.ChwEhpEvap[i]); //OK
                 eqHW_SHW(DistrictDemand.RadN[i], DistrictDemand.HwN[i], ResultsArray.HwAbs[i],
                     out ResultsArray.HwShw[i],
                     out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
                 eqELEC_PV(DistrictDemand.RadN[i], out ResultsArray.ElecPv[i]); // OK
                 eqELEC_WND(DistrictDemand.WindN[i], out ResultsArray.ElecWnd[i]); // OK
-                if (i == 0) ResultsArray.TANK_CHG_n[i] = SummaryViewModel.Instance.CapHwt * DistrictEnergy.Settings.TankStart;
+                if (i == 0)
+                    ResultsArray.TANK_CHG_n[i] = SummaryViewModel.Instance.CapHwt * DistrictEnergy.Settings.TankStart;
                 if (i > 0)
                     eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], DistrictDemand.TAmbN[i],
                         out ResultsArray.TANK_CHG_n[i]); // OK
@@ -144,7 +148,8 @@ namespace DistrictEnergy
                     ResultsArray.ElecEch[i], ResultsArray.ElecEhp[i], out ResultsArray.ElecRen[i],
                     out ResultsArray.ElecBal[i], out ResultsArray.ElecPvUsed[i],
                     out ResultsArray.ElecWndUsed[i]); // OK
-                if (i == 0) ResultsArray.BatChgN[0] = SummaryViewModel.Instance.CapBat * DistrictEnergy.Settings.BatStart;
+                if (i == 0)
+                    ResultsArray.BatChgN[0] = SummaryViewModel.Instance.CapBat * DistrictEnergy.Settings.BatStart;
                 if (i > 0)
                     eqBAT_CHG_n(ResultsArray.BatChgN[i - 1], ResultsArray.ElecBal[i],
                         out ResultsArray.BatChgN[i]); // OK
@@ -238,6 +243,29 @@ namespace DistrictEnergy
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
+            Result a = PreSolve();
+
+            if (a == Result.Success)
+            {
+                // Go Hour by hour and parse through the simulation routine
+                SetResultsArraystoZero();
+                DeleteLogFile();
+                SummaryViewModel.Instance.CalculateUserConstants();
+                MainSimulation();
+                //SimulationResultsToCsv();
+
+                return Result.Success;
+            }
+
+            return a;
+        }
+
+        /// <summary>
+        /// PreSolves the model by calculating the load profiles
+        /// </summary>
+        /// <returns></returns>
+        public Result PreSolve()
+        {
             var umiContext = UmiContext.Current;
             if (umiContext == null)
             {
@@ -274,10 +302,10 @@ namespace DistrictEnergy
                 DistrictDemand.ChwN = GetHourlyChilledWaterProfile(contextBuildings);
                 DistrictDemand.HwN = GetHourlyHotWaterLoadProfile(contextBuildings);
                 DistrictDemand.ElecN = GetHourlyElectricalLoadProfile(contextBuildings);
-                (DistrictDemand.AddC, DistrictDemand.AddH, DistrictDemand.AddE) = GetAdditionalLoadProfile(
-                    umiContext.GetObjects()
-                        .Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null)
-                        .ToList());
+                // (DistrictDemand.AddC, DistrictDemand.AddH, DistrictDemand.AddE) = GetAdditionalLoadProfile(
+                //     umiContext.GetObjects()
+                //         .Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null)
+                //         .ToList());
                 StatusBar.HideProgressMeter();
                 DistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
                 DistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
@@ -290,13 +318,6 @@ namespace DistrictEnergy
                     $"Calculated...\n{DistrictDemand.ChwN.Length} datapoints for ColdWater profile\n{DistrictDemand.HwN.Count()} datapoints for HotWater\n{DistrictDemand.ElecN.Count()} datapoints for Electricity\n{DistrictDemand.RadN.Count()} datapoints for Solar Frad\n{DistrictDemand.WindN.Count()} datapoints for WindSpeed");
                 Instance.ResultsArray.StaleResults = false;
             }
-
-            // Go Hour by hour and parse through the simulation routine
-            SetResultsArraystoZero();
-            DeleteLogFile();
-            SummaryViewModel.Instance.CalculateUserConstants();
-            MainSimulation();
-            //SimulationResultsToCsv();
 
             return Result.Success;
         }
@@ -653,7 +674,8 @@ namespace DistrictEnergy
         /// <param name="ehpEvap"></param>
         private void eqHW_ABS(double chwN, out double hwAbs, out double chwAbs, double ehpEvap)
         {
-            hwAbs = GetSmallestNonNegative(chwN - ehpEvap, SummaryViewModel.Instance.CapAbs) / DistrictEnergy.Settings.CcopAbs;
+            hwAbs = GetSmallestNonNegative(chwN - ehpEvap, SummaryViewModel.Instance.CapAbs) /
+                    DistrictEnergy.Settings.CcopAbs;
             chwAbs = GetSmallestNonNegative(chwN - ehpEvap, SummaryViewModel.Instance.CapAbs);
         }
 
@@ -745,10 +767,12 @@ namespace DistrictEnergy
             out double solarBalance)
         {
             hwShw = Math.Min(
-                radN * SummaryViewModel.Instance.AreaShw * DistrictEnergy.Settings.EffShw * DistrictEnergy.Settings.UtilShw *
+                radN * SummaryViewModel.Instance.AreaShw * DistrictEnergy.Settings.EffShw *
+                DistrictEnergy.Settings.UtilShw *
                 (1 - DistrictEnergy.Settings.LossShw), hwN + hwAbs);
             solarBalance =
-                radN * SummaryViewModel.Instance.AreaShw * DistrictEnergy.Settings.EffShw * DistrictEnergy.Settings.UtilShw *
+                radN * SummaryViewModel.Instance.AreaShw * DistrictEnergy.Settings.EffShw *
+                DistrictEnergy.Settings.UtilShw *
                 (1 - DistrictEnergy.Settings.LossShw) - hwN - hwAbs;
         }
 
@@ -772,7 +796,8 @@ namespace DistrictEnergy
             else if (shwBal > 0) // We are charging the tank
             {
                 tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal,
-                    GetSmallestNonNegative(previousTankChgN + SummaryViewModel.Instance.ChgrHwt, SummaryViewModel.Instance.CapHwt));
+                    GetSmallestNonNegative(previousTankChgN + SummaryViewModel.Instance.ChgrHwt,
+                        SummaryViewModel.Instance.CapHwt));
                 SummaryViewModel.Instance.LossHwt = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
                 tankChgN = tankChgN * (1 - SummaryViewModel.Instance.LossHwt);
             }
@@ -806,7 +831,8 @@ namespace DistrictEnergy
         /// <param name="elecPv"></param>
         private void eqELEC_PV(double radN, out double elecPv)
         {
-            elecPv = radN * SummaryViewModel.Instance.AreaPv * DistrictEnergy.Settings.EffPv * DistrictEnergy.Settings.UtilPv *
+            elecPv = radN * SummaryViewModel.Instance.AreaPv * DistrictEnergy.Settings.EffPv *
+                     DistrictEnergy.Settings.UtilPv *
                      (1 - DistrictEnergy.Settings.LossPv);
         }
 
@@ -859,7 +885,8 @@ namespace DistrictEnergy
                     GetHighestNonNegative(previousBatChgN - SummaryViewModel.Instance.DchgBat, 0));
             else if (elecBalance > 0) // We are charging the battery
                 batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance * (1 - DistrictEnergy.Settings.LossBat),
-                    GetSmallestNonNegative(previousBatChgN + SummaryViewModel.Instance.ChgrBat, SummaryViewModel.Instance.CapBat));
+                    GetSmallestNonNegative(previousBatChgN + SummaryViewModel.Instance.ChgrBat,
+                        SummaryViewModel.Instance.CapBat));
             else
                 batChgN = previousBatChgN;
         }
@@ -900,7 +927,8 @@ namespace DistrictEnergy
             double temp = 0;
             if (string.Equals(tracking, "Thermal"))
                 temp = GetSmallestNonNegative(
-                    SummaryViewModel.Instance.CapChpElec / DistrictEnergy.Settings.EffChp * DistrictEnergy.Settings.HrecChp,
+                    SummaryViewModel.Instance.CapChpElec / DistrictEnergy.Settings.EffChp *
+                    DistrictEnergy.Settings.HrecChp,
                     hWn + hwAbs - hwShw - hwHwt - hwEhp); //hwN - hwEhp + hwAbs - hwShw - hwHwt
             if (string.Equals(tracking, "Electrical"))
                 temp = ngasChp * DistrictEnergy.Settings.HrecChp;

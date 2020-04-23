@@ -4,12 +4,15 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Deedle.Vectors;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
 {
     public class CombinedHeatAndPowerViewModel : PlantSettingsViewModel
     {
+        private double _capacity;
+
         public CombinedHeatAndPowerViewModel()
         {
             Instance = this;
@@ -27,6 +30,7 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP = value;
                 OnPropertyChanged();
+                CalcCapacity();
             }
         }
 
@@ -36,7 +40,8 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP = value / 100;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(OFF_CHP));
+                CalcCapacity();
             }
         }
 
@@ -55,7 +60,8 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().HREC_CHP =
+                    value / 100;
                 OnPropertyChanged();
             }
         }
@@ -77,6 +83,33 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public double Capacity
+        {
+            get { return _capacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcCapacity()
+        {
+            switch (TMOD_CHP)
+            {
+                case (TrakingModeEnum.Electrical):
+                    Capacity =
+                        DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP *
+                        DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max();
+                    break;
+                case (TrakingModeEnum.Thermal):
+                    Capacity =
+                        DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP *
+                        DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
+                    break;
             }
         }
     }

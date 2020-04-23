@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -34,5 +35,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0)] public double V { get; set; } = 0;
+
+        public double Capacity { get; set; } = double.PositiveInfinity;
+        public string Name { get; set; } = "Battery";
+        public Guid Id { get; set; } = new Guid();
     }
 }

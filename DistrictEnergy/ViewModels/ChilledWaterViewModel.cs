@@ -10,6 +10,8 @@ namespace DistrictEnergy.ViewModels
 {
     public class ChilledWaterViewModel : PlantSettingsViewModel
     {
+        private double _absChillerCapacity;
+
         public ChilledWaterViewModel()
         {
             Instance = this;
@@ -60,6 +62,7 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS = value / 100;
                 OnPropertyChanged();
+                CalcCapacity();
             }
         }
 
@@ -91,6 +94,25 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().V = value;
                 OnPropertyChanged();
             }
+        }
+
+        public double AbsChillerCapacity
+        {
+            get
+            {
+                return _absChillerCapacity;
+            }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcCapacity()
+        {
+            AbsChillerCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS *
+                                 DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Max();
         }
 
         #endregion

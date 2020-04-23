@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -36,5 +37,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(7191)] public double F { get; set; } = 7191;
         [DataMember] [DefaultValue(0.00887)] public double V { get; set; } = 0.00887;
+        public double Capacity { get; set; } = double.PositiveInfinity;
+        public string Name { get; set; } = "Solar Thermal";
+        public Guid Id { get; set; } = Guid.NewGuid();
     }
 }

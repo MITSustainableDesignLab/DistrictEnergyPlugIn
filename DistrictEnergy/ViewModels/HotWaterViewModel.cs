@@ -9,6 +9,10 @@ namespace DistrictEnergy.ViewModels
 {
     public class HotWaterViewModel : PlantSettingsViewModel
     {
+        private double _hpCapacity;
+        private double _hwStoCapacity;
+        private double _shwCapacity;
+
         public HotWaterViewModel()
         {
             Instance = this;
@@ -59,6 +63,7 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value / 100;
                 OnPropertyChanged();
+                CalcHpCapacity();
             }
         }
 
@@ -116,6 +121,22 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public double HpCapacity
+        {
+            get { return _hpCapacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcHpCapacity()
+        {
+            HpCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP *
+                         DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
+        }
+
         #endregion
 
         #region HWSto
@@ -127,6 +148,7 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT = value;
                 OnPropertyChanged();
+                CalcHwStoCapacityCapacity();
             }
         }
 
@@ -160,6 +182,23 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public double HwStoCapacity
+        {
+            get { return _hwStoCapacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcHwStoCapacityCapacity()
+        {
+            // todo Define a more advanced capacity formulation
+            HwStoCapacity = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Average() *
+                            DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT * 24;
+        }
+
         #endregion
 
         #region SolarThermal
@@ -169,7 +208,8 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().EFF_SHW =
+                    value / 100;
                 OnPropertyChanged();
             }
         }
@@ -179,8 +219,10 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW =
+                    value / 100;
                 OnPropertyChanged();
+                CalcShwCapacity();
             }
         }
 
@@ -189,7 +231,8 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().UTIL_SHW =
+                    value / 100;
                 OnPropertyChanged();
             }
         }
@@ -199,7 +242,8 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().LOSS_SHW =
+                    value / 100;
                 OnPropertyChanged();
             }
         }
@@ -222,6 +266,22 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().V = value;
                 OnPropertyChanged();
             }
+        }
+
+        public double ShwCapacity
+        {
+            get { return _shwCapacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcShwCapacity()
+        {
+            ShwCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW *
+                          DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
         }
 
         #endregion

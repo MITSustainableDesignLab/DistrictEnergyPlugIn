@@ -133,6 +133,8 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
+    <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="ViewModels\Converters\Converter.cs" />
     <Compile Include="ViewModels\Converters\CostConverterUnit.cs" />
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />

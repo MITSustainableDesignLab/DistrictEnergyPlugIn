@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -28,5 +29,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0.0004)] public double V { get; set; } = 0.0004;
+
+        public double Capacity { get; set; } = double.PositiveInfinity;
+        public string Name { get; set; } = "Absorption Chiller";
+        public Guid Id { get; set; } = Guid.NewGuid();
     }
 }
