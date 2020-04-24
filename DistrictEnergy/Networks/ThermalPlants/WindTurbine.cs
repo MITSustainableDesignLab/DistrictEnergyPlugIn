@@ -72,5 +72,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Output { get; set; }
     }
 }

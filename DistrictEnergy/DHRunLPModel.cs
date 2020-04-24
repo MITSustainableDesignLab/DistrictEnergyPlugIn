@@ -50,7 +50,7 @@ namespace DistrictEnergy
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
             int timeSteps = 4; // Number of Time Steps
-            int dt = 2190; // Duration of each Time Steps
+            int dt = 8760 / timeSteps; // Duration of each Time Steps
 
             var P = new Dictionary<(int, IThermalPlantSettings), Variable>();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.Where(o =>
@@ -58,11 +58,11 @@ namespace DistrictEnergy
             {
                 for (var t = 0; t < timeSteps * dt; t+=dt)
                 {
-                    P[(t, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity,
+                    P[(t, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity * dt,
                         string.Format($"P_{t}_{supplymodule.Name}"));
                 }
                 // Add Peak
-                P[(8760, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity,
+                P[(8760, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity * 1,
                     string.Format($"P_Peak_{supplymodule.Name}"));
             }
 
@@ -126,9 +126,19 @@ namespace DistrictEnergy
                 }
 
                 if (loadTypes == LoadTypes.Gas)
-                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes))
+                {
+                    for (int i = 0; i < timeSteps * dt; i += dt)
+                    {
+                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray()
+                                       .Sum() ==
+                                   0);
+                    }
+                    //Peak Condition
+                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == 8760)
                                    .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() ==
                                0);
+                }
             }
 
             RhinoApp.WriteLine("Number of constraints = " + solver.NumConstraints());
@@ -142,7 +152,7 @@ namespace DistrictEnergy
             objective.SetMinimization();
 
             var lp = solver.ExportModelAsLpFormat(false);
-
+            solver.EnableOutput();
             var resultStatus = solver.Solve();
 
             // Check that the problem has an optimal solution.
@@ -161,6 +171,7 @@ namespace DistrictEnergy
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
                 var cap = solutionValues.Last();
                 var energy = solutionValues.ToList().GetRange(0,solutionValues.Count()-1).Sum();
+                plant.Output = solutionValues.ToArray();
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 

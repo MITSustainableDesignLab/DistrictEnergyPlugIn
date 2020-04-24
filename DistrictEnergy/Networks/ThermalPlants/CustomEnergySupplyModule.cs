@@ -99,6 +99,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
         public LoadTypes LoadType { get; set; }
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Output { get; set; }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

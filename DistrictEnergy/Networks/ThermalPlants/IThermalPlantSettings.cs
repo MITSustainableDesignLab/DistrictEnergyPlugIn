@@ -42,5 +42,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         LoadTypes LoadType { get; set; }
         Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        /// <summary>
+        /// Output of the Supply Module per period
+        /// </summary>
+        double[] Output { get; set; }
     }
 }

@@ -26,5 +26,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Guid Id { get; set; } = Guid.NewGuid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Gas;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Output { get; set; }
     }
 }

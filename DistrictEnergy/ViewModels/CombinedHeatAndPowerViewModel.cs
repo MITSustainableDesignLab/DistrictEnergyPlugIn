@@ -98,19 +98,11 @@ namespace DistrictEnergy.ViewModels
 
         private void CalcCapacity()
         {
-            switch (TMOD_CHP)
-            {
-                case (TrakingModeEnum.Electrical):
-                    Capacity =
-                        DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP *
-                        DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max();
-                    break;
-                case (TrakingModeEnum.Thermal):
-                    Capacity =
-                        DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP *
-                        DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
-                    break;
-            }
+            var combinedHeatNPower = DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First();
+            var cMatrix = combinedHeatNPower.ConversionMatrix;
+            var eff = cMatrix.Where(o => o.Key == combinedHeatNPower.LoadType).Select(v=>v.Value).First();
+            Capacity = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max() / eff;
+
         }
     }
 }
