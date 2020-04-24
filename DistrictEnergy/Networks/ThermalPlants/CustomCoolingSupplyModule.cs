@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
+using DistrictEnergy.Helpers;
 using Rhino.Render;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -25,5 +26,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public double[] Used = new double[8760];
+        public LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
     }
 }

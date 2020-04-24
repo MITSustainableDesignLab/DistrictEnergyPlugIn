@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using DistrictEnergy.Helpers;
 using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -12,33 +13,43 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(0)] public double OFF_SHW { get; set; } = 0;
+        [DefaultValue(0)]
+        public double OFF_SHW { get; set; } = 0;
 
         /// <summary>
         ///     Collector efficiency (%)
         /// </summary>
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(0.45)] public double EFF_SHW { get; set; } = 0.45;
+        [DefaultValue(0.45)]
+        public double EFF_SHW { get; set; } = 0.45;
 
         /// <summary>
         ///     Area utilization factor (%)
         /// </summary>
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(0.75)] public double UTIL_SHW { get; set; } = 0.75;
+        [DefaultValue(0.75)]
+        public double UTIL_SHW { get; set; } = 0.75;
 
         /// <summary>
         ///     Miscellaneous losses (%)
         /// </summary>
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(0.15)] public double LOSS_SHW { get; set; } = 0.15;
+        [DefaultValue(0.15)]
+        public double LOSS_SHW { get; set; } = 0.15;
 
         [DataMember] [DefaultValue(7191)] public double F { get; set; } = 7191;
         [DataMember] [DefaultValue(0.00887)] public double V { get; set; } = 0.00887;
         public double Capacity { get; set; } = double.PositiveInfinity;
+
+        [DataMember]
+        [DefaultValue("Solar Thermal")]
         public string Name { get; set; } = "Solar Thermal";
+
         public Guid Id { get; set; } = Guid.NewGuid();
+
+        public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
     }
 }

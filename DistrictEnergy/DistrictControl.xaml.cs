@@ -45,8 +45,6 @@ namespace DistrictEnergy
                 new SolarThermalCollector(),
                 new WindTurbine(),
                 new PipeNetwork(),
-                new GridElectricity(),
-                new GridGas()
             };
 
             InitializeComponent();
@@ -76,7 +74,16 @@ namespace DistrictEnergy
             MyExpander.Collapsed += ExpandedOrCollapsed;
         }
 
-        public ObservableCollection<IThermalPlantSettings> ListOfPlantSettings { get; set; }
+        public ObservableCollection<IThermalPlantSettings> ListOfPlantSettings
+        {
+            get => _listOfPlantSettings;
+            set
+            {
+                if (Equals(value, _listOfPlantSettings)) return;
+                _listOfPlantSettings = value;
+                OnPropertyChanged();
+            }
+        }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -153,6 +160,7 @@ namespace DistrictEnergy
         {
             if (SelectSimCase.SelectedItem != null)
             {
+                DHSimulateDistrictEnergy.Instance.PreSolve();
                 var item = (SimCase) SelectSimCase.SelectedItem;
                 if (item.Id == 1)
                 {
@@ -198,6 +206,7 @@ namespace DistrictEnergy
         }
 
         GridLength[] starHeight;
+        private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
 
         private void CostsChecked(object sender, RoutedEventArgs e)
         {

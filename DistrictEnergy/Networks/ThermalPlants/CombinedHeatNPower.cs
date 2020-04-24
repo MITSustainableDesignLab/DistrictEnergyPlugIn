@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -44,8 +45,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.010)] public double V { get; set; } = 0.010;
 
         public double Capacity { get; set; } = double.PositiveInfinity;
-        public string Name { get; set; } = "Combined Heat&Power";
+        [DataMember]
+        [DefaultValue("Combined Heat&Power")] public string Name { get; set; } = "Combined Heat&Power";
         public Guid Id { get; set; } = Guid.NewGuid();
+        public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
     }
 
     [DataContract(Name = "TMOD_CHP")]

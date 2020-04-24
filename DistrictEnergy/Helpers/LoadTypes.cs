@@ -10,6 +10,7 @@ namespace DistrictEnergy.Helpers
     {
         Cooling,
         Heating,
-        Elec
+        Elec,
+        Transport
     }
 }

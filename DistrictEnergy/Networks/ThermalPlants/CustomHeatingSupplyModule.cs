@@ -1,4 +1,5 @@
 ﻿using System;
+using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -22,6 +23,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public CustomHeatingSupplyModule Instance { get; set; }
+        public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

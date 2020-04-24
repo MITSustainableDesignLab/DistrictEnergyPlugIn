@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Windows.Controls;
+using DistrictEnergy.Helpers;
 using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -36,7 +37,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue(0)] public double F { get; set; }
         [DataMember] [DefaultValue(0)] public double V { get; set; }
         public double Capacity { get; set; } = double.PositiveInfinity;
+
+        [DataMember]
+        [DefaultValue("Distribution Pipes")]
         public string Name { get; set; } = "Distribution Pipes";
+
         public Guid Id { get; set; } = Guid.NewGuid();
+        public LoadTypes LoadType { get; set; } = LoadTypes.Transport;
     }
 }

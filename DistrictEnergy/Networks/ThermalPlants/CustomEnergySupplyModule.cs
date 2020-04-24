@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Windows.Media;
 using CsvHelper;
+using DistrictEnergy.Helpers;
 using Rhino;
 using Umi.RhinoServices.Context;
 
@@ -30,6 +33,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <summary>
         /// Name of the Custom Energy Supply Module
         /// </summary>
+        [DataMember]
+        [DefaultValue("Unnamed")]
         public string Name { get; set; } = "Unnamed";
 
         public void LoadCsv()
@@ -91,6 +96,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public SolidColorBrush Fill => new SolidColorBrush(Color);
 
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
+        public LoadTypes LoadType { get; set; }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

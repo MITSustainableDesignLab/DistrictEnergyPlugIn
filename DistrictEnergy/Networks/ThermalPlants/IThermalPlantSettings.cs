@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -35,6 +36,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <summary>
         /// Unique Id of the Supply Module
         /// </summary>
+        [DataMember]
         Guid Id { get; set; }
+
+        LoadTypes LoadType { get; set; }
     }
 }

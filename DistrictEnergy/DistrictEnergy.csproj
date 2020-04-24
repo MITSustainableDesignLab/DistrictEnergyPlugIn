@@ -161,7 +161,6 @@
     <Compile Include="Networks\ThermalPlants\HotWaterStorage.cs" />
     <Compile Include="Networks\ThermalPlants\IThermalPlantSettings.cs" />
     <Compile Include="Networks\ThermalPlants\NatGasBoiler.cs" />
-    <Compile Include="Networks\PlantTemplate.cs" />
     <Compile Include="Networks\ThermalPlants\PhotovoltaicArray.cs" />
     <Compile Include="Networks\ThermalPlants\SolarThermalCollector.cs" />
     <Compile Include="Networks\ThermalPlants\PipeNetwork.cs" />
