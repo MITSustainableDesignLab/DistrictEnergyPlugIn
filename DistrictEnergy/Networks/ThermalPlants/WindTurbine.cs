@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -9,6 +10,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class WindTurbine : IThermalPlantSettings
     {
+
+        public WindTurbine()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Elec, (1-LOSS_WND)}
+            };
+        }
         /// <summary>
         ///     Target offset as percent of annual energy (%)
         /// </summary>
@@ -62,6 +71,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
-
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

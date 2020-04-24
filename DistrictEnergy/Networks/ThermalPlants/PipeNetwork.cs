@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -10,6 +11,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class PipeNetwork : IThermalPlantSettings
     {
+        public PipeNetwork()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Cooling, UseDistrictLosses == 1 ? RelDistCoolLoss : 1},
+                {LoadTypes.Heating, UseDistrictLosses == 1 ? RelDistHeatLoss : 1}
+            };
+        }
+
         /// <summary>
         ///     Relative distribution heat losses (%)
         /// </summary>
@@ -44,5 +54,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public Guid Id { get; set; } = Guid.NewGuid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Transport;
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
@@ -7,6 +8,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class PhotovoltaicArray : IThermalPlantSettings
     {
+        public PhotovoltaicArray()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Elec, EFF_PV * UTIL_PV * (1 - LOSS_PV)}
+            };
+        }
+
         /// <summary>
         ///     Target offset as percent of annual energy (%)
         /// </summary>
@@ -41,5 +50,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue("PV")] public string Name { get; set; } = "PV";
         public Guid Id { get; set; } = Guid.NewGuid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

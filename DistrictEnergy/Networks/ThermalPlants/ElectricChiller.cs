@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
@@ -7,6 +8,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class ElectricChiller : IThermalPlantSettings
     {
+        public ElectricChiller()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Cooling, CCOP_ECH},
+                {LoadTypes.Elec, -1}
+            };
+        }
+
         /// <summary>
         ///     Cooling coefficient of performance
         /// </summary>
@@ -20,5 +30,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue("Chiller")] public string Name { get; set; } = "Chiller";
         public Guid Id { get; set; }
         public LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

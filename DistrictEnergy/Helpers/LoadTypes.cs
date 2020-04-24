@@ -11,6 +11,7 @@ namespace DistrictEnergy.Helpers
         Cooling,
         Heating,
         Elec,
-        Transport
+        Transport,
+        Gas
     }
 }

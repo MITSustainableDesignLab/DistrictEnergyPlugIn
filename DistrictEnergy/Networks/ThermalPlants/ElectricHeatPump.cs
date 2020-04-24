@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
@@ -7,6 +8,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     public class ElectricHeatPump : IThermalPlantSettings
     {
+        public ElectricHeatPump()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Heating, HCOP_EHP},
+                {LoadTypes.Elec, -1}
+            };
+        }
+
         /// <summary>
         ///     Capacity as percent of peak heating load (%)
         /// </summary>
@@ -32,8 +42,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue(0.00332)] public double V { get; set; } = 0.00332;
         public double Capacity { get; set; } = double.PositiveInfinity;
 
-        [DataMember] [DefaultValue("Heat Pump")] public string Name { get; set; } = "Heat Pump";
+        [DataMember]
+        [DefaultValue("Heat Pump")]
+        public string Name { get; set; } = "Heat Pump";
+
         public Guid Id { get; set; } = Guid.NewGuid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
@@ -7,6 +8,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class AbsorptionChiller : IThermalPlantSettings
     {
+        public AbsorptionChiller()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Cooling, CCOP_ABS},
+                {LoadTypes.Heating, -1}
+
+            };
+        }
+
         /// <summary>
         ///     Capacity as percent of peak cooling load (%)
         /// </summary>
@@ -44,5 +55,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

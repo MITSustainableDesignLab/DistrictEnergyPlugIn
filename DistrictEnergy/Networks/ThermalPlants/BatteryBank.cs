@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
@@ -7,6 +8,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class BatteryBank : IThermalPlantSettings
     {
+        public BatteryBank()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Elec, 1}
+            };
+        }
         /// <summary>
         ///     Capacity as number of days of autonomy (#)
         /// </summary>
@@ -42,5 +50,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue("Battery")] public string Name { get; set; } = "Battery";
         public Guid Id { get; set; } = new Guid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

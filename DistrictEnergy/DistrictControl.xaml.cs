@@ -45,6 +45,8 @@ namespace DistrictEnergy
                 new SolarThermalCollector(),
                 new WindTurbine(),
                 new PipeNetwork(),
+                new GridElectricity(),
+                new GridGas()
             };
 
             InitializeComponent();

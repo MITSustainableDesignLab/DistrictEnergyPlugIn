@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
@@ -7,6 +8,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     public class NatGasBoiler : IThermalPlantSettings
     {
+        public NatGasBoiler()
+        {
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Heating, EFF_NGB},
+                {LoadTypes.Gas, -1}
+            };
+        }
         /// <summary>
         ///     Heating efficiency (%)
         /// </summary>
@@ -19,5 +28,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue("Natural Gas Boiler")] public string Name { get; set; } = "Natural Gas Boiler";
         public Guid Id { get; set; } = Guid.NewGuid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
+        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }

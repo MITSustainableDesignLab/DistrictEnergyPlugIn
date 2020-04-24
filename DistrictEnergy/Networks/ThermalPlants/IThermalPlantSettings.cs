@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
@@ -40,5 +41,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         Guid Id { get; set; }
 
         LoadTypes LoadType { get; set; }
+        Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
     }
 }
