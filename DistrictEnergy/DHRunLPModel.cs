@@ -49,21 +49,28 @@ namespace DistrictEnergy
             var solver = Solver.CreateSolver("SimpleMipProgram", "GLOP_LINEAR_PROGRAMMING");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
-            var timeSteps = 8760;
+            int timeSteps = 4; // Number of Time Steps
+            int dt = 2190; // Duration of each Time Steps
 
-            var P =
-                new Dictionary<(int, IThermalPlantSettings), Variable>();
+            var P = new Dictionary<(int, IThermalPlantSettings), Variable>();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.Where(o =>
                 o.LoadType != LoadTypes.Transport))
-                for (var t = 0; t < timeSteps; t++)
+            {
+                for (var t = 0; t < timeSteps * dt; t+=dt)
+                {
                     P[(t, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity,
                         string.Format($"P_{t}_{supplymodule.Name}"));
+                }
+                // Add Peak
+                P[(8760, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity,
+                    string.Format($"P_Peak_{supplymodule.Name}"));
+            }
 
             RhinoApp.WriteLine("Number of variables = " + solver.NumVariables());
 
-            var cooling = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Sum();
-            var heating = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Sum();
-            var electricity = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum();
+            var cooling = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN;
+            var heating = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN;
+            var electricity = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN;
 
             // Set Load Balance Constraints
             foreach (var loadTypes in P.Select(x => x.Key.Item2.LoadType).Distinct())
@@ -73,9 +80,16 @@ namespace DistrictEnergy
                     var pipe = DistrictControl.Instance.ListOfPlantSettings
                         .Where(o => o.LoadType == LoadTypes.Transport)
                         .Select(o => o.ConversionMatrix[loadTypes]).Aggregate((a, x) => a * x);
-                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes))
+                    for (int i = 0; i < timeSteps * dt; i+=dt)
+                    {
+                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() ==
+                                   cooling.ToList().GetRange(i,dt).Sum() / pipe);
+                    }
+                    // Peak Condition
+                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == 8760)
                                    .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() ==
-                               cooling / pipe);
+                               cooling.Max() / pipe);
                 }
 
                 if (loadTypes == LoadTypes.Heating)
@@ -83,15 +97,33 @@ namespace DistrictEnergy
                     var pipe = DistrictControl.Instance.ListOfPlantSettings
                         .Where(o => o.LoadType == LoadTypes.Transport)
                         .Select(o => o.ConversionMatrix[loadTypes]).Aggregate((a, x) => a * x);
-                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes))
+                    for (int i = 0; i < timeSteps * dt; i += dt)
+                    {
+                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() ==
+                                   heating.ToList().GetRange(i, dt).Sum() / pipe);
+                    }
+                    // Peak Condition
+                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == 8760)
                                    .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() ==
-                               heating / pipe);
+                               heating.Max() / pipe);
                 }
 
                 if (loadTypes == LoadTypes.Elec)
-                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes))
+                {
+                    for (int i = 0; i < timeSteps * dt; i += dt)
+                    {
+                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray()
+                                       .Sum() ==
+                                   electricity.ToList().GetRange(i, dt).Sum());
+                    }
+
+                    //Peak Condition
+                    solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == 8760)
                                    .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() ==
-                               electricity);
+                               electricity.Max());
+                }
 
                 if (loadTypes == LoadTypes.Gas)
                     solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes))
@@ -104,8 +136,6 @@ namespace DistrictEnergy
             // Set the Objective Function
             var objective = solver.Objective();
 
-
-            double dt = 1;
             foreach (var supplymodule in P)
                 objective.SetCoefficient(supplymodule.Value, supplymodule.Key.Item2.F + supplymodule.Key.Item2.V * dt);
 
@@ -129,8 +159,8 @@ namespace DistrictEnergy
                 o.LoadType != LoadTypes.Transport))
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                var cap = solutionValues.Max();
-                var energy = solutionValues.Sum();
+                var cap = solutionValues.Last();
+                var energy = solutionValues.ToList().GetRange(0,solutionValues.Count()-1).Sum();
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
