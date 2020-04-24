@@ -164,11 +164,6 @@ namespace DistrictEnergy
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
-            // foreach (var variable in solver.variables())
-            // {
-            //     RhinoApp.WriteLine($"{variable.Name()} =  + {variable.SolutionValue()}");
-            // }
-
             RhinoApp.WriteLine("\nAdvanced usage:");
             RhinoApp.WriteLine("Problem solved in " + solver.WallTime() + " milliseconds");
             RhinoApp.WriteLine("Problem solved in " + solver.Iterations() + " iterations");
