@@ -15,6 +15,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 {LoadTypes.Heating, HCOP_EHP},
                 {LoadTypes.Elec, -1}
             };
+            Efficiency = ConversionMatrix[LoadType];
         }
 
         /// <summary>
@@ -50,5 +51,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
+        public double Efficiency { get; set; }
     }
 }

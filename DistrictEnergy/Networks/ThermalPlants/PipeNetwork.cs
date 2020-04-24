@@ -18,6 +18,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 {LoadTypes.Cooling, UseDistrictLosses == 1 ? RelDistCoolLoss : 1},
                 {LoadTypes.Heating, UseDistrictLosses == 1 ? RelDistHeatLoss : 1}
             };
+            Efficiency = ConversionMatrix[LoadTypes.Heating];
         }
 
         /// <summary>
@@ -56,5 +57,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Transport;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
+        public double Efficiency { get; set; }
     }
 }

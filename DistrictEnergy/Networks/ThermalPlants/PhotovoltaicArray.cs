@@ -14,6 +14,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Elec, EFF_PV * UTIL_PV * (1 - LOSS_PV)}
             };
+            Efficiency = ConversionMatrix[LoadType];
         }
 
         /// <summary>
@@ -52,5 +53,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
+        public double Efficiency { get; set; }
     }
 }

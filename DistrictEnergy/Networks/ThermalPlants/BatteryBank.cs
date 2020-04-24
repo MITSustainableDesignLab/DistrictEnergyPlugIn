@@ -14,6 +14,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Elec, 1}
             };
+            Efficiency = ConversionMatrix[LoadType];
         }
         /// <summary>
         ///     Capacity as number of days of autonomy (#)
@@ -52,5 +53,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
+        public double Efficiency { get; set; }
     }
 }

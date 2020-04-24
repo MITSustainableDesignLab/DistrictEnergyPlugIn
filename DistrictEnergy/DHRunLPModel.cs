@@ -58,11 +58,11 @@ namespace DistrictEnergy
             {
                 for (var t = 0; t < timeSteps * dt; t+=dt)
                 {
-                    P[(t, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity * dt,
+                    P[(t, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity / supplymodule.Efficiency * dt,
                         string.Format($"P_{t}_{supplymodule.Name}"));
                 }
                 // Add Peak
-                P[(8760, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity * 1,
+                P[(8760, supplymodule)] = solver.MakeNumVar(0.0, supplymodule.Capacity / supplymodule.Efficiency * 1,
                     string.Format($"P_Peak_{supplymodule.Name}"));
             }
 

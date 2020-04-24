@@ -23,7 +23,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         double V { get; set; }
 
         /// <summary>
-        /// Absolute Capacity of the Thermal Plant
+        /// Absolute Capacity of the Supply Module (kW of LoadType)
         /// </summary>
         [DataMember]
         [DefaultValue(double.PositiveInfinity)]
@@ -46,5 +46,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// Output of the Supply Module per period
         /// </summary>
         double[] Output { get; set; }
+        /// <summary>
+        /// Computed Efficiency of the Supply Module
+        /// </summary>
+        double Efficiency { get; set; }
     }
 }

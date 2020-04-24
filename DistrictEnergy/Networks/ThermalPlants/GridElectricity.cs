@@ -14,6 +14,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Elec, 1}
             };
+            Efficiency = ConversionMatrix[LoadType];
         }
         [DataMember] [DefaultValue(0)] public double F { get; set; } = 0;
         [DataMember] [DefaultValue(0.15)] public double V { get; set; } = 0.15;
@@ -23,5 +24,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
+        public double Efficiency { get; set; }
     }
 }
