@@ -49,6 +49,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <summary>
         /// Computed Efficiency of the Supply Module
         /// </summary>
-        double Efficiency { get; set; }
+        double Efficiency { get; }
     }
 }

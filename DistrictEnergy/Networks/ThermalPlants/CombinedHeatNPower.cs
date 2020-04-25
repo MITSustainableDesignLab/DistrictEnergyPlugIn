@@ -6,7 +6,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class CombinedHeatNPower : IThermalPlantSettings
+    public class CombinedHeatNPower : IDispatchable
     {
         public CombinedHeatNPower()
         {
@@ -16,7 +16,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 {LoadTypes.Heating, HREC_CHP},
                 {LoadTypes.Gas, -1},
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
 
         /// <summary>
@@ -61,7 +60,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.010)]
         public double V { get; set; } = 0.010;
 
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Combined Heat&Power")]
@@ -71,7 +70,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
     }
 
     [DataContract(Name = "TMOD_CHP")]

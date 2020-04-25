@@ -6,7 +6,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class NatGasBoiler : IThermalPlantSettings
+    public class NatGasBoiler : IDispatchable
     {
         public NatGasBoiler()
         {
@@ -15,7 +15,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 {LoadTypes.Heating, EFF_NGB},
                 {LoadTypes.Gas, -1}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
         /// <summary>
         ///     Heating efficiency (%)
@@ -31,6 +30,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
     }
 }

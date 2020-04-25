@@ -6,7 +6,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class BatteryBank : IThermalPlantSettings
+    internal class BatteryBank : IStorage
     {
         public BatteryBank()
         {
@@ -14,45 +14,56 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Elec, 1}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
+
         /// <summary>
         ///     Capacity as number of days of autonomy (#)
         /// </summary>
         [DataMember]
-        [DefaultValue(0)] public double AUT_BAT { get; set; } = 0;
+        [DefaultValue(0)]
+        public double AUT_BAT { get; set; } = 0;
 
         /// <summary>
         ///     Miscellaneous losses (%)
         /// </summary>
         [DataMember]
-        [DefaultValue(0.15)] public double LOSS_BAT { get; set; } = 0.15;
+        [DefaultValue(0.15)]
+        public double LOSS_BAT { get; set; } = 0.15;
 
         /// <summary>
         ///     The Battery charged state at the beginning of the simulation. Assumed at 0%.
         /// </summary>
         [DataMember]
-        [DefaultValue(0.80)] public double BAT_START { get; set; } = 0.80;
+        [DefaultValue(0.80)]
+        public double BAT_START { get; set; } = 0.80;
 
         /// <summary>
         /// Specific capacity cost per capacity unit f [$/kW]
         /// </summary>
         [DataMember]
-        [DefaultValue(1383)] public double F { get; set; } = 1383;
+        [DefaultValue(1383)]
+        public double F { get; set; } = 1383;
 
         /// <summary>
         /// Variable cost per energy unit f [$/kWh]
         /// </summary>
         [DataMember]
-        [DefaultValue(0)] public double V { get; set; } = 0;
+        [DefaultValue(0)]
+        public double V { get; set; } = 0;
 
-        public double Capacity { get; set; } = double.PositiveInfinity;
-        [DataMember]
-        [DefaultValue("Battery")] public string Name { get; set; } = "Battery";
+        public double Capacity { get; set; } = 0;
+        [DataMember] [DefaultValue("Battery")] public string Name { get; set; } = "Battery";
         public Guid Id { get; set; } = new Guid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
+        public double ChargingEfficiency => 1 - LOSS_BAT;
+        public double DischargingEfficiency => 1 - LOSS_BAT;
+        public double StorageStandingLosses { get; set; } = 0.001;
+        public double[] Input { get; set; }
+        public double[] Storage { get; set; }
+        public double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
+        public double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
     }
 }

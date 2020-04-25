@@ -6,7 +6,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class ElectricHeatPump : IThermalPlantSettings
+    public class ElectricHeatPump : IDispatchable
     {
         public ElectricHeatPump()
         {
@@ -15,7 +15,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 {LoadTypes.Heating, HCOP_EHP},
                 {LoadTypes.Elec, -1}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1660)] public double F { get; set; } = 1660;
         [DataMember] [DefaultValue(0.00332)] public double V { get; set; } = 0.00332;
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Heat Pump")]
@@ -51,6 +50,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
     }
 }

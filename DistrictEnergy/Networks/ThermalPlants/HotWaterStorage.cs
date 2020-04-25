@@ -6,7 +6,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class HotWaterStorage : IThermalPlantSettings
+    public class HotWaterStorage : IStorage
     {
         public HotWaterStorage()
         {
@@ -14,7 +14,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Heating, 1}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(0)] public double F { get; set; } = 0;
         [DataMember] [DefaultValue(0.167)] public double V { get; set; } = 0.167;
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Thermal Energy Storage")]
@@ -50,6 +49,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
+        public double ChargingEfficiency => 1 - LOSS_HWT;
+        public double DischargingEfficiency => 1 - LOSS_HWT;
+        public double StorageStandingLosses => 0.01;
+        public double[] Input { get; set; }
+        public double[] Storage { get; set; }
+        public double MaxChargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
+        public double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
     }
 }

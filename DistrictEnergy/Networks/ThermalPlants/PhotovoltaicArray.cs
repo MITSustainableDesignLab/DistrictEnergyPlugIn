@@ -6,7 +6,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class PhotovoltaicArray : IThermalPlantSettings
+    internal class PhotovoltaicArray : IDispatchable
     {
         public PhotovoltaicArray()
         {
@@ -14,7 +14,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Elec, EFF_PV * UTIL_PV * (1 - LOSS_PV)}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
 
         /// <summary>
@@ -47,12 +46,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1313)] public double F { get; set; } = 1313;
         [DataMember] [DefaultValue(0)] public double V { get; set; }
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public double Capacity { get; set; } = 0;
         [DataMember] [DefaultValue("PV")] public string Name { get; set; } = "PV";
         public Guid Id { get; set; } = Guid.NewGuid();
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
     }
 }

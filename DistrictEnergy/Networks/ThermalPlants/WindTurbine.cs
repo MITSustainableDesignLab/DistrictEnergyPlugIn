@@ -8,7 +8,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class WindTurbine : IThermalPlantSettings
+    internal class WindTurbine : IDispatchable
     {
 
         public WindTurbine()
@@ -17,7 +17,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Elec, (1-LOSS_WND)}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
         /// <summary>
         ///     Target offset as percent of annual energy (%)
@@ -63,7 +62,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1347)] public double F { get; set; } = 1347;
         [DataMember] [DefaultValue(0)] public double V { get; set; }
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Wind Turbines")]
@@ -74,6 +73,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
     }
 }

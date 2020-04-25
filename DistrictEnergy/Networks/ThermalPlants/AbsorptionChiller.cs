@@ -7,7 +7,7 @@ using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class AbsorptionChiller : IThermalPlantSettings
+    internal class AbsorptionChiller : IDispatchable
     {
         public AbsorptionChiller()
         {
@@ -17,7 +17,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 {LoadTypes.Heating, -1}
 
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
 
         /// <summary>
@@ -48,17 +47,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.0004)]
         public double V { get; set; } = 0.0004;
 
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Absorption Chiller")]
         public string Name { get; set; } = "Absorption Chiller";
-
         public Guid Id { get; set; } = Guid.NewGuid();
-
         public LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
     }
 }

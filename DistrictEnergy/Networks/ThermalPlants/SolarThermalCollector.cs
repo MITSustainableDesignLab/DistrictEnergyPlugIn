@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class SolarThermalCollector : IThermalPlantSettings
+    public class SolarThermalCollector : IDispatchable
     {
         public SolarThermalCollector()
         {
@@ -15,7 +15,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Heating, EFF_SHW * (1-LOSS_SHW) * UTIL_SHW}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
         /// <summary>
         ///     Target offset as percent of annual energy (%) Todo: Annual Energy?
@@ -51,7 +50,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(7191)] public double F { get; set; } = 7191;
         [DataMember] [DefaultValue(0.00887)] public double V { get; set; } = 0.00887;
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Solar Thermal")]
@@ -62,6 +61,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadTypes.Heating];
     }
 }

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using DistrictEnergy.Helpers;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class GridGas : IThermalPlantSettings
+    internal class GridGas : IDispatchable
     {
         public GridGas()
         {
@@ -14,10 +15,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Gas, 1}
             };
-            Efficiency = ConversionMatrix[LoadType];
         }
         [DataMember] [DefaultValue(0)] public double F { get; set; } = 0;
-        [DataMember] [DefaultValue(0.05)] public double V { get; set; } = 0.05;
+
+        [DataMember]
+        [DefaultValue(0.05)]
+        public double V
+        {
+            get => UmiContext.Current != null ? UmiContext.Current.ProjectSettings.GasDollars : 0;
+            set => UmiContext.Current.ProjectSettings.GasDollars = value;
+        }
         public double Capacity { get; set; } = double.PositiveInfinity;
 
         [DataMember]
@@ -28,6 +35,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes LoadType { get; set; } = LoadTypes.Gas;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency { get; set; }
+        public double Efficiency => ConversionMatrix[LoadType];
     }
 }
