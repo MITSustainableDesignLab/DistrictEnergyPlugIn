@@ -7,23 +7,19 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public new double F
         {
-            set { Instance.F = value; }
-            get { return Instance.F; }
+            set { F = value; }
+            get { return F; }
         }
 
         public new double V
         {
-            set { Instance.V = value; }
-            get { return Instance.V; }
+            set { V = value; }
+            get { return V; }
         }
 
         public CustomHeatingSupplyModule()
         {
-            Instance = this;
         }
-
-        public CustomHeatingSupplyModule Instance { get; set; }
-        public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {
@@ -32,5 +28,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             var balance = demand - (chiller + solar + custom - excess);
             return balance;
         }
+
+        public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
     }
 }
