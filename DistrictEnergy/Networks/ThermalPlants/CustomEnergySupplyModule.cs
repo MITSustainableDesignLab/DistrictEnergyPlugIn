@@ -14,7 +14,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class CustomEnergySupplyModule : IDispatchable
+    internal abstract class CustomEnergySupplyModule: IDispatchable
     {
         /// <summary>
         /// Path of the CSV File
@@ -30,6 +30,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// Unique identifier 
         /// </summary>
         public Guid Id { get; set; } = Guid.NewGuid();
+
+        public abstract LoadTypes LoadType { get; set; }
+
+        public abstract double F { get; set; }
+        public abstract double V { get; set; }
+        public abstract double Capacity { get; set; }
 
         /// <summary>
         /// Name of the Custom Energy Supply Module
@@ -88,19 +94,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
             return records;
         }
-
-        public double F { get; set; }
-        public double V { get; set; }
-        public double Capacity { get; set; } = 0;
         public double Norm { get; set; } = 1;
 
         public SolidColorBrush Fill => new SolidColorBrush(Color);
 
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
-        public LoadTypes LoadType { get; set; }
-        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public abstract double[] Output { get; set; }
+        public abstract double Efficiency { get; }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

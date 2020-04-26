@@ -234,7 +234,7 @@ namespace DistrictEnergy
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
                 var cap = solutionValues.Last();
                 var energy = solutionValues.ToList().GetRange(0, solutionValues.Count() - 1).Sum();
-                plant.Output = solutionValues.ToArray();
+                plant.Output = solutionValues.ToList().GetRange(0,timeSteps).ToArray();
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 

@@ -1,34 +1,31 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class CustomElectricitySupplyModule : CustomEnergySupplyModule
     {
-        public new double F
-        {
-            set { Instance.F = value; }
-            get { return Instance.F; }
-        }
-
-        public new double V
-        {
-            set { Instance.V = value; }
-            get { return Instance.V; }
-        }
 
         public CustomElectricitySupplyModule()
         {
-            Instance = this;
+            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            {
+                {LoadTypes.Elec, 1}
+            };
         }
 
-        public CustomElectricitySupplyModule Instance { get; set; }
+        public override LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override double[] Output { get; set; }
+        public override double F { get; set; }
+        public override double V { get; set; }
 
-        public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
+        public override double Efficiency => ConversionMatrix[LoadType];
+        public override double Capacity
         {
-            var custom = Data[i];
-            var excess = Math.Max((chiller + solar + custom) - demand, 0);
-            var balance = demand - (chiller + solar + custom - excess);
-            return balance;
+            get => Data.Max();
+            set => throw new System.NotImplementedException();
         }
     }
 }
