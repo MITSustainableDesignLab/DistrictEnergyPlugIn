@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -134,7 +135,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcHpCapacity()
         {
             HpCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP *
-                         DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
+                         DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
         }
 
         #endregion
@@ -195,7 +196,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcHwStoCapacityCapacity()
         {
             // todo Define a more advanced capacity formulation
-            HwStoCapacity = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Average() *
+            HwStoCapacity = DistrictControl.Instance.ListOfDistrictLoads.Where(x=>x.LoadType == LoadTypes.Heating).Select(v=>v.Input.Average()).Sum() *
                             DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT * 24;
         }
 
@@ -281,7 +282,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcShwCapacity()
         {
             ShwCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW *
-                          DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
+                          DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
         }
 
         #endregion

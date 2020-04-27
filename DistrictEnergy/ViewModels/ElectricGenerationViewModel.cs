@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -97,7 +98,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcCapacity()
         {
             PvCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV *
-                         DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum();
+                         DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Sum()).Sum();
         }
 
         #endregion
@@ -198,7 +199,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcWindCapacity()
         {
             WindCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND *
-                           DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum();
+                           DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Sum()).Sum();
         }
 
         #endregion
@@ -269,7 +270,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcBatCapacity()
         {
             // todo Define a more advanced capacity formulation
-            BatCapacity = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Average() *
+            BatCapacity = DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Average()).Sum() *
                           DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT * 24;
         }
 

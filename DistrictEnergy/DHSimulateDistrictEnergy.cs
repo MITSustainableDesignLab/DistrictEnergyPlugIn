@@ -281,7 +281,7 @@ namespace DistrictEnergy
                 {
                     load.GetUmiLoads(contextBuilding);
                 }
-                
+
                 DistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
                 DistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
                 DistrictDemand.TAmbN = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
@@ -289,8 +289,6 @@ namespace DistrictEnergy
 
                 numberTimesteps = DistrictDemand.HwN.Length;
 
-                RhinoApp.WriteLine(
-                    $"Calculated...\n{DistrictDemand.ChwN.Length} datapoints for ColdWater profile\n{DistrictDemand.HwN.Count()} datapoints for HotWater\n{DistrictDemand.ElecN.Count()} datapoints for Electricity\n{DistrictDemand.RadN.Count()} datapoints for Solar Frad\n{DistrictDemand.WindN.Count()} datapoints for WindSpeed");
                 Instance.ResultsArray.StaleResults = false;
             }
 

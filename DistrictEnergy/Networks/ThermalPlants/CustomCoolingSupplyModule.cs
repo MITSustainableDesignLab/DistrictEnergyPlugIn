@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 using Rhino.Render;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -30,7 +31,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double[] Used = new double[8760];
         public override LoadTypes OutputType { get; set; } = LoadTypes.Cooling;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public override double[] Output { get; set; }
+        public override List<DateTimePoint> Input { get; set; }
+        public override List<DateTimePoint> Output { get; set; }
+        public override LoadTypes InputType { get; set; } = LoadTypes.Cooling;
         public override double F { get; set; }
         public override double V { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];

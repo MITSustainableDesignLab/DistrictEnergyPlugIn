@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
+using LiveCharts.Defaults;
 using Rhino;
 using Rhino.Commands;
 using Rhino.UI;
@@ -19,6 +21,7 @@ namespace DistrictEnergy.Networks.Loads
 
         }
 
+        public override List<DateTimePoint> Input { get; set; }
         public override LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
         public override string Name { get; set; } = "Cooling Load";
@@ -40,9 +43,8 @@ namespace DistrictEnergy.Networks.Loads
                 }
             }
 
-            HourlyLoads = aggregationArray;
+            Input = aggregationArray.AggregateByPeriod(1);
         }
 
-        public override double[] HourlyLoads { get; set; }
     }
 }

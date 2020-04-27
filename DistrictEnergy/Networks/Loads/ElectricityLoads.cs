@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
+using LiveCharts.Defaults;
 using Rhino;
 using Rhino.UI;
 using Umi.Core;
@@ -31,11 +33,11 @@ namespace DistrictEnergy.Networks.Loads
                     aggreagationArray[i] += d;
                 }
 
-            HourlyLoads = aggreagationArray;
+            Input = aggreagationArray.AggregateByPeriod(1);
         }
         /// <summary>
         /// Equipment & Lighting
         /// </summary>
-        public override double[] HourlyLoads { get; set; }
+        public override List<DateTimePoint> Input { get; set; }
     }
 }

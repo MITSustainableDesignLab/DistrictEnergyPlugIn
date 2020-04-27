@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Deedle.Vectors;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -99,7 +100,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcCapacity()
         {
             Capacity = DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP *
-                       DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max();
+                       DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Max()).Sum();
         }
     }
 }

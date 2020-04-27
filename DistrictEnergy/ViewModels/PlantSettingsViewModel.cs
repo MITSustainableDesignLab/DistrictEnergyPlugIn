@@ -86,8 +86,6 @@ namespace DistrictEnergy.ViewModels
                         TypeNameHandling = TypeNameHandling.Objects,
                         SerializationBinder = _knownTypesBinder
                     });
-                //DistrictControl.Instance.ListOfPlantSettings.Add(new GridElectricity());
-                //DistrictControl.Instance.ListOfPlantSettings.Add(new GridGas());
             }
             OnPropertyChanged(string.Empty);
         }

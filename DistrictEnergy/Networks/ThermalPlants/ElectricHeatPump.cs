@@ -4,10 +4,11 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class ElectricHeatPump : IDispatchable
+    public class ElectricHeatPump : Dispatchable
     {
         public ElectricHeatPump()
         {
@@ -40,21 +41,21 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0)]
         public int UseEhpEvap { get; set; } = 0;
 
-        [DataMember] [DefaultValue(1660)] public double F { get; set; } = 1660;
-        [DataMember] [DefaultValue(0.00332)] public double V { get; set; } = 0.00332;
-        public double Capacity { get; set; } = 0;
+        [DataMember] [DefaultValue(1660)] public override double F { get; set; } = 1660;
+        [DataMember] [DefaultValue(0.00332)] public override double V { get; set; } = 0.00332;
+        public override double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Heat Pump")]
-        public string Name { get; set; } = "Heat Pump";
+        public override string Name { get; set; } = "Heat Pump";
 
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes OutputType { get; set; } = LoadTypes.Heating;
-        public LoadTypes InputType { get; set; } = LoadTypes.Elec;
-        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Input { get; set; }
-        public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[OutputType];
-        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
+        public override Guid Id { get; set; } = Guid.NewGuid();
+        public override LoadTypes OutputType { get; set; } = LoadTypes.Heating;
+        public override LoadTypes InputType { get; set; } = LoadTypes.Elec;
+        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override List<DateTimePoint> Input { get; set; }
+        public override List<DateTimePoint> Output { get; set; }
+        public override double Efficiency => ConversionMatrix[OutputType];
+        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
     }
 }

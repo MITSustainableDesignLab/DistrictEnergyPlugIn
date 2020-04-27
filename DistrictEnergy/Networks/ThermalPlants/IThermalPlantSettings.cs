@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Windows.Media;
+using Deedle;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
+using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -42,20 +45,24 @@ namespace DistrictEnergy.Networks.ThermalPlants
         Guid Id { get; set; }
 
         LoadTypes OutputType { get; set; }
-        Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        [JsonIgnore] Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+
         /// <summary>
         /// Input Energy to the Supply Module per period
         /// </summary>
-        double[] Input { get; set; }
+        [JsonIgnore]
+        List<DateTimePoint> Input { get; set; }
+
         /// <summary>
         /// Output Energy of the Supply Module per period
         /// </summary>
-        double[] Output { get; set; }
+        [JsonIgnore]
+        List<DateTimePoint> Output { get; set; }
+
         /// <summary>
-        /// Computed Efficiency of the Supply Module
+        /// Fill Used to Color Supply Module
         /// </summary>
-        double Efficiency { get; }
-        [DataMember]
-        SolidColorBrush Fill { get; set; }
+        [DataMember] SolidColorBrush Fill { get; set; }
+
     }
 }

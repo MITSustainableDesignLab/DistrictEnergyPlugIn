@@ -8,6 +8,7 @@ using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
 using Google.OrTools.LinearSolver;
+using LiveCharts.Defaults;
 using Rhino;
 using Rhino.Commands;
 
@@ -54,12 +55,12 @@ namespace DistrictEnergy
             var solver = Solver.CreateSolver("SimpleMipProgram", "GLOP_LINEAR_PROGRAMMING");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
-            int timeSteps = 60; // Number of Time Steps
+            int timeSteps = 365; // Number of Time Steps
             int dt = 8760 / timeSteps; // Duration of each Time Steps
 
             // Input Enerygy
             var P = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<IDispatchable>())
+            foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
@@ -105,7 +106,7 @@ namespace DistrictEnergy
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
-                    Load[(t, load.LoadType)] = load.HourlyLoads.ToList().GetRange(t, dt).Sum();
+                    Load[(t, load.LoadType)] = load.Input.ToList().GetRange(t, dt).Sum();
                 }
             }
 
@@ -127,7 +128,7 @@ namespace DistrictEnergy
                                    Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
-                                   Load[(i, loadTypes)] / pipe);
+                                   Load.Where(x=>x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o=>o.Value).Sum() / pipe);
                     }
 
                     // Peak Condition
@@ -151,7 +152,7 @@ namespace DistrictEnergy
                                    Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
-                                   Load[(i, loadTypes)] / pipe);
+                                   Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value).Sum() / pipe);
                     }
 
                     // Peak Condition
@@ -172,7 +173,7 @@ namespace DistrictEnergy
                                    Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
-                                   Load[(i, loadTypes)] + E[(i, loadTypes)]);
+                                   Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value).Sum() + E[(i, loadTypes)]);
                     }
 
                     //Peak Condition
@@ -242,7 +243,7 @@ namespace DistrictEnergy
             // Set the Objective Function
             var objective = solver.Objective();
 
-            foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<IDispatchable>())
+            foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
@@ -281,24 +282,23 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Solution:");
             RhinoApp.WriteLine("Optimal objective value = " + solver.Objective().Value());
 
-            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<IDispatchable>())
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
                 var cap = solutionValues.Max();
                 var energy = solutionValues.Sum();
-                plant.Input = solutionValues.ToList().GetRange(0, timeSteps).ToArray();
-                plant.Output = solutionValues.ToList().GetRange(0, timeSteps)
-                    .Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
+                plant.Input = solutionValues.AggregateByPeriod(dt);
+                plant.Output = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).AggregateByPeriod(dt);
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
             {
-                storage.Output = Qout.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToArray();
-                storage.Input = Qin.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToArray();
-                storage.Storage = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToArray();
+                storage.Output = Qout.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).AggregateByPeriod(dt);
+                storage.Input = Qin.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).AggregateByPeriod(dt);
+                storage.Storage = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).AggregateByPeriod(dt);
                 RhinoApp.WriteLine(
-                    $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; EndStorageState {storage.Storage.Last()}");
+                    $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; EndStorageState {storage.Storage.Last().Value}");
             }
 
             // Write Exports

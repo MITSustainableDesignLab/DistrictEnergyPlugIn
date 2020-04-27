@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -112,7 +113,7 @@ namespace DistrictEnergy.ViewModels
         private void CalcCapacity()
         {
             AbsChillerCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS *
-                                 DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Max();
+                                 DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Cooling).Select(v => v.Input.Max()).Sum();
         }
 
         #endregion

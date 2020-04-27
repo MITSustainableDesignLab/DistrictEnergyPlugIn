@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -17,7 +18,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override LoadTypes OutputType { get; set; } = LoadTypes.Elec;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public override double[] Output { get; set; }
+        public override List<DateTimePoint> Input { get; set; }
+        public override List<DateTimePoint> Output { get; set; }
+        public override LoadTypes InputType { get; set; } = LoadTypes.Elec;
         public override double F { get; set; }
         public override double V { get; set; }
 

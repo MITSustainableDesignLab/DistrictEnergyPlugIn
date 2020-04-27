@@ -1,4 +1,6 @@
-﻿namespace DistrictEnergy.Networks.ThermalPlants
+﻿using Newtonsoft.Json;
+
+namespace DistrictEnergy.Networks.ThermalPlants
 {
     /// <summary>
     /// Interface for Supply Modules Using Solar as input
@@ -6,6 +8,6 @@
     internal interface ISolar : IThermalPlantSettings
     {
         double AvailableArea { get; }
-        double[] SolarAvailableInput { get; }
+        [JsonIgnore] double[] SolarAvailableInput { get; }
     }
 }

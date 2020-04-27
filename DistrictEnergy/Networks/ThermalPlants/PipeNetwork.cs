@@ -6,12 +6,14 @@ using System.Runtime.Serialization;
 using System.Windows.Controls;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class PipeNetwork : IThermalPlantSettings
     {
+
         public PipeNetwork()
         {
             ConversionMatrix = new Dictionary<LoadTypes, double>()
@@ -56,8 +58,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Guid Id { get; set; } = Guid.NewGuid();
         public LoadTypes OutputType { get; set; } = LoadTypes.Transport;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Input { get; set; }
-        public double[] Output { get; set; }
+        public List<DateTimePoint> Input { get; set; }
+        public List<DateTimePoint> Output { get; set; }
+
         public double Efficiency => ConversionMatrix[LoadTypes.Heating];
         public SolidColorBrush Fill { get; set; }
     }

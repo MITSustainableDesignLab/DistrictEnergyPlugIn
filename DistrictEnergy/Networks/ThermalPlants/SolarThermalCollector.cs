@@ -5,11 +5,12 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class SolarThermalCollector : IDispatchable, ISolar
+    public class SolarThermalCollector : Dispatchable, ISolar
     {
         public SolarThermalCollector()
         {
@@ -50,23 +51,23 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.15)]
         public double LOSS_SHW { get; set; } = 0.15;
 
-        [DataMember] [DefaultValue(7191)] public double F { get; set; } = 7191;
-        [DataMember] [DefaultValue(0.00887)] public double V { get; set; } = 0.00887;
-        public double Capacity { get; set; } = 0;
+        [DataMember] [DefaultValue(7191)] public override double F { get; set; } = 7191;
+        [DataMember] [DefaultValue(0.00887)] public override double V { get; set; } = 0.00887;
+        public override double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Solar Thermal")]
-        public string Name { get; set; } = "Solar Thermal";
+        public override string Name { get; set; } = "Solar Thermal";
 
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public override Guid Id { get; set; } = Guid.NewGuid();
 
-        public LoadTypes OutputType { get; set; } = LoadTypes.Heating;
-        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Input { get; set; }
-        public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadTypes.Heating];
-        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(251, 209, 39));
-        public LoadTypes InputType { get; set; } = LoadTypes.SolarRadiation;
+        public override LoadTypes OutputType { get; set; } = LoadTypes.Heating;
+        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override List<DateTimePoint> Input { get; set; }
+        public override List<DateTimePoint> Output { get; set; }
+        public override double Efficiency => ConversionMatrix[LoadTypes.Heating];
+        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(251, 209, 39));
+        public override LoadTypes InputType { get; set; } = LoadTypes.SolarRadiation;
         public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
         public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }

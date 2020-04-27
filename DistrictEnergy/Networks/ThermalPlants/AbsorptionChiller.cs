@@ -5,10 +5,11 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class AbsorptionChiller : IDispatchable
+    internal class AbsorptionChiller : Dispatchable
     {
         public AbsorptionChiller()
         {
@@ -39,27 +40,27 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(633)]
-        public double F { get; set; } = 633;
+        public override double F { get; set; } = 633;
 
         /// <summary>
         /// Variable cost per energy unit f [$/kWh]
         /// </summary>
         [DataMember]
         [DefaultValue(0.0004)]
-        public double V { get; set; } = 0.0004;
+        public override double V { get; set; } = 0.0004;
 
-        public double Capacity { get; set; } = 0;
+        public override double Capacity { get; set; } = 0;
 
         [DataMember]
         [DefaultValue("Absorption Chiller")]
-        public string Name { get; set; } = "Absorption Chiller";
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes OutputType { get; set; } = LoadTypes.Cooling;
-        public LoadTypes InputType { get; set; } = LoadTypes.Heating;
-        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Input { get; set; }
-        public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[OutputType];
-        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(146, 241, 254));
+        public override string Name { get; set; } = "Absorption Chiller";
+        public override Guid Id { get; set; } = Guid.NewGuid();
+        public override LoadTypes OutputType { get; set; } = LoadTypes.Cooling;
+        public override LoadTypes InputType { get; set; } = LoadTypes.Heating;
+        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override List<DateTimePoint> Input { get; set; }
+        public override List<DateTimePoint> Output { get; set; }
+        public override double Efficiency => ConversionMatrix[OutputType];
+        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(146, 241, 254));
     }
 }

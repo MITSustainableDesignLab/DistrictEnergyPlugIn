@@ -4,11 +4,12 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class GridElectricity : IDispatchable
+    internal class GridElectricity : Dispatchable
     {
         public GridElectricity()
         {
@@ -18,29 +19,29 @@ namespace DistrictEnergy.Networks.ThermalPlants
             };
         }
 
-        [DataMember] [DefaultValue(0)] public double F { get; set; } = 0;
+        [DataMember] [DefaultValue(0)] public override double F { get; set; } = 0;
 
         [DataMember]
         [DefaultValue(0.15)]
-        public double V
+        public override double V
         {
             get => UmiContext.Current != null ? UmiContext.Current.ProjectSettings.ElectricityDollars : 0;
             set => UmiContext.Current.ProjectSettings.ElectricityDollars = value;
         }
 
-        public double Capacity { get; set; } = double.PositiveInfinity;
+        public override double Capacity { get; set; } = double.PositiveInfinity;
 
         [DataMember]
         [DefaultValue("Grid Electricity")]
-        public string Name { get; set; } = "Grid Electricity";
+        public override string Name { get; set; } = "Grid Electricity";
 
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes OutputType { get; set; } = LoadTypes.Elec;
-        public LoadTypes InputType { get; set; } = LoadTypes.GridElec;
-        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Input { get; set; }
-        public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[OutputType];
-        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+        public override Guid Id { get; set; } = Guid.NewGuid();
+        public override LoadTypes OutputType { get; set; } = LoadTypes.Elec;
+        public override LoadTypes InputType { get; set; } = LoadTypes.GridElec;
+        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override List<DateTimePoint> Input { get; set; }
+        public override List<DateTimePoint> Output { get; set; }
+        public override double Efficiency => ConversionMatrix[OutputType];
+        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 0, 0));
     }
 }

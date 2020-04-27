@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 using Rhino;
 using Umi.Core;
 using Umi.RhinoServices.Context;
@@ -37,7 +38,7 @@ namespace DistrictEnergy.Networks.Loads
             return contextBuildings;
         }
 
-        public abstract double[] HourlyLoads { get; set; }
+        public abstract List<DateTimePoint> Input { get; set; }
         public abstract LoadTypes LoadType { get; set; }
         public abstract SolidColorBrush Fill { get; set; }
         public abstract string Name { get; set; }

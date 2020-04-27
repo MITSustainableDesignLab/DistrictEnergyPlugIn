@@ -9,12 +9,13 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using CsvHelper;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 using Rhino;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal abstract class CustomEnergySupplyModule: IDispatchable
+    internal abstract class CustomEnergySupplyModule: Dispatchable
     {
         /// <summary>
         /// Path of the CSV File
@@ -29,20 +30,20 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <summary>
         /// Unique identifier 
         /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public override Guid Id { get; set; } = Guid.NewGuid();
 
-        public abstract LoadTypes OutputType { get; set; }
+        public abstract override LoadTypes OutputType { get; set; }
 
-        public abstract double F { get; set; }
-        public abstract double V { get; set; }
-        public abstract double Capacity { get; set; }
+        public abstract override double F { get; set; }
+        public abstract override double V { get; set; }
+        public abstract override double Capacity { get; set; }
 
         /// <summary>
         /// Name of the Custom Energy Supply Module
         /// </summary>
         [DataMember]
         [DefaultValue("Unnamed")]
-        public string Name { get; set; } = "Unnamed";
+        public override string Name { get; set; } = "Unnamed";
 
         public void LoadCsv()
         {
@@ -96,17 +97,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
         public double Norm { get; set; } = 1;
 
-        public SolidColorBrush Fill
+        public override SolidColorBrush Fill
         {
             get => new SolidColorBrush(Color);
             set => throw new NotImplementedException();
         }
 
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
-        public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Input { get; set; }
-        public abstract double[] Output { get; set; }
-        public abstract double Efficiency { get; }
+        public abstract override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public abstract override double Efficiency { get; }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {
@@ -115,7 +114,5 @@ namespace DistrictEnergy.Networks.ThermalPlants
             var balance = demand - (chiller + solar + custom - excess);
             return balance;
         }
-
-        public LoadTypes InputType { get; set; }
     }
 }

@@ -2,7 +2,9 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using DistrictEnergy.Annotations;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -67,7 +69,6 @@ namespace DistrictEnergy.ViewModels
         }
 
         public static SummaryViewModel Instance { get; set; }
-
 
         /// <summary>
         ///     Cooling capacity of absorption chillers (kW)
@@ -637,6 +638,7 @@ namespace DistrictEnergy.ViewModels
             ElectricGenerationViewModel.Instance.PropertyChanged += CalculateUserConstants;
             HotWaterViewModel.Instance.PropertyChanged += CalculateUserConstants;
             NetworkViewModel.Instance.PropertyChanged += CalculateUserConstants;
+            DHRunLPModel.Instance.Completion += CalculateUserConstants;
         }
 
         private void CalculateUserConstants(object sender, EventArgs e)
@@ -650,6 +652,7 @@ namespace DistrictEnergy.ViewModels
         /// </summary>
         public void CalculateUserConstants()
         {
+            DHSimulateDistrictEnergy.Instance.PreSolve();
             CapAbs = DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().Capacity;
             CapEhp = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().Capacity;
             CapBat = DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().Capacity;
@@ -701,6 +704,7 @@ namespace DistrictEnergy.ViewModels
         /// </summary>
         public void CalculateModelConstants()
         {
+            DHSimulateDistrictEnergy.Instance.PreSolve();
             ModelCapAbs = DHSimulateDistrictEnergy.Instance.ResultsArray.ChwAbs.Max();
             ModelCapEhp = DHSimulateDistrictEnergy.Instance.ResultsArray.HwEhp.Max();
             ModelCapBat = DHSimulateDistrictEnergy.Instance.ResultsArray.BatChgN.Max();
@@ -736,12 +740,18 @@ namespace DistrictEnergy.ViewModels
                 ? 0
                 : CapBat / 12 /
                   Settings.AutBat; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
-            ModelCoolingDemand = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Max();
-            ModelHeatingDemand = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
-            ModelElectricityDemand = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max();
-            ModelCoolingEnergy = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Sum();
-            ModelHeatingEnergy = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Sum();
-            ModelElectricityEnergy = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum();
+            ModelCoolingDemand = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Cooling).Select(o => o.Input.Max()).Sum();
+            ModelHeatingDemand = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.Input.Max()).Sum();
+            ModelElectricityDemand = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Elec).Select(o => o.Input.Max()).Sum();
+            ModelCoolingEnergy = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Cooling).Select(o => o.Input.Sum()).Sum();
+            ModelHeatingEnergy = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.Input.Sum()).Sum();
+            ModelElectricityEnergy = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Elec).Select(o => o.Input.Sum()).Sum();
         }
 
 

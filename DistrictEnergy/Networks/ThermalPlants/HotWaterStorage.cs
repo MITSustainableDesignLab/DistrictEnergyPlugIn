@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -50,14 +51,22 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public LoadTypes OutputType { get; set; } = LoadTypes.Heating;
         public LoadTypes InputType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double[] Output { get; set; }
+        public List<DateTimePoint> Input { get; set; }
+
+        public List<DateTimePoint> Output { get; set; }
         public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(253, 199, 204));
+
+        public List<DateTimePoint> AggregateByPeriod(double[] d, int period)
+        {
+            throw new NotImplementedException();
+        }
+
         public double ChargingEfficiency => 1 - LOSS_HWT;
         public double DischargingEfficiency => 1 - LOSS_HWT;
         public double StorageStandingLosses => 0.01;
-        public double[] Input { get; set; }
-        public double[] Storage { get; set; }
+
+        public List<DateTimePoint> Storage { get; set; }
         public double MaxChargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
         public double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
         public double StartingCapacity => Capacity * TANK_START;
