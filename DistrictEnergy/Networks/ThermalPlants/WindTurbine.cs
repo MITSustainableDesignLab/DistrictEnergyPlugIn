@@ -77,6 +77,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(192, 244, 66));
-        public LoadTypes InputType { get; set; }
+        public LoadTypes InputType { get; set; } = LoadTypes.Wind;
     }
 }

@@ -9,5 +9,6 @@
         double[] Storage { get; set; }
         double MaxChargingRate { get; }
         double MaxDischargingRate { get; }
+        double StartingCapacity { get; }
     }
 }

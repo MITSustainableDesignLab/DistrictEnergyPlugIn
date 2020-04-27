@@ -8,6 +8,10 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:LoadsViewModel}">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="0.5*"/>
+        </Grid.RowDefinitions>
         <lvc:CartesianChart DisableAnimations="True" Hoverable="False"
                             Series="{Binding SeriesCollection}"
                             MouseMove="CartesianChart_MouseMove">
@@ -36,5 +40,6 @@
                           ShowLabels="True" LabelFormatter="{Binding Formatter}" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
+        <lvc:CartesianChart Grid.Row="1" DisableAnimations="True" Hoverable="False" Series="{Binding StorageSeriesCollection}"></lvc:CartesianChart>
     </Grid>
 </UserControl>

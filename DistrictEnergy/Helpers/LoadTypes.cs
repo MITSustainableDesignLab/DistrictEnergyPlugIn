@@ -14,6 +14,8 @@ namespace DistrictEnergy.Helpers
         Transport,
         Gas,
         GridElec,
-        GridGas
+        GridGas,
+        SolarRadiation,
+        Wind
     }
 }

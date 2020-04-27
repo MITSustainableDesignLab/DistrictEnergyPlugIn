@@ -60,5 +60,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double[] Storage { get; set; }
         public double MaxChargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
         public double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
+        public double StartingCapacity => Capacity * TANK_START;
     }
 }

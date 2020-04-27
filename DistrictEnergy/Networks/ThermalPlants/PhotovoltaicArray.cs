@@ -57,7 +57,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(112, 159, 15));
-        public LoadTypes InputType { get; set; }
+        public LoadTypes InputType { get; set; } = LoadTypes.SolarRadiation;
         public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
         public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }
