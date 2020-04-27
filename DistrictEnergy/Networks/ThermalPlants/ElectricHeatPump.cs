@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Windows.Media;
 using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -13,6 +14,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             ConversionMatrix = new Dictionary<LoadTypes, double>()
             {
                 {LoadTypes.Heating, HCOP_EHP},
+                {LoadTypes.Cooling, (1-1/HCOP_EHP)},
                 {LoadTypes.Elec, -1}
             };
         }
@@ -51,5 +53,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[LoadType];
+        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
     }
 }

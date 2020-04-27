@@ -96,7 +96,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
         public double Norm { get; set; } = 1;
 
-        public SolidColorBrush Fill => new SolidColorBrush(Color);
+        public SolidColorBrush Fill
+        {
+            get => new SolidColorBrush(Color);
+            set => throw new NotImplementedException();
+        }
 
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
         public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; set; }

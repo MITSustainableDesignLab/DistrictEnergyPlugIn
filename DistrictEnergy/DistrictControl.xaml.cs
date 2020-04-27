@@ -114,7 +114,7 @@ namespace DistrictEnergy
 
         private void RunSimulationClick(object sender, RoutedEventArgs e)
         {
-            RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
+            RhinoApp.RunScript("DHRunLPModel", true);
         }
 
         private void AdditionalProfileClick(object sender, RoutedEventArgs e)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using Umi.RhinoServices.Context;
 
@@ -36,5 +37,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[LoadType];
+        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(189, 133, 74));
     }
 }

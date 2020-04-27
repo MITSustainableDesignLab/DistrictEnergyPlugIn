@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Windows.Media;
 using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -50,5 +51,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// Computed Efficiency of the Supply Module
         /// </summary>
         double Efficiency { get; }
+        [DataMember]
+        SolidColorBrush Fill { get; set; }
     }
 }

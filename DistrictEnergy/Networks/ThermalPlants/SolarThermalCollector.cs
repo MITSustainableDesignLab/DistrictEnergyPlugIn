@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using Newtonsoft.Json;
 
@@ -62,5 +63,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[LoadTypes.Heating];
+        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(251, 209, 39));
     }
 }

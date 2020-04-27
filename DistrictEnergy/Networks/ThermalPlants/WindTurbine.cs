@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Windows.Controls;
+using System.Windows.Media;
 using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -74,5 +75,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[LoadType];
+        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(192, 244, 66));
     }
 }

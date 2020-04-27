@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
+using DistrictEnergy.ViewModels;
 using Google.OrTools.LinearSolver;
 using Rhino;
 using Rhino.Commands;
@@ -43,7 +47,7 @@ namespace DistrictEnergy
             return result;
         }
 
-        private static void Main()
+        private void Main()
         {
             DHSimulateDistrictEnergy.Instance.PreSolve();
             // Create the linear solver with the CBC backend.
@@ -234,7 +238,7 @@ namespace DistrictEnergy
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
                 var cap = solutionValues.Last();
                 var energy = solutionValues.ToList().GetRange(0, solutionValues.Count() - 1).Sum();
-                plant.Output = solutionValues.ToList().GetRange(0,timeSteps).ToArray();
+                plant.Output = solutionValues.ToList().GetRange(0, timeSteps).ToArray();
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
@@ -252,6 +256,22 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Problem solved in " + solver.WallTime() + " milliseconds");
             RhinoApp.WriteLine("Problem solved in " + solver.Iterations() + " iterations");
             RhinoApp.WriteLine("Problem solved in " + solver.Nodes() + " branch-and-bound nodes");
+            OnCompletion(new SimulationCompleted() {TimeStep = timeSteps});
+        }
+
+        public event EventHandler Completion;
+
+        protected virtual void OnCompletion(EventArgs e)
+        {
+            EventHandler handler = Completion;
+            handler?.Invoke(this, e);
+        }
+
+        public class SimulationCompleted : EventArgs
+        {
+            public int TimeStep { get; set; }
+            public int Threshold { get; set; }
+            public DateTime TimeReached { get; set; }
         }
     }
 }
