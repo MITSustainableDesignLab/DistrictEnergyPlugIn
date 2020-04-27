@@ -31,7 +31,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public abstract LoadTypes LoadType { get; set; }
+        public abstract LoadTypes OutputType { get; set; }
 
         public abstract double F { get; set; }
         public abstract double V { get; set; }
@@ -104,6 +104,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
         public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public abstract double[] Output { get; set; }
         public abstract double Efficiency { get; }
 
@@ -114,5 +115,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             var balance = demand - (chiller + solar + custom - excess);
             return balance;
         }
+
+        public LoadTypes InputType { get; set; }
     }
 }

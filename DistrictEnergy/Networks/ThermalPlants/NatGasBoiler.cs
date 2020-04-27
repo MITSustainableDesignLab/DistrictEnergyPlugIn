@@ -28,10 +28,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double Capacity { get; set; } = double.PositiveInfinity;
         [DataMember] [DefaultValue("Natural Gas Boiler")] public string Name { get; set; } = "Natural Gas Boiler";
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Heating;
+        public LoadTypes InputType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(189, 133, 74));
     }
 }

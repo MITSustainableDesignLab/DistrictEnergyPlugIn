@@ -12,6 +12,8 @@ namespace DistrictEnergy.Helpers
         Heating,
         Elec,
         Transport,
-        Gas
+        Gas,
+        GridElec,
+        GridGas
     }
 }

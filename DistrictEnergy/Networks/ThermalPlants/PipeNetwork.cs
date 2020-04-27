@@ -54,8 +54,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public string Name { get; set; } = "Distribution Pipes";
 
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Transport;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Transport;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[LoadTypes.Heating];
         public SolidColorBrush Fill { get; set; }

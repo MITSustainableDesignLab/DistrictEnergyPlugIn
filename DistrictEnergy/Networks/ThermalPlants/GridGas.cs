@@ -33,10 +33,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public string Name { get; set; } = "Grid Natural Gas";
 
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Gas;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Gas;
+        public LoadTypes InputType { get; set; } = LoadTypes.GridGas;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(189, 133, 74));
     }
 }

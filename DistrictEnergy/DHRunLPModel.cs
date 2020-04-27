@@ -54,9 +54,10 @@ namespace DistrictEnergy
             var solver = Solver.CreateSolver("SimpleMipProgram", "GLOP_LINEAR_PROGRAMMING");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
-            int timeSteps = 24; // Number of Time Steps
+            int timeSteps = 3; // Number of Time Steps
             int dt = 8760 / timeSteps; // Duration of each Time Steps
 
+            // Input Enerygy
             var P = new Dictionary<(int, IThermalPlantSettings), Variable>();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<IDispatchable>())
             {
@@ -73,7 +74,7 @@ namespace DistrictEnergy
 
             var Qin = new Dictionary<(int, IThermalPlantSettings), Variable>();
             var Qout = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            var E = new Dictionary<(int, IThermalPlantSettings), Variable>();
+            var S = new Dictionary<(int, IThermalPlantSettings), Variable>();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
@@ -82,10 +83,19 @@ namespace DistrictEnergy
                         solver.MakeNumVar(0.0, supplymodule.MaxChargingRate, $"StoIn_{t}_{supplymodule.Name}");
                     Qout[(t, supplymodule)] =
                         solver.MakeNumVar(0.0, supplymodule.MaxDischargingRate, $"StoOut_{t}_{supplymodule.Name}");
-                    E[(t, supplymodule)] =
+                    S[(t, supplymodule)] =
                         solver.MakeNumVar(0.0, supplymodule.Capacity, $"StoState_{t}_{supplymodule.Name}");
                 }
             }
+
+            // Exports (per supply module)
+            var E = new Dictionary<(int, LoadTypes), Variable>();
+            for (var t = 0; t < timeSteps * dt; t += dt)
+            {
+                E[(t, LoadTypes.Elec)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Electricity");
+            }
+
+            //Exp[(8760, LoadTypes.Elec)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Peak_Export_Electricity");
 
             RhinoApp.WriteLine("Number of variables = " + solver.NumVariables());
 
@@ -99,15 +109,15 @@ namespace DistrictEnergy
                 if (loadTypes == LoadTypes.Cooling)
                 {
                     var pipe = DistrictControl.Instance.ListOfPlantSettings
-                        .Where(o => o.LoadType == LoadTypes.Transport)
+                        .Where(o => o.OutputType == LoadTypes.Transport)
                         .Select(o => o.ConversionMatrix[loadTypes]).Aggregate((a, x) => a * x);
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
                         solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
                                        .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
-                                   Qin.Where(k => k.Key.Item2.LoadType == loadTypes).Select(x => x.Value).ToArray()
+                                   Qin.Where(k => k.Key.Item2.OutputType == loadTypes).Select(x => x.Value).ToArray()
                                        .Sum() +
-                                   Qout.Where(k => k.Key.Item2.LoadType == loadTypes).Select(x => x.Value).ToArray()
+                                   Qout.Where(k => k.Key.Item2.OutputType == loadTypes).Select(x => x.Value).ToArray()
                                        .Sum() ==
                                    cooling.ToList().GetRange(i, dt).Sum() / pipe);
                     }
@@ -121,15 +131,15 @@ namespace DistrictEnergy
                 if (loadTypes == LoadTypes.Heating)
                 {
                     var pipe = DistrictControl.Instance.ListOfPlantSettings
-                        .Where(o => o.LoadType == LoadTypes.Transport)
+                        .Where(o => o.OutputType == LoadTypes.Transport)
                         .Select(o => o.ConversionMatrix[loadTypes]).Aggregate((a, x) => a * x);
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
                         solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
                                        .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
-                                   Qin.Where(k => k.Key.Item2.LoadType == loadTypes).Select(x => x.Value).ToArray()
+                                   Qin.Where(k => k.Key.Item2.OutputType == loadTypes).Select(x => x.Value).ToArray()
                                        .Sum() +
-                                   Qout.Where(k => k.Key.Item2.LoadType == loadTypes).Select(x => x.Value).ToArray()
+                                   Qout.Where(k => k.Key.Item2.OutputType == loadTypes).Select(x => x.Value).ToArray()
                                        .Sum() ==
                                    heating.ToList().GetRange(i, dt).Sum() / pipe);
                     }
@@ -146,11 +156,11 @@ namespace DistrictEnergy
                     {
                         solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
                                        .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
-                                   Qin.Where(k => k.Key.Item2.LoadType == loadTypes).Select(x => x.Value).ToArray()
+                                   Qin.Where(k => k.Key.Item2.OutputType == loadTypes).Select(x => x.Value).ToArray()
                                        .Sum() +
-                                   Qout.Where(k => k.Key.Item2.LoadType == loadTypes).Select(x => x.Value).ToArray()
+                                   Qout.Where(k => k.Key.Item2.OutputType == loadTypes).Select(x => x.Value).ToArray()
                                        .Sum() ==
-                                   electricity.ToList().GetRange(i, dt).Sum());
+                                   electricity.ToList().GetRange(i, dt).Sum() + E[(i, loadTypes)]);
                     }
 
                     //Peak Condition
@@ -176,20 +186,32 @@ namespace DistrictEnergy
                 }
             }
 
+            // Solar & Wind Constraints
+            foreach (var solarSupply in DistrictControl.Instance.ListOfPlantSettings.OfType<ISolar>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    solver.Add(P[(t, solarSupply)] == solarSupply.SolarAvailableInput.ToList().GetRange(t, dt).Sum() *
+                        solarSupply.AvailableArea);
+                }
+
+                //solver.Add(P[(8760, solarSupply)] == solarSupply.SolarAvailableInput.ToList().Average() * solarSupply.AvailableArea);
+            }
+
             // Storage Balance Rule
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
             {
-                solver.Add(E[(0, storage)]
+                solver.Add(S[(0, storage)]
                            == (1 - storage.StorageStandingLosses) *
-                           E.Where(k => k.Key.Item2 == storage).Select(o => o.Value).Last() +
+                           S.Where(k => k.Key.Item2 == storage).Select(o => o.Value).Last() +
                            storage.ChargingEfficiency * Qin[(0, storage)] -
                            (1 / storage.DischargingEfficiency) * Qout[(0, storage)]);
 
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
-                    solver.Add(E[(t, storage)] ==
+                    solver.Add(S[(t, storage)] ==
                                (1 - storage.StorageStandingLosses) *
-                               E[(t - dt, storage)] +
+                               S[(t - dt, storage)] +
                                storage.ChargingEfficiency * Qin[(t, storage)] -
                                (1 / storage.DischargingEfficiency) * Qout[(t, storage)]);
                 }
@@ -212,7 +234,7 @@ namespace DistrictEnergy
             {
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
-                    objective.SetCoefficient(E[(t, storage)],
+                    objective.SetCoefficient(S[(t, storage)],
                         storage.F * DistrictEnergy.Settings.AnnuityFactor + storage.V * dt);
                 }
             }
@@ -238,7 +260,9 @@ namespace DistrictEnergy
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
                 var cap = solutionValues.Last();
                 var energy = solutionValues.ToList().GetRange(0, solutionValues.Count() - 1).Sum();
-                plant.Output = solutionValues.ToList().GetRange(0, timeSteps).ToArray();
+                plant.Input = solutionValues.ToList().GetRange(0, timeSteps).ToArray();
+                plant.Output = solutionValues.ToList().GetRange(0, timeSteps)
+                    .Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
@@ -246,11 +270,14 @@ namespace DistrictEnergy
             {
                 storage.Output = Qout.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToArray();
                 storage.Input = Qin.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToArray();
-                storage.Storage = E.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToArray();
-
+                storage.Storage = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToArray();
                 RhinoApp.WriteLine(
                     $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; EndStorageState {storage.Storage.Last()}");
             }
+
+            // Write Exports
+            RhinoApp.WriteLine($"Export_Electricity = {E.Select(x => x.Value.SolutionValue()).ToArray().Sum()}");
+
 
             RhinoApp.WriteLine("\nAdvanced usage:");
             RhinoApp.WriteLine("Problem solved in " + solver.WallTime() + " milliseconds");

@@ -35,10 +35,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public string Name { get; set; } = "Grid Electricity";
 
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Elec;
+        public LoadTypes InputType { get; set; } = LoadTypes.GridElec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 0, 0));
     }
 }

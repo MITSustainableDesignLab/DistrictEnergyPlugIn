@@ -68,10 +68,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public string Name { get; set; } = "Combined Heat&Power";
 
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Elec;
+        public LoadTypes InputType { get; set; } = LoadTypes.Gas;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(247, 96, 21));
     }
 

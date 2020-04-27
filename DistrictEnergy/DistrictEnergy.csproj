@@ -136,6 +136,7 @@
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
     <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="Networks\ThermalPlants\IDispatchable.cs" />
+    <Compile Include="Networks\ThermalPlants\ISolar.cs" />
     <Compile Include="Networks\ThermalPlants\IStorage.cs" />
     <Compile Include="ViewModels\Converters\Converter.cs" />
     <Compile Include="ViewModels\Converters\CostConverterUnit.cs" />

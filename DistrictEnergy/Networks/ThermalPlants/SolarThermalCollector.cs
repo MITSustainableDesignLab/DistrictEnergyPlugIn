@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -8,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class SolarThermalCollector : IDispatchable
+    public class SolarThermalCollector : IDispatchable, ISolar
     {
         public SolarThermalCollector()
         {
@@ -59,10 +60,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
         public double Efficiency => ConversionMatrix[LoadTypes.Heating];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(251, 209, 39));
+        public LoadTypes InputType { get; set; }
+        public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
+        public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }
 }

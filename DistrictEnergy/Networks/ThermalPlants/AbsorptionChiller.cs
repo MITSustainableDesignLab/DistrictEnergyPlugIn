@@ -54,10 +54,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue("Absorption Chiller")]
         public string Name { get; set; } = "Absorption Chiller";
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Cooling;
+        public LoadTypes InputType { get; set; } = LoadTypes.Heating;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(146, 241, 254));
     }
 }

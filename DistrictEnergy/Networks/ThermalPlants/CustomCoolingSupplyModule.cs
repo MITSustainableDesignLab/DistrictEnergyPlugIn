@@ -28,12 +28,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public double[] Used = new double[8760];
-        public override LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
+        public override LoadTypes OutputType { get; set; } = LoadTypes.Cooling;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override double[] Output { get; set; }
         public override double F { get; set; }
         public override double V { get; set; }
-        public override double Efficiency => ConversionMatrix[LoadType];
+        public override double Efficiency => ConversionMatrix[OutputType];
         public override double Capacity
         {
             get => Data.Max();

@@ -15,13 +15,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
             };
         }
 
-        public override LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public override LoadTypes OutputType { get; set; } = LoadTypes.Elec;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override double[] Output { get; set; }
         public override double F { get; set; }
         public override double V { get; set; }
 
-        public override double Efficiency => ConversionMatrix[LoadType];
+        public override double Efficiency => ConversionMatrix[OutputType];
         public override double Capacity
         {
             get => Data.Max();

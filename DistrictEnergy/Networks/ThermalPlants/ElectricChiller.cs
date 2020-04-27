@@ -30,10 +30,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double Capacity { get; set; } = double.PositiveInfinity;
         [DataMember] [DefaultValue("Chiller")] public string Name { get; set; } = "Chiller";
         public Guid Id { get; set; }
-        public LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Cooling;
+        public LoadTypes InputType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(93, 153, 170));
     }
 }

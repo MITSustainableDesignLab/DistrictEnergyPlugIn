@@ -41,10 +41,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember]
         Guid Id { get; set; }
 
-        LoadTypes LoadType { get; set; }
+        LoadTypes OutputType { get; set; }
         Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         /// <summary>
-        /// Output of the Supply Module per period
+        /// Input Energy to the Supply Module per period
+        /// </summary>
+        double[] Input { get; set; }
+        /// <summary>
+        /// Output Energy of the Supply Module per period
         /// </summary>
         double[] Output { get; set; }
         /// <summary>

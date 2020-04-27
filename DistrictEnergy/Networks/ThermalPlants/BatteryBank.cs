@@ -55,10 +55,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double Capacity { get; set; } = 0;
         [DataMember] [DefaultValue("Battery")] public string Name { get; set; } = "Battery";
         public Guid Id { get; set; } = new Guid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Elec;
+        public LoadTypes InputType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(231, 71, 126));
         public double ChargingEfficiency => 1 - LOSS_BAT;
         public double DischargingEfficiency => 1 - LOSS_BAT;

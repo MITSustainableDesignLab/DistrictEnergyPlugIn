@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class PhotovoltaicArray : IDispatchable
+    internal class PhotovoltaicArray : IDispatchable, ISolar
     {
         public PhotovoltaicArray()
         {
@@ -50,10 +51,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double Capacity { get; set; } = 0;
         [DataMember] [DefaultValue("PV")] public string Name { get; set; } = "PV";
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Elec;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(112, 159, 15));
+        public LoadTypes InputType { get; set; }
+        public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
+        public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }
 }

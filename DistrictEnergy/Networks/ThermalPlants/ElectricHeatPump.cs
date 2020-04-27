@@ -49,10 +49,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public string Name { get; set; } = "Heat Pump";
 
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes LoadType { get; set; } = LoadTypes.Heating;
+        public LoadTypes OutputType { get; set; } = LoadTypes.Heating;
+        public LoadTypes InputType { get; set; } = LoadTypes.Elec;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public double[] Input { get; set; }
         public double[] Output { get; set; }
-        public double Efficiency => ConversionMatrix[LoadType];
+        public double Efficiency => ConversionMatrix[OutputType];
         public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
     }
 }
