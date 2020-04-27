@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using CsvHelper;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
@@ -275,38 +276,12 @@ namespace DistrictEnergy
 
             if (Instance.ResultsArray.StaleResults)
             {
-                var _idList = new List<string>();
-                foreach (var building in umiContext.Buildings.All) _idList.Add(building.Id.ToString());
-                _progressBarPos = 0;
-                // Getting the Aggregated Load Curve for all buildings
-                var contextBuildings =
-                    umiContext.GetObjects()
-                        .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
-                MessageBoxButton buttons = MessageBoxButton.YesNo;
-                if (contextBuildings.Count == 0)
+                var contextBuilding = DistrictLoad.ContextBuildings(UmiContext.Current);
+                foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
                 {
-                    MessageBoxResult result;
-                    result = MessageBox.Show(
-                        "There are no buildings with hourly results. Would you like to run an hourly energy simulation now?",
-                        "Cannot continue with District simulation", buttons);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        // Sets hourly results true and calls UMISimulateEnergy
-                        umiContext.ProjectSettings.GenerateHourlyEnergyResults = true;
-                        RhinoApp.RunScript("-UmiSimulateEnergy", true);
-                    }
-
-                    return Result.Failure;
+                    load.GetUmiLoads(contextBuilding);
                 }
-
-                DistrictDemand.ChwN = GetHourlyChilledWaterProfile(contextBuildings);
-                DistrictDemand.HwN = GetHourlyHotWaterLoadProfile(contextBuildings);
-                DistrictDemand.ElecN = GetHourlyElectricalLoadProfile(contextBuildings);
-                // (DistrictDemand.AddC, DistrictDemand.AddH, DistrictDemand.AddE) = GetAdditionalLoadProfile(
-                //     umiContext.GetObjects()
-                //         .Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null)
-                //         .ToList());
-                StatusBar.HideProgressMeter();
+                
                 DistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
                 DistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
                 DistrictDemand.TAmbN = GetHourlyLocationAmbiantTemp(umiContext).ToArray();

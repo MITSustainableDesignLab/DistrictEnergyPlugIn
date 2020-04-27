@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Deedle;
@@ -10,6 +11,7 @@ using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
+using LiveCharts.Geared;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
@@ -24,9 +26,11 @@ namespace DistrictEnergy.ViewModels
 
         public LoadsViewModel()
         {
+            Instance = this;
             XFormatter = val => new DateTime((long) val).ToString("yyyy");
             YFormatter = val => val.ToString("N") + " M";
             SeriesCollection = new SeriesCollection();
+            StorageSeriesCollection = new SeriesCollection();
             Labels = new[]
             {
                 "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -51,6 +55,8 @@ namespace DistrictEnergy.ViewModels
                 return string.Format("{0:N0} kWh", value);
             };
         }
+
+        public static LoadsViewModel Instance { get; set; }
 
         public Func<ChartPoint, string> KWhLabelPointFormatter { get; set; }
 
@@ -82,11 +88,14 @@ namespace DistrictEnergy.ViewModels
 
         public Func<double, string> Formatter { get; set; }
 
+        public SeriesCollection StorageSeriesCollection { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnProjectClosed(object sender, EventArgs e)
         {
             SeriesCollection.Clear();
+            StorageSeriesCollection.Clear();
         }
 
         private void SubscribeEvents(object sender, UmiContext e)
@@ -94,114 +103,38 @@ namespace DistrictEnergy.ViewModels
             if (DHSimulateDistrictEnergy.Instance == null) return;
 
             DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateLoadsChart;
+            DHRunLPModel.Instance.Completion += UpdateLoadsChart;
         }
 
         private void UpdateLoadsChart(object sender, EventArgs e)
         {
+            var args = (DHRunLPModel.SimulationCompleted) e;
+            var Total = new double[args.TimeStep];
+            var Supply = new List<ResultsViewModel.ChartValue>();
+            foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<IDispatchable>().Where(x =>
+                x.OutputType == LoadTypes.Cooling || x.OutputType == LoadTypes.Heating ||
+                x.OutputType == LoadTypes.Elec))
+            {
+                Supply.Add(new ResultsViewModel.ChartValue
+                {
+                    Key = supplymodule.Name,
+                    Fill = supplymodule.Fill,
+                    Value = supplymodule.Output
+                });
+            }
+
             if (DHSimulateDistrictEnergy.Instance == null) return;
             var instance = DHSimulateDistrictEnergy.Instance;
-            var Demand = new List<ResultsViewModel.ChartValue>
-            {
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Cooling Demand", Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
-                    Value = instance.DistrictDemand.ChwN
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Heating Demand", Fill = new SolidColorBrush(Color.FromRgb(235, 45, 45)),
-                    Value = instance.DistrictDemand.HwN.Zip(instance.ResultsArray.HwAbs, (x, y)=> x+y).ToArray()
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Electricity Demand",
-                    Fill = new SolidColorBrush(Color.FromRgb(173, 221, 67)),
-                    Value = instance.DistrictDemand.ElecN.Zip(instance.ResultsArray.ElecEch, (x, y) => x + y).ToArray()
-                        .Zip(instance.ResultsArray.ElecEhp, (x, y) => x + y).ToArray()
-                },
-                // todo Add demand by Battery and Thermal Storage
-            };
-            var Supply = new List<ResultsViewModel.ChartValue>
-            {
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Cooling from Absorption Chiller", Fill = new SolidColorBrush(Color.FromRgb(146, 241, 254)),
-                    Value = instance.ResultsArray.ChwAbs
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Cooling from Electric Chiller", Fill = new SolidColorBrush(Color.FromRgb(93, 153, 170)),
-                    Value = instance.ResultsArray.ChwEch
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Cooling from Evaporator Side of EHPs",
-                    Fill = new SolidColorBrush(Color.FromRgb(0, 140, 218)),
-                    Value = instance.ResultsArray.ChwEhpEvap
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Cooling from Custom Supply",
-                    Value = instance.ResultsArray.ChwCustom
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Heating from Solar Hot Water", Fill = new SolidColorBrush(Color.FromRgb(251, 209, 39)),
-                    Value = instance.ResultsArray.HwShw
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Heating from Hot Water Tank", Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
-                    Value = instance.ResultsArray.HwHwt
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Heating from Electric Heat Pump", Fill = new SolidColorBrush(Color.FromRgb(231, 71, 126)),
-                    Value = instance.ResultsArray.HwEhp
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Heating from Natural Gas Boiler", Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
-                    Value = instance.ResultsArray.HwNgb
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Heating from CHP",
-                    Fill = new SolidColorBrush(Color.FromRgb(247, 96, 21)),
-                    Value = instance.ResultsArray.HwChp
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Electricity from Battery", Fill = new SolidColorBrush(Color.FromRgb(192, 244, 66)),
-                    Value = instance.ResultsArray.ElecBat
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Electricity from Renewables", Fill = new SolidColorBrush(Color.FromRgb(112, 159, 15)),
-                    Value = instance.ResultsArray.ElecRen
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Electricity from CHP",
-                    Fill = new SolidColorBrush(Color.FromRgb(253, 199, 204)),
-                    Value = instance.ResultsArray.ElecChp
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Electricity from Purchased Electricity", Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
-                    Value = instance.ResultsArray.ElecProj
-                }
-            };
 
-            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomCoolingSupplyModule>())
+            var Demand = new List<ResultsViewModel.ChartValue>();
+            foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
             {
-                Supply.Add(new ResultsViewModel.ChartValue()
+                Demand.Add(new ResultsViewModel.ChartValue
                 {
-                    Key = plant.Name,
-                    Value = plant.Used,
-                    Fill = plant.Fill
+                    Key = load.Name,
+                    Fill = load.Fill,
+                    Value = load.HourlyLoads
                 });
-                
             }
 
             SeriesCollection.Clear();
@@ -209,32 +142,83 @@ namespace DistrictEnergy.ViewModels
             foreach (var demand in Demand)
                 if (Math.Abs(demand.Value.Sum()) > 0.001)
                 {
-                    var series = new StackedColumnSeries
+                    var series = new GStackedAreaSeries
                     {
-                        Values = AggregateByPeriod(demand.Value, true, instance.PluginSettings.AggregationPeriod),
+                        Values = AggregateByPeriod(demand.Value, args.TimeStep),
                         Title = demand.Key,
                         //LineSmoothness = 0,
                         LabelPoint = KWhLabelPointFormatter,
-                        //AreaLimit = 0,
+                        AreaLimit = 0,
                         Fill = demand.Fill
                     };
                     SeriesCollection.Add(series);
                 }
+            foreach (var dispatchable in DistrictControl.Instance.ListOfPlantSettings.OfType<IDispatchable>().Where(x =>
+                x.InputType == LoadTypes.Cooling || x.InputType == LoadTypes.Heating || x.InputType == LoadTypes.Elec))
+            {
+                var series = new GStackedAreaSeries
+                {
+                    Values = dispatchable.Input.Select(x => -x).AsChartValues(),
+                    Title = dispatchable.Name,
+                    //LineSmoothness = 0,
+                    LabelPoint = KWhLabelPointFormatter,
+                    AreaLimit = 0,
+                    Fill = dispatchable.Fill
+                };
+                SeriesCollection.Add(series);
+                Total = Total.Zip(dispatchable.Output, (a, b) => a + b).ToArray();
+            }
+
+            var gLineSeries = new GLineSeries
+            {
+                Values = Total.AsChartValues(),
+                Title = "Total",
+                //LineSmoothness = 0,
+                LabelPoint = KWhLabelPointFormatter,
+                Stroke = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+                Fill = null,
+            };
+            SeriesCollection.Add(gLineSeries);
+            Panel.SetZIndex(gLineSeries, 60);
 
             foreach (var supply in Supply)
                 if (Math.Abs(supply.Value.Sum()) > 0.001)
                 {
-                    var series = new StackedColumnSeries
+                    var series = new GStackedAreaSeries
                     {
-                        Values = AggregateByPeriod(supply.Value, false, instance.PluginSettings.AggregationPeriod),
+                        Values = supply.Value.AsChartValues(),
                         Title = supply.Key,
                         // LineSmoothness = 0,
                         LabelPoint = KWhLabelPointFormatter,
-                        // AreaLimit = 0,
+                        AreaLimit = 0,
                         Fill = supply.Fill
                     };
                     SeriesCollection.Add(series);
                 }
+
+            StorageSeriesCollection.Clear();
+            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
+            {
+                if (storage.Input.Sum() > 0)
+                {
+                    StorageSeriesCollection.Add(new GStackedAreaSeries()
+                    {
+                        Values = storage.Storage.AsChartValues(),
+                        Title = storage.Name,
+                        Fill = storage.Fill,
+                        AreaLimit = 0,
+                        LabelPoint = KWhLabelPointFormatter,
+                    });
+                }
+            }
+        }
+
+        private ChartValues<double> AggregateByPeriod(double[] d, int timestep)
+        {
+            return d
+                .Select((x, i) => new {Index = i, Value = x})
+                .GroupBy(x => x.Index / (8760 / timestep))
+                .Select(x => x.Select(v => -v.Value).Sum()).AsChartValues();
         }
 
         private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true,

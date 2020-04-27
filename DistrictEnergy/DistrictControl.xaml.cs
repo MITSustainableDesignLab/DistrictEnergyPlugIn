@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -48,6 +49,12 @@ namespace DistrictEnergy
                 new GridElectricity(),
                 new GridGas()
             };
+            ListOfDistrictLoads = new ObservableCollection<DistrictLoad>()
+            {
+                new HeatingLoads(),
+                new CoolingLoads(),
+                new ElectricityLoads()
+            };
 
             InitializeComponent();
             Instance = this;
@@ -74,6 +81,17 @@ namespace DistrictEnergy
             // while bottomExpander is null, if we hook this up in the xaml
             MyExpander.Expanded += ExpandedOrCollapsed;
             MyExpander.Collapsed += ExpandedOrCollapsed;
+        }
+
+        public ObservableCollection<DistrictLoad> ListOfDistrictLoads
+        {
+            get => _listOfDistrictLoads;
+            set
+            {
+                if (Equals(value, _listOfDistrictLoads)) return;
+                _listOfDistrictLoads = value;
+                OnPropertyChanged();
+            }
         }
 
         public ObservableCollection<IThermalPlantSettings> ListOfPlantSettings
@@ -209,6 +227,7 @@ namespace DistrictEnergy
 
         GridLength[] starHeight;
         private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
+        private ObservableCollection<DistrictLoad> _listOfDistrictLoads;
 
         private void CostsChecked(object sender, RoutedEventArgs e)
         {

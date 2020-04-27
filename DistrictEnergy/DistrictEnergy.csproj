@@ -133,6 +133,11 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="Networks\Loads\AddtionalLoads.cs" />
+    <Compile Include="Networks\Loads\CoolingLoads.cs" />
+    <Compile Include="Networks\Loads\ElectricityLoads.cs" />
+    <Compile Include="Networks\Loads\HeatingLoads.cs" />
+    <Compile Include="Networks\Loads\DistrictLoad.cs" />
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
     <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="Networks\ThermalPlants\IDispatchable.cs" />

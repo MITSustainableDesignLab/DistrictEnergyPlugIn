@@ -100,9 +100,14 @@ namespace DistrictEnergy
 
             RhinoApp.WriteLine("Number of variables = " + solver.NumVariables());
 
-            var cooling = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN;
-            var heating = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN;
-            var electricity = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN;
+            var Load = new Dictionary<(int, LoadTypes), double>();
+            foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    Load[(t, load.LoadType)] = load.HourlyLoads.ToList().GetRange(t, dt).Sum();
+                }
+            }
 
             // Set Load Balance Constraints
             foreach (LoadTypes loadTypes in Enum.GetValues(typeof(LoadTypes)))
@@ -122,7 +127,7 @@ namespace DistrictEnergy
                                    Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
-                                   cooling.ToList().GetRange(i, dt).Sum() / pipe);
+                                   Load[(i, loadTypes)] / pipe);
                     }
 
                     // Peak Condition
@@ -146,7 +151,7 @@ namespace DistrictEnergy
                                    Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
-                                   heating.ToList().GetRange(i, dt).Sum() / pipe);
+                                   Load[(i, loadTypes)] / pipe);
                     }
 
                     // Peak Condition
@@ -167,7 +172,7 @@ namespace DistrictEnergy
                                    Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
-                                   electricity.ToList().GetRange(i, dt).Sum() + E[(i, loadTypes)]);
+                                   Load[(i, loadTypes)] + E[(i, loadTypes)]);
                     }
 
                     //Peak Condition
