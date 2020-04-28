@@ -144,20 +144,21 @@ namespace DistrictEnergy.ViewModels
         {
             var args = (DHRunLPModel.SimulationCompleted) e;
             var Total = new double[args.TimeSteps];
-
+            var lineSmoothness = 0.5;
             SeriesCollection.Clear();
 
             // Plot Demand (Negative)
-            var plot_duration = 365;
+            var plot_duration = args.TimeSteps;
             foreach (var demand in DistrictControl.Instance.ListOfDistrictLoads)
             {
                 if (Math.Abs(demand.Input.Sum()) > 0)
                 {
+                    
                     var series = new GStackedAreaSeries
                     {
                         Values = demand.Input.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = demand.Name,
-                        LineSmoothness = 0,
+                        LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
                         Fill = demand.Fill
@@ -169,7 +170,7 @@ namespace DistrictEnergy.ViewModels
             }
 
             // Plot Additional Demand from Supply Modules (Negative)
-            foreach (var dispatchable in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>().Where(x =>
+            foreach (var dispatchable in DistrictControl.Instance.ListOfPlantSettings.OfType<IThermalPlantSettings>().Where(x =>
                 x.InputType == LoadTypes.Cooling || x.InputType == LoadTypes.Heating || x.InputType == LoadTypes.Elec))
             {
                 if (dispatchable.Input.Sum() > 0)
@@ -178,7 +179,7 @@ namespace DistrictEnergy.ViewModels
                     {
                         Values = dispatchable.Input.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = dispatchable.Name,
-                        LineSmoothness = 0,
+                        LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
                         Fill = dispatchable.Fill
@@ -194,7 +195,7 @@ namespace DistrictEnergy.ViewModels
             // {
             //     Values = Total.AsChartValues(),
             //     Title = "Total",
-            //     //LineSmoothness = 0,
+            //     //LineSmoothness = lineSmoothness,
             //     LabelPoint = KWhLabelPointFormatter,
             //     Stroke = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
             //     Fill = null,
@@ -214,7 +215,7 @@ namespace DistrictEnergy.ViewModels
                     {
                         Values = supply.Output.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = supply.Name,
-                        LineSmoothness = 0,
+                        LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
                         Fill = supply.Fill
@@ -232,7 +233,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Storage.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,
-                        LineSmoothness = 0,
+                        LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });
@@ -243,7 +244,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Output.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,
-                        LineSmoothness = 0,
+                        LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });

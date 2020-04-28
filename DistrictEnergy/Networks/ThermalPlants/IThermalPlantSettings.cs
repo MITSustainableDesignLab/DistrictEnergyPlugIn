@@ -63,5 +63,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember] SolidColorBrush Fill { get; set; }
 
+        [JsonIgnore] LoadTypes InputType { get; }
     }
 }

@@ -11,7 +11,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class PipeNetwork : IThermalPlantSettings
     {
-
         public PipeNetwork()
         {
             ConversionMatrix = new Dictionary<LoadTypes, double>()
@@ -61,5 +60,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public double Efficiency => ConversionMatrix[LoadTypes.Heating];
         public SolidColorBrush Fill { get; set; }
+        public LoadTypes InputType { get; } = LoadTypes.Transport;
     }
 }

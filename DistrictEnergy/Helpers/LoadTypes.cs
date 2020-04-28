@@ -10,6 +10,7 @@
         GridElec,
         GridGas,
         SolarRadiation,
-        Wind
+        Wind,
+        Custom
     }
 }
