@@ -27,22 +27,6 @@ namespace DistrictEnergy
             return Result.Success;
         }
 
-        private static Variable[] To1DArray(Variable[,] input)
-        {
-            // Step 1: get total size of 2D array, and allocate 1D array.
-            var size = input.Length;
-            var result = new Variable[size];
-
-            // Step 2: copy 2D array elements into a 1D array.
-            var write = 0;
-            for (var i = 0; i <= input.GetUpperBound(0); i++)
-            for (var z = 0; z <= input.GetUpperBound(1); z++)
-                result[write++] = input[i, z];
-
-            // Step 3: return the new array.
-            return result;
-        }
-
         private void Main()
         {
             DHSimulateDistrictEnergy.Instance.PreSolve();
@@ -50,7 +34,7 @@ namespace DistrictEnergy
             var solver = Solver.CreateSolver("SimpleMipProgram", "GLOP_LINEAR_PROGRAMMING");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
-            int timeSteps = 365; // Number of Time Steps
+            int timeSteps = 1460; // Number of Time Steps
             int dt = 8760 / timeSteps; // Duration of each Time Steps
 
             // Input Enerygy
