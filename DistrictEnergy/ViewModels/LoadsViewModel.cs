@@ -173,7 +173,7 @@ namespace DistrictEnergy.ViewModels
                     {
                         Values = demand.Input.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
-                        Title = demand.Name,
+                        Title = "[+] " + demand.Name,
                         LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
@@ -205,7 +205,7 @@ namespace DistrictEnergy.ViewModels
                     {
                         Values = dispatchable.Input.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
-                        Title = dispatchable.Name,
+                        Title = "[+] " + dispatchable.Name,
                         LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
