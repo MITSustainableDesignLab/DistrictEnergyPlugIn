@@ -10,7 +10,19 @@
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:LoadsViewModel}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="2*"/>
+            <RowDefinition >
+                <RowDefinition.Style>
+                    <Style TargetType="{x:Type RowDefinition}">
+                        <Setter Property="Height" Value="0.5*" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsStorageVisible}" Value="false">
+                                <Setter Property="Height" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
             <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
         <lvc:CartesianChart Zoom="X"
@@ -56,7 +68,23 @@
                           LabelFormatter="{Binding TimeFormatter, Mode=OneTime}"/>
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Storage Level" ShowLabels="False" LabelFormatter="{Binding YFormatter}" FontSize="14" IsMerged="True"/>
+                <lvc:Axis Title="Storage Level" ShowLabels="False" IsMerged="True"/>
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
+        <lvc:CartesianChart Grid.Row="2" DisableAnimations="True"
+                            ScrollMode="X"
+                            ScrollHorizontalFrom="{Binding From, Mode=TwoWay}"
+                            ScrollHorizontalTo="{Binding To, Mode=TwoWay}"
+                            ScrollBarFill="#25303030"
+                            DataTooltip="{x:Null}"
+                            Hoverable="False"
+                            Series="{Binding DemandLineCollection}">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis IsMerged="True"
+                          LabelFormatter="{Binding TimeFormatter, Mode=OneTime}"/>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis ShowLabels="False" Title="" IsMerged="True"/>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
     </Grid>

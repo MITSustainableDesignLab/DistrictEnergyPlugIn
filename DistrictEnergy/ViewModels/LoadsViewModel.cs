@@ -21,6 +21,7 @@ namespace DistrictEnergy.ViewModels
         private double _from;
         private double _to;
         private Func<double, string> _timeFormatter;
+        private bool _isStorageVisible;
 
         public LoadsViewModel()
         {
@@ -28,7 +29,8 @@ namespace DistrictEnergy.ViewModels
             TimeFormatter = x => new DateTime((long) x).ToString("MMMM");
             SeriesCollection = new SeriesCollection();
             StorageSeriesCollection = new SeriesCollection();
-
+            DemandLineCollection = new SeriesCollection();
+            IsStorageVisible = false;
             //lets initialize in an invisible location
             XPointer = new DateTime(2018, 01, 01, 0, 0, 0).Ticks;
             YPointer = 0;
@@ -53,6 +55,19 @@ namespace DistrictEnergy.ViewModels
             From = new DateTime(2018, 01, 01, 0, 0, 0).Ticks;
             To = new DateTime(2018, 01, 01, 0, 0, 0).AddHours(8760).Ticks;
         }
+
+        public bool IsStorageVisible
+        {
+            get => _isStorageVisible;
+            set
+            {
+                if (value == _isStorageVisible) return;
+                _isStorageVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SeriesCollection DemandLineCollection { get; set; }
 
         public static LoadsViewModel Instance { get; set; }
 
@@ -146,6 +161,7 @@ namespace DistrictEnergy.ViewModels
             var Total = new double[args.TimeSteps];
             var lineSmoothness = 0.5;
             SeriesCollection.Clear();
+            DemandLineCollection.Clear();
 
             // Plot Demand (Negative)
             var plot_duration = args.TimeSteps;
@@ -153,10 +169,10 @@ namespace DistrictEnergy.ViewModels
             {
                 if (Math.Abs(demand.Input.Sum()) > 0)
                 {
-                    
                     var series = new GStackedAreaSeries
                     {
-                        Values = demand.Input.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
+                        Values = demand.Input.Split(plot_duration)
+                            .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = demand.Name,
                         LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
@@ -164,20 +180,31 @@ namespace DistrictEnergy.ViewModels
                         Fill = demand.Fill
                     };
                     SeriesCollection.Add(series);
+                    DemandLineCollection.Add(new GLineSeries
+                    {
+                        Values = demand.Input.Split(12)
+                            .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
+                        Title = demand.Name,
+                        LineSmoothness = lineSmoothness,
+                        Stroke = demand.Fill
+                    });
                 }
 
                 Total = Total.Zip(demand.Input, (a, b) => a + b.Value).ToArray();
             }
 
             // Plot Additional Demand from Supply Modules (Negative)
-            foreach (var dispatchable in DistrictControl.Instance.ListOfPlantSettings.OfType<IThermalPlantSettings>().Where(x =>
-                x.InputType == LoadTypes.Cooling || x.InputType == LoadTypes.Heating || x.InputType == LoadTypes.Elec))
+            foreach (var dispatchable in DistrictControl.Instance.ListOfPlantSettings.OfType<IThermalPlantSettings>()
+                .Where(x =>
+                    x.InputType == LoadTypes.Cooling || x.InputType == LoadTypes.Heating ||
+                    x.InputType == LoadTypes.Elec))
             {
                 if (dispatchable.Input.Sum() > 0)
                 {
                     var series = new GStackedAreaSeries
                     {
-                        Values = dispatchable.Input.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
+                        Values = dispatchable.Input.Split(plot_duration)
+                            .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = dispatchable.Name,
                         LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
@@ -213,7 +240,8 @@ namespace DistrictEnergy.ViewModels
                 {
                     var series = new GStackedAreaSeries
                     {
-                        Values = supply.Output.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
+                        Values = supply.Output.Split(plot_duration)
+                            .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = supply.Name,
                         LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
@@ -226,11 +254,12 @@ namespace DistrictEnergy.ViewModels
             StorageSeriesCollection.Clear();
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
             {
-                if (storage.Input.Sum() > 0)
+                if (storage.Output.Sum() > 0)
                 {
                     StorageSeriesCollection.Add(new GStackedAreaSeries()
                     {
-                        Values = storage.Storage.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
+                        Values = storage.Storage.Split(plot_duration)
+                            .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,
                         LineSmoothness = lineSmoothness,
@@ -241,13 +270,15 @@ namespace DistrictEnergy.ViewModels
                     // Plot Supply From Storage
                     SeriesCollection.Add(new GStackedAreaSeries()
                     {
-                        Values = storage.Output.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
+                        Values = storage.Output.Split(plot_duration)
+                            .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });
+                    IsStorageVisible = true;
                 }
             }
         }
