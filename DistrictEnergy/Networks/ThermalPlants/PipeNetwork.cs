@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Runtime.Serialization;
-using System.Windows.Controls;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
@@ -56,7 +54,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public string Name { get; set; } = "Distribution Pipes";
 
         public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes OutputType { get; set; } = LoadTypes.Transport;
+        public LoadTypes OutputType => LoadTypes.Transport;
         public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public List<DateTimePoint> Input { get; set; }
         public List<DateTimePoint> Output { get; set; }

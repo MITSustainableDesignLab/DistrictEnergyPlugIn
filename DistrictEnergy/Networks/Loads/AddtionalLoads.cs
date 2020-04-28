@@ -7,13 +7,10 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using CsvHelper;
 using DistrictEnergy.Helpers;
-using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts.Defaults;
 using Rhino;
-using Rhino.UI;
 using Umi.Core;
 using Umi.RhinoServices.Context;
-using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 namespace DistrictEnergy.Networks.Loads
 {
@@ -47,7 +44,7 @@ namespace DistrictEnergy.Networks.Loads
                     Path = filePath;
                     //Read the contents of the file into the umi db
 
-                    Input = LoadCustomDemand(filePath, context).AggregateByPeriod(1);
+                    Input = LoadCustomDemand(filePath, context).ToDateTimePoint();
                     RhinoApp.WriteLine($"Added additional load from '{filePath}'");
                 }
             }

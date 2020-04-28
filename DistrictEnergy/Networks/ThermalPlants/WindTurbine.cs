@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Runtime.Serialization;
-using System.Windows.Controls;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
@@ -72,12 +70,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Guid Id { get; set; } = Guid.NewGuid();
 
-        public override LoadTypes OutputType { get; set; } = LoadTypes.Elec;
+        public override LoadTypes OutputType => LoadTypes.Elec;
+        public override LoadTypes InputType => LoadTypes.Wind;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(192, 244, 66));
-        public override LoadTypes InputType { get; set; } = LoadTypes.Wind;
     }
 }

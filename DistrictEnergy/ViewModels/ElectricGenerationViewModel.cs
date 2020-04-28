@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
-using Umi.RhinoServices.Context;
-using Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy.ViewModels
 {

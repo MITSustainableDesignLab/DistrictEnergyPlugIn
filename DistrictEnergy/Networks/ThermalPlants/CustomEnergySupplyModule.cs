@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using CsvHelper;
 using DistrictEnergy.Helpers;
-using LiveCharts.Defaults;
 using Rhino;
 using Umi.RhinoServices.Context;
 
@@ -32,7 +31,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         public override Guid Id { get; set; } = Guid.NewGuid();
 
-        public abstract override LoadTypes OutputType { get; set; }
+        public abstract override LoadTypes OutputType { get; }
 
         public abstract override double F { get; set; }
         public abstract override double V { get; set; }

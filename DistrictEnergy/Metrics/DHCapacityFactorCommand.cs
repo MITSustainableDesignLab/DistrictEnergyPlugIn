@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Rhino;
 using Rhino.Commands;
-using System.Linq;
-using System.Collections.Generic;
 using Umi.Core;
 using Umi.RhinoServices.Context;
 

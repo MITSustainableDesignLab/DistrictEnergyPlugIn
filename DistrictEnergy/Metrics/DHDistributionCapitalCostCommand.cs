@@ -1,7 +1,7 @@
-﻿using Rhino;
-using Rhino.Commands;
-using System.Linq;
+﻿using System.Linq;
 using DistrictEnergy.ViewModels;
+using Rhino;
+using Rhino.Commands;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics

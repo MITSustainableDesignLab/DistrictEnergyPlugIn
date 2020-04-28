@@ -1,8 +1,5 @@
-﻿using System;
-using Rhino;
+﻿using Rhino;
 using Rhino.Commands;
-using System.Linq;
-using Rhino.Geometry;
 
 namespace DistrictEnergy.Metrics
 {

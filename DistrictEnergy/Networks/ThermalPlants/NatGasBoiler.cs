@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
-using Deedle;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
-using LiveCharts.Helpers;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -32,8 +29,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double Capacity { get; set; } = double.PositiveInfinity;
         [DataMember] [DefaultValue("Natural Gas Boiler")] public override string Name { get; set; } = "Natural Gas Boiler";
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes OutputType { get; set; } = LoadTypes.Heating;
-        public override LoadTypes InputType { get; set; } = LoadTypes.Gas;
+        public override LoadTypes OutputType => LoadTypes.Heating;
+        public override LoadTypes InputType => LoadTypes.Gas;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }

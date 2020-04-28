@@ -1,9 +1,8 @@
-﻿using System;
-using Rhino;
+﻿using Rhino;
 using Rhino.Commands;
 using Rhino.DocObjects;
-using Rhino.Input;
 using Rhino.Geometry;
+using Rhino.Input;
 
 namespace DistrictEnergy
 {

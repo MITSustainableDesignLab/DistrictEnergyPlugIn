@@ -1,28 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
-using LiveCharts;
-using LiveCharts.Wpf;
-using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using Rhino;
 using DistrictEnergy.ViewModels;
-using LiveCharts.Helpers;
-using Umi.RhinoServices.Context;
-using Umi.RhinoServices.UmiEvents;
+using LiveCharts.Wpf;
+using Rhino;
 
 namespace DistrictEnergy
 {

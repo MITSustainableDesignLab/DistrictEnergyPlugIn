@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Windows.Media;
-using Deedle;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
 using Newtonsoft.Json;
@@ -44,7 +43,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember]
         Guid Id { get; set; }
 
-        LoadTypes OutputType { get; set; }
+        LoadTypes OutputType { get; }
         [JsonIgnore] Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
 
         /// <summary>

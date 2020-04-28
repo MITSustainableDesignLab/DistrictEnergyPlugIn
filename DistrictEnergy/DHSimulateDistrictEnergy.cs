@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Windows;
 using CsvHelper;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.Loads;

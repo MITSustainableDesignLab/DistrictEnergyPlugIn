@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Geared;
-using LiveCharts.Helpers;
-using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -149,20 +143,21 @@ namespace DistrictEnergy.ViewModels
         private void UpdateLoadsChart(object sender, EventArgs e)
         {
             var args = (DHRunLPModel.SimulationCompleted) e;
-            var Total = new double[args.TimeStep];
+            var Total = new double[args.TimeSteps];
 
             SeriesCollection.Clear();
 
             // Plot Demand (Negative)
+            var plot_duration = 365;
             foreach (var demand in DistrictControl.Instance.ListOfDistrictLoads)
             {
                 if (Math.Abs(demand.Input.Sum()) > 0)
                 {
                     var series = new GStackedAreaSeries
                     {
-                        Values = demand.Input.Chunk(24).Select(o => new DateTimePoint(o.First().DateTime, -o.Sum())).AsGearedValues(),
+                        Values = demand.Input.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = demand.Name,
-                        //LineSmoothness = 0,
+                        LineSmoothness = 0,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
                         Fill = demand.Fill
@@ -181,9 +176,9 @@ namespace DistrictEnergy.ViewModels
                 {
                     var series = new GStackedAreaSeries
                     {
-                        Values = dispatchable.Input.Select(v => new DateTimePoint(v.DateTime, -v.Value)).AsGearedValues(),
+                        Values = dispatchable.Input.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = dispatchable.Name,
-                        //LineSmoothness = 0,
+                        LineSmoothness = 0,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
                         Fill = dispatchable.Fill
@@ -217,9 +212,9 @@ namespace DistrictEnergy.ViewModels
                 {
                     var series = new GStackedAreaSeries
                     {
-                        Values = supply.Output.AsGearedValues(),
+                        Values = supply.Output.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = supply.Name,
-                        // LineSmoothness = 0,
+                        LineSmoothness = 0,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
                         Fill = supply.Fill
@@ -234,9 +229,10 @@ namespace DistrictEnergy.ViewModels
                 {
                     StorageSeriesCollection.Add(new GStackedAreaSeries()
                     {
-                        Values = storage.Storage.AsGearedValues(),
+                        Values = storage.Storage.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,
+                        LineSmoothness = 0,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });
@@ -244,9 +240,10 @@ namespace DistrictEnergy.ViewModels
                     // Plot Supply From Storage
                     SeriesCollection.Add(new GStackedAreaSeries()
                     {
-                        Values = storage.Output.AsGearedValues(),
+                        Values = storage.Output.Split(plot_duration).Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,
+                        LineSmoothness = 0,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });

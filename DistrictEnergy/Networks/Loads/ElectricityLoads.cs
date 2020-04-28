@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
-using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts.Defaults;
 using Rhino;
-using Rhino.UI;
 using Umi.Core;
-using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
@@ -33,7 +30,7 @@ namespace DistrictEnergy.Networks.Loads
                     aggreagationArray[i] += d;
                 }
 
-            Input = aggreagationArray.AggregateByPeriod(1);
+            Input = aggreagationArray.ToDateTimePoint();
         }
         /// <summary>
         /// Equipment & Lighting

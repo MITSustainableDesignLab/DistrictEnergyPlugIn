@@ -16,9 +16,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         {
             ConversionMatrix = new Dictionary<LoadTypes, double>()
             {
-                {LoadTypes.Heating, EFF_SHW * (1-LOSS_SHW) * UTIL_SHW}
+                {LoadTypes.Heating, EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW}
             };
         }
+
         /// <summary>
         ///     Target offset as percent of annual energy (%) Todo: Annual Energy?
         /// </summary>
@@ -61,13 +62,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Guid Id { get; set; } = Guid.NewGuid();
 
-        public override LoadTypes OutputType { get; set; } = LoadTypes.Heating;
+        public override LoadTypes OutputType => LoadTypes.Heating;
+        public override LoadTypes InputType => LoadTypes.SolarRadiation;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[LoadTypes.Heating];
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(251, 209, 39));
-        public override LoadTypes InputType { get; set; } = LoadTypes.SolarRadiation;
         public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
         public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -55,8 +54,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue("Absorption Chiller")]
         public override string Name { get; set; } = "Absorption Chiller";
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes OutputType { get; set; } = LoadTypes.Cooling;
-        public override LoadTypes InputType { get; set; } = LoadTypes.Heating;
+        public override LoadTypes OutputType { get; } = LoadTypes.Cooling;
+        public override LoadTypes InputType => LoadTypes.Heating;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }

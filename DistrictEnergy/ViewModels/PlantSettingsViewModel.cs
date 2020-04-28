@@ -79,14 +79,30 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                DistrictControl.Instance.ListOfPlantSettings = JsonConvert.DeserializeObject<ObservableCollection<IThermalPlantSettings>>(json,
-                    new JsonSerializerSettings
-                    {
-                        DefaultValueHandling = DefaultValueHandling.Populate,
-                        TypeNameHandling = TypeNameHandling.Objects,
-                        SerializationBinder = _knownTypesBinder
-                    });
+                DistrictControl.Instance.ListOfPlantSettings =
+                    JsonConvert.DeserializeObject<ObservableCollection<IThermalPlantSettings>>(json,
+                        new JsonSerializerSettings
+                        {
+                            DefaultValueHandling = DefaultValueHandling.Populate,
+                            TypeNameHandling = TypeNameHandling.Objects,
+                            SerializationBinder = _knownTypesBinder
+                        });
+
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<GridElectricity>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new GridElectricity());
+                }
+
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<GridGas>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new GridGas());
+                }
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new PipeNetwork());
+                }
             }
+
             OnPropertyChanged(string.Empty);
         }
 

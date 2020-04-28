@@ -50,8 +50,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override string Name { get; set; } = "Heat Pump";
 
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes OutputType { get; set; } = LoadTypes.Heating;
-        public override LoadTypes InputType { get; set; } = LoadTypes.Elec;
+        public override LoadTypes OutputType => LoadTypes.Heating;
+        public override LoadTypes InputType => LoadTypes.Elec;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }

@@ -6,7 +6,6 @@ using LiveCharts;
 using LiveCharts.Events;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
-using LiveCharts.Geared;
 
 namespace DistrictEnergy.Views.ResultViews
 {

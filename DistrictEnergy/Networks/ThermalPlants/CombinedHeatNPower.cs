@@ -16,7 +16,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {
                 {LoadTypes.Elec, EFF_CHP},
                 {LoadTypes.Heating, HREC_CHP},
-                {LoadTypes.Gas, -1},
+                {LoadTypes.Gas, -1}
             };
         }
 
@@ -69,8 +69,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override string Name { get; set; } = "Combined Heat&Power";
 
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes OutputType { get; set; } = LoadTypes.Elec;
-        public override LoadTypes InputType { get; set; } = LoadTypes.Gas;
+        public override LoadTypes OutputType => LoadTypes.Elec;
+        public override LoadTypes InputType => LoadTypes.Gas;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }

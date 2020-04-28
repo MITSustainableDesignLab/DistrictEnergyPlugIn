@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
-using DistrictEnergy.ViewModels;
 using Google.OrTools.LinearSolver;
-using LiveCharts.Defaults;
 using Rhino;
 using Rhino.Commands;
 
@@ -287,16 +282,16 @@ namespace DistrictEnergy
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
                 var cap = solutionValues.Max();
                 var energy = solutionValues.Sum();
-                plant.Input = solutionValues.AggregateByPeriod(dt);
-                plant.Output = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).AggregateByPeriod(dt);
+                plant.Input = solutionValues.ToDateTimePoint();
+                plant.Output = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToDateTimePoint();
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
             {
-                storage.Output = Qout.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).AggregateByPeriod(dt);
-                storage.Input = Qin.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).AggregateByPeriod(dt);
-                storage.Storage = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).AggregateByPeriod(dt);
+                storage.Output = Qout.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToDateTimePoint();
+                storage.Input = Qin.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToDateTimePoint();
+                storage.Storage = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToDateTimePoint();
                 RhinoApp.WriteLine(
                     $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; EndStorageState {storage.Storage.Last().Value}");
             }
@@ -309,7 +304,7 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Problem solved in " + solver.WallTime() + " milliseconds");
             RhinoApp.WriteLine("Problem solved in " + solver.Iterations() + " iterations");
             RhinoApp.WriteLine("Problem solved in " + solver.Nodes() + " branch-and-bound nodes");
-            OnCompletion(new SimulationCompleted() {TimeStep = timeSteps});
+            OnCompletion(new SimulationCompleted() {TimeSteps = timeSteps, Period = dt});
         }
 
         public event EventHandler Completion;
@@ -322,9 +317,8 @@ namespace DistrictEnergy
 
         public class SimulationCompleted : EventArgs
         {
-            public int TimeStep { get; set; }
-            public int Threshold { get; set; }
-            public DateTime TimeReached { get; set; }
+            public int TimeSteps { get; set; }
+            public int Period { get; set; }
         }
     }
 }

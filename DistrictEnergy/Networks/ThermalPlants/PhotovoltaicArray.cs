@@ -52,13 +52,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double Capacity { get; set; } = 0;
         [DataMember] [DefaultValue("PV")] public override string Name { get; set; } = "PV";
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes OutputType { get; set; } = LoadTypes.Elec;
+        public override LoadTypes OutputType => LoadTypes.Elec;
+        public override LoadTypes InputType => LoadTypes.SolarRadiation;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(112, 159, 15));
-        public override LoadTypes InputType { get; set; } = LoadTypes.SolarRadiation;
         public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
         public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }
