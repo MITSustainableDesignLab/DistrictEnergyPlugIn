@@ -46,7 +46,7 @@ namespace DistrictEnergy
                 new CoolingLoads(),
                 new ElectricityLoads()
             };
-
+            PlanningSettings = new PlanningSettings();
             InitializeComponent();
             Instance = this;
 
@@ -107,7 +107,7 @@ namespace DistrictEnergy
         }
 
         public static DistrictControl Instance { get; set; }
-
+        public static PlanningSettings PlanningSettings { get; set; }
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {

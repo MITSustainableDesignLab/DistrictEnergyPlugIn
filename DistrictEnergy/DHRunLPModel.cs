@@ -34,7 +34,7 @@ namespace DistrictEnergy
             var solver = Solver.CreateSolver("SimpleMipProgram", "GLOP_LINEAR_PROGRAMMING");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
-            int timeSteps = 1460; // Number of Time Steps
+            int timeSteps = (int) DistrictControl.PlanningSettings.TimeSteps; // Number of Time Steps
             int dt = 8760 / timeSteps; // Duration of each Time Steps
 
             // Input Enerygy

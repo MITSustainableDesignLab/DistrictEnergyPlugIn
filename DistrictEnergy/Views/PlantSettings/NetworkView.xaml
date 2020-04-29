@@ -6,10 +6,11 @@
              xmlns:local="clr-namespace:DistrictEnergy.Views.PlantSettings"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="62.651" d:DesignWidth="604.245"
+             d:DesignHeight="87.984" d:DesignWidth="617.578"
              d:DataContext="{d:DesignInstance viewModels:NetworkViewModel}">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
@@ -17,14 +18,30 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+        <StackPanel Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="5,0">
+            <StackPanel.DataContext>
+                <viewModels:PlanningSettingsViewModel />
+            </StackPanel.DataContext>
+            <Slider Minimum="0" Maximum="11" IsSnapToTickEnabled="True"
+                    Ticks="0,1,2,3,4,5,6,7,8,9,10,11"
+                    VerticalAlignment="Center" Value="{Binding TimeSteps}" />
+            <Grid>
+                <TextBlock HorizontalAlignment="Left">Fast</TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding DisplayTimeSteps}" />
+                    <TextBlock Text=" Simulation TimeSteps" />
+                </StackPanel>
+                <TextBlock HorizontalAlignment="Right">Accurate</TextBlock>
+            </Grid>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
             <Label Content="Account for network losses?"
                    ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
                    Margin="0,2,3,2" />
             <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
                       VerticalAlignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Column="1">
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
             <Label Content="Hot"
                    ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
             <TextBox
@@ -39,7 +56,7 @@
                 IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0"
                 VerticalContentAlignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2">
             <StackPanel.DataContext>
                 <viewModels:PlanningSettingsViewModel />
             </StackPanel.DataContext>
@@ -54,7 +71,8 @@
                 Text="{Binding Periods, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Margin="0,0,10,0" ToolTip="Number of periods"
                 VerticalContentAlignment="Center" />
-            <TextBlock Text="{Binding Annuity, StringFormat=N4}" VerticalAlignment="Center" Foreground="#FF969696"
+            <TextBlock Text="{Binding AnnuityFactor, StringFormat=N4}" VerticalAlignment="Center"
+                       Foreground="#FF969696"
                        ToolTip="Computed Annuity Payment Factor" />
         </StackPanel>
     </Grid>
