@@ -14,12 +14,9 @@ namespace DistrictEnergy.ViewModels
     {
         public PlanningSettingsViewModel()
         {
-            Instance = this;
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
-
-        public PlanningSettingsViewModel Instance { get; set; }
 
         private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
         {
@@ -57,7 +54,7 @@ namespace DistrictEnergy.ViewModels
                 return;
             }
 
-            var pSjson = JsonConvert.SerializeObject(this);
+            var pSjson = JsonConvert.SerializeObject(DistrictControl.PlanningSettings);
             context.AuxiliaryFiles.StoreText("planningSettings.json", pSjson);
         }
 

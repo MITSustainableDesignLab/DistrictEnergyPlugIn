@@ -18,6 +18,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 {LoadTypes.Cooling, UseDistrictLosses == 1 ? RelDistCoolLoss : 1},
                 {LoadTypes.Heating, UseDistrictLosses == 1 ? RelDistHeatLoss : 1}
             };
+            Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0));
         }
 
         /// <summary>
@@ -61,5 +62,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double Efficiency => ConversionMatrix[LoadTypes.Heating];
         public SolidColorBrush Fill { get; set; }
         public LoadTypes InputType { get; } = LoadTypes.Transport;
+        public GraphCost FixedCost => new FixedCost(this);
+        public GraphCost VariableCost => new VariableCost(this, 200);
+        public double TotalCost => FixedCost.Cost + VariableCost.Cost;
     }
 }

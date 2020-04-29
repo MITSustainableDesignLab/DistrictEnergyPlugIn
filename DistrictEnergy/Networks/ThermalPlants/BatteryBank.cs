@@ -8,7 +8,7 @@ using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class BatteryBank : IStorage
+    internal class BatteryBank : Storage
     {
         public BatteryBank()
         {
@@ -44,31 +44,24 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(1383)]
-        public double F { get; set; } = 1383;
+        public override double F { get; set; } = 1383;
 
         /// <summary>
         /// Variable cost per energy unit f [$/kWh]
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public double V { get; set; } = 0;
-
-        public double Capacity { get; set; } = 0;
-        [DataMember] [DefaultValue("Battery")] public string Name { get; set; } = "Battery";
-        public Guid Id { get; set; } = new Guid();
-        public LoadTypes OutputType { get; set; } = LoadTypes.Elec;
-        public LoadTypes InputType { get; set; } = LoadTypes.Elec;
-        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public List<DateTimePoint> Input { get; set; }
-        public List<DateTimePoint> Output { get; set; }
+        public override double V { get; set; } = 0;
+        [DataMember] [DefaultValue("Battery")] public override string Name { get; set; } = "Battery";
+        public override LoadTypes OutputType { get; } = LoadTypes.Elec;
+        public override LoadTypes InputType { get; } = LoadTypes.Elec;
+        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double Efficiency => ConversionMatrix[OutputType];
-        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(231, 71, 126));
-        public double ChargingEfficiency => 1 - LOSS_BAT;
-        public double DischargingEfficiency => 1 - LOSS_BAT;
-        public double StorageStandingLosses { get; set; } = 0.001;
-        public List<DateTimePoint> Storage { get; set; }
-        public double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
-        public double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
-        public double StartingCapacity => Capacity * BAT_START;
+        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(231, 71, 126));
+        public override double ChargingEfficiency => 1 - LOSS_BAT;
+        public override double DischargingEfficiency => 1 - LOSS_BAT;
+        public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
+        public override double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
+        public override double StartingCapacity => Capacity * BAT_START;
     }
 }

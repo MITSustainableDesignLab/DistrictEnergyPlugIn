@@ -8,7 +8,7 @@ using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class HotWaterStorage : IStorage
+    public class HotWaterStorage : Storage
     {
         public HotWaterStorage()
         {
@@ -39,36 +39,21 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.8)]
         public double TANK_START { get; set; } = 0.0;
 
-        [DataMember] [DefaultValue(0)] public double F { get; set; } = 0;
-        [DataMember] [DefaultValue(0.167)] public double V { get; set; } = 0.167;
-        public double Capacity { get; set; } = 0;
+        [DataMember] [DefaultValue(0)] public override double F { get; set; } = 0;
+        [DataMember] [DefaultValue(0.167)] public override double V { get; set; } = 0.167;
 
         [DataMember]
         [DefaultValue("Thermal Energy Storage")]
-        public string Name { get; set; } = "Thermal Energy Storage";
-
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public LoadTypes OutputType { get; set; } = LoadTypes.Heating;
-        public LoadTypes InputType { get; set; } = LoadTypes.Heating;
-        public Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public List<DateTimePoint> Input { get; set; }
-
-        public List<DateTimePoint> Output { get; set; }
+        public override string Name { get; set; } = "Thermal Energy Storage";
+        public override LoadTypes OutputType { get; } = LoadTypes.Heating;
+        public override LoadTypes InputType { get; } = LoadTypes.Heating;
+        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double Efficiency => ConversionMatrix[OutputType];
-        public SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(253, 199, 204));
-
-        public List<DateTimePoint> AggregateByPeriod(double[] d, int period)
-        {
-            throw new NotImplementedException();
-        }
-
-        public double ChargingEfficiency => 1 - LOSS_HWT;
-        public double DischargingEfficiency => 1 - LOSS_HWT;
-        public double StorageStandingLosses => 0.01;
-
-        public List<DateTimePoint> Storage { get; set; }
-        public double MaxChargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
-        public double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
-        public double StartingCapacity => Capacity * TANK_START;
+        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(253, 199, 204));
+        public override double ChargingEfficiency => 1 - LOSS_HWT;
+        public override double DischargingEfficiency => 1 - LOSS_HWT;
+        public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
+        public override double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
+        public override double StartingCapacity => Capacity * TANK_START;
     }
 }

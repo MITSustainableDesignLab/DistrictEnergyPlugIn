@@ -1505,11 +1505,4 @@ namespace DistrictEnergy
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-    public class SimCase
-    {
-        public int Id { get; set; }
-
-        public string DName { get; set; }
-    }
 }

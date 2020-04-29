@@ -150,8 +150,6 @@ namespace DistrictEnergy.ViewModels
         private void SubscribeEvents(object sender, UmiContext e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateLoadsChart;
             DHRunLPModel.Instance.Completion += UpdateLoadsChart;
         }
 
@@ -252,13 +250,13 @@ namespace DistrictEnergy.ViewModels
                 }
 
             StorageSeriesCollection.Clear();
-            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
+            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 if (storage.Output.Sum() > 0)
                 {
                     StorageSeriesCollection.Add(new GStackedAreaSeries()
                     {
-                        Values = storage.Storage.Split(plot_duration)
+                        Values = storage.Stored.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,

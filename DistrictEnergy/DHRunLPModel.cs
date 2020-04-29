@@ -56,7 +56,7 @@ namespace DistrictEnergy
             var Qin = new Dictionary<(int, IThermalPlantSettings), Variable>();
             var Qout = new Dictionary<(int, IThermalPlantSettings), Variable>();
             var S = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
+            foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
@@ -191,10 +191,10 @@ namespace DistrictEnergy
             }
 
             // Storage Rules
-            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
+            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 // solver.Add(S[(0, storage)]
-                //            == (1 - storage.StorageStandingLosses) *
+                //            == (1 - storage.StoredStandingLosses) *
                 //            S.Where(k => k.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() +
                 //            storage.ChargingEfficiency * Qin[(0, storage)] -
                 //            (1 / storage.DischargingEfficiency) * Qout[(0, storage)]);
@@ -231,7 +231,7 @@ namespace DistrictEnergy
                 }
             }
 
-            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
+            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
@@ -271,13 +271,13 @@ namespace DistrictEnergy
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
-            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<IStorage>())
+            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 storage.Output = Qout.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToDateTimePoint();
                 storage.Input = Qin.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToDateTimePoint();
-                storage.Storage = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToDateTimePoint();
+                storage.Stored = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue()).ToDateTimePoint();
                 RhinoApp.WriteLine(
-                    $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; EndStorageState {storage.Storage.Last().Value}");
+                    $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; EndStorageState {storage.Stored.Last().Value}");
             }
 
             // Write Exports
