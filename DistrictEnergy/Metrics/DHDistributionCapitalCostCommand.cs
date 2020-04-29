@@ -1,7 +1,7 @@
-﻿using Rhino;
-using Rhino.Commands;
-using System.Linq;
+﻿using System.Linq;
 using DistrictEnergy.ViewModels;
+using Rhino;
+using Rhino.Commands;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
@@ -36,9 +36,9 @@ namespace DistrictEnergy.Metrics
             var specificHeat = heatDemand / bldFloor;
             var effectiveWidth = Metrics.EffThermalWidth(landArea, length);
 
-            double annuity = Metrics.AnnuityPayment(PlanningSettingsViewModel.PlanningSettings.Rate, PlanningSettingsViewModel.PlanningSettings.Periods);
-            double c1 = PlanningSettingsViewModel.PlanningSettings.C1;
-            double c2 = PlanningSettingsViewModel.PlanningSettings.C2;
+            double annuity = Metrics.AnnuityPayment(DistrictControl.PlanningSettings.Rate, DistrictControl.PlanningSettings.Periods);
+            double c1 = DistrictControl.PlanningSettings.C1;
+            double c2 = DistrictControl.PlanningSettings.C2;
 
             double da = Metrics.AveragePipeDiamSwedish(heatDemand * 0.0036 / length);
 

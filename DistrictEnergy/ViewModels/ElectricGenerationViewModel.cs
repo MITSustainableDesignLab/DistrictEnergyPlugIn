@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
 {
     public class ElectricGenerationViewModel : PlantSettingsViewModel
     {
+        private double _pvCapacity;
+        private double _windCapacity;
+
         public ElectricGenerationViewModel()
         {
             Instance = this;
@@ -20,59 +20,60 @@ namespace DistrictEnergy.ViewModels
 
         public double OFF_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double EFF_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().EFF_PV = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double UTIL_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().UTIL_PV = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double LOSS_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV * 100;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().LOSS_PV = value / 100;
                 OnPropertyChanged();
             }
         }
+
         public double F_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V_PV
         {
-            get => ListOfPlantSettings.OfType<PhotovoltaicArray>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<PhotovoltaicArray>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().V = value;
                 OnPropertyChanged();
             }
         }
@@ -83,80 +84,80 @@ namespace DistrictEnergy.ViewModels
 
         public double OFF_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND * 100;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double EFF_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND * 100;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().EFF_WND = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double CIN_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().CIN_WND;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().CIN_WND;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().CIN_WND = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().CIN_WND = value;
                 OnPropertyChanged();
             }
         }
 
         public double COUT_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().COUT_WND;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().COUT_WND;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().COUT_WND = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().COUT_WND = value;
                 OnPropertyChanged();
             }
         }
 
         public double ROT_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().ROT_WND;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().ROT_WND;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().ROT_WND = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().ROT_WND = value;
                 OnPropertyChanged();
             }
         }
 
         public double LOSS_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND * 100;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().LOSS_WND = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double F_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V_WND
         {
-            get => ListOfPlantSettings.OfType<WindTurbine>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<WindTurbine>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().V = value;
                 OnPropertyChanged();
             }
         }
@@ -167,52 +168,70 @@ namespace DistrictEnergy.ViewModels
 
         public double AUT_BAT
         {
-            get => ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT;
             set
             {
-                ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT = value;
                 OnPropertyChanged();
+                CalcBatCapacity();
             }
         }
 
         public double LOSS_BAT
         {
-            get => ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT * 100;
             set
             {
-                ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().LOSS_BAT = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double BAT_START
         {
-            get => ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START * 100;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START * 100;
             set
             {
-                ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START = value / 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().BAT_START = value / 100;
                 OnPropertyChanged();
             }
         }
 
         public double F_BAT
         {
-            get => ListOfPlantSettings.OfType<BatteryBank>().First().F;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().F;
             set
             {
-                ListOfPlantSettings.OfType<BatteryBank>().First().F = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().F = value;
                 OnPropertyChanged();
             }
         }
 
         public double V_BAT
         {
-            get => ListOfPlantSettings.OfType<BatteryBank>().First().V;
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().V;
             set
             {
-                ListOfPlantSettings.OfType<BatteryBank>().First().V = value;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().V = value;
                 OnPropertyChanged();
             }
+        }
+
+        public double BatCapacity
+        {
+            get { return _windCapacity; }
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().Capacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void CalcBatCapacity()
+        {
+            // todo Define a more advanced capacity formulation
+            BatCapacity = DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Average()).Sum() *
+                          DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT * 24;
         }
 
         #endregion

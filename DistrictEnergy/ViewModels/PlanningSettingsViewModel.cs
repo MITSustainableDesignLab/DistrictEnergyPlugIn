@@ -1,7 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
+using DistrictEnergy.Annotations;
+using Newtonsoft.Json;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -9,8 +12,6 @@ namespace DistrictEnergy.ViewModels
 {
     public class PlanningSettingsViewModel : INotifyPropertyChanged
     {
-        public static PlanningSettings PlanningSettings = new PlanningSettings();
-
         public PlanningSettingsViewModel()
         {
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
@@ -21,8 +22,6 @@ namespace DistrictEnergy.ViewModels
         {
             SaveSettings(e);
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private void PopulateFrom(object sender, UmiContext e)
         {
@@ -40,7 +39,7 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                PlanningSettings = JsonConvert.DeserializeObject<PlanningSettings>(json);
+                DistrictControl.PlanningSettings = JsonConvert.DeserializeObject<PlanningSettings>(json);
             }
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
@@ -55,63 +54,91 @@ namespace DistrictEnergy.ViewModels
                 return;
             }
 
-            var pSjson = JsonConvert.SerializeObject(PlanningSettings);
+            var pSjson = JsonConvert.SerializeObject(DistrictControl.PlanningSettings);
             context.AuxiliaryFiles.StoreText("planningSettings.json", pSjson);
         }
 
         public double C1
         {
-            get { return PlanningSettings.C1; }
+            get { return DistrictControl.PlanningSettings.C1; }
             set
             {
-                PlanningSettings.C1 = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(C1)));
+                DistrictControl.PlanningSettings.C1 = value;
+                OnPropertyChanged();
             }
         }
 
         public double C2
         {
-            get { return PlanningSettings.C2; }
+            get { return DistrictControl.PlanningSettings.C2; }
             set
             {
-                PlanningSettings.C2 = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(C2)));
+                DistrictControl.PlanningSettings.C2 = value;
+                OnPropertyChanged();
             }
         }
 
         public double Rate
         {
-            get { return PlanningSettings.Rate; }
+            get { return DistrictControl.PlanningSettings.Rate; }
             set
             {
-                PlanningSettings.Rate = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rate)));
+                DistrictControl.PlanningSettings.Rate = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AnnuityFactor));
             }
         }
 
         public double Periods
         {
-            get { return PlanningSettings.Periods; }
+            get { return DistrictControl.PlanningSettings.Periods; }
             set
             {
-                PlanningSettings.Periods = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Periods)));
+                DistrictControl.PlanningSettings.Periods = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AnnuityFactor));
             }
         }
 
-        public double Annuity
-        {
-            get { return Metrics.Metrics.AnnuityPayment(PlanningSettings.Rate, PlanningSettings.Periods); }
-        }
+        public double AnnuityFactor => DistrictControl.PlanningSettings.AnnuityFactor;
 
         public double PumpEfficiency
         {
-            get { return PlanningSettings.PumpEfficiency; }
+            get { return DistrictControl.PlanningSettings.PumpEfficiency; }
             set
             {
-                PlanningSettings.PumpEfficiency = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PumpEfficiency)));
+                DistrictControl.PlanningSettings.PumpEfficiency = value;
+                OnPropertyChanged();
             }
         }
+        /// <summary>
+        /// "365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760"
+        /// </summary>
+        public int TimeSteps
+        {
+            get { return availableTimeSteps.IndexOf((int) DistrictControl.PlanningSettings.TimeSteps); }
+            set
+            {
+                DistrictControl.PlanningSettings.TimeSteps = availableTimeSteps[value];
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayTimeSteps));
+            }
+        }
+
+        public int DisplayTimeSteps => availableTimeSteps[TimeSteps];
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private readonly List<int> availableTimeSteps = new List<int>()
+        {
+            365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760
+        };
+
     }
 }

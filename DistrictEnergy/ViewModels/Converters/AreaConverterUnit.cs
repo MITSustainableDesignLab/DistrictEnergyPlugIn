@@ -1,19 +1,20 @@
-﻿using System;
+using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
-namespace DistrictEnergy
+namespace DistrictEnergy.ViewModels.Converters
 {
-    public class OpacityConverter : IValueConverter
+    /// <summary>
+    ///     If value is higher than 999999 m2, than show square km2
+    /// </summary>
+    public class AreaConverterUnit : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return 1d;
-            return (Visibility) value == Visibility.Visible // todo this doesn't work yet
-                ? 1d
-                : .2d;
+            if (value is double d)
+                if (d > 999999)
+                    return "km²"; // km^2
+            return "m²";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

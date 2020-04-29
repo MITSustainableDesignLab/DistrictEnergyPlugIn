@@ -1,27 +1,19 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy
 {
+    public class SimCase
+    {
+        public int Id { get; set; }
+        public string DName { get; set; }
+    }
+
     public class DistrictSettings
     {
-
-        [DefaultValue(0.15)]
-        public double ElectricityGenerationCost { get; set; } = 0.15;
-
-        [DefaultValue(0.05)]
-        public double PriceNaturalGas { get; set; } = 0.05;
-
-        [DefaultValue(0.758)]
-        public double EmissionsElectricGeneration { get; set; } = 0.758;
-
-        [DefaultValue(0.05)]
-        public double LossesTransmission { get; set; } = 0.05;
-
-        [DefaultValue(0.10)]
-        public double LossesHeatHydronic { get; set; } = 0.10;
-
-        [DefaultValue(0.40)]
-        public double EfficPowerGen { get; set; } = 0.40;
-
+        public ObservableCollection<SimCase> SimCases { get; set; }
+        public SimCase ASimCase { get; set; }
     }
 }

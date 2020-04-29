@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,16 +9,11 @@ using System.Windows.Data;
 using System.Windows.Input;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
-using LiveCharts;
-using LiveCharts.Wpf;
-using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using Rhino;
 using DistrictEnergy.ViewModels;
-using LiveCharts.Helpers;
-using Umi.RhinoServices.Context;
-using Umi.RhinoServices.UmiEvents;
+using LiveCharts.Wpf;
+using Rhino;
 
 namespace DistrictEnergy
 {
@@ -30,13 +24,38 @@ namespace DistrictEnergy
     {
         public DistrictControl()
         {
+            ListOfPlantSettings = new ObservableCollection<IThermalPlantSettings>
+            {
+                new AbsorptionChiller(),
+                new BatteryBank(),
+                new CombinedHeatNPower(),
+                new ElectricChiller(),
+                new ElectricHeatPump(),
+                new HotWaterStorage(),
+                new NatGasBoiler(),
+                new PhotovoltaicArray(),
+                new SolarThermalCollector(),
+                new WindTurbine(),
+                new GridElectricity(),
+                new GridGas()
+            };
+            ListOfDistrictLoads = new ObservableCollection<AbstractDistrictLoad>()
+            {
+                new HeatingLoads(),
+                new CoolingLoads(),
+                new ElectricityLoads(),
+                new PipeNetwork(LoadTypes.Heating, "Heating Losses"),
+                new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"),
+            };
+            PlanningSettings = new PlanningSettings();
+            DistrictSettings = new DistrictSettings();
             InitializeComponent();
             Instance = this;
 
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
             PlantSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
-            
+
 
             // For the different PlantSettingViewModel Children, listen for PropertyChanged
             ChilledWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
@@ -44,11 +63,45 @@ namespace DistrictEnergy
             ElectricGenerationViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             HotWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             NetworkViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+
+            starHeight = new GridLength[expanderGrid.RowDefinitions.Count];
+            starHeight[0] = expanderGrid.RowDefinitions[0].Height;
+            starHeight[1] = expanderGrid.RowDefinitions[1].Height;
+            starHeight[3] = expanderGrid.RowDefinitions[3].Height;
+
+            ExpandedOrCollapsed(MyExpander);
+            // InitializeComponent calls topExpander.Expanded
+            // while bottomExpander is null, if we hook this up in the xaml
+            MyExpander.Expanded += ExpandedOrCollapsed;
+            MyExpander.Collapsed += ExpandedOrCollapsed;
+        }
+
+        public ObservableCollection<AbstractDistrictLoad> ListOfDistrictLoads
+        {
+            get => _listOfDistrictLoads;
+            set
+            {
+                if (Equals(value, _listOfDistrictLoads)) return;
+                _listOfDistrictLoads = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<IThermalPlantSettings> ListOfPlantSettings
+        {
+            get => _listOfPlantSettings;
+            set
+            {
+                if (Equals(value, _listOfPlantSettings)) return;
+                _listOfPlantSettings = value;
+                OnPropertyChanged();
+            }
         }
 
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "UseDistrictLosses") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
+            if (e.PropertyName == "UseDistrictLosses")
+                DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
             if (e.PropertyName == "RelDistHeatLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
             if (e.PropertyName == "RelDistCoolLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
 
@@ -56,7 +109,8 @@ namespace DistrictEnergy
         }
 
         public static DistrictControl Instance { get; set; }
-
+        public static PlanningSettings PlanningSettings { get; set; }
+        public static DistrictSettings DistrictSettings { get; set; }
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -72,7 +126,7 @@ namespace DistrictEnergy
 
         private void RunSimulationClick(object sender, RoutedEventArgs e)
         {
-            RhinoApp.RunScript("DHSimulateDistrictEnergy", true);
+            RhinoApp.RunScript("DHRunLPModel", true);
         }
 
         private void AdditionalProfileClick(object sender, RoutedEventArgs e)
@@ -120,6 +174,7 @@ namespace DistrictEnergy
         {
             if (SelectSimCase.SelectedItem != null)
             {
+                DHSimulateDistrictEnergy.Instance.PreSolve();
                 var item = (SimCase) SelectSimCase.SelectedItem;
                 if (item.Id == 1)
                 {
@@ -164,6 +219,10 @@ namespace DistrictEnergy
             OnPropertyChanged();
         }
 
+        GridLength[] starHeight;
+        private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
+        private ObservableCollection<AbstractDistrictLoad> _listOfDistrictLoads;
+
         private void CostsChecked(object sender, RoutedEventArgs e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
@@ -180,6 +239,39 @@ namespace DistrictEnergy
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// See http://csuporj2.blogspot.com/2009/12/wpf-expanders-with-stretching-height.html for more information
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExpandedOrCollapsed(object sender, RoutedEventArgs e)
+        {
+            ExpandedOrCollapsed(sender as Expander);
+        }
+
+        void ExpandedOrCollapsed(Expander expander)
+        {
+            if (expander.Parent is Grid grid && grid.Name == "ExpanderGrid")
+            {
+                var rowIndex = Grid.GetRow(grid);
+                var row = expanderGrid.RowDefinitions[rowIndex];
+                if (expander.IsExpanded)
+                {
+                    row.Height = starHeight[rowIndex];
+                    row.MinHeight = 88;
+                }
+                else
+                {
+                    starHeight[rowIndex] = row.Height;
+                    row.Height = GridLength.Auto;
+                    row.MinHeight = 0;
+                }
+            }
+
+            var isExpanded = MyExpander.IsExpanded;
+            splitter.Visibility = isExpanded ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 

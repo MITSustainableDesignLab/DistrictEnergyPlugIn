@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
+             xmlns:converters="clr-namespace:DistrictEnergy.ViewModels.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:CarbonViewModel}">
     <Grid>
         <StackPanel Background="#4CFFFFFF" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Right">
             <StackPanel.Resources>
-                <viewModels:KWhConverter x:Key="KWhConverter" />
-                <viewModels:kgCO2ConverterUnit x:Key="kgCO2ConverterUnit" />
-                <viewModels:NormalizedkgCO2ConverterUnit x:Key="NormalizedkgCO2ConverterUnit" />
+                <converters:KWhConverter x:Key="KWhConverter" />
+                <converters:kgCO2ConverterUnit x:Key="kgCO2ConverterUnit" />
+                <converters:NormalizedkgCO2ConverterUnit x:Key="NormalizedkgCO2ConverterUnit" />
             </StackPanel.Resources>
             <Grid>
                 <Grid.RowDefinitions>

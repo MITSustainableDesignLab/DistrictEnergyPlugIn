@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -15,22 +17,6 @@ namespace DistrictEnergy.ViewModels
 {
     public class PlantSettingsViewModel : INotifyPropertyChanged
     {
-        public static ObservableCollection<IThermalPlantSettings> ListOfPlantSettings =
-            new ObservableCollection<IThermalPlantSettings>
-            {
-                new AbsorptionChiller(),
-                new BatteryBank(),
-                new CombinedHeatNPower(),
-                new ElectricChiller(),
-                new ElectricHeatPump(),
-                new HotWaterStorage(),
-                new NatGasBoiler(),
-                new PhotovoltaicArray(),
-                new SolarThermalCollector(),
-                new WindTurbine(),
-                new PipeNetwork()
-            };
-
         private readonly KnownTypesBinder _knownTypesBinder = new KnownTypesBinder
         {
             KnownTypes = new List<Type>
@@ -45,7 +31,10 @@ namespace DistrictEnergy.ViewModels
                 typeof(PhotovoltaicArray),
                 typeof(SolarThermalCollector),
                 typeof(WindTurbine),
-                typeof(PipeNetwork)
+                typeof(PipeNetwork),
+                typeof(GridElectricity),
+                typeof(GridGas),
+                typeof(CustomEnergySupplyModule)
             }
         };
 
@@ -92,13 +81,29 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                ListOfPlantSettings = JsonConvert.DeserializeObject<ObservableCollection<IThermalPlantSettings>>(json,
-                    new JsonSerializerSettings
-                    {
-                        DefaultValueHandling = DefaultValueHandling.Populate,
-                        TypeNameHandling = TypeNameHandling.Objects,
-                        SerializationBinder = _knownTypesBinder
-                    });
+                DistrictControl.Instance.ListOfPlantSettings =
+                    JsonConvert.DeserializeObject<ObservableCollection<IThermalPlantSettings>>(json,
+                        new JsonSerializerSettings
+                        {
+                            DefaultValueHandling = DefaultValueHandling.Populate,
+                            TypeNameHandling = TypeNameHandling.Objects,
+                            SerializationBinder = _knownTypesBinder
+                        });
+
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<GridElectricity>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new GridElectricity());
+                }
+
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<GridGas>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new GridGas());
+                }
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().Any())
+                {
+                    DistrictControl.Instance.ListOfDistrictLoads.Add(new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"));
+                    DistrictControl.Instance.ListOfDistrictLoads.Add(new PipeNetwork(LoadTypes.Heating, "Heating Losses"));
+                }
             }
 
             OnPropertyChanged(string.Empty);
@@ -109,7 +114,7 @@ namespace DistrictEnergy.ViewModels
             var context = e;
 
             if (context == null) return;
-            var dSjson = JsonConvert.SerializeObject(ListOfPlantSettings, Formatting.Indented,
+            var dSjson = JsonConvert.SerializeObject(DistrictControl.Instance.ListOfPlantSettings, Formatting.Indented,
                 new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.Objects,

@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Windows;
 using CsvHelper;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
+using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
 using EnergyPlusWeather;
 using Rhino;
@@ -26,14 +28,6 @@ namespace DistrictEnergy
     [CommandStyle(Rhino.Commands.Style.ScriptRunner)]
     public class DHSimulateDistrictEnergy : Command
     {
-        public enum LoadTypes
-        {
-            Cooling,
-            Heating,
-            Elec
-        }
-
-
         /// <summary>
         ///     Simulation Timestep
         /// </summary>
@@ -46,7 +40,6 @@ namespace DistrictEnergy
             Instance = this;
             ResultsArray = new ResultsArray();
             DistrictDemand = new DistrictDemand();
-            SimConstants = new SimConstants();
             PluginSettings = new Settings();
 
             // DistrictControl.Instance.PropertyChanged += RerunSimulation;
@@ -77,7 +70,6 @@ namespace DistrictEnergy
 
         public ResultsArray ResultsArray { get; }
         public DistrictDemand DistrictDemand { get; }
-        public SimConstants SimConstants { get; }
         public Settings PluginSettings { get; }
 
 
@@ -94,7 +86,6 @@ namespace DistrictEnergy
 
         public void RerunSimulation()
         {
-            SimConstants.CalculateConstants();
             MainSimulation();
         }
 
@@ -112,14 +103,17 @@ namespace DistrictEnergy
                 //    Debugger.Break();
                 eqHW_ABS(DistrictDemand.ChwN[i], out ResultsArray.HwAbs[i], out ResultsArray.ChwAbs[i],
                     ResultsArray.EhpEvap[i]); //OK
-                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], out ResultsArray.ElecEch[i],
+                eqCHW_CustomModules(DistrictDemand.ChwN[i], out ResultsArray.ChwCustom[i]);
+                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i],
+                    ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
                     out ResultsArray.ChwEch[i], out ResultsArray.ChwEhpEvap[i]); //OK
                 eqHW_SHW(DistrictDemand.RadN[i], DistrictDemand.HwN[i], ResultsArray.HwAbs[i],
                     out ResultsArray.HwShw[i],
                     out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
                 eqELEC_PV(DistrictDemand.RadN[i], out ResultsArray.ElecPv[i]); // OK
                 eqELEC_WND(DistrictDemand.WindN[i], out ResultsArray.ElecWnd[i]); // OK
-                if (i == 0) ResultsArray.TANK_CHG_n[i] = SimConstants.CapHwt * DistrictEnergy.Settings.TankStart;
+                if (i == 0)
+                    ResultsArray.TANK_CHG_n[i] = SummaryViewModel.Instance.CapHwt * DistrictEnergy.Settings.TankStart;
                 if (i > 0)
                     eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], DistrictDemand.TAmbN[i],
                         out ResultsArray.TANK_CHG_n[i]); // OK
@@ -133,14 +127,16 @@ namespace DistrictEnergy
                 // Call ABS & ECH a second time to calculate new Absoprtion & Electric chiller loads since heat pumps may have reduced the load
                 eqHW_ABS(DistrictDemand.ChwN[i], out ResultsArray.HwAbs[i], out ResultsArray.ChwAbs[i],
                     ResultsArray.EhpEvap[i]);
-                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], out ResultsArray.ElecEch[i],
+                eqELEC_ECH(DistrictDemand.ChwN[i], ResultsArray.EhpEvap[i], ResultsArray.ChwAbs[i],
+                    ResultsArray.ChwCustom[i], out ResultsArray.ElecEch[i],
                     out ResultsArray.ChwEch[i], out ResultsArray.ChwEhpEvap[i]); //OK
                 eqHW_SHW(DistrictDemand.RadN[i], DistrictDemand.HwN[i], ResultsArray.HwAbs[i],
                     out ResultsArray.HwShw[i],
                     out ResultsArray.SHW_BAL[i]); // OK todo Surplus energy from the chp should go in the battery
                 eqELEC_PV(DistrictDemand.RadN[i], out ResultsArray.ElecPv[i]); // OK
                 eqELEC_WND(DistrictDemand.WindN[i], out ResultsArray.ElecWnd[i]); // OK
-                if (i == 0) ResultsArray.TANK_CHG_n[i] = SimConstants.CapHwt * DistrictEnergy.Settings.TankStart;
+                if (i == 0)
+                    ResultsArray.TANK_CHG_n[i] = SummaryViewModel.Instance.CapHwt * DistrictEnergy.Settings.TankStart;
                 if (i > 0)
                     eqTANK_CHG_n(ResultsArray.TANK_CHG_n[i - 1], ResultsArray.SHW_BAL[i], DistrictDemand.TAmbN[i],
                         out ResultsArray.TANK_CHG_n[i]); // OK
@@ -152,13 +148,17 @@ namespace DistrictEnergy
                     ResultsArray.ElecEch[i], ResultsArray.ElecEhp[i], out ResultsArray.ElecRen[i],
                     out ResultsArray.ElecBal[i], out ResultsArray.ElecPvUsed[i],
                     out ResultsArray.ElecWndUsed[i]); // OK
-                if (i == 0) ResultsArray.BatChgN[0] = SimConstants.CapBat * DistrictEnergy.Settings.BatStart;
+                if (i == 0)
+                    ResultsArray.BatChgN[0] = SummaryViewModel.Instance.CapBat * DistrictEnergy.Settings.BatStart;
                 if (i > 0)
                     eqBAT_CHG_n(ResultsArray.BatChgN[i - 1], ResultsArray.ElecBal[i],
                         out ResultsArray.BatChgN[i]); // OK
                 eqELEC_BAT(ResultsArray.BatChgN[i], DistrictDemand.ElecN[i], ResultsArray.ElecEch[i],
                     ResultsArray.ElecEhp[i], out ResultsArray.ElecBat[i], ResultsArray.ElecRen[i],
                     ResultsArray.ElecChp[i]); // OK
+
+                //Custom modules before CHP
+                eqHW_CustomModules(DistrictDemand.HwN[i], ResultsArray.HwAbs[i], ResultsArray.HwShw[i], i);
 
                 if (string.Equals(DistrictEnergy.Settings.TmodChp, "Thermal"))
                 {
@@ -210,7 +210,61 @@ namespace DistrictEnergy
             //StatusBar.HideProgressMeter();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="demand">Hourly Hot Water Profile</param>
+        /// <param name="chiller">Hot water required for Absorption Chiller</param>
+        /// <param name="solar">Energy met by Solar Hot Water Generation</param>
+        /// <param name="i">Time step</param>
+        private void eqHW_CustomModules(double demand, double chiller, double solar, int i)
+        {
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>())
+            {
+                demand = plant.ComputeHeatBalance(demand, chiller, solar, i);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="demand">Hourly Hot Water Profile</param>
+        /// <param name="i">Time step</param>
+        private void eqCHW_CustomModules(double demand, out double chwCustom)
+        {
+            var demand_i = demand;
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomCoolingSupplyModule>())
+            {
+                demand -= plant.ComputeHeatBalance(demand, i);
+            }
+
+            chwCustom = demand_i - demand;
+        }
+
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
+        {
+            Result a = PreSolve();
+
+            if (a == Result.Success)
+            {
+                // Go Hour by hour and parse through the simulation routine
+                SetResultsArraystoZero();
+                DeleteLogFile();
+                SummaryViewModel.Instance.CalculateUserConstants();
+                MainSimulation();
+                //SimulationResultsToCsv();
+
+                return Result.Success;
+            }
+
+            return a;
+        }
+
+        /// <summary>
+        /// PreSolves the model by calculating the load profiles
+        /// </summary>
+        /// <returns></returns>
+        public Result PreSolve()
         {
             var umiContext = UmiContext.Current;
             if (umiContext == null)
@@ -221,38 +275,12 @@ namespace DistrictEnergy
 
             if (Instance.ResultsArray.StaleResults)
             {
-                var _idList = new List<string>();
-                foreach (var building in umiContext.Buildings.All) _idList.Add(building.Id.ToString());
-                _progressBarPos = 0;
-                // Getting the Aggregated Load Curve for all buildings
-                var contextBuildings =
-                    umiContext.GetObjects()
-                        .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
-                MessageBoxButton buttons = MessageBoxButton.YesNo;
-                if (contextBuildings.Count == 0)
+                var contextBuilding = AbstractDistrictLoad.ContextBuildings(UmiContext.Current);
+                foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
                 {
-                    MessageBoxResult result;
-                    result = MessageBox.Show(
-                        "There are no buildings with hourly results. Would you like to run an hourly energy simulation now?",
-                        "Cannot continue with District simulation", buttons);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        // Sets hourly results true and calls UMISimulateEnergy
-                        umiContext.ProjectSettings.GenerateHourlyEnergyResults = true;
-                        RhinoApp.RunScript("-UmiSimulateEnergy", true);
-                    }
-
-                    return Result.Failure;
+                    load.GetUmiLoads(contextBuilding);
                 }
 
-                DistrictDemand.ChwN = GetHourlyChilledWaterProfile(contextBuildings);
-                DistrictDemand.HwN = GetHourlyHotWaterLoadProfile(contextBuildings);
-                DistrictDemand.ElecN = GetHourlyElectricalLoadProfile(contextBuildings);
-                (DistrictDemand.AddC, DistrictDemand.AddH, DistrictDemand.AddE) = GetAdditionalLoadProfile(
-                    umiContext.GetObjects()
-                        .Where(x => x.Name == "Additional Loads" && doc.Objects.FindId(Guid.Parse(x.Id)) != null)
-                        .ToList());
-                StatusBar.HideProgressMeter();
                 DistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();
                 DistrictDemand.WindN = GetHourlyLocationWind(umiContext).ToArray();
                 DistrictDemand.TAmbN = GetHourlyLocationAmbiantTemp(umiContext).ToArray();
@@ -260,17 +288,8 @@ namespace DistrictEnergy
 
                 numberTimesteps = DistrictDemand.HwN.Length;
 
-                RhinoApp.WriteLine(
-                    $"Calculated...\n{DistrictDemand.ChwN.Length} datapoints for ColdWater profile\n{DistrictDemand.HwN.Count()} datapoints for HotWater\n{DistrictDemand.ElecN.Count()} datapoints for Electricity\n{DistrictDemand.RadN.Count()} datapoints for Solar Frad\n{DistrictDemand.WindN.Count()} datapoints for WindSpeed");
                 Instance.ResultsArray.StaleResults = false;
             }
-
-            // Go Hour by hour and parse through the simulation routine
-            SetResultsArraystoZero();
-            DeleteLogFile();
-            SimConstants.CalculateConstants();
-            MainSimulation();
-            //SimulationResultsToCsv();
 
             return Result.Success;
         }
@@ -469,7 +488,7 @@ namespace DistrictEnergy
         {
             var file_name = @"C:\UMI\temp\DHSimulationResults.csv";
             using (var writer = new StreamWriter(file_name))
-            using (var csvWriter = new CsvWriter(writer))
+            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
                 var Headers = new List<string>();
                 Headers.Add("DateTime"); // 1
@@ -627,8 +646,9 @@ namespace DistrictEnergy
         /// <param name="ehpEvap"></param>
         private void eqHW_ABS(double chwN, out double hwAbs, out double chwAbs, double ehpEvap)
         {
-            hwAbs = GetSmallestNonNegative(chwN - ehpEvap, SimConstants.CapAbs) / DistrictEnergy.Settings.CcopAbs;
-            chwAbs = GetSmallestNonNegative(chwN - ehpEvap, SimConstants.CapAbs);
+            hwAbs = GetSmallestNonNegative(chwN - ehpEvap, SummaryViewModel.Instance.CapAbs) /
+                    DistrictEnergy.Settings.CcopAbs;
+            chwAbs = GetSmallestNonNegative(chwN - ehpEvap, SummaryViewModel.Instance.CapAbs);
         }
 
         /// <summary>
@@ -638,19 +658,22 @@ namespace DistrictEnergy
         /// </summary>
         /// <param name="chwN">Hourly chilled water load profile (kWh)</param>
         /// <param name="ehpEvap">All evaporator-side energy</param>
+        /// <param name="chwAbs"></param>
+        /// <param name="chwCustom"></param>
         /// <param name="elecEch">Electricity Consumption to generate chilled water from chillers</param>
         /// <param name="chwEch"></param>
         /// <param name="chwEhpEvap"></param>
-        private void eqELEC_ECH(double chwN, double ehpEvap, out double elecEch, out double chwEch,
+        private void eqELEC_ECH(double chwN, double ehpEvap, double chwAbs, double chwCustom, out double elecEch,
+            out double chwEch,
             out double chwEhpEvap)
         {
-            if (chwN > SimConstants.CapAbs)
+            if (chwN >= SummaryViewModel.Instance.CapAbs)
             {
-                elecEch = Math.Max(chwN - SimConstants.CapAbs - ehpEvap, 0) / DistrictEnergy.Settings.CcopEch;
-                chwEch = Math.Max(chwN - SimConstants.CapAbs - ehpEvap, 0);
+                elecEch = Math.Max(chwN - chwAbs - ehpEvap - chwCustom, 0) / DistrictEnergy.Settings.CcopEch;
+                chwEch = Math.Max(chwN - chwAbs - ehpEvap - chwCustom, 0);
 
-                if (ehpEvap > chwN - SimConstants.CapAbs)
-                    chwEhpEvap = chwN - SimConstants.CapAbs;
+                if (ehpEvap > chwN - chwAbs - chwCustom)
+                    chwEhpEvap = chwN - chwAbs - chwCustom;
                 else
                     chwEhpEvap = ehpEvap;
             }
@@ -676,9 +699,9 @@ namespace DistrictEnergy
         private void eqELEC_EHP(double hwN, double hwAbs, double hwShw,
             double hwHwt, double hwChp, out double elecEhp, out double hwEhp, out double ehpEvap)
         {
-            elecEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SimConstants.CapEhp) /
+            elecEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SummaryViewModel.Instance.CapEhp) /
                       DistrictEnergy.Settings.HcopEhp;
-            hwEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SimConstants.CapEhp);
+            hwEhp = GetSmallestNonNegative(hwN + hwAbs - hwShw - hwHwt - hwChp, SummaryViewModel.Instance.CapEhp);
             if (DistrictEnergy.Settings.UseEhpEvap)
                 ehpEvap = hwEhp * (1 - 1 / DistrictEnergy.Settings.HcopEhp);
             else
@@ -716,10 +739,12 @@ namespace DistrictEnergy
             out double solarBalance)
         {
             hwShw = Math.Min(
-                radN * SimConstants.AreaShw * DistrictEnergy.Settings.EffShw * DistrictEnergy.Settings.UtilShw *
+                radN * SummaryViewModel.Instance.AreaShw * DistrictEnergy.Settings.EffShw *
+                DistrictEnergy.Settings.UtilShw *
                 (1 - DistrictEnergy.Settings.LossShw), hwN + hwAbs);
             solarBalance =
-                radN * SimConstants.AreaShw * DistrictEnergy.Settings.EffShw * DistrictEnergy.Settings.UtilShw *
+                radN * SummaryViewModel.Instance.AreaShw * DistrictEnergy.Settings.EffShw *
+                DistrictEnergy.Settings.UtilShw *
                 (1 - DistrictEnergy.Settings.LossShw) - hwN - hwAbs;
         }
 
@@ -735,22 +760,23 @@ namespace DistrictEnergy
             if (shwBal < 0) // We are discharging the tank; Loss applies to the newly calculated charge
             {
                 tankChgN = Math.Max(previousTankChgN + shwBal,
-                    GetHighestNonNegative(previousTankChgN - SimConstants.DchgrHwt, 0));
-                SimConstants.LossHwt =
+                    GetHighestNonNegative(previousTankChgN - SummaryViewModel.Instance.DchgrHwt, 0));
+                SummaryViewModel.Instance.LossHwt =
                     (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3); // todo tanklosses-to-tAmb relation
-                tankChgN = tankChgN * (1 - SimConstants.LossHwt);
+                tankChgN = tankChgN * (1 - SummaryViewModel.Instance.LossHwt);
             }
             else if (shwBal > 0) // We are charging the tank
             {
                 tankChgN = GetSmallestNonNegative(previousTankChgN + shwBal,
-                    GetSmallestNonNegative(previousTankChgN + SimConstants.ChgrHwt, SimConstants.CapHwt));
-                SimConstants.LossHwt = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
-                tankChgN = tankChgN * (1 - SimConstants.LossHwt);
+                    GetSmallestNonNegative(previousTankChgN + SummaryViewModel.Instance.ChgrHwt,
+                        SummaryViewModel.Instance.CapHwt));
+                SummaryViewModel.Instance.LossHwt = (-4E-5 * tAmb + 0.0024) * Math.Pow(tankChgN, -1 / 3);
+                tankChgN = tankChgN * (1 - SummaryViewModel.Instance.LossHwt);
             }
             else // We are not doing anything, but losses still occur
             {
                 tankChgN = previousTankChgN *
-                           (1 - SimConstants
+                           (1 - SummaryViewModel.Instance
                                .LossHwt
                            ); // Contrary to the Grasshopper code, the tank loses energy to the environnement even when not used.
             }
@@ -767,7 +793,7 @@ namespace DistrictEnergy
         private void eqHW_HWT(double tankChgN, double hwN, double hwAbs, double hwShw, out double hwHwt)
         {
             hwHwt = GetSmallestNonNegative(hwN + hwAbs - hwShw,
-                GetSmallestNonNegative(tankChgN, SimConstants.DchgrHwt));
+                GetSmallestNonNegative(tankChgN, SummaryViewModel.Instance.DchgrHwt));
         }
 
         /// <summary>
@@ -777,7 +803,8 @@ namespace DistrictEnergy
         /// <param name="elecPv"></param>
         private void eqELEC_PV(double radN, out double elecPv)
         {
-            elecPv = radN * SimConstants.AreaPv * DistrictEnergy.Settings.EffPv * DistrictEnergy.Settings.UtilPv *
+            elecPv = radN * SummaryViewModel.Instance.AreaPv * DistrictEnergy.Settings.EffPv *
+                     DistrictEnergy.Settings.UtilPv *
                      (1 - DistrictEnergy.Settings.LossPv);
         }
 
@@ -788,7 +815,7 @@ namespace DistrictEnergy
         /// <param name="elecWnd"></param>
         private void eqELEC_WND(double windN, out double elecWnd)
         {
-            elecWnd = 0.6375 * Math.Pow(windN, 3) * DistrictEnergy.Settings.RotWnd * SimConstants.NumWnd *
+            elecWnd = 0.6375 * Math.Pow(windN, 3) * DistrictEnergy.Settings.RotWnd * SummaryViewModel.Instance.NumWnd *
                       DistrictEnergy.Settings.CopWnd * (1 - DistrictEnergy.Settings.LossWnd) /
                       1000; // Equation spits out Wh
         }
@@ -827,10 +854,11 @@ namespace DistrictEnergy
             if (elecBalance < 0
             ) // We are discharging the battery; Not all the elecBalance can be fed to the batt because of the LOSS_BAT parameter.
                 batChgN = Math.Max(previousBatChgN + elecBalance * (1 - DistrictEnergy.Settings.LossBat),
-                    GetHighestNonNegative(previousBatChgN - SimConstants.DchgBat, 0));
+                    GetHighestNonNegative(previousBatChgN - SummaryViewModel.Instance.DchgBat, 0));
             else if (elecBalance > 0) // We are charging the battery
                 batChgN = GetSmallestNonNegative(previousBatChgN + elecBalance * (1 - DistrictEnergy.Settings.LossBat),
-                    GetSmallestNonNegative(previousBatChgN + SimConstants.ChgrBat, SimConstants.CapBat));
+                    GetSmallestNonNegative(previousBatChgN + SummaryViewModel.Instance.ChgrBat,
+                        SummaryViewModel.Instance.CapBat));
             else
                 batChgN = previousBatChgN;
         }
@@ -849,7 +877,7 @@ namespace DistrictEnergy
             double elecRen, double elecChp)
         {
             elecBat = GetSmallestNonNegative(elecN + elecEch + elecEhp - elecRen - elecChp,
-                GetSmallestNonNegative(batChgN, SimConstants.DchgBat));
+                GetSmallestNonNegative(batChgN, SummaryViewModel.Instance.DchgBat));
         }
 
         /// <summary>
@@ -871,7 +899,8 @@ namespace DistrictEnergy
             double temp = 0;
             if (string.Equals(tracking, "Thermal"))
                 temp = GetSmallestNonNegative(
-                    SimConstants.CapChpElec / DistrictEnergy.Settings.EffChp * DistrictEnergy.Settings.HrecChp,
+                    SummaryViewModel.Instance.CapChpElec / DistrictEnergy.Settings.EffChp *
+                    DistrictEnergy.Settings.HrecChp,
                     hWn + hwAbs - hwShw - hwHwt - hwEhp); //hwN - hwEhp + hwAbs - hwShw - hwHwt
             if (string.Equals(tracking, "Electrical"))
                 temp = ngasChp * DistrictEnergy.Settings.HrecChp;
@@ -938,7 +967,7 @@ namespace DistrictEnergy
             }
 
             if (string.Equals(tracking, "Electrical"))
-                temp = GetSmallestNonNegative(SimConstants.CapChpElec,
+                temp = GetSmallestNonNegative(SummaryViewModel.Instance.CapChpElec,
                     elecN + elecEch + elecEhp - elecRen -
                     elecBat); // todo CHP should cover all electrical loads, if it can.
             elecChp = temp;
@@ -1039,6 +1068,11 @@ namespace DistrictEnergy
 
     public class ResultsArray
     {
+        /// <summary>
+        ///     Chilled Water met by Custom Cooling Supply Modules
+        /// </summary>
+        internal readonly double[] ChwCustom = new double[8760];
+
         /// <summary>
         ///     eq11 The battery charge for each hour
         /// </summary>
@@ -1470,380 +1504,5 @@ namespace DistrictEnergy
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public class SimConstants : INotifyPropertyChanged
-    {
-        private double _areaPv;
-        private double _areaShw;
-        private double _capAbs;
-        private double _capBat;
-        private double _capChpElec;
-        private double _capChpHeat;
-        private double _capEch;
-        private double _capEhp;
-        private double _capElecProj;
-        private double _capHwt;
-        private double _capNgb;
-        private double _capPv;
-        private double _capShw;
-        private double _capWnd;
-        private double _chgrBat;
-        private double _chgrHwt;
-        private double _dchgBat;
-        private double _dchgrHwt;
-        private double _lossHwt;
-        private double _numWnd;
-        private double _relDistCoolLoss;
-        private double _relDistHeatLoss;
-
-        public SimConstants()
-        {
-            UmiEventSource.Instance.ProjectOpened += SubscribeEvents;
-        }
-
-        /// <summary>
-        ///     Cooling capacity of absorption chillers (kW)
-        /// </summary>
-        public double CapAbs
-        {
-            get => _capAbs;
-            set
-            {
-                _capAbs = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapAbs)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of Electrical Heat Pumps
-        /// </summary>
-        public double CapEhp
-        {
-            get => _capEhp;
-            set
-            {
-                _capEhp = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapEhp)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of Battery, defined as the everage demand times the desired autonomy
-        /// </summary>
-        public double CapBat
-        {
-            get => _capBat;
-            set
-            {
-                _capBat = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapBat)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of Hot Water Tank, defined as the everage demand times the desired autonomy
-        /// </summary>
-        public double CapHwt
-        {
-            get => _capHwt;
-            set
-            {
-                _capHwt = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapHwt)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of CHP plant
-        /// </summary>
-        public double CapChpElec
-        {
-            get => _capChpElec;
-            set
-            {
-                _capChpElec = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapChpElec)));
-            }
-        }
-
-        /// <summary>
-        ///     Calculated required area of solar thermal collector (m^2)
-        /// </summary>
-        public double AreaShw
-        {
-            get => _areaShw;
-            set
-            {
-                _areaShw = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AreaShw)));
-            }
-        }
-
-        /// <summary>
-        ///     Calculated required area of PV collectors
-        /// </summary>
-        public double AreaPv
-        {
-            get => _areaPv;
-            set
-            {
-                _areaPv = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AreaPv)));
-            }
-        }
-
-        /// <summary>
-        ///     Number of turbines needed: Annual electricity needed divided by how much one turbine generates.
-        ///     [Annual Energy that needs to be generated/(0.635 x Rotor Area X sum of cubes of all wind speeds within cut-in and
-        ///     cut-out speeds x COP)]
-        /// </summary>
-        public double NumWnd
-        {
-            get => _numWnd;
-            set
-            {
-                _numWnd = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NumWnd)));
-            }
-        }
-
-        /// <summary>
-        ///     The Hot Water Tank Charge Rate (kWh / h)
-        /// </summary>
-        public double ChgrHwt
-        {
-            get => _chgrHwt;
-            set
-            {
-                _chgrHwt = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChgrHwt)));
-            }
-        }
-
-        /// <summary>
-        ///     The Battery Charge Rate (kWh / h)
-        /// </summary>
-        public double ChgrBat
-        {
-            get => _chgrBat;
-            set
-            {
-                _chgrBat = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChgrBat)));
-            }
-        }
-
-        /// <summary>
-        ///     Discharge rate of Hot Water Tank
-        /// </summary>
-        public double DchgrHwt
-        {
-            get => _dchgrHwt;
-            set
-            {
-                _dchgrHwt = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DchgrHwt)));
-            }
-        }
-
-        /// <summary>
-        ///     Discharge rate of battery
-        /// </summary>
-        public double DchgBat
-        {
-            get => _dchgBat;
-            set
-            {
-                _dchgBat = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DchgBat)));
-            }
-        }
-
-        /// <summary>
-        ///     Hot Water Tank Losses (dependant of the outdoor temperature)
-        /// </summary>
-        public double LossHwt
-        {
-            get => _lossHwt;
-            set
-            {
-                _lossHwt = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossHwt)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity in hot water production (max over the year)
-        /// </summary>
-        public double CapNgb
-        {
-            get => _capNgb;
-            set
-            {
-                _capNgb = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapNgb)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of CHP plant in hotwater production (max over the year)
-        /// </summary>
-        public double CapChpHeat
-        {
-            get => _capChpHeat;
-            set
-            {
-                _capChpHeat = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapChpHeat)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of the solar hot water array
-        /// </summary>
-        public double CapShw
-        {
-            get => _capShw;
-            set
-            {
-                _capShw = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapShw)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of the Electric Chiller
-        /// </summary>
-        public double CapEch
-        {
-            get => _capEch;
-            set
-            {
-                _capEch = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapEch)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of the grid to supply the project
-        /// </summary>
-        public double CapElecProj
-        {
-            get => _capElecProj;
-            set
-            {
-                _capElecProj = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapElecProj)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of the PV array
-        /// </summary>
-        public double CapPv
-        {
-            get { return _capPv; }
-            set
-            {
-                _capPv = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapPv)));
-            }
-        }
-
-        /// <summary>
-        ///     Capacity of the wind turbine field
-        /// </summary>
-        public double CapWnd
-        {
-            get { return _capWnd; }
-            set
-            {
-                _capWnd = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapWnd)));
-            }
-        }
-
-        public double RelDistHeatLoss
-        {
-            get { return _relDistHeatLoss; }
-            set
-            {
-                _relDistHeatLoss = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(_relDistHeatLoss)));
-            }
-        }
-
-        public double RelDistCoolLoss
-        {
-            get { return _relDistCoolLoss; }
-            set
-            {
-                _relDistHeatLoss = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(_relDistCoolLoss)));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void CalculateConstants(object sender, EventArgs e)
-        {
-            CalculateConstants();
-        }
-
-        private void SubscribeEvents(object sender, UmiContext e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += CalculateConstants;
-        }
-
-        /// <summary>
-        ///     Calculates the necessary constants used in different equations
-        /// </summary>
-        public void CalculateConstants()
-        {
-            CapAbs = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Max() * Settings.OffAbs;
-            CapEhp = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max() * Settings.OffEhp;
-            CapBat = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Average() * Settings.AutBat * 24;
-            CapHwt = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Average() * Settings.AutHwt *
-                     24; // todo Prendre jour moyen du mois max.
-            CapChpElec = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max() * Settings.OffChp;
-            CapChpHeat = DHSimulateDistrictEnergy.Instance.ResultsArray.HwChp.Max();
-            CapNgb = DHSimulateDistrictEnergy.Instance.ResultsArray.NgasNgb.Max();
-            CapShw = DHSimulateDistrictEnergy.Instance.ResultsArray.HwShw.Max();
-            CapEch = DHSimulateDistrictEnergy.Instance.ResultsArray.ChwEch.Max();
-            CapElecProj = DHSimulateDistrictEnergy.Instance.ResultsArray.ElecProj.Max();
-            CapPv = DHSimulateDistrictEnergy.Instance.ResultsArray.ElecPv.Max();
-            CapWnd = DHSimulateDistrictEnergy.Instance.ResultsArray.ElecWnd.Max();
-            AreaShw = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Sum() * Settings.OffShw /
-                      (DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.Sum() * Settings.EffShw *
-                       (1 - Settings.LossShw) * Settings.UtilShw);
-            AreaPv = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum() * Settings.OffPv /
-                     (DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.Sum() * Settings.EffPv *
-                      (1 - Settings.LossPv) * Settings.UtilPv);
-            var windCubed = DHSimulateDistrictEnergy.Instance.DistrictDemand.WindN
-                .Where(w => w > Settings.CinWnd && w < Settings.CoutWnd).Select(w => Math.Pow(w, 3))
-                .Sum();
-            NumWnd = Math.Ceiling(DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum() * Settings.OffWnd /
-                                  (0.6375 * windCubed * Settings.RotWnd * (1 - Settings.LossWnd) * Settings.CopWnd /
-                                   1000)); // Divide by 1000 because equation spits out Wh
-            ChgrHwt = CapHwt == 0 ? 0 : CapHwt / 12 / Settings.AutHwt; // 12 hours // (AUT_HWT * 12);
-            ChgrBat = CapBat == 0 ? 0 : CapBat / 12 / Settings.AutBat;
-            DchgrHwt = CapHwt == 0
-                ? 0
-                : CapHwt / 12 /
-                  Settings.AutHwt; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
-            DchgBat = CapBat == 0
-                ? 0
-                : CapBat / 12 /
-                  Settings.AutBat; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
-        }
-    }
-
-    public class SimCase
-    {
-        public int Id { get; set; }
-
-        public string DName { get; set; }
     }
 }
