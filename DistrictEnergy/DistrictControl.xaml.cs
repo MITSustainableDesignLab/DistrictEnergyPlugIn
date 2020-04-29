@@ -250,7 +250,7 @@ namespace DistrictEnergy
 
         void ExpandedOrCollapsed(Expander expander)
         {
-            if (expander.Parent is Grid grid)
+            if (expander.Parent is Grid grid && grid.Name == "ExpanderGrid")
             {
                 var rowIndex = Grid.GetRow(grid);
                 var row = expanderGrid.RowDefinitions[rowIndex];

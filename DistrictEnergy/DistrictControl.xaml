@@ -80,7 +80,7 @@
                       HorizontalAlignment="Stretch" Height="5" />
 
 
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="3" x:Name="ExpanderGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
