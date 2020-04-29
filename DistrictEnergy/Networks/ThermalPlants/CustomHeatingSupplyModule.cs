@@ -21,7 +21,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Output { get; set; }
         public override double F { get; set; }
         public override double V { get; set; }
-        public override double Capacity { get; set; }
+
+        public override double Capacity => Output.Max();
+
         public override double Efficiency => ConversionMatrix[OutputType];
     }
 }

@@ -100,7 +100,7 @@ namespace DistrictEnergy.ViewModels
             }
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().Capacity = value;
+                _absChillerCapacity = value;
                 OnPropertyChanged();
             }
         }

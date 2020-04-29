@@ -80,9 +80,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="RhinoCommon, Version=6.24.20079.23340, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.6.24.20079.23341\lib\net45\RhinoCommon.dll</HintPath>
       <Private>False</Private>
@@ -102,8 +100,8 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="Umi.Core">
@@ -121,16 +119,17 @@
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
     <Compile Include="Helpers\LinqExtension.cs" />
-    <Compile Include="Networks\Loads\AddtionalLoads.cs" />
+    <Compile Include="Networks\Loads\AdditionalLoads.cs" />
     <Compile Include="Networks\Loads\CoolingLoads.cs" />
     <Compile Include="Networks\Loads\ElectricityLoads.cs" />
     <Compile Include="Networks\Loads\HeatingLoads.cs" />
-    <Compile Include="Networks\Loads\DistrictLoad.cs" />
+    <Compile Include="Networks\Loads\AbstractDistrictLoad.cs" />
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
     <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="Networks\ThermalPlants\Dispatchable.cs" />
     <Compile Include="Networks\ThermalPlants\ISolar.cs" />
     <Compile Include="Networks\ThermalPlants\Storage.cs" />
+    <Compile Include="ViewModels\AnAdditionalLoadViewModel.cs" />
     <Compile Include="ViewModels\Converters\Converter.cs" />
     <Compile Include="ViewModels\Converters\CostConverterUnit.cs" />
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
@@ -206,6 +205,9 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\DistrictSettings\AnAdditionalLoadsView.xaml.cs">
+      <DependentUpon>AnAdditionalLoadsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
       <DependentUpon>ACustomModuleView.xaml</DependentUpon>
     </Compile>
@@ -227,6 +229,9 @@
     <Compile Include="Views\PlantSettings\ElectricGenerationView.xaml.cs">
       <DependentUpon>ElectricGenerationView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ResultViews\Demands.xaml.cs">
+      <DependentUpon>Demands.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ResultViews\Fuel.xaml.cs">
       <DependentUpon>Fuel.xaml</DependentUpon>
     </Compile>
@@ -245,6 +250,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DistrictSettings\AnAdditionalLoadsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -273,6 +282,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PlantSettings\ElectricGenerationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResultViews\Demands.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -338,7 +351,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\DistrictSetttings\" />
+    <Folder Include="Networks\DistrictSettings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

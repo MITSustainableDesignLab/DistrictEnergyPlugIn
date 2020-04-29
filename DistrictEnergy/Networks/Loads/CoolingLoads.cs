@@ -9,7 +9,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class CoolingLoads : DistrictLoad
+    class CoolingLoads : AbstractDistrictLoad
     {
         public CoolingLoads()
         {
@@ -40,6 +40,5 @@ namespace DistrictEnergy.Networks.Loads
 
             Input = aggregationArray.ToDateTimePoint();
         }
-
     }
 }

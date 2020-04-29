@@ -123,7 +123,7 @@ namespace DistrictEnergy.ViewModels
             get { return _hpCapacity; }
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().Capacity = value;
+                _hpCapacity = value;
                 OnPropertyChanged();
             }
         }
@@ -270,7 +270,7 @@ namespace DistrictEnergy.ViewModels
             get { return _shwCapacity; }
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().Capacity = value;
+                _shwCapacity = value;
                 OnPropertyChanged();
             }
         }

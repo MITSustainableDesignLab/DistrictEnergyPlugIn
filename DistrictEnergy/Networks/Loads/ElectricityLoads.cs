@@ -7,7 +7,7 @@ using Umi.Core;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class ElectricityLoads : DistrictLoad
+    class ElectricityLoads : AbstractDistrictLoad
     {
         public ElectricityLoads()
         {
@@ -17,7 +17,6 @@ namespace DistrictEnergy.Networks.Loads
         public override LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(173, 221, 67));
         public override string Name { get; set; } = "Electricity Load";
-
         public override void GetUmiLoads(List<UmiObject> contextObjects)
         {
             RhinoApp.WriteLine("Getting all Buildings and aggregating electrical loads: SDL/Equipment + SDL/Lighting");

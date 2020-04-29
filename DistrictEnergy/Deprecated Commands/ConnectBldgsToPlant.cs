@@ -6,7 +6,7 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using Rhino.Input;
 
-namespace DistrictEnergy
+namespace DistrictEnergy.Deprecated_Commands
 {
     [System.Runtime.InteropServices.Guid("370cb7de-ff8b-4c15-8dfd-d9408de251c8")]
     public class ConnectBldgsToPlant : Command

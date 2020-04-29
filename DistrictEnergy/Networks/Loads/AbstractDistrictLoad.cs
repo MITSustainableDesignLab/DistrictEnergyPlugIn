@@ -1,17 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
+using CsvHelper;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
 using Rhino;
 using Umi.Core;
 using Umi.RhinoServices.Context;
+using MessageBox = System.Windows.MessageBox;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    public abstract class DistrictLoad
+    public abstract class AbstractDistrictLoad
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public abstract List<DateTimePoint> Input { get; set; }
+        public abstract LoadTypes LoadType { get; set; }
+        public abstract SolidColorBrush Fill { get; set; }
+        public abstract string Name { get; set; }
+        public string Path { get; set; }
+        public abstract void GetUmiLoads(List<UmiObject> contextObjects);
+
         public static List<UmiObject> ContextBuildings(UmiContext umiContext)
         {
             var _idList = new List<string>();
@@ -37,12 +51,5 @@ namespace DistrictEnergy.Networks.Loads
 
             return contextBuildings;
         }
-
-        public abstract List<DateTimePoint> Input { get; set; }
-        public abstract LoadTypes LoadType { get; set; }
-        public abstract SolidColorBrush Fill { get; set; }
-        public abstract string Name { get; set; }
-
-        public abstract void GetUmiLoads(List<UmiObject> contextObjects);
     }
 }

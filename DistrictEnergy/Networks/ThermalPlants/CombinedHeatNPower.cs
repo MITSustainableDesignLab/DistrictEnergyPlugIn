@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -62,7 +63,23 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.010)]
         public override double V { get; set; } = 0.010;
 
-        public override double Capacity { get; set; } = 0;
+        public override double Capacity => CalcCapacity();
+
+        private double CalcCapacity()
+        {
+            if (DistrictControl.Instance is null) return 0;
+            switch (TMOD_CHP)
+            {
+                case TrakingModeEnum.Electrical:
+                    return OFF_CHP * DistrictControl.Instance.ListOfDistrictLoads
+                        .Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Max()).Sum();
+                case TrakingModeEnum.Thermal:
+                    return OFF_CHP * DistrictControl.Instance.ListOfDistrictLoads
+                        .Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
+            }
+
+            return 0;
+        }
 
         [DataMember]
         [DefaultValue("Combined Heat&Power")]

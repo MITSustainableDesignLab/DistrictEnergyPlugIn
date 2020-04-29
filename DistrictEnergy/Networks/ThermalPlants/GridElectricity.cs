@@ -29,7 +29,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             set => UmiContext.Current.ProjectSettings.ElectricityDollars = value;
         }
 
-        public override double Capacity { get; set; } = double.PositiveInfinity;
+        public override double Capacity { get; } = double.PositiveInfinity;
 
         [DataMember]
         [DefaultValue("Grid Electricity")]

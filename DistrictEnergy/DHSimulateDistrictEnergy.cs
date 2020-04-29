@@ -275,7 +275,7 @@ namespace DistrictEnergy
 
             if (Instance.ResultsArray.StaleResults)
             {
-                var contextBuilding = DistrictLoad.ContextBuildings(UmiContext.Current);
+                var contextBuilding = AbstractDistrictLoad.ContextBuildings(UmiContext.Current);
                 foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
                 {
                     load.GetUmiLoads(contextBuilding);

@@ -54,7 +54,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(7191)] public override double F { get; set; } = 7191;
         [DataMember] [DefaultValue(0.00887)] public override double V { get; set; } = 0.00887;
-        public override double Capacity { get; set; } = 0;
+        public override double Capacity => CalcCapacity();
+
+        private double CalcCapacity()
+        {
+            if (DistrictControl.Instance is null) return 0;
+            return OFF_SHW * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating)
+                .Select(v => v.Input.Sum()).Sum();
+        }
 
         [DataMember]
         [DefaultValue("Solar Thermal")]

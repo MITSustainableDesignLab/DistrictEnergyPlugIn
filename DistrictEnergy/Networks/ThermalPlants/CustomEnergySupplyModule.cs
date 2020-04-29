@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using CsvHelper;
 using DistrictEnergy.Helpers;
+using LiveCharts.Defaults;
 using Rhino;
 using Umi.RhinoServices.Context;
 
@@ -35,7 +36,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public abstract override double F { get; set; }
         public abstract override double V { get; set; }
-        public abstract override double Capacity { get; set; }
+        public abstract override double Capacity { get; }
 
         /// <summary>
         /// Name of the Custom Energy Supply Module
@@ -67,7 +68,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                     Path = filePath;
                     //Read the contents of the file into the umi db
 
-                    Data = LoadCustomDemand(filePath, context);
+                    Output = LoadCustomDemand(filePath, context);
                     RhinoApp.WriteLine($"Added additional load from '{filePath}'");
                 }
             }
@@ -79,7 +80,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <param name="filePath">The path to the csv file</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static double[] LoadCustomDemand(string filePath, UmiContext context)
+        private static List<DateTimePoint> LoadCustomDemand(string filePath, UmiContext context)
         {
             // Start stream reader
             double[] records;
@@ -92,7 +93,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 }
             }
 
-            return records;
+            return records.ToDateTimePoint();
         }
         public double Norm { get; set; } = 1;
 

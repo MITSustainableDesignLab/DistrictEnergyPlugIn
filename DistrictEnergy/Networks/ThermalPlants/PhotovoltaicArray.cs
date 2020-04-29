@@ -49,7 +49,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1313)] public override double F { get; set; } = 1313;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
-        public override double Capacity { get; set; } = 0;
+        public override double Capacity => CalcCapacity();
+
+        private double CalcCapacity()
+        {
+            if(DistrictControl.Instance is null) return 0;
+            return OFF_PV * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Sum()).Sum();
+        }
+
         [DataMember] [DefaultValue("PV")] public override string Name { get; set; } = "PV";
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Elec;

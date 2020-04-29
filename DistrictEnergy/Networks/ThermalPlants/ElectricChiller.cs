@@ -28,7 +28,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(164.1)] public override double F { get; set; } = 164.1;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
-        public override double Capacity { get; set; } = double.PositiveInfinity;
+        public override double Capacity { get; } = double.PositiveInfinity;
         [DataMember] [DefaultValue("Chiller")] public override string Name { get; set; } = "Chiller";
         public override Guid Id { get; set; }
         public override LoadTypes OutputType => LoadTypes.Cooling;

@@ -27,7 +27,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             get => UmiContext.Current != null ? UmiContext.Current.ProjectSettings.GasDollars : 0;
             set => UmiContext.Current.ProjectSettings.GasDollars = value;
         }
-        public override double Capacity { get; set; } = double.PositiveInfinity;
+        public override double Capacity { get; } = double.PositiveInfinity;
 
         [DataMember]
         [DefaultValue("Grid Natural Gas")]

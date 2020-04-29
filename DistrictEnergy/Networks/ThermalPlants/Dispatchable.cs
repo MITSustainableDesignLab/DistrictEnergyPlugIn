@@ -13,7 +13,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract LoadTypes InputType { get; }
         public abstract double F { get; set; }
         public abstract double V { get; set; }
-        public abstract double Capacity { get; set; }
+        public abstract double Capacity { get; }
         public abstract string Name { get; set; }
         public abstract Guid Id { get; set; }
         public abstract LoadTypes OutputType { get; }

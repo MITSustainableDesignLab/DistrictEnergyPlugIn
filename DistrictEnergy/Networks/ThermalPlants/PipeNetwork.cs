@@ -47,7 +47,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(0)] public double F { get; set; }
         [DataMember] [DefaultValue(0)] public double V { get; set; }
-        public double Capacity { get; set; } = 0;
+        public double Capacity { get; } = 0;
 
         [DataMember]
         [DefaultValue("Distribution Pipes")]

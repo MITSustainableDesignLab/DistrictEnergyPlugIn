@@ -88,7 +88,7 @@ namespace DistrictEnergy.ViewModels
             get { return _capacity; }
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().Capacity = value;
+                _capacity = value;
                 OnPropertyChanged();
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -15,7 +16,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             ConversionMatrix = new Dictionary<LoadTypes, double>()
             {
                 {LoadTypes.Heating, HCOP_EHP},
-                {LoadTypes.Cooling, (1-1/HCOP_EHP)},
+                {LoadTypes.Cooling, (1-1/HCOP_EHP)}, // TODO Add Switch for Use Evaporator or Not
                 {LoadTypes.Elec, -1}
             };
         }
@@ -43,7 +44,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1660)] public override double F { get; set; } = 1660;
         [DataMember] [DefaultValue(0.00332)] public override double V { get; set; } = 0.00332;
-        public override double Capacity { get; set; } = 0;
+        public override double Capacity => CalcCapacity();
+        private double CalcCapacity()
+        {
+            if (DistrictControl.Instance is null) return 0;
+            return OFF_EHP * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
+        }
 
         [DataMember]
         [DefaultValue("Heat Pump")]

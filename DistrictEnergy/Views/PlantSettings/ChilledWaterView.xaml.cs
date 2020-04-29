@@ -5,11 +5,11 @@ using DistrictEnergy.ViewModels;
 namespace DistrictEnergy.Views.PlantSettings
 {
     /// <summary>
-    ///     Interaction logic for AbsorptionChillerView.xaml
+    ///     Interaction logic for ChilledWaterView.xaml
     /// </summary>
-    public partial class AbsorptionChillerView : UserControl
+    public partial class ChilledWaterView : UserControl
     {
-        public AbsorptionChillerView()
+        public ChilledWaterView()
         {
             InitializeComponent();
             DataContext = new ChilledWaterViewModel();

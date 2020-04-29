@@ -9,7 +9,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class HeatingLoads : DistrictLoad
+    class HeatingLoads : AbstractDistrictLoad
     {
         public HeatingLoads()
         {
@@ -19,7 +19,6 @@ namespace DistrictEnergy.Networks.Loads
         public override LoadTypes LoadType { get; set; } = LoadTypes.Heating;
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(235, 45, 45));
         public override string Name { get; set; } = "Heating Load";
-
         public override void GetUmiLoads(List<UmiObject> contextObjects)
         {
             RhinoApp.WriteLine("Getting all Buildings and aggregating hot water loads");

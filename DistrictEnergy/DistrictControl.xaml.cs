@@ -40,7 +40,7 @@ namespace DistrictEnergy
                 new GridElectricity(),
                 new GridGas()
             };
-            ListOfDistrictLoads = new ObservableCollection<DistrictLoad>()
+            ListOfDistrictLoads = new ObservableCollection<AbstractDistrictLoad>()
             {
                 new HeatingLoads(),
                 new CoolingLoads(),
@@ -75,7 +75,7 @@ namespace DistrictEnergy
             MyExpander.Collapsed += ExpandedOrCollapsed;
         }
 
-        public ObservableCollection<DistrictLoad> ListOfDistrictLoads
+        public ObservableCollection<AbstractDistrictLoad> ListOfDistrictLoads
         {
             get => _listOfDistrictLoads;
             set
@@ -220,7 +220,7 @@ namespace DistrictEnergy
 
         GridLength[] starHeight;
         private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
-        private ObservableCollection<DistrictLoad> _listOfDistrictLoads;
+        private ObservableCollection<AbstractDistrictLoad> _listOfDistrictLoads;
 
         private void CostsChecked(object sender, RoutedEventArgs e)
         {

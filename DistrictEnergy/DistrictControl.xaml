@@ -72,6 +72,9 @@
             <TabItem Header="Summary">
                 <resultViews:Summary  Margin="0,5,0,0" />
             </TabItem>
+            <TabItem Header="Demands">
+                <resultViews:Demands  Margin="0,5,0,0" />
+            </TabItem>
         </dragablz:TabablzControl>
 
 
@@ -92,7 +95,7 @@
                 <ScrollViewer Height="Auto">
                     <StackPanel>
                         <plantSettings:NetworkView Height="auto" />
-                        <plantSettings:AbsorptionChillerView Height="auto" />
+                        <plantSettings:ChilledWaterView Height="auto" />
                         <plantSettings:HotWaterView Height="auto" />
                         <plantSettings:ElectricGenerationView Height="auto" />
                         <plantSettings:CombinedHeatAndPowerView Height="auto" />

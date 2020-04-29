@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
+using Rhino;
 
 namespace DistrictEnergy.Views.PlantSettings
 {
@@ -68,7 +69,15 @@ namespace DistrictEnergy.Views.PlantSettings
         {
             var plant = DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
                 .First(x => x.Id == _id);
-            plant.LoadCsv();
+            try
+            {
+                plant.LoadCsv();
+            }
+            catch (Exception exception)
+            {
+                MessageBoxResult result = MessageBox.Show(exception.Message, "An Error occured while reading the CSV file");
+                RhinoApp.WriteLine(exception.Message);
+            }
         }
     }
 }

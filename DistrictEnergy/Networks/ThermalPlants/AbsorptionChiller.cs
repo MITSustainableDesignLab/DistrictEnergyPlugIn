@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -48,7 +49,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.0004)]
         public override double V { get; set; } = 0.0004;
 
-        public override double Capacity { get; set; } = 0;
+        public override double Capacity => CalcCapacity();
+
+        private double CalcCapacity()
+        {
+            if (DistrictControl.Instance is null) return 0;
+            return OFF_ABS * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
+        }
 
         [DataMember]
         [DefaultValue("Absorption Chiller")]
