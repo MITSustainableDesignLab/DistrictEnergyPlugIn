@@ -48,7 +48,7 @@
                     <TextBlock Text="Peak" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
                     <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
                     <StackPanel x:Name="NameStack" Margin="2,0" Grid.Column="0" Grid.Row="1"></StackPanel>
-                    <StackPanel x:Name="PeakStack" Margin="2,0" Grid.Row="1" Grid.Column="1"></StackPanel>
+                    <StackPanel x:Name="PeakStack" Margin="2,0" Grid.Row="1" Grid.Column="2"></StackPanel>
                     <StackPanel x:Name="EnergyStack" Margin="2,0" Grid.Row="1" Grid.Column="3"></StackPanel>
 
                     <!--<TextBlock Text="Demands" Grid.Column="0" Grid.ColumnSpan="2" />
@@ -110,7 +110,7 @@
                     <TextBlock Text="Peak" Grid.Column="2" Grid.ColumnSpan="2" />
                     <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
                     <StackPanel x:Name="NamePlantStack" Margin="2,0" Grid.Column="0" Grid.Row="1"></StackPanel>
-                    <StackPanel x:Name="PeakPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="1"></StackPanel>
+                    <StackPanel x:Name="PeakPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="2"></StackPanel>
                     <StackPanel x:Name="EnergyPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="3"></StackPanel>
                     <!--<StackPanel Margin="2,0" Grid.Row="1" Grid.Column="0">
                     <TextBlock Text="Cooling capacity of absorption chillers" />
