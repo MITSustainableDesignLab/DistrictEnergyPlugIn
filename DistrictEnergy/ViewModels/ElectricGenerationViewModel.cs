@@ -89,7 +89,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
                 OnPropertyChanged();
-                CalcWindCapacity();
             }
         }
 
@@ -161,22 +160,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double WindCapacity
-        {
-            get { return _windCapacity; }
-            set
-            {
-                _windCapacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcWindCapacity()
-        {
-            WindCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND *
-                           DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Sum()).Sum();
         }
 
         #endregion

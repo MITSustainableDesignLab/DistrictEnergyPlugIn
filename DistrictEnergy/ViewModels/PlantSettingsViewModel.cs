@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -99,7 +101,8 @@ namespace DistrictEnergy.ViewModels
                 }
                 if (!DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().Any())
                 {
-                    DistrictControl.Instance.ListOfPlantSettings.Add(new PipeNetwork());
+                    DistrictControl.Instance.ListOfDistrictLoads.Add(new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"));
+                    DistrictControl.Instance.ListOfDistrictLoads.Add(new PipeNetwork(LoadTypes.Heating, "Heating Losses"));
                 }
             }
 

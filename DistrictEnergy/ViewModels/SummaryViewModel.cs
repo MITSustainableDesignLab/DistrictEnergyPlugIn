@@ -631,12 +631,6 @@ namespace DistrictEnergy.ViewModels
         private void SubscribeEvents(object sender, UmiContext e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += CalculateUserConstants;
-            ChilledWaterViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            CombinedHeatAndPowerViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            ElectricGenerationViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            HotWaterViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            NetworkViewModel.Instance.PropertyChanged += CalculateUserConstants;
             DHRunLPModel.Instance.Completion += CalculateUserConstants;
         }
 

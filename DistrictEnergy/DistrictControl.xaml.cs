@@ -36,7 +36,6 @@ namespace DistrictEnergy
                 new PhotovoltaicArray(),
                 new SolarThermalCollector(),
                 new WindTurbine(),
-                new PipeNetwork(),
                 new GridElectricity(),
                 new GridGas()
             };
@@ -44,7 +43,9 @@ namespace DistrictEnergy
             {
                 new HeatingLoads(),
                 new CoolingLoads(),
-                new ElectricityLoads()
+                new ElectricityLoads(),
+                new PipeNetwork(LoadTypes.Heating, "Heating Losses"),
+                new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"),
             };
             PlanningSettings = new PlanningSettings();
             DistrictSettings = new DistrictSettings();

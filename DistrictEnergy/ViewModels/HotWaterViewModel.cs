@@ -219,7 +219,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW =
                     value / 100;
                 OnPropertyChanged();
-                CalcShwCapacity();
             }
         }
 
@@ -263,22 +262,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double ShwCapacity
-        {
-            get { return _shwCapacity; }
-            set
-            {
-                _shwCapacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcShwCapacity()
-        {
-            ShwCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().OFF_SHW *
-                          DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
         }
 
         #endregion

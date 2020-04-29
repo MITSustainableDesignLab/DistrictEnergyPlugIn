@@ -124,6 +124,7 @@
     <Compile Include="Networks\Loads\ElectricityLoads.cs" />
     <Compile Include="Networks\Loads\HeatingLoads.cs" />
     <Compile Include="Networks\Loads\AbstractDistrictLoad.cs" />
+    <Compile Include="Networks\Loads\IBaseLoad.cs" />
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
     <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="Networks\ThermalPlants\Dispatchable.cs" />
@@ -158,7 +159,7 @@
     <Compile Include="Networks\ThermalPlants\NatGasBoiler.cs" />
     <Compile Include="Networks\ThermalPlants\PhotovoltaicArray.cs" />
     <Compile Include="Networks\ThermalPlants\SolarThermalCollector.cs" />
-    <Compile Include="Networks\ThermalPlants\PipeNetwork.cs" />
+    <Compile Include="Networks\Loads\PipeNetwork.cs" />
     <Compile Include="Networks\ThermalPlants\WindTurbine.cs" />
     <Compile Include="ViewModels\Converters\KwPerHourConverter.cs" />
     <Compile Include="ViewModels\Converters\KwPerHourConverterUnit.cs" />

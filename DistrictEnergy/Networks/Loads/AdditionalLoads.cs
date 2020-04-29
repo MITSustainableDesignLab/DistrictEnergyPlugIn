@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using CsvHelper;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts.Defaults;
 using Rhino;
 using Umi.Core;
@@ -15,7 +16,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class AdditionalLoads : AbstractDistrictLoad
+    class AdditionalLoads : AbstractDistrictLoad, IBaseLoad
     {
         public AdditionalLoads(LoadTypes loadType)
         {
@@ -30,7 +31,6 @@ namespace DistrictEnergy.Networks.Loads
 
         public override void GetUmiLoads(List<UmiObject> contextObjects)
         {
-            throw new NotImplementedException();
         }
 
         public void LoadCsv()

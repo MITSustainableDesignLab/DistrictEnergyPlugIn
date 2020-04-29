@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -16,42 +18,48 @@ namespace DistrictEnergy.ViewModels
         {
             get
             {
-                if (DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses == 1)
+                if (DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>().Select(o=>o.UseDistrictLosses).Any(b=>b))
                     return true;
-                else
-                    return false;
+                return false;
             }
             set
             {
-                if (value)
+                foreach (var pipeNetwork in DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>())
                 {
-                    DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 1;
-                    OnPropertyChanged();
+                    pipeNetwork.UseDistrictLosses = value;
                 }
-                else
-                {
-                    DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().UseDistrictLosses = 0;
-                    OnPropertyChanged();
-                }
+
+                OnPropertyChanged();
             }
         }
 
         public double RelDistHeatLoss
         {
-            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss * 100;
+            get => DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>().Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.RelativeLoss).Average() * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistHeatLoss = value / 100;
+                foreach (var pipeNetwork in DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
+                    .Where(x => x.LoadType == LoadTypes.Heating))
+                {
+                    pipeNetwork.RelativeLoss = value / 100;
+                }
+
                 OnPropertyChanged();
             }
         }
 
         public double RelDistCoolLoss
         {
-            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss * 100;
+            get => DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
+                .Where(x => x.LoadType == LoadTypes.Cooling).Select(o => o.RelDistCoolLoss).Average() * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().First().RelDistCoolLoss = value / 100;
+                foreach (var pipeNetwork in DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
+                    .Where(x => x.LoadType == LoadTypes.Cooling))
+                {
+                    pipeNetwork.RelativeLoss = value / 100;
+                }
+
                 OnPropertyChanged();
             }
         }

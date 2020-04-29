@@ -58,7 +58,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS = value / 100;
                 OnPropertyChanged();
-                CalcCapacity();
             }
         }
 
@@ -90,25 +89,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double AbsChillerCapacity
-        {
-            get
-            {
-                return _absChillerCapacity;
-            }
-            set
-            {
-                _absChillerCapacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcCapacity()
-        {
-            AbsChillerCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().OFF_ABS *
-                                 DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Cooling).Select(v => v.Input.Max()).Sum();
         }
 
         #endregion

@@ -9,7 +9,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class CoolingLoads : AbstractDistrictLoad
+    class CoolingLoads : AbstractDistrictLoad, IBaseLoad
     {
         public CoolingLoads()
         {

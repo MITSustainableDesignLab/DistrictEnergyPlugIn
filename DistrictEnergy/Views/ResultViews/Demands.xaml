@@ -4,16 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DistrictEnergy.Views.ResultViews"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <StackPanel>
-            <StackPanel x:Name="stackCustomCW">
-                <Button Name="btnAddAdditionalLoad"
-                        Margin="0,20,0,0" Click="btnAddAdditionalLoad_Click">
-                    Add Custom Cooling Supply Module
-                </Button>
+        <materialDesign:Card Padding="5" Margin="10">
+            <StackPanel>
+                <Grid x:Name="stackCustomCW">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btnAddAdditionalCoolingLoad"
+                            Margin="0,20,5,0" Click="btnAddAdditionalLoad_Click">
+                        Add Additional Cooling Load
+                    </Button>
+                    <Button Name="btnAddAdditionalHeatingLoad"
+                            Margin="5,20,5,0" Click="btnAddAdditionalHeatingLoad_Click" Grid.Column="1">
+                        Add Additional Heating Load
+                    </Button>
+                    <Button Name="btnAddAdditionalElecLoad"
+                            Margin="5,20,0,0" Click="btnAddAdditionalElecLoad_Click" Grid.Column="2">
+                        Add Additional Electricity Load
+                    </Button>
+                </Grid>
             </StackPanel>
-        </StackPanel>
+        </materialDesign:Card>
     </Grid>
 </UserControl>

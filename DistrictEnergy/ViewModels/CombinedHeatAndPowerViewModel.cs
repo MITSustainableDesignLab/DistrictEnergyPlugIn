@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -27,7 +26,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP = value;
                 OnPropertyChanged();
-                CalcCapacity();
             }
         }
 
@@ -38,7 +36,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP = value / 100;
                 OnPropertyChanged(nameof(OFF_CHP));
-                CalcCapacity();
             }
         }
 
@@ -81,22 +78,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double Capacity
-        {
-            get { return _capacity; }
-            set
-            {
-                _capacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcCapacity()
-        {
-            Capacity = DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().OFF_CHP *
-                       DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Max()).Sum();
         }
     }
 }

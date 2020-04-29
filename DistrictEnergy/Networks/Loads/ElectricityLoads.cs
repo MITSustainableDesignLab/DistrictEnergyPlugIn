@@ -7,7 +7,7 @@ using Umi.Core;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class ElectricityLoads : AbstractDistrictLoad
+    class ElectricityLoads : AbstractDistrictLoad, IBaseLoad
     {
         public ElectricityLoads()
         {

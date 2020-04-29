@@ -19,8 +19,20 @@ namespace DistrictEnergy.Views.ResultViews
 
         private void btnAddAdditionalLoad_Click(object sender, RoutedEventArgs e)
         {
+            AnAdditionalLoadsView newBtn = new AnAdditionalLoadsView(LoadTypes.Cooling);
+            ((Panel)stackCustomCW.Parent).Children.Add(newBtn);
+        }
+
+        private void btnAddAdditionalHeatingLoad_Click(object sender, RoutedEventArgs e)
+        {
+            AnAdditionalLoadsView newBtn = new AnAdditionalLoadsView(LoadTypes.Heating);
+            ((Panel)stackCustomCW.Parent).Children.Add(newBtn);
+        }
+
+        private void btnAddAdditionalElecLoad_Click(object sender, RoutedEventArgs e)
+        {
             AnAdditionalLoadsView newBtn = new AnAdditionalLoadsView(LoadTypes.Elec);
-            stackCustomCW.Children.Add(newBtn);
+            ((Panel)stackCustomCW.Parent).Children.Add(newBtn);
         }
     }
 }
