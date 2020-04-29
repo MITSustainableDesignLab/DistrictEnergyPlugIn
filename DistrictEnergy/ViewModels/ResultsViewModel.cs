@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using Deedle;
 using DistrictEnergy.Helpers;
 using LiveCharts;
-using LiveCharts.Defaults;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;

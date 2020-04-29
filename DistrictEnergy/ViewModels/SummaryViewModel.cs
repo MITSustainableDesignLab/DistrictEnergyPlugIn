@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DistrictEnergy.Annotations;
+using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -66,7 +68,6 @@ namespace DistrictEnergy.ViewModels
         }
 
         public static SummaryViewModel Instance { get; set; }
-
 
         /// <summary>
         ///     Cooling capacity of absorption chillers (kW)
@@ -630,12 +631,7 @@ namespace DistrictEnergy.ViewModels
         private void SubscribeEvents(object sender, UmiContext e)
         {
             if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += CalculateUserConstants;
-            ChilledWaterViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            CombinedHeatAndPowerViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            ElectricGenerationViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            HotWaterViewModel.Instance.PropertyChanged += CalculateUserConstants;
-            NetworkViewModel.Instance.PropertyChanged += CalculateUserConstants;
+            DHRunLPModel.Instance.Completion += CalculateUserConstants;
         }
 
         private void CalculateUserConstants(object sender, EventArgs e)
@@ -649,43 +645,51 @@ namespace DistrictEnergy.ViewModels
         /// </summary>
         public void CalculateUserConstants()
         {
-            CapAbs = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Max() * Settings.OffAbs;
-            CapEhp = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max() * Settings.OffEhp;
-            CapBat = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Average() * Settings.AutBat * 24;
-            CapHwt = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Average() * Settings.AutHwt *
-                     24; // todo Prendre jour moyen du mois max.
-            CapChpElec = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max() * Settings.OffChp;
+            DHSimulateDistrictEnergy.Instance.PreSolve();
+            CapAbs = DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().Capacity;
+            CapEhp = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().Capacity;
+            CapBat = DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().Capacity;
+            CapHwt = DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().Capacity;
+            CapChpElec = DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().Capacity;
             CapChpHeat = DHSimulateDistrictEnergy.Instance.ResultsArray.HwChp.Max(); //todo: this needs a fix
-            CapNgb = DHSimulateDistrictEnergy.Instance.ResultsArray.NgasNgb.Max();
-            CapShw = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Sum() * Settings.OffShw;
-            CapEch = DHSimulateDistrictEnergy.Instance.ResultsArray.ChwEch.Max();
-            CapElecProj = DHSimulateDistrictEnergy.Instance.ResultsArray.ElecProj.Max();
-            CapPv = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum() *
-                    Settings.OffPv; //todo: annual or peak?
-            CapWnd = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum() *
-                     Settings.OffWnd; //todo: annual or peak?
-            AreaShw = CapShw /
-                      (DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.Sum() * Settings.EffShw *
-                       (1 - Settings.LossShw) * Settings.UtilShw);
-            AreaPv = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum() * Settings.OffPv /
-                     (DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.Sum() * Settings.EffPv *
-                      (1 - Settings.LossPv) * Settings.UtilPv);
+            CapNgb = DistrictControl.Instance.ListOfPlantSettings.OfType<NatGasBoiler>().First().Capacity;
+            CapShw = DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().Capacity;
+            CapEch = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricChiller>().First().Capacity;
+            CapElecProj = DistrictControl.Instance.ListOfPlantSettings.OfType<GridElectricity>().First().Capacity;
+            CapPv = DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().Capacity;
+            CapWnd = DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().Capacity;
+            var solarArray = DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First();
+            AreaShw = CapShw / (DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.Sum() * solarArray.EFF_SHW *
+                                (1 - solarArray.LOSS_SHW) * solarArray.UTIL_SHW);
+            var photovoltaicArray = DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First();
+            AreaPv = CapPv /
+                     (DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.Sum() * photovoltaicArray.EFF_PV *
+                      (1 - photovoltaicArray.LOSS_PV) * photovoltaicArray.UTIL_PV);
+            var windArray = DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First();
             var windCubed = DHSimulateDistrictEnergy.Instance.DistrictDemand.WindN
-                .Where(w => w > Settings.CinWnd && w < Settings.CoutWnd).Select(w => Math.Pow(w, 3))
+                .Where(w => w > windArray.CIN_WND && w < windArray.COUT_WND).Select(w => Math.Pow(w, 3))
                 .Sum();
-            NumWnd = Math.Ceiling(DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum() * Settings.OffWnd /
-                                  (0.6375 * windCubed * Settings.RotWnd * (1 - Settings.LossWnd) * Settings.CopWnd /
+            NumWnd = Math.Ceiling(DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum() * windArray.OFF_WND /
+                                  (0.6375 * windCubed * windArray.ROT_WND * (1 - windArray.LOSS_WND) *
+                                   windArray.EFF_WND /
                                    1000)); // Divide by 1000 because equation spits out Wh
-            ChgrHwt = CapHwt == 0 ? 0 : CapHwt / 12 / Settings.AutHwt; // 12 hours // (AUT_HWT * 12);
-            ChgrBat = CapBat == 0 ? 0 : CapBat / 12 / Settings.AutBat;
+            ChgrHwt = CapHwt == 0
+                ? 0
+                : CapHwt / 12 / DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First()
+                    .AUT_HWT; // 12 hours // (AUT_HWT * 12);
+            ChgrBat = CapBat == 0
+                ? 0
+                : CapBat / 12 / DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT;
             DchgrHwt = CapHwt == 0
                 ? 0
                 : CapHwt / 12 /
-                  Settings.AutHwt; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+                  DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First()
+                      .AUT_HWT; // (AUT_HWT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
             DchgBat = CapBat == 0
                 ? 0
                 : CapBat / 12 /
-                  Settings.AutBat; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
+                  DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First()
+                      .AUT_BAT; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
         }
 
         /// <summary>
@@ -693,6 +697,7 @@ namespace DistrictEnergy.ViewModels
         /// </summary>
         public void CalculateModelConstants()
         {
+            DHSimulateDistrictEnergy.Instance.PreSolve();
             ModelCapAbs = DHSimulateDistrictEnergy.Instance.ResultsArray.ChwAbs.Max();
             ModelCapEhp = DHSimulateDistrictEnergy.Instance.ResultsArray.HwEhp.Max();
             ModelCapBat = DHSimulateDistrictEnergy.Instance.ResultsArray.BatChgN.Max();
@@ -728,12 +733,18 @@ namespace DistrictEnergy.ViewModels
                 ? 0
                 : CapBat / 12 /
                   Settings.AutBat; // (AUT_BAT * 24); // todo Discharge rate is set to Capacity divided by desired nb of days of autonomy
-            ModelCoolingDemand = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Max();
-            ModelHeatingDemand = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Max();
-            ModelElectricityDemand = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Max();
-            ModelCoolingEnergy = DHSimulateDistrictEnergy.Instance.DistrictDemand.ChwN.Sum();
-            ModelHeatingEnergy = DHSimulateDistrictEnergy.Instance.DistrictDemand.HwN.Sum();
-            ModelElectricityEnergy = DHSimulateDistrictEnergy.Instance.DistrictDemand.ElecN.Sum();
+            ModelCoolingDemand = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Cooling).Select(o => o.Input.Max()).Sum();
+            ModelHeatingDemand = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.Input.Max()).Sum();
+            ModelElectricityDemand = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Elec).Select(o => o.Input.Max()).Sum();
+            ModelCoolingEnergy = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Cooling).Select(o => o.Input.Sum()).Sum();
+            ModelHeatingEnergy = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.Input.Sum()).Sum();
+            ModelElectricityEnergy = DistrictControl.Instance.ListOfDistrictLoads
+                .Where(x => x.LoadType == LoadTypes.Elec).Select(o => o.Input.Sum()).Sum();
         }
 
 

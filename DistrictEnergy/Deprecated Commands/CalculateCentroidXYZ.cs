@@ -1,11 +1,10 @@
-﻿using System;
-using Rhino;
+﻿using Rhino;
 using Rhino.Commands;
 using Rhino.DocObjects;
-using Rhino.Input;
 using Rhino.Geometry;
+using Rhino.Input;
 
-namespace DistrictEnergy
+namespace DistrictEnergy.Deprecated_Commands
 {
     [System.Runtime.InteropServices.Guid("0c203e26-7023-4f60-ac69-b6339d7547e9")]
     public class CalculateCentroidXYZ : Command

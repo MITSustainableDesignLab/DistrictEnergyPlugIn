@@ -1,7 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using System.Windows.Input;
 using DistrictEnergy.ViewModels;
 using LiveCharts;
+using LiveCharts.Events;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 
@@ -47,6 +49,39 @@ namespace DistrictEnergy.Views.ResultViews
 
                 vm.XPointer = closetsPoint.X;
             }
+        }
+
+        private void Axis_OnRangeChanged(RangeChangedEventArgs eventargs)
+        {
+            var vm = (LoadsViewModel)DataContext;
+
+            var currentRange = eventargs.Range;
+
+            if (currentRange < TimeSpan.TicksPerDay * 2)
+            {
+                vm.TimeFormatter = x => new DateTime((long)x).ToString("t");
+                return;
+            }
+
+            if (currentRange < TimeSpan.TicksPerDay * 60)
+            {
+                vm.TimeFormatter = x => new DateTime((long)x).ToString("dd MMM yy");
+                return;
+            }
+
+            if (currentRange < TimeSpan.TicksPerDay * 540)
+            {
+                vm.TimeFormatter = x => new DateTime((long)x).ToString("MMM yy");
+                return;
+            }
+
+            vm.TimeFormatter = x => new DateTime((long)x).ToString("yyyy");
+        }
+
+        public void Dispose()
+        {
+            var vm = (LoadsViewModel)DataContext;
+            //vm.SeriesCollection.Dispose();
         }
     }
 }

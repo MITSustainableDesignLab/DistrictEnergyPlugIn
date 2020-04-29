@@ -41,9 +41,8 @@
       <HintPath>..\..\..\UMI\Basilisk.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CsvHelper">
-      <HintPath>..\..\..\..\..\..\..\..\..\UMI\CsvHelper.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.15.0.5\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="Deedle, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Deedle.2.1.2\lib\net45\Deedle.dll</HintPath>
@@ -51,14 +50,20 @@
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
     </Reference>
-    <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.24.20079.23341\lib\net45\Eto.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Core, Version=4.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Google.OrTools, Version=7.5.7466.0, Culture=neutral, PublicKeyToken=53dbb1ea090cbef7, processorArchitecture=AMD64">
+      <HintPath>..\packages\Google.OrTools.7.5.7466\lib\net452\Google.OrTools.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.11.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.11.2\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Geared, Version=1.2.8.2, Culture=neutral, PublicKeyToken=7292f245d14ab8bf, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Geared.1.2.9\lib\net45\LiveCharts.Geared.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
@@ -75,14 +80,10 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Rhino.UI, Version=6.24.20079.23340, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.24.20079.23341\lib\net45\Rhino.UI.dll</HintPath>
-    </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="RhinoCommon, Version=6.24.20079.23340, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.6.24.20079.23341\lib\net45\RhinoCommon.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -90,13 +91,17 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="Umi.Core">
@@ -113,31 +118,48 @@
     <Compile Include="..\AssemblyInfoCommon.cs">
       <Link>Properties\AssemblyInfoCommon.cs</Link>
     </Compile>
+    <Compile Include="Helpers\LinqExtension.cs" />
+    <Compile Include="Networks\Loads\AdditionalLoads.cs" />
+    <Compile Include="Networks\Loads\CoolingLoads.cs" />
+    <Compile Include="Networks\Loads\ElectricityLoads.cs" />
+    <Compile Include="Networks\Loads\HeatingLoads.cs" />
+    <Compile Include="Networks\Loads\AbstractDistrictLoad.cs" />
+    <Compile Include="Networks\Loads\IBaseLoad.cs" />
+    <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
+    <Compile Include="Networks\ThermalPlants\GridGas.cs" />
+    <Compile Include="Networks\ThermalPlants\Dispatchable.cs" />
+    <Compile Include="Networks\ThermalPlants\ISolar.cs" />
+    <Compile Include="Networks\ThermalPlants\Storage.cs" />
+    <Compile Include="ViewModels\AnAdditionalLoadViewModel.cs" />
     <Compile Include="ViewModels\Converters\Converter.cs" />
     <Compile Include="ViewModels\Converters\CostConverterUnit.cs" />
     <Compile Include="Deprecated Commands\CalculateCentroidXYZ.cs" />
     <Compile Include="Deprecated Commands\ConnectBldgsToPlant.cs" />
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
+    <Compile Include="DHRunLPModel.cs" />
     <Compile Include="DHSimulateDistrictEnergy.cs" />
     <Compile Include="ViewModels\Converters\DollarConverter.cs" />
     <Compile Include="Helpers\ChartMode.cs" />
     <Compile Include="Helpers\ComparisonConverter.cs" />
+    <Compile Include="Helpers\LoadTypes.cs" />
     <Compile Include="Helpers\TimeGroupers.cs" />
     <Compile Include="Metrics\DHAverageDiameterCommand.cs" />
     <Compile Include="Metrics\DHDistributionCapitalCostCommand.cs" />
     <Compile Include="Networks\ThermalPlants\AbsorptionChiller.cs" />
     <Compile Include="Networks\ThermalPlants\BatteryBank.cs" />
     <Compile Include="Networks\ThermalPlants\CombinedHeatNPower.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomCoolingSupplyModule.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomElectricitySupplyModule.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomHeatingSupplyModule.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricChiller.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricHeatPump.cs" />
     <Compile Include="Networks\ThermalPlants\HotWaterStorage.cs" />
     <Compile Include="Networks\ThermalPlants\IThermalPlantSettings.cs" />
     <Compile Include="Networks\ThermalPlants\NatGasBoiler.cs" />
-    <Compile Include="Networks\PlantTemplate.cs" />
     <Compile Include="Networks\ThermalPlants\PhotovoltaicArray.cs" />
     <Compile Include="Networks\ThermalPlants\SolarThermalCollector.cs" />
-    <Compile Include="Networks\ThermalPlants\PipeNetwork.cs" />
+    <Compile Include="Networks\Loads\PipeNetwork.cs" />
     <Compile Include="Networks\ThermalPlants\WindTurbine.cs" />
     <Compile Include="ViewModels\Converters\KwPerHourConverter.cs" />
     <Compile Include="ViewModels\Converters\KwPerHourConverterUnit.cs" />
@@ -150,6 +172,7 @@
     <Compile Include="ViewModels\Converters\ReverseConverter.cs" />
     <Compile Include="ViewModels\Converters\AreaConverter.cs" />
     <Compile Include="ViewModels\Converters\AreaConverterUnit.cs" />
+    <Compile Include="ViewModels\ACustomModuleViewModel.cs" />
     <Compile Include="ViewModels\CarbonViewModel.cs" />
     <Compile Include="ViewModels\Converters\kgCO2ConverterUnit.cs" />
     <Compile Include="ViewModels\Converters\KWConverter.cs" />
@@ -160,6 +183,7 @@
     <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
     <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
+    <Compile Include="Networks\ThermalPlants\CustomEnergySupplyModule.cs" />
     <Compile Include="ViewModels\ElectricGenerationViewModel.cs" />
     <Compile Include="ViewModels\FuelViewModel.cs" />
     <Compile Include="ViewModels\HotWaterViewModel.cs" />
@@ -182,6 +206,12 @@
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\DistrictSettings\AnAdditionalLoadsView.xaml.cs">
+      <DependentUpon>AnAdditionalLoadsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
+      <DependentUpon>ACustomModuleView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
       <DependentUpon>NetworkView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +229,9 @@
     </Compile>
     <Compile Include="Views\PlantSettings\ElectricGenerationView.xaml.cs">
       <DependentUpon>ElectricGenerationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResultViews\Demands.xaml.cs">
+      <DependentUpon>Demands.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ResultViews\Fuel.xaml.cs">
       <DependentUpon>Fuel.xaml</DependentUpon>
@@ -218,6 +251,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="DistrictControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DistrictSettings\AnAdditionalLoadsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlantSettings\ACustomModuleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -245,6 +286,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ResultViews\Demands.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ResultViews\Fuel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -267,8 +312,25 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="bop\bop_parameters.proto" />
+    <None Include="constraint_solver\assignment.proto" />
+    <None Include="constraint_solver\demon_profiler.proto" />
+    <None Include="constraint_solver\routing_enums.proto" />
+    <None Include="constraint_solver\routing_parameters.proto" />
+    <None Include="constraint_solver\search_limit.proto" />
+    <None Include="constraint_solver\solver_parameters.proto" />
+    <None Include="data\jobshop_scheduling.proto" />
+    <None Include="data\rcpsp.proto" />
+    <None Include="glop\parameters.proto" />
+    <None Include="graph\flow_problem.proto" />
+    <None Include="linear_solver\linear_solver.proto" />
     <None Include="packages.config" />
     <None Include="Resources\TabHeaderIcon.ico" />
+    <None Include="sat\boolean_problem.proto" />
+    <None Include="sat\cp_model.proto" />
+    <None Include="sat\sat_parameters.proto" />
+    <None Include="util\optional_boolean.proto" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -277,6 +339,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="orLogo.png" />
     <Content Include="Resources\TabHeaderIcon.png" />
     <Content Include="Resources\banner.bmp" />
     <Content Include="Resources\TRNExeConsole.f90" />
@@ -288,7 +351,9 @@
       <Name>EnergyPlusWeather</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Networks\DistrictSettings\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -320,6 +385,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets'))" />
     <Error Condition="!Exists('..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets'))" />
   </Target>
   <Import Project="..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets')" />
+  <Import Project="..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets" Condition="Exists('..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets')" />
 </Project>

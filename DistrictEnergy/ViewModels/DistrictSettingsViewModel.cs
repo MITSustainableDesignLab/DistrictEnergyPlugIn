@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
+using DistrictEnergy.Annotations;
 using Newtonsoft.Json;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -9,80 +11,32 @@ namespace DistrictEnergy.ViewModels
 {
     public class DistrictSettingsViewModel : INotifyPropertyChanged
     {
-        public static DistrictSettings DistrictSettings = new DistrictSettings();
-
-
         public DistrictSettingsViewModel()
         {
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
-        public double ElectricityGenerationCost
+        public ObservableCollection<SimCase> SimCases
         {
-            get => DistrictSettings.ElectricityGenerationCost;
+            get => DistrictControl.DistrictSettings.SimCases;
             set
             {
-                DistrictSettings.ElectricityGenerationCost = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ElectricityGenerationCost)));
+                DistrictControl.DistrictSettings.SimCases = value;
+                OnPropertyChanged();
             }
         }
 
-        public double PriceNaturalGas
+        public SimCase ASimCase
         {
-            get => DistrictSettings.PriceNaturalGas;
+            get => DistrictControl.DistrictSettings.ASimCase;
             set
             {
-                DistrictSettings.PriceNaturalGas = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PriceNaturalGas)));
+                if (Equals(value, DistrictControl.DistrictSettings.ASimCase = value)) return;
+                DistrictControl.DistrictSettings.ASimCase = value;
+                OnPropertyChanged();
             }
         }
-
-        public double EmissionsElectricGeneration
-        {
-            get => DistrictSettings.EmissionsElectricGeneration;
-            set
-            {
-                DistrictSettings.EmissionsElectricGeneration = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EmissionsElectricGeneration)));
-            }
-        }
-
-        public double LossesTransmission
-        {
-            get => DistrictSettings.LossesTransmission;
-            set
-            {
-                DistrictSettings.LossesTransmission = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossesTransmission)));
-            }
-        }
-
-        public double LossesHeatHydronic
-        {
-            get => DistrictSettings.LossesHeatHydronic;
-            set
-            {
-                DistrictSettings.LossesHeatHydronic = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LossesHeatHydronic)));
-            }
-        }
-
-        public double EfficPowerGen
-        {
-            get => DistrictSettings.EfficPowerGen;
-            set
-            {
-                DistrictSettings.EfficPowerGen = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EfficPowerGen)));
-            }
-        }
-
-        public ObservableCollection<SimCase> SimCases { get; set; }
-
-        public SimCase ASimCase { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
         {
@@ -102,7 +56,7 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                DistrictSettings = JsonConvert.DeserializeObject<DistrictSettings>(json);
+                DistrictControl.DistrictSettings = JsonConvert.DeserializeObject<DistrictSettings>(json);
             }
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DistrictSettings)));
@@ -114,7 +68,7 @@ namespace DistrictEnergy.ViewModels
 
             if (context == null) return;
 
-            var dSjson = JsonConvert.SerializeObject(DistrictSettings);
+            var dSjson = JsonConvert.SerializeObject(DistrictControl.DistrictSettings);
             context.AuxiliaryFiles.StoreText("districtSettings.json", dSjson);
         }
 
@@ -127,7 +81,14 @@ namespace DistrictEnergy.ViewModels
                 new SimCase {Id = 2, DName = "Business As Usual"},
                 new SimCase {Id = 3, DName = "TriGeneration (all gas)"}
             };
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SimCases)));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -7,6 +7,7 @@
     xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
     xmlns:DistrictEnergy="clr-namespace:DistrictEnergy"
     xmlns:converters="clr-namespace:DistrictEnergy.ViewModels.Converters"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     x:Class="DistrictEnergy.Views.ResultViews.Summary"
     mc:Ignorable="d"
     d:DesignHeight="323.834" d:DesignWidth="388.75"
@@ -17,33 +18,40 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="200"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <converters:DollarConverter x:Key="DollarConverter" />
-                    <converters:CostConverterUnit x:Key="CostConverterUnit" />
-                    <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
-                    <converters:AreaConverter x:Key="AreaConverter" />
-                    <converters:AreaConverterUnit x:Key="AreaConverterUnit" />
-                    <converters:KWConverter x:Key="KwConverter" />
-                    <converters:KWConverterUnit x:Key="KwConverterUnit" />
-                    <converters:KwPerHourConverter x:Key="KwPerHourConverter" />
-                    <converters:KwPerHourConverterUnit x:Key="KwPerHourConverterUnit" />
-                    <converters:KWhConverter x:Key="KWhConverter" />
-                    <converters:KWhConverterUnit x:Key="KWhConverterUnit" />
-                </Grid.Resources>
+            <materialDesign:Card Margin="10" Padding="10">
+                <Grid x:Name="DemandGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="200" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <converters:DollarConverter x:Key="DollarConverter" />
+                        <converters:CostConverterUnit x:Key="CostConverterUnit" />
+                        <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
+                        <converters:AreaConverter x:Key="AreaConverter" />
+                        <converters:AreaConverterUnit x:Key="AreaConverterUnit" />
+                        <converters:KWConverter x:Key="KwConverter" />
+                        <converters:KWConverterUnit x:Key="KwConverterUnit" />
+                        <converters:KwPerHourConverter x:Key="KwPerHourConverter" />
+                        <converters:KwPerHourConverterUnit x:Key="KwPerHourConverterUnit" />
+                        <converters:KWhConverter x:Key="KWhConverter" />
+                        <converters:KWhConverterUnit x:Key="KWhConverterUnit" />
+                    </Grid.Resources>
+                    <TextBlock Text="Demands" Grid.Column="0" Grid.ColumnSpan="2" />
+                    <TextBlock Text="Peak" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
+                    <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
+                    <StackPanel x:Name="NameStack" Margin="2,0" Grid.Column="0" Grid.Row="1"></StackPanel>
+                    <StackPanel x:Name="PeakStack" Margin="2,0" Grid.Row="1" Grid.Column="1"></StackPanel>
+                    <StackPanel x:Name="EnergyStack" Margin="2,0" Grid.Row="1" Grid.Column="3"></StackPanel>
 
-                <TextBlock Text="Demands" Grid.Column="0" Grid.ColumnSpan="2" />
+                    <!--<TextBlock Text="Demands" Grid.Column="0" Grid.ColumnSpan="2" />
                 <TextBlock Text="Peak" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
                 <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
                 <StackPanel Margin="2,0" Grid.Column="0" Grid.Row="1">
@@ -70,36 +78,41 @@
                     <TextBlock Text="{Binding ModelCoolingEnergy, Converter={StaticResource KWhConverterUnit}}"></TextBlock>
                     <TextBlock Text="{Binding ModelHeatingEnergy, Converter={StaticResource KWhConverterUnit}}"></TextBlock>
                     <TextBlock Text="{Binding ModelElectricityEnergy, Converter={StaticResource KWhConverterUnit}}"></TextBlock>
-                </StackPanel>
-            </Grid>
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <converters:DollarConverter x:Key="DollarConverter" />
-                    <converters:CostConverterUnit x:Key="CostConverterUnit" />
-                    <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
-                    <converters:AreaConverter x:Key="AreaConverter" />
-                    <converters:AreaConverterUnit x:Key="AreaConverterUnit" />
-                    <converters:KWConverter x:Key="KwConverter" />
-                    <converters:KWConverterUnit x:Key="KwConverterUnit" />
-                    <converters:KwPerHourConverter x:Key="KwPerHourConverter" />
-                    <converters:KwPerHourConverterUnit x:Key="KwPerHourConverterUnit" />
-                    <converters:KWhConverter x:Key="KWhConverter" />
-                    <converters:KWhConverterUnit x:Key="KWhConverterUnit" />
-                </Grid.Resources>
-                <TextBlock Text="UserDefined" Grid.Column="1" Grid.ColumnSpan="2" />
-                <TextBlock Text="Computed" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
-                <StackPanel Margin="2,0" Grid.Row="1" Grid.Column="0">
+                </StackPanel>-->
+                </Grid></materialDesign:Card>
+            <materialDesign:Card Margin="10" Grid.Row="1" Padding="10">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <converters:DollarConverter x:Key="DollarConverter" />
+                        <converters:CostConverterUnit x:Key="CostConverterUnit" />
+                        <converters:NormalizedCostConverterUnit x:Key="NormalizedCostConverterUnit" />
+                        <converters:AreaConverter x:Key="AreaConverter" />
+                        <converters:AreaConverterUnit x:Key="AreaConverterUnit" />
+                        <converters:KWConverter x:Key="KwConverter" />
+                        <converters:KWConverterUnit x:Key="KwConverterUnit" />
+                        <converters:KwPerHourConverter x:Key="KwPerHourConverter" />
+                        <converters:KwPerHourConverterUnit x:Key="KwPerHourConverterUnit" />
+                        <converters:KWhConverter x:Key="KWhConverter" />
+                        <converters:KWhConverterUnit x:Key="KWhConverterUnit" />
+                    </Grid.Resources>
+                    <TextBlock Text="Sources" Grid.Column="0" Grid.ColumnSpan="2" />
+                    <TextBlock Text="Peak" Grid.Column="2" Grid.ColumnSpan="2" />
+                    <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
+                    <StackPanel x:Name="NamePlantStack" Margin="2,0" Grid.Column="0" Grid.Row="1"></StackPanel>
+                    <StackPanel x:Name="PeakPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="1"></StackPanel>
+                    <StackPanel x:Name="EnergyPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="3"></StackPanel>
+                    <!--<StackPanel Margin="2,0" Grid.Row="1" Grid.Column="0">
                     <TextBlock Text="Cooling capacity of absorption chillers" />
                     <TextBlock Text="Capacity of Electrical Heat Pumps" />
                     <TextBlock Text="Capacity of Battery"
@@ -206,8 +219,8 @@
                     <TextBlock Text="{Binding ModelChgrBat, Converter={StaticResource KwPerHourConverterUnit}}" />
                     <TextBlock Text="{Binding ModelDchgrHwt, Converter={StaticResource KwPerHourConverterUnit}}" />
                     <TextBlock Text="{Binding ModelDchgBat, Converter={StaticResource KwPerHourConverterUnit}}" />
-                </StackPanel>
-            </Grid>
+                </StackPanel>-->
+                </Grid></materialDesign:Card>
         </Grid>
     </ScrollViewer>
 </UserControl>

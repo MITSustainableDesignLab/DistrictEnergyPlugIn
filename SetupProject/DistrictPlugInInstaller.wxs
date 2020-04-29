@@ -172,6 +172,10 @@
       <ComponentRef Id="PresentationFrameworkDLL" />
       <ComponentRef Id="SystemValueTupleDLL" />
       <ComponentRef Id="DragablzDLL" />
+      <ComponentRef Id="Google.OrTools" />
+      <ComponentRef Id="Google.Protobuf" />
+      <ComponentRef Id="google.ortools.native" />
+      <ComponentRef Id="LiveChartsGearedDLL"/>
     </ComponentGroup>
   </Fragment>
 
@@ -210,6 +214,13 @@
               <RegistryValue Name="LiveChartsDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
             <File Id="LiveChartsDLL" Name="LiveCharts.dll" Source="$(var.DistrictEnergy.TargetDir)LiveCharts.dll" />
+          </Component>
+
+          <Component Id="LiveChartsGearedDLL" Guid="{4502443E-FBC7-4B3D-8827-647C3C9FE067}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="LiveChartsGearedDLL" Value="1" KeyPath="yes" Type="integer" />
+            </RegistryKey>
+            <File Id="LiveChartsGearedDLL" Name="LiveCharts.Geared.dll" Source="$(var.DistrictEnergy.TargetDir)LiveCharts.Geared.dll" />
           </Component>
 
           <Component Id="LiveChartsWpfDLL" Guid="{A87122EC-EB95-4F6C-985A-254962FFF106}">
@@ -288,6 +299,32 @@
             </RegistryKey>
             <File Id="DragablzDLL" Name="Dragablz.dll"
                   Source="$(var.DistrictEnergy.TargetDir)Dragablz.dll">
+            </File>
+          </Component>
+          <Component Id="Google.OrTools" Guid="{1BF925CC-BBAA-4B69-93EC-3D118BB0D5F7}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="Google.OrTools" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="Google.OrTools" Name="Google.OrTools.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)Google.OrTools.dll">
+            </File>
+          </Component>
+
+          <Component Id="Google.Protobuf" Guid="{B7F796D1-9384-486E-B5E0-CEDC9E32C3FF}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="Google.Protobuf" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="Google.Protobuf" Name="Google.Protobuf.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)Google.Protobuf.dll">
+            </File>
+          </Component>
+
+          <Component Id="google.ortools.native" Guid="{53DC3120-B183-4EF1-ADFF-EE0575EF293E}">
+            <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
+              <RegistryValue Name="google.ortools.native" Value="1" KeyPath="yes" Type="integer"></RegistryValue>
+            </RegistryKey>
+            <File Id="google.ortools.native" Name="google-ortools-native.dll"
+                  Source="$(var.DistrictEnergy.TargetDir)google-ortools-native.dll">
             </File>
           </Component>
 
