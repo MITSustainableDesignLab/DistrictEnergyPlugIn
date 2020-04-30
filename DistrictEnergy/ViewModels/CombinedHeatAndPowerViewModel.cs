@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -16,10 +17,10 @@ namespace DistrictEnergy.ViewModels
 
         public new static CombinedHeatAndPowerViewModel Instance { get; set; }
 
-        public IList<TrakingModeEnum> PosibleTrackingModes =>
-            Enum.GetValues(typeof(TrakingModeEnum)).Cast<TrakingModeEnum>().ToList();
+        public IList<LoadTypes> PosibleTrackingModes =>
+            new List<LoadTypes>() {LoadTypes.Elec, LoadTypes.Heating};
 
-        public TrakingModeEnum TMOD_CHP
+        public LoadTypes TMOD_CHP
         {
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().TMOD_CHP;
             set
