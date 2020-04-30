@@ -145,7 +145,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT = value;
                 OnPropertyChanged();
-                CalcHwStoCapacityCapacity();
             }
         }
 
@@ -177,23 +176,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double HwStoCapacity
-        {
-            get { return _hwStoCapacity; }
-            set
-            {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().Capacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcHwStoCapacityCapacity()
-        {
-            // todo Define a more advanced capacity formulation
-            HwStoCapacity = DistrictControl.Instance.ListOfDistrictLoads.Where(x=>x.LoadType == LoadTypes.Heating).Select(v=>v.Input.Average()).Sum() *
-                            DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT * 24;
         }
 
         #endregion
