@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DistrictEnergy.Helpers;
@@ -210,8 +210,7 @@ namespace DistrictEnergy
                                    .Select(x => x.Value).ToArray().Sum() -
                                Qout.Where(k => k.Key.Item2.OutputType == loadType && k.Key.Item1 == i)
                                    .Select(x => x.Value).ToArray().Sum() +
-                               Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == i).Select(o => o.Value).Sum() +
-                               E[(i, loadType)])
+                               Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == i).Select(o => o.Value).Sum())
                 );
             }
 
