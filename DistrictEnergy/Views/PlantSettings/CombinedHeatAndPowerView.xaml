@@ -85,7 +85,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
                                             Value="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ToolTip="Ratio of electricity delivered by generator to total demand at peak conditions"
+                                            ToolTip="Capacity factor as ratio of the total heating OR electricity energy supplied by the energy hub. See Tracking Mode."
                                             IsSnapToTickEnabled="True" Focusable="False" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="1"
 
