@@ -204,7 +204,7 @@ namespace DistrictEnergy
                 {
                     ChilledWaterViewModel.Instance.OFF_ABS = 100;
                     CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 100;
-                    CombinedHeatAndPowerViewModel.Instance.TMOD_CHP = TrakingModeEnum.Electrical;
+                    CombinedHeatAndPowerViewModel.Instance.TMOD_CHP = LoadTypes.Elec;
                     ElectricGenerationViewModel.Instance.OFF_PV = 0;
                     HotWaterViewModel.Instance.OFF_EHP = 0;
                     HotWaterViewModel.Instance.OFF_SHW = 0;
