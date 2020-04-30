@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DistrictEnergy.Helpers;
@@ -15,31 +15,27 @@ namespace DistrictEnergy
         public DHRunLPModel()
         {
             Instance = this;
-            Qin = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            Qout = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            S = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            P = new Dictionary<(int, IThermalPlantSettings), Variable>();
         }
 
         /// <summary>
         /// Input energy flow at each supply module of the energy hub at each time step"
         /// </summary>
-        public Dictionary<(int, IThermalPlantSettings), Variable> P { get; set; }
+        public Dictionary<(int, IThermalPlantSettings), Variable> P { get; set; } = new Dictionary<(int, IThermalPlantSettings), Variable>();
 
         /// <summary>
         /// Storage state at each storage module of the energy hub at each time step"
         /// </summary>
-        public Dictionary<(int, IThermalPlantSettings), Variable> S { get; set; }
+        public Dictionary<(int, IThermalPlantSettings), Variable> S = new Dictionary<(int, IThermalPlantSettings), Variable>();
 
         /// <summary>
         /// Output energy flow at each storage module of the energy hub at each time step"
         /// </summary>
-        public Dictionary<(int, IThermalPlantSettings), Variable> Qout { get; set; }
+        public Dictionary<(int, IThermalPlantSettings), Variable> Qout = new Dictionary<(int, IThermalPlantSettings), Variable>();
 
         /// <summary>
         /// Input energy flow at each storage module of the energy hub at each time step"
         /// </summary>
-        public Dictionary<(int, IThermalPlantSettings), Variable> Qin { get; set; }
+        public Dictionary<(int, IThermalPlantSettings), Variable> Qin = new Dictionary<(int, IThermalPlantSettings), Variable>();
 
         ///<summary>The only instance of the DHRunLPModel command.</summary>
         public static DHRunLPModel Instance { get; private set; }
