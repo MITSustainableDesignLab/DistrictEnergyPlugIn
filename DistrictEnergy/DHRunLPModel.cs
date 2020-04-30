@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using DistrictEnergy.Helpers;
@@ -8,6 +8,7 @@ using DistrictEnergy.Networks.ThermalPlants;
 using Google.OrTools.LinearSolver;
 using Rhino;
 using Rhino.Commands;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy
 {
@@ -279,7 +280,7 @@ namespace DistrictEnergy
 
             foreach (var variable in E)
             {
-                objective.SetCoefficient(variable.Value, 1000000);
+                objective.SetCoefficient(variable.Value, UmiContext.Current.ProjectSettings.ElectricityDollars);
             }
 
             objective.SetMinimization();
