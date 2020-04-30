@@ -52,7 +52,7 @@ namespace DistrictEnergy
         {
             DHSimulateDistrictEnergy.Instance.PreSolve();
             // Create the linear solver with the CBC backend.
-            var solver = Solver.CreateSolver("SimpleMipProgram", "GLOP_LINEAR_PROGRAMMING");
+            var solver = Solver.CreateSolver("SimpleLP", "GLOP_LINEAR_PROGRAMMING");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
             int timeSteps = (int) DistrictControl.PlanningSettings.TimeSteps; // Number of Time Steps
