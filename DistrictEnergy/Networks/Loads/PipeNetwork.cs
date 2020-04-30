@@ -38,16 +38,16 @@ namespace DistrictEnergy.Networks.Loads
 
         public override void GetUmiLoads(List<UmiObject> contextObjects)
         {
-            Input = new double[8760].ToDateTimePoint();
+            Input = new double[8760];
         }
 
-        public override List<DateTimePoint> Input
+        public override double[] Input
         {
             get => CalcInput();
             set { }
         }
 
-        private List<DateTimePoint> CalcInput()
+        private double[] CalcInput()
         {
             var final = new double[8760];
             if (UseDistrictLosses)
@@ -55,7 +55,7 @@ namespace DistrictEnergy.Networks.Loads
                 foreach (var loads in DistrictControl.Instance.ListOfDistrictLoads.OfType<IBaseLoad>()
                     .Where(o => o.LoadType == LoadType))
                 {
-                    var adjustedLoad = loads.Input.Select(x => x.Value * RelativeLoss).ToArray();
+                    var adjustedLoad = loads.Input.Select(x => x * RelativeLoss).ToArray();
                     for (int i = 0; i < final.Length; i++)
                     {
                         final[i] += adjustedLoad[i];
@@ -63,7 +63,7 @@ namespace DistrictEnergy.Networks.Loads
                 }
             }
 
-            return final.ToDateTimePoint();
+            return final;
         }
 
         public override LoadTypes LoadType { get; set; }

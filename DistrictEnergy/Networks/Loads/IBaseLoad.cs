@@ -6,7 +6,7 @@ namespace DistrictEnergy.Networks.Loads
 {
     internal interface IBaseLoad
     {
-        List<DateTimePoint> Input { get; set; }
+        double[] Input { get; set; }
         LoadTypes LoadType { get; set; }
     }
 }

@@ -15,7 +15,31 @@ namespace DistrictEnergy
         public DHRunLPModel()
         {
             Instance = this;
+            Qin = new Dictionary<(int, IThermalPlantSettings), Variable>();
+            Qout = new Dictionary<(int, IThermalPlantSettings), Variable>();
+            S = new Dictionary<(int, IThermalPlantSettings), Variable>();
+            P = new Dictionary<(int, IThermalPlantSettings), Variable>();
         }
+
+        /// <summary>
+        /// Input energy flow at each supply module of the energy hub at each time step"
+        /// </summary>
+        public Dictionary<(int, IThermalPlantSettings), Variable> P { get; set; }
+
+        /// <summary>
+        /// Storage state at each storage module of the energy hub at each time step"
+        /// </summary>
+        public Dictionary<(int, IThermalPlantSettings), Variable> S { get; set; }
+
+        /// <summary>
+        /// Output energy flow at each storage module of the energy hub at each time step"
+        /// </summary>
+        public Dictionary<(int, IThermalPlantSettings), Variable> Qout { get; set; }
+
+        /// <summary>
+        /// Input energy flow at each storage module of the energy hub at each time step"
+        /// </summary>
+        public Dictionary<(int, IThermalPlantSettings), Variable> Qin { get; set; }
 
         ///<summary>The only instance of the DHRunLPModel command.</summary>
         public static DHRunLPModel Instance { get; private set; }
@@ -38,8 +62,9 @@ namespace DistrictEnergy
             int timeSteps = (int) DistrictControl.PlanningSettings.TimeSteps; // Number of Time Steps
             int dt = 8760 / timeSteps; // Duration of each Time Steps
 
-            // Input Enerygy
-            var P = new Dictionary<(int, IThermalPlantSettings), Variable>();
+            // Input Energy
+            RhinoApp.WriteLine("Computing input energy flow variables...");
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
@@ -49,9 +74,12 @@ namespace DistrictEnergy
                 }
             }
 
-            var Qin = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            var Qout = new Dictionary<(int, IThermalPlantSettings), Variable>();
-            var S = new Dictionary<(int, IThermalPlantSettings), Variable>();
+            watch.Stop();
+            RhinoApp.WriteLine($"Computed {P.Count} P variables in {watch.ElapsedMilliseconds} milliseconds");
+
+            // Storage Variables
+            RhinoApp.WriteLine("Computing storage module variables...");
+            watch.Start();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
@@ -64,6 +92,10 @@ namespace DistrictEnergy
                         solver.MakeNumVar(0.0, supplymodule.Capacity, $"StoState_{t}_{supplymodule.Name}");
                 }
             }
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
+            RhinoApp.WriteLine(
+                $"Computed {Qin.Count + Qout.Count + S.Count} S variables in {watch.ElapsedMilliseconds} milliseconds");
 
             // Exports (per supply module)
             var E = new Dictionary<(int, LoadTypes), Variable>();

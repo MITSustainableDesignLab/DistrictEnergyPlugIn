@@ -169,7 +169,7 @@ namespace DistrictEnergy.ViewModels
                 {
                     var series = new GStackedAreaSeries
                     {
-                        Values = demand.Input.Split(plot_duration)
+                        Values = demand.Input.ToDateTimePoint().Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = "[+] " + demand.Name,
                         LineSmoothness = lineSmoothness,
@@ -180,7 +180,7 @@ namespace DistrictEnergy.ViewModels
                     SeriesCollection.Add(series);
                     DemandLineCollection.Add(new GLineSeries
                     {
-                        Values = demand.Input.Split(12)
+                        Values = demand.Input.ToDateTimePoint().Split(12)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = demand.Name,
                         LineSmoothness = lineSmoothness,
@@ -188,7 +188,7 @@ namespace DistrictEnergy.ViewModels
                     });
                 }
 
-                Total = Total.Zip(demand.Input, (a, b) => a + b.Value).ToArray();
+                Total = Total.Zip(demand.Input, (a, b) => a + b).ToArray();
             }
 
             // Plot Additional Demand from Supply Modules (Negative)
