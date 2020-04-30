@@ -264,7 +264,7 @@ namespace DistrictEnergy
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
-                        supplymodule.F * DistrictEnergy.Settings.AnnuityFactor + supplymodule.V * dt);
+                        supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt + supplymodule.V);
                 }
             }
 
@@ -273,7 +273,7 @@ namespace DistrictEnergy
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(S[(t, storage)],
-                        storage.F * DistrictEnergy.Settings.AnnuityFactor + storage.V * dt);
+                        storage.F * DistrictEnergy.Settings.AnnuityFactor / dt + storage.V);
                 }
             }
 
