@@ -8,6 +8,7 @@ using DistrictEnergy.Networks.ThermalPlants;
 using Google.OrTools.LinearSolver;
 using Rhino;
 using Rhino.Commands;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy
 {
@@ -210,8 +211,7 @@ namespace DistrictEnergy
                                    .Select(x => x.Value).ToArray().Sum() -
                                Qout.Where(k => k.Key.Item2.OutputType == loadType && k.Key.Item1 == i)
                                    .Select(x => x.Value).ToArray().Sum() +
-                               Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == i).Select(o => o.Value).Sum() +
-                               E[(i, loadType)])
+                               Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == i).Select(o => o.Value).Sum())
                 );
             }
 
@@ -265,7 +265,7 @@ namespace DistrictEnergy
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
-                        supplymodule.F * DistrictEnergy.Settings.AnnuityFactor + supplymodule.V * dt);
+                        supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt + supplymodule.V);
                 }
             }
 
@@ -274,13 +274,13 @@ namespace DistrictEnergy
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(S[(t, storage)],
-                        storage.F * DistrictEnergy.Settings.AnnuityFactor + storage.V * dt);
+                        storage.F * DistrictEnergy.Settings.AnnuityFactor / dt + storage.V);
                 }
             }
 
             foreach (var variable in E)
             {
-                objective.SetCoefficient(variable.Value, 1000000);
+                objective.SetCoefficient(variable.Value, UmiContext.Current.ProjectSettings.ElectricityDollars);
             }
 
             objective.SetMinimization();

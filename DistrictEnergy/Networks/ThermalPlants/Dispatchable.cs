@@ -42,7 +42,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Fixed Cost";
             if (plant.Output != null)
-                Cost = plant.Output.Max() * DistrictControl.PlanningSettings.AnnuityFactor * plant.F;
+                Cost = plant.Output.Max() * DistrictControl.PlanningSettings.AnnuityFactor * plant.F /
+                       (8760 / DistrictControl.PlanningSettings.TimeSteps);
         }
     }
 
