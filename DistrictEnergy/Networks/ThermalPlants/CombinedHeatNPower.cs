@@ -25,8 +25,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         ///     Tracking Mode
         /// </summary>
         [DataMember]
-        [DefaultValue(TrakingModeEnum.Thermal)]
-        public TrakingModeEnum TMOD_CHP { get; set; } = TrakingModeEnum.Thermal;
+        [DefaultValue(LoadTypes.Heating)]
+        public LoadTypes TMOD_CHP { get; set; } = LoadTypes.Heating;
 
         /// <summary>
         ///     Capacity as percent of peak electric load (%)
@@ -70,10 +70,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
             if (DistrictControl.Instance is null) return 0;
             switch (TMOD_CHP)
             {
-                case TrakingModeEnum.Electrical:
+                case LoadTypes.Elec:
                     return OFF_CHP * DistrictControl.Instance.ListOfDistrictLoads
                         .Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Max()).Sum();
-                case TrakingModeEnum.Thermal:
+                case LoadTypes.Heating:
                     return OFF_CHP * DistrictControl.Instance.ListOfDistrictLoads
                         .Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
             }
@@ -86,19 +86,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override string Name { get; set; } = "Combined Heat&Power";
 
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes OutputType => LoadTypes.Elec;
+        public override LoadTypes OutputType => TMOD_CHP;
         public override LoadTypes InputType => LoadTypes.Gas;
+        public override double CapacityFactor => OFF_CHP;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(247, 96, 21));
-    }
-
-    [DataContract(Name = "TMOD_CHP")]
-    public enum TrakingModeEnum
-    {
-        [EnumMember] Thermal,
-        [EnumMember] Electrical
     }
 }

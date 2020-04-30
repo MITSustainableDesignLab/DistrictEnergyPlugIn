@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
@@ -18,7 +19,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract double StartingCapacity { get; }
         public abstract double F { get; set; }
         public abstract double V { get; set; }
-        public double Capacity { get; set; }
+        public abstract double Capacity { get; }
         public abstract string Name { get; set; }
         public Guid Id { get; set; } = Guid.NewGuid();
         public abstract LoadTypes OutputType { get; }
@@ -30,5 +31,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public GraphCost FixedCost => new FixedCost(this);
         public GraphCost VariableCost => new VariableCost(this, 200);
         public double TotalCost => FixedCost.Cost + VariableCost.Cost;
+        public double CapacityFactor => 1;
     }
 }

@@ -60,7 +60,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value / 100;
                 OnPropertyChanged();
-                CalcHpCapacity();
             }
         }
 
@@ -118,22 +117,6 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public double HpCapacity
-        {
-            get { return _hpCapacity; }
-            set
-            {
-                _hpCapacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcHpCapacity()
-        {
-            HpCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP *
-                         DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
-        }
-
         #endregion
 
         #region HWSto
@@ -145,7 +128,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT = value;
                 OnPropertyChanged();
-                CalcHwStoCapacityCapacity();
             }
         }
 
@@ -177,23 +159,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double HwStoCapacity
-        {
-            get { return _hwStoCapacity; }
-            set
-            {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().Capacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcHwStoCapacityCapacity()
-        {
-            // todo Define a more advanced capacity formulation
-            HwStoCapacity = DistrictControl.Instance.ListOfDistrictLoads.Where(x=>x.LoadType == LoadTypes.Heating).Select(v=>v.Input.Average()).Sum() *
-                            DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().AUT_HWT * 24;
         }
 
         #endregion

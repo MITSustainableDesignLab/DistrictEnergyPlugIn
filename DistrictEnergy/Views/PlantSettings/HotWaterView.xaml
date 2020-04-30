@@ -87,7 +87,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
                                             Value="{Binding OFF_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ToolTip="Ratio of heating delivered by heat pumps to total load at peak conditions"
+                                            ToolTip="Capacity factor as ratio of the total heating energy supplied by the energy hub"
                                             IsSnapToTickEnabled="True" Focusable="False" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                 Grid.ColumnSpan="2"
@@ -189,7 +189,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
                                             Value="{Binding OFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ToolTip="Ratio of heating delivered by solar collectors to total annual heating requirement"
+                                            ToolTip="Capacity factor as ratio of the total heating energy supplied by the energy hub"
                                             IsSnapToTickEnabled="True" Focusable="False" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                 Grid.ColumnSpan="2"
