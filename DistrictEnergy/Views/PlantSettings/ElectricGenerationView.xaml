@@ -95,7 +95,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Maximum="100"
                                             Value="{Binding OFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ToolTip="Ratio of electricity delivered by PV Array to total annual electricity requirement"
+                                            ToolTip="Capacity factor as ratio of the total electricity energy supplied by the energy hub"
                                             IsSnapToTickEnabled="True" Focusable="False" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                 Grid.ColumnSpan="2"
@@ -209,7 +209,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
                                             Value="{Binding OFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ToolTip="Ratio of electricity delivered by wind turbines to total annual electricity requirement"
+                                            ToolTip="Capacity factor as ratio of the total electricity energy supplied by the energy hub"
                                             IsSnapToTickEnabled="True" Focusable="False" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                 Grid.ColumnSpan="2"
@@ -458,7 +458,7 @@
                     </StackPanel>
                 </Grid>
                 <StackPanel x:Name="stackCustomCW">
-                    <Button Name="btnAddCustomElectricityModule" Margin="0,20,0,0" Click="btnAddCustomElectricityModule_Click">Add Custom Chilled Water Supply Module</Button>
+                    <Button Name="btnAddCustomElectricityModule" Margin="0,20,0,0" Click="btnAddCustomElectricityModule_Click">Add Custom Electricity Supply Module</Button>
                 </StackPanel>
 
             </StackPanel>

@@ -173,7 +173,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT = value;
                 OnPropertyChanged();
-                CalcBatCapacity();
             }
         }
 
@@ -215,23 +214,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double BatCapacity
-        {
-            get { return _windCapacity; }
-            set
-            {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().Capacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcBatCapacity()
-        {
-            // todo Define a more advanced capacity formulation
-            BatCapacity = DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Average()).Sum() *
-                          DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().AUT_BAT * 24;
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -63,5 +64,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
         public override double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
         public override double StartingCapacity => Capacity * BAT_START;
+        public override double Capacity => CalcCapacity();
+        private double CalcCapacity()
+        {
+            return DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Average()).Sum() * AUT_BAT * 24;
+        }
     }
 }

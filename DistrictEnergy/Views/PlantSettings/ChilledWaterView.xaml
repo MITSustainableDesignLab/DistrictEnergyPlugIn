@@ -72,7 +72,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Slider VerticalAlignment="Center" Maximum="100" x:Name="SliderA"
                                             Value="{Binding OFF_ABS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ToolTip="Capacity as percent of peak cooling load"
+                                            ToolTip="Capacity factor as ratio of the total cooling energy supplied by the energy hub"
                                             IsSnapToTickEnabled="True" Focusable="False" />
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="1"
@@ -142,7 +142,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Grid.Row="0">Electric Chiller</TextBlock>
+                    <TextBlock Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Grid.Row="0" ToolTip="Always Available">Electric Chiller</TextBlock>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto"
                                 Grid.Row="1">
                         <Expander>
