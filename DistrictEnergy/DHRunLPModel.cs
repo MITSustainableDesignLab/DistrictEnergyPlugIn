@@ -98,6 +98,8 @@ namespace DistrictEnergy
             for (var t = 0; t < timeSteps * dt; t += dt)
             {
                 E[(t, LoadTypes.Elec)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Electricity");
+                E[(t, LoadTypes.Cooling)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Cooling");
+                E[(t, LoadTypes.Heating)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Heating");
             }
 
             RhinoApp.WriteLine("Number of variables = " + solver.NumVariables());
@@ -127,7 +129,7 @@ namespace DistrictEnergy
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
                                    Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum());
+                                       .Sum() + E[(i, loadTypes)]);
                     }
                 }
 
@@ -144,7 +146,7 @@ namespace DistrictEnergy
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
                                    Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum());
+                                       .Sum() + E[(i, loadTypes)]);
                     }
                 }
 
@@ -279,11 +281,16 @@ namespace DistrictEnergy
                 storage.Stored = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue())
                     .ToDateTimePoint();
                 RhinoApp.WriteLine(
-                    $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; EndStorageState {storage.Stored.Last().Value}");
+                    $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; Storage Balance {storage.Input.Sum() - storage.Output.Sum()}");
             }
 
             // Write Exports
-            RhinoApp.WriteLine($"Export_Electricity = {E.Select(x => x.Value.SolutionValue()).ToArray().Sum()}");
+            foreach (LoadTypes loadTypes in Enum.GetValues(typeof(LoadTypes)))
+            {
+                var sum = E.Where(o => o.Key.Item2 == loadTypes).Select(x => x.Value.SolutionValue()).ToArray().Sum();
+                if (sum > 0) RhinoApp.WriteLine($"Export_{loadTypes} = {sum}");
+            }
+            
 
 
             RhinoApp.WriteLine("\nAdvanced usage:");
