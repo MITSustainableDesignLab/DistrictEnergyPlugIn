@@ -29,11 +29,11 @@ namespace DistrictEnergy.Networks.Loads
                     aggreagationArray[i] += d;
                 }
 
-            Input = aggreagationArray.ToDateTimePoint();
+            Input = aggreagationArray;
         }
         /// <summary>
         /// Equipment & Lighting
         /// </summary>
-        public override List<DateTimePoint> Input { get; set; }
+        public override double[] Input { get; set; }
     }
 }

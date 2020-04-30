@@ -23,7 +23,7 @@ namespace DistrictEnergy.Networks.Loads
             LoadType = loadType;
         }
 
-        public override List<DateTimePoint> Input { get; set; }
+        public override double[] Input { get; set; }
         public override LoadTypes LoadType { get; set; }
         public override SolidColorBrush Fill { get; set; }
         public override string Name { get; set; }
@@ -68,7 +68,7 @@ namespace DistrictEnergy.Networks.Loads
         /// <param name="filePath">The path to the csv file</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static List<DateTimePoint> LoadCustomDemand(string filePath, UmiContext context)
+        private static double[] LoadCustomDemand(string filePath, UmiContext context)
         {
             // Start stream reader
             double[] records;
@@ -81,7 +81,7 @@ namespace DistrictEnergy.Networks.Loads
                 }
             }
 
-            return records.ToDateTimePoint();
+            return records;
         }
 
         /// <summary>
