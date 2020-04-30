@@ -38,11 +38,11 @@ namespace DistrictEnergy.Networks.Loads
                 }
             }
 
-            Input = aggregationArray.ToDateTimePoint();
+            Input = aggregationArray;
         }
         /// <summary>
         /// Heating + DHW
         /// </summary>
-        public override List<DateTimePoint> Input { get; set; }
+        public override double[] Input { get; set; }
     }
 }

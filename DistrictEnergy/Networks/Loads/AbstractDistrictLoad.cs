@@ -20,7 +20,7 @@ namespace DistrictEnergy.Networks.Loads
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public abstract LoadTypes LoadType { get; set; }
-        public abstract List<DateTimePoint> Input { get; set; }
+        public abstract double[] Input { get; set; }
         public abstract SolidColorBrush Fill { get; set; }
         public abstract string Name { get; set; }
         public string Path { get; set; }
