@@ -2,7 +2,10 @@
 using System.Linq;
 using System.Windows.Controls;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
+using LiveCharts.Defaults;
+using LiveCharts.Geared;
 
 namespace DistrictEnergy.Views.ResultViews
 {
@@ -48,22 +51,35 @@ namespace DistrictEnergy.Views.ResultViews
             NamePlantStack.Children.Clear();
             PeakPlantStack.Children.Clear();
             EnergyPlantStack.Children.Clear();
-            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings)
+
+            // Plot Plant Supply & Demand
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>().Where(x =>
+                x.OutputType == LoadTypes.Cooling ||
+                x.OutputType == LoadTypes.Heating ||
+                x.OutputType == LoadTypes.Elec))
             {
-                TextBlock name = new TextBlock();
-                name.Text = plant.Name;
-                NamePlantStack.Children.Add(name);
-                Grid.SetColumn(name, 2);
+                foreach (var cMat in plant.ConversionMatrix)
+                {
+                    var loadType = cMat.Key;
+                    var eff = cMat.Value;
+                    if (plant.Input.Sum() > 0)
+                    {
+                        TextBlock name = new TextBlock();
+                        name.Text = $"[{loadType}] {plant.Name}";
+                        NamePlantStack.Children.Add(name);
+                        Grid.SetColumn(name, 2);
 
-                TextBlock demandValue = new TextBlock();
-                demandValue.Text = plant.Input.Max().ToString("N2");
-                PeakPlantStack.Children.Add(demandValue);
-                Grid.SetColumn(name, 2);
+                        TextBlock demandValue = new TextBlock();
+                        demandValue.Text = plant.Input.Select(v =>v.Value * eff).Max().ToString("N2");
+                        PeakPlantStack.Children.Add(demandValue);
+                        Grid.SetColumn(name, 2);
 
-                TextBlock energyValue = new TextBlock();
-                energyValue.Text = plant.Input.Sum().ToString("N2");
-                EnergyPlantStack.Children.Add(energyValue);
-                Grid.SetColumn(name, 2);
+                        TextBlock energyValue = new TextBlock();
+                        energyValue.Text = plant.Input.Select(v => v.Value * eff).Sum().ToString("N2");
+                        EnergyPlantStack.Children.Add(energyValue);
+                        Grid.SetColumn(name, 2);
+                    }
+                }
             }
         }
     }
