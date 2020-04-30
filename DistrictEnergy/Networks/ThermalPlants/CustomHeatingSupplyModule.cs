@@ -16,6 +16,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.Custom;
+        public override double CapacityFactor => 1;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }

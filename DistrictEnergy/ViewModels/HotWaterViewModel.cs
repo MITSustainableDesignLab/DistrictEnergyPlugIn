@@ -60,7 +60,6 @@ namespace DistrictEnergy.ViewModels
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP = value / 100;
                 OnPropertyChanged();
-                CalcHpCapacity();
             }
         }
 
@@ -116,22 +115,6 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().V = value;
                 OnPropertyChanged();
             }
-        }
-
-        public double HpCapacity
-        {
-            get { return _hpCapacity; }
-            set
-            {
-                _hpCapacity = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void CalcHpCapacity()
-        {
-            HpCapacity = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().OFF_EHP *
-                         DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
         }
 
         #endregion
