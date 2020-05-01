@@ -50,11 +50,14 @@
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
     </Reference>
+    <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.6.24.20079.23341\lib\net45\Eto.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Google.OrTools, Version=7.5.7466.0, Culture=neutral, PublicKeyToken=53dbb1ea090cbef7, processorArchitecture=AMD64">
-      <HintPath>..\packages\Google.OrTools.7.5.7466\lib\net452\Google.OrTools.dll</HintPath>
+    <Reference Include="Google.OrTools, Version=7.6.7691.0, Culture=neutral, PublicKeyToken=53dbb1ea090cbef7, processorArchitecture=AMD64">
+      <HintPath>..\packages\Google.OrTools.7.6.7691\lib\net452\Google.OrTools.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.11.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.11.2\lib\net45\Google.Protobuf.dll</HintPath>
@@ -83,9 +86,11 @@
     <Reference Include="PresentationFramework">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Rhino.UI, Version=6.24.20079.23340, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.6.24.20079.23341\lib\net45\Rhino.UI.dll</HintPath>
+    </Reference>
     <Reference Include="RhinoCommon, Version=6.24.20079.23340, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.6.24.20079.23341\lib\net45\RhinoCommon.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -387,8 +392,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets'))" />
     <Error Condition="!Exists('..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets'))" />
-    <Error Condition="!Exists('..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets'))" />
   </Target>
   <Import Project="..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.6.24.20079.23341\build\net45\RhinoCommon.targets')" />
-  <Import Project="..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets" Condition="Exists('..\packages\Google.OrTools.runtime.win-x64.7.5.7466\build\net45\Google.OrTools.runtime.win-x64.targets')" />
+  <Import Project="..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets" Condition="Exists('..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets')" />
 </Project>
