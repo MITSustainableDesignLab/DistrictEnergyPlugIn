@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DistrictEnergy.ViewModels;
@@ -19,6 +21,33 @@ namespace DistrictEnergy.Views.ResultViews
             InitializeComponent();
 
             DataContext = new LoadsViewModel();
+
+            DHRunLPModel.Instance.Completion += Window_Loaded;
+        }
+
+        private void Window_Loaded(object sender, EventArgs e)
+        {
+            GenerateLoadList();
+        }
+
+        /// <summary>
+        /// Generates list of demands in the annual view.
+        /// </summary>
+        private void GenerateLoadList()
+        {
+            LoadList.Children.Clear();
+            foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
+            {
+                TextBlock name = new TextBlock();
+                name.Text = load.Name;
+                name.Foreground = load.Fill;
+                name.FontSize = 10;
+
+                if (load.Input.Sum() > 0)
+                {
+                    LoadList.Children.Add(name);
+                }
+            }
         }
 
         private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
@@ -54,7 +83,8 @@ namespace DistrictEnergy.Views.ResultViews
         private void Axis_OnRangeChanged(RangeChangedEventArgs eventargs)
         {
             var vm = (LoadsViewModel)DataContext;
-
+            ResetButton.Visibility = Visibility.Visible;
+            ScrollTip.Visibility = Visibility.Hidden;
             var currentRange = eventargs.Range;
 
             if (currentRange < TimeSpan.TicksPerDay * 2)
@@ -78,10 +108,18 @@ namespace DistrictEnergy.Views.ResultViews
             vm.TimeFormatter = x => new DateTime((long)x).ToString("yyyy");
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Clicking the reset button, resets the from and to properties of the scrollbar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResetClick(object sender, System.Windows.RoutedEventArgs e)
         {
             var vm = (LoadsViewModel)DataContext;
-            //vm.SeriesCollection.Dispose();
+            vm.From = new DateTime(2018, 01, 01, 0, 0, 0).Ticks;
+            vm.To = new DateTime(2018, 01, 01, 0, 0, 0).AddHours(8760).Ticks;
+            ScrollTip.Visibility = Visibility.Visible;
+            ResetButton.Visibility = Visibility.Hidden;
         }
     }
 }
