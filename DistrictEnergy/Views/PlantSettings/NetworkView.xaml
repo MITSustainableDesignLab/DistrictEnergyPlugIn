@@ -5,75 +5,121 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DistrictEnergy.Views.PlantSettings"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
-             d:DesignHeight="87.984" d:DesignWidth="617.578"
+             d:DesignHeight="253.984" d:DesignWidth="617.578"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
              d:DataContext="{d:DesignInstance viewModels:NetworkViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.light.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/materialdesigncolor.grey.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="5,0">
-            <StackPanel.DataContext>
-                <viewModels:PlanningSettingsViewModel />
-            </StackPanel.DataContext>
-            <Slider Minimum="0" Maximum="11" IsSnapToTickEnabled="True"
-                    Ticks="0,1,2,3,4,5,6,7,8,9,10,11"
-                    VerticalAlignment="Center" Value="{Binding TimeSteps}" />
-            <Grid>
-                <TextBlock HorizontalAlignment="Left">Fast</TextBlock>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding DisplayTimeSteps}" />
-                    <TextBlock Text=" Simulation TimeSteps" />
+        <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
+                  HorizontalAlignment="Stretch">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Grid.Column="0"
+                                                 Kind="Cog"
+                                                 Height="32"
+                                                 Width="32"
+                                                 VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="SIMULATION SETTINGS" />
+                    </Grid>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <Grid VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="5,0,5,15">
+                    <StackPanel.DataContext>
+                        <viewModels:PlanningSettingsViewModel />
+                    </StackPanel.DataContext>
+                    <Slider Minimum="0" Maximum="11" IsSnapToTickEnabled="True"
+                            Ticks="0,1,2,3,4,5,6,7,8,9,10,11"
+                            VerticalAlignment="Center" Value="{Binding TimeSteps}" />
+                    <Grid>
+                        <TextBlock HorizontalAlignment="Left">Fast</TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding DisplayTimeSteps}" />
+                            <TextBlock Text=" Simulation TimeSteps" />
+                        </StackPanel>
+                        <TextBlock HorizontalAlignment="Right">Accurate</TextBlock>
+                    </Grid>
                 </StackPanel>
-                <TextBlock HorizontalAlignment="Right">Accurate</TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
+                    <Label Content="Account for network losses?"
+                           ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
+                           Margin="0,2,3,2" />
+                    <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
+                              VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                    <Label Content="Hot"
+                           ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
+                    <TextBox
+                        Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,5,0"
+                        VerticalContentAlignment="Center" MinWidth="20" />
+                    <Label Content="Cold"
+                           ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
+                           Margin="0,2,4,2" />
+                    <TextBox
+                        Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0"
+                        VerticalContentAlignment="Center" MinWidth="20" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2">
+                    <StackPanel.DataContext>
+                        <viewModels:PlanningSettingsViewModel />
+                    </StackPanel.DataContext>
+                    <Label Content="Annuity"
+                           ToolTip="Annuity Payment Factor"
+                           Margin="0,2,3,2" />
+                    <TextBox
+                        Text="{Binding Rate, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Margin="0,0,10,0" ToolTip="Rate per period"
+                        VerticalContentAlignment="Center" MinWidth="20" />
+                    <TextBox
+                        Text="{Binding Periods, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Margin="0,0,10,0" ToolTip="Number of periods"
+                        VerticalContentAlignment="Center" MinWidth="20" />
+                    <TextBlock Text="{Binding AnnuityFactor, StringFormat=N4}" VerticalAlignment="Center"
+                               Foreground="#FF969696"
+                               ToolTip="Computed Annuity Payment Factor" />
+                </StackPanel>
             </Grid>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1">
-            <Label Content="Account for network losses?"
-                   ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
-                   Margin="0,2,3,2" />
-            <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
-                      VerticalAlignment="Center" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
-            <Label Content="Hot"
-                   ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
-            <TextBox
-                Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,5,0"
-                VerticalContentAlignment="Center" />
-            <Label Content="Cold"
-                   ToolTip="Average annual ratio of useful heating delivered to electricity consumed"
-                   Margin="0,2,4,2" />
-            <TextBox
-                Text="{Binding RelDistCoolLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0"
-                VerticalContentAlignment="Center" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2">
-            <StackPanel.DataContext>
-                <viewModels:PlanningSettingsViewModel />
-            </StackPanel.DataContext>
-            <Label Content="Annuity"
-                   ToolTip="Annuity Payment Factor"
-                   Margin="0,2,3,2" />
-            <TextBox
-                Text="{Binding Rate, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Margin="0,0,10,0" ToolTip="Rate per period"
-                VerticalContentAlignment="Center" />
-            <TextBox
-                Text="{Binding Periods, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Margin="0,0,10,0" ToolTip="Number of periods"
-                VerticalContentAlignment="Center" />
-            <TextBlock Text="{Binding AnnuityFactor, StringFormat=N4}" VerticalAlignment="Center"
-                       Foreground="#FF969696"
-                       ToolTip="Computed Annuity Payment Factor" />
-        </StackPanel>
+        </GroupBox>
     </Grid>
 </UserControl>
