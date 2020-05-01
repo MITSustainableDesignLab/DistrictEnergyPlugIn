@@ -57,20 +57,29 @@ namespace DistrictEnergy
         ///<summary>The only instance of the DHRunLPModel command.</summary>
         public static DHRunLPModel Instance { get; private set; }
 
+        public Solver LpModel { get; private set; }
+
         public override string EnglishName => "DHRunLPModel";
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            Main();
-            return Result.Success;
+             return Main();
         }
 
-        private void Main()
+        private Result Main()
         {
             ClearVariables();
             DHSimulateDistrictEnergy.Instance.PreSolve();
             // Create the linear solver with the CBC backend.
-            var solver = Solver.CreateSolver("SimpleLP", "GLOP_LINEAR_PROGRAMMING");
+            try
+            {
+                LpModel = Solver.CreateSolver("SimpleLP", "GLOP_LINEAR_PROGRAMMING");
+            }
+            catch (Exception e)
+            {
+                RhinoApp.WriteLine(e.Message);
+                return Result.Failure;
+            }
             RhinoApp.WriteLine("Created Solver");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
@@ -84,7 +93,7 @@ namespace DistrictEnergy
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
-                    P[(t, supplymodule)] = solver.MakeNumVar(0.0, double.PositiveInfinity,
+                    P[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
                         string.Format($"P_{t}_{supplymodule.Name}"));
                 }
             }
@@ -100,11 +109,11 @@ namespace DistrictEnergy
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
                     Qin[(t, supplymodule)] =
-                        solver.MakeNumVar(0.0, supplymodule.MaxChargingRate, $"StoIn_{t}_{supplymodule.Name}");
+                        LpModel.MakeNumVar(0.0, supplymodule.MaxChargingRate, $"StoIn_{t}_{supplymodule.Name}");
                     Qout[(t, supplymodule)] =
-                        solver.MakeNumVar(0.0, supplymodule.MaxDischargingRate, $"StoOut_{t}_{supplymodule.Name}");
+                        LpModel.MakeNumVar(0.0, supplymodule.MaxDischargingRate, $"StoOut_{t}_{supplymodule.Name}");
                     S[(t, supplymodule)] =
-                        solver.MakeNumVar(0.0, supplymodule.Capacity, $"StoState_{t}_{supplymodule.Name}");
+                        LpModel.MakeNumVar(0.0, supplymodule.Capacity, $"StoState_{t}_{supplymodule.Name}");
                 }
             }
 
@@ -115,12 +124,12 @@ namespace DistrictEnergy
             // Exports (per supply module)
             for (var t = 0; t < timeSteps * dt; t += dt)
             {
-                E[(t, LoadTypes.Elec)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Electricity");
-                E[(t, LoadTypes.Cooling)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Cooling");
-                E[(t, LoadTypes.Heating)] = solver.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Heating");
+                E[(t, LoadTypes.Elec)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Electricity");
+                E[(t, LoadTypes.Cooling)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Cooling");
+                E[(t, LoadTypes.Heating)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Heating");
             }
 
-            RhinoApp.WriteLine("Number of variables = " + solver.NumVariables());
+            RhinoApp.WriteLine("Number of variables = " + LpModel.NumVariables());
 
             foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
             {
@@ -137,7 +146,7 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
                                        .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
                                    Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
@@ -154,7 +163,7 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
                                        .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
                                    Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
@@ -171,7 +180,7 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
                                        .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
                                    Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
                                        .Select(x => x.Value).ToArray()
@@ -188,7 +197,7 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        solver.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
                                        .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray()
                                        .Sum() ==
                                    0);
@@ -203,7 +212,7 @@ namespace DistrictEnergy
             {
                 var loadType = inputFlow.Key.Item2.OutputType;
                 var i = inputFlow.Key.Item1;
-                solver.Add(inputFlow.Value * inputFlow.Key.Item2.ConversionMatrix[loadType] <=
+                LpModel.Add(inputFlow.Value * inputFlow.Key.Item2.ConversionMatrix[loadType] <=
                            inputFlow.Key.Item2.CapacityFactor *
                            (
                                P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadType) && k.Key.Item1 == i)
@@ -221,7 +230,7 @@ namespace DistrictEnergy
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
-                    solver.Add(P[(t, solarSupply)] == solarSupply.SolarAvailableInput.ToList().GetRange(t, dt).Sum() *
+                    LpModel.Add(P[(t, solarSupply)] == solarSupply.SolarAvailableInput.ToList().GetRange(t, dt).Sum() *
                         solarSupply.AvailableArea);
                 }
             }
@@ -238,17 +247,17 @@ namespace DistrictEnergy
 
                 // storage content initial <= final, both variable
                 // Todo: Why Skip first timestep
-                solver.Add(S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() <=
+                LpModel.Add(S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() <=
                            S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Last());
 
                 // 'storage content initial == and final >= storage.init * capacity'
-                solver.Add(
+                LpModel.Add(
                     S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).First() == storage.StartingCapacity);
 
                 // Storage Balance Rule
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
-                    solver.Add(S[(t, storage)] ==
+                    LpModel.Add(S[(t, storage)] ==
                                (1 - storage.StorageStandingLosses) *
                                S[(t - dt, storage)] +
                                storage.ChargingEfficiency * Qin[(t, storage)] -
@@ -256,10 +265,10 @@ namespace DistrictEnergy
                 }
             }
 
-            RhinoApp.WriteLine("Number of constraints = " + solver.NumConstraints());
+            RhinoApp.WriteLine("Number of constraints = " + LpModel.NumConstraints());
 
             // Set the Objective Function
-            var objective = solver.Objective();
+            var objective = LpModel.Objective();
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
@@ -286,19 +295,19 @@ namespace DistrictEnergy
 
             objective.SetMinimization();
 
-            var lp = solver.ExportModelAsLpFormat(false);
-            solver.EnableOutput();
-            var resultStatus = solver.Solve();
+            var lp = LpModel.ExportModelAsLpFormat(false);
+            LpModel.EnableOutput();
+            var resultStatus = LpModel.Solve();
 
             // Check that the problem has an optimal solution.
             if (resultStatus != Solver.ResultStatus.OPTIMAL)
             {
                 RhinoApp.WriteLine("The problem does not have an optimal solution!");
-                return;
+                return Result.Failure;
             }
 
             RhinoApp.WriteLine("Solution:");
-            RhinoApp.WriteLine("Optimal objective value = " + solver.Objective().Value());
+            RhinoApp.WriteLine("Optimal objective value = " + LpModel.Objective().Value());
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
@@ -332,10 +341,11 @@ namespace DistrictEnergy
 
 
             RhinoApp.WriteLine("\nAdvanced usage:");
-            RhinoApp.WriteLine("Problem solved in " + solver.WallTime() + " milliseconds");
-            RhinoApp.WriteLine("Problem solved in " + solver.Iterations() + " iterations");
-            RhinoApp.WriteLine("Problem solved in " + solver.Nodes() + " branch-and-bound nodes");
+            RhinoApp.WriteLine("Problem solved in " + LpModel.WallTime() + " milliseconds");
+            RhinoApp.WriteLine("Problem solved in " + LpModel.Iterations() + " iterations");
+            RhinoApp.WriteLine("Problem solved in " + LpModel.Nodes() + " branch-and-bound nodes");
             OnCompletion(new SimulationCompleted() {TimeSteps = timeSteps, Period = dt});
+            return Result.Success;
         }
 
         private void ClearVariables()
