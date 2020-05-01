@@ -6,12 +6,13 @@
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:LoadsViewModel}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition >
+            <RowDefinition Height="2*" />
+            <RowDefinition>
                 <RowDefinition.Style>
                     <Style TargetType="{x:Type RowDefinition}">
                         <Setter Property="Height" Value="0.5*" />
@@ -59,33 +60,52 @@
                             ScrollMode="X"
                             ScrollHorizontalFrom="{Binding From, Mode=TwoWay}"
                             ScrollHorizontalTo="{Binding To, Mode=TwoWay}"
-                            ScrollBarFill="#25303030"
+                            ScrollBarFill="#134682b4"
                             DataTooltip="{x:Null}"
                             Hoverable="False"
-                            Series="{Binding StorageSeriesCollection}">
+                            Series="{Binding StorageSeriesCollection}" Margin="13,0,0,0">
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis IsMerged="True"
-                          LabelFormatter="{Binding TimeFormatter, Mode=OneTime}"/>
+                <lvc:Axis IsMerged="True" ShowLabels="True"
+                          LabelFormatter="{Binding TimeFormatter, Mode=OneTime}" />
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Storage Level" ShowLabels="False" IsMerged="True"/>
+                <lvc:Axis ShowLabels="False" IsMerged="True" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
+        <TextBlock FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Margin="13,0,0,0"
+                   Foreground="#4682b4">Storage Level</TextBlock>
         <lvc:CartesianChart Grid.Row="2" DisableAnimations="True"
                             ScrollMode="X"
                             ScrollHorizontalFrom="{Binding From, Mode=TwoWay}"
                             ScrollHorizontalTo="{Binding To, Mode=TwoWay}"
-                            ScrollBarFill="#25303030"
+                            ScrollBarFill="#134682b4"
                             DataTooltip="{x:Null}"
                             Hoverable="False"
-                            Series="{Binding DemandLineCollection}">
+                            Series="{Binding DemandLineCollection}" Margin="13,0,0,0">
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis IsMerged="True"
-                          LabelFormatter="{Binding TimeFormatter, Mode=OneTime}"/>
+                <lvc:Axis IsMerged="True" MinValue="{Binding FixedFrom}" MaxValue="{Binding FixedTo}"
+                          LabelFormatter="{Binding TimeFormatter, Mode=OneTime}" />
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis ShowLabels="False" Title="" IsMerged="True"/>
+                <lvc:Axis ShowLabels="False" Title="" IsMerged="True" />
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
+        <Button x:Name="ResetButton" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top"
+                BorderBrush="{x:Null}" Background="{x:Null}" Click="ResetClick" Visibility="Hidden">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <materialDesign:PackIcon Kind="restore" Foreground="#4682b4" VerticalAlignment="Bottom" Width="12"
+                                         Height="12" Margin="0,0,1,0" />
+                <TextBlock Grid.Column="1" Foreground="#4682b4" Height="16">reset</TextBlock>
+            </Grid>
+        </Button>
+        <TextBlock Grid.Row="2" Foreground="DimGray" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="10"
+                   Padding="10" x:Name="ScrollTip">
+            Scroll To Zoom
+        </TextBlock>
+        <StackPanel Grid.Row="2" x:Name="LoadList" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="13,0,0,0" />
     </Grid>
 </UserControl>
