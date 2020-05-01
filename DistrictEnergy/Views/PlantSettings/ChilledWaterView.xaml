@@ -26,7 +26,7 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/materialdesigncolor.blue.xaml" />
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -43,7 +43,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <materialDesign:PackIcon Grid.Column="0"
-                                                 Kind="InfoOutline"
+                                                 Kind="Snowflake"
                                                  Height="32"
                                                  Width="32"
                                                  VerticalAlignment="Center" />
