@@ -25,25 +25,11 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/materialdesigncolor.red.xaml" />
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        <!--<Style x:Key="PlantComponentHeader" TargetType="{x:Type TextBlock}">
-            <Setter Property="TextWrapping" Value="NoWrap" />
-            <Setter Property="TextTrimming" Value="None" />
-            <Setter Property="Margin" Value="5, 5" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Foreground" Value="#404040" />
-        </Style>
-        <Style x:Key="StackPanelStyle" TargetType="StackPanel">
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Width" Value="Auto" />
-            <Setter Property="Margin" Value="5,0,5,5" />
-            <Setter Property="Background" Value="White" />
-        </Style>-->
     </UserControl.Resources>
     <Grid x:Name="HotWaterGroup">
         <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
@@ -56,7 +42,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <materialDesign:PackIcon Grid.Column="0"
-                                                 Kind="InfoOutline"
+                                                 Kind="Fire"
                                                  Height="32"
                                                  Width="32"
                                                  VerticalAlignment="Center" />

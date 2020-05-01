@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using Deedle;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Defaults;
+using LiveCharts.Dtos;
 using LiveCharts.Geared;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -22,6 +26,8 @@ namespace DistrictEnergy.ViewModels
         private double _to;
         private Func<double, string> _timeFormatter;
         private bool _isStorageVisible;
+        private double _fixedTo;
+        private double _fixedFrom;
 
         public LoadsViewModel()
         {
@@ -53,7 +59,31 @@ namespace DistrictEnergy.ViewModels
             };
 
             From = new DateTime(2018, 01, 01, 0, 0, 0).Ticks;
+            FixedFrom = From;
             To = new DateTime(2018, 01, 01, 0, 0, 0).AddHours(8760).Ticks;
+            FixedTo = To;
+        }
+
+        public double FixedTo
+        {
+            get => _fixedTo;
+            set
+            {
+                if (value.Equals(_fixedTo)) return;
+                _fixedTo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double FixedFrom
+        {
+            get => _fixedFrom;
+            set
+            {
+                if (value.Equals(_fixedFrom)) return;
+                _fixedFrom = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool IsStorageVisible
@@ -157,7 +187,7 @@ namespace DistrictEnergy.ViewModels
         {
             var args = (DHRunLPModel.SimulationCompleted) e;
             var Total = new double[args.TimeSteps];
-            var lineSmoothness = 0.5;
+            var lineSmoothness = 0.1;
             SeriesCollection.Clear();
             DemandLineCollection.Clear();
 
@@ -180,11 +210,13 @@ namespace DistrictEnergy.ViewModels
                     SeriesCollection.Add(series);
                     DemandLineCollection.Add(new GLineSeries
                     {
-                        Values = demand.Input.ToDateTimePoint().Split(12)
+                        Values = demand.Input.ToDateTimePoint().Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = demand.Name,
                         LineSmoothness = lineSmoothness,
-                        Stroke = demand.Fill
+                        Stroke = demand.Fill,
+                        PointGeometry = null,
+                        StrokeThickness = 0.5,
                     });
                 }
 
@@ -233,7 +265,7 @@ namespace DistrictEnergy.ViewModels
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill,
-                        LineSmoothness = lineSmoothness,
+                        LineSmoothness = 0.5,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });
@@ -262,7 +294,6 @@ namespace DistrictEnergy.ViewModels
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });
-                    IsStorageVisible = true;
                 }
             }
         }

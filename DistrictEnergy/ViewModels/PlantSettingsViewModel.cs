@@ -31,7 +31,6 @@ namespace DistrictEnergy.ViewModels
                 typeof(PhotovoltaicArray),
                 typeof(SolarThermalCollector),
                 typeof(WindTurbine),
-                typeof(PipeNetwork),
                 typeof(GridElectricity),
                 typeof(GridGas),
                 typeof(CustomEnergySupplyModule)
@@ -98,11 +97,6 @@ namespace DistrictEnergy.ViewModels
                 if (!DistrictControl.Instance.ListOfPlantSettings.OfType<GridGas>().Any())
                 {
                     DistrictControl.Instance.ListOfPlantSettings.Add(new GridGas());
-                }
-                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<PipeNetwork>().Any())
-                {
-                    DistrictControl.Instance.ListOfDistrictLoads.Add(new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"));
-                    DistrictControl.Instance.ListOfDistrictLoads.Add(new PipeNetwork(LoadTypes.Heating, "Heating Losses"));
                 }
             }
 
