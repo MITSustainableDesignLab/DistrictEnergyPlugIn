@@ -10,16 +10,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public CustomElectricitySupplyModule()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Elec, 1}
-            };
         }
 
         public override LoadTypes OutputType => LoadTypes.Elec;
         public override LoadTypes InputType => LoadTypes.Custom;
         public override double CapacityFactor => 1;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Elec, 1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double F { get; set; }

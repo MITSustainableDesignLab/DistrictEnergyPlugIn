@@ -13,12 +13,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public CombinedHeatNPower()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Elec, EFF_CHP},
-                {LoadTypes.Heating, HREC_CHP},
-                {LoadTypes.Gas, -1}
-            };
         }
 
         /// <summary>
@@ -89,7 +83,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType => TMOD_CHP;
         public override LoadTypes InputType => LoadTypes.Gas;
         public override double CapacityFactor => OFF_CHP;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Elec, EFF_CHP},
+            {LoadTypes.Heating, HREC_CHP},
+            {LoadTypes.Gas, -1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
