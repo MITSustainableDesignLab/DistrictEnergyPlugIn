@@ -12,11 +12,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public NatGasBoiler()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Heating, EFF_NGB},
-                {LoadTypes.Gas, -1}
-            };
         }
         /// <summary>
         ///     Heating efficiency (%)
@@ -32,7 +27,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.Gas;
         public override double CapacityFactor => 1;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Heating, EFF_NGB},
+            {LoadTypes.Gas, -1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];

@@ -14,10 +14,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public SolarThermalCollector()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Heating, EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW}
-            };
         }
 
         /// <summary>
@@ -72,7 +68,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.SolarRadiation;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Heating, EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[LoadTypes.Heating];

@@ -8,16 +8,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public CustomHeatingSupplyModule()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Heating, 1}
-            };
         }
 
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.Custom;
         public override double CapacityFactor => 1;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Heating, 1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double F { get; set; }
