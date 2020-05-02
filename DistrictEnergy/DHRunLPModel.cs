@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DistrictEnergy.Helpers;
@@ -194,7 +194,7 @@ namespace DistrictEnergy
             }
 
             // Capacity Constraints
-            foreach (var inputFlow in P.Where(x =>
+            foreach (var inputFlow in P.Where(x=>x.Key.Item2.Capacity != Double.PositiveInfinity).Where(x =>
                 x.Key.Item2.OutputType == LoadTypes.Elec || x.Key.Item2.OutputType == LoadTypes.Heating ||
                 x.Key.Item2.OutputType == LoadTypes.Cooling))
             {

@@ -10,18 +10,17 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public ElectricityExport()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>
-            {
-                {LoadTypes.GridElec, 1},
-                {LoadTypes.Elec, -1}
-            };
         }
 
         public override Guid Id { get; set; }
         public override LoadTypes OutputType => LoadTypes.GridElec;
         public override LoadTypes InputType => LoadTypes.Elec;
         public override double CapacityFactor => 1;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
+        {
+            {LoadTypes.GridElec, 1},
+            {LoadTypes.Elec, -1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double F { get; set; } = 0;
@@ -31,7 +30,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override SolidColorBrush Fill { get; set; } =
             new SolidColorBrush((Color) ColorConverter.ConvertFromString("#FF6161"));
 
-        public override double Capacity => Output.Max();
+        public override double Capacity => Double.PositiveInfinity;
         public override string Name { get; set; } = "Electricity Export";
     }
 }
