@@ -13,12 +13,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public ElectricHeatPump()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Heating, HCOP_EHP},
-                {LoadTypes.Cooling, (1-1/HCOP_EHP)}, // TODO Add Switch for Use Evaporator or Not
-                {LoadTypes.Elec, -1}
-            };
         }
 
         /// <summary>
@@ -59,7 +53,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.Elec;
         public override double CapacityFactor => OFF_EHP;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Heating, HCOP_EHP },
+            {LoadTypes.Cooling, UseEhpEvap == 0? 0 : (1-1/HCOP_EHP)},
+            {LoadTypes.Elec, -1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];

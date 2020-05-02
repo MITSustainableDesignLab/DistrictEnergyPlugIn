@@ -17,7 +17,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract string Name { get; set; }
         public abstract Guid Id { get; set; }
         public abstract LoadTypes OutputType { get; }
-        public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; }
         public abstract List<DateTimePoint> Input { get; set; }
         public abstract List<DateTimePoint> Output { get; set; }
         public abstract double Efficiency { get; }

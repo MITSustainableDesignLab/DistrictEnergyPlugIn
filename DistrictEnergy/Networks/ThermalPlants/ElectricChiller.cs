@@ -12,11 +12,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public ElectricChiller()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Cooling, CCOP_ECH},
-                {LoadTypes.Elec, -1}
-            };
         }
 
         /// <summary>
@@ -34,7 +29,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType => LoadTypes.Cooling;
         public override LoadTypes InputType => LoadTypes.Elec;
         public override double CapacityFactor => 1;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Cooling, CCOP_ECH},
+            {LoadTypes.Elec, -1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];

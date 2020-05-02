@@ -44,7 +44,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         Guid Id { get; set; }
 
         LoadTypes OutputType { get; }
-        [JsonIgnore] Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        [JsonIgnore] Dictionary<LoadTypes, double> ConversionMatrix { get; }
 
         /// <summary>
         /// Input Energy to the Supply Module per period
