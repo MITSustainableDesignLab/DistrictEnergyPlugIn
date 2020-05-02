@@ -132,9 +132,12 @@
     <Compile Include="Networks\Loads\HeatingLoads.cs" />
     <Compile Include="Networks\Loads\AbstractDistrictLoad.cs" />
     <Compile Include="Networks\Loads\IBaseLoad.cs" />
+    <Compile Include="Networks\ThermalPlants\CoolingExport.cs" />
+    <Compile Include="Networks\ThermalPlants\ElectricityExport.cs" />
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
     <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="Networks\ThermalPlants\Dispatchable.cs" />
+    <Compile Include="Networks\ThermalPlants\HeatingExport.cs" />
     <Compile Include="Networks\ThermalPlants\ISolar.cs" />
     <Compile Include="Networks\ThermalPlants\Storage.cs" />
     <Compile Include="ViewModels\AnAdditionalLoadViewModel.cs" />

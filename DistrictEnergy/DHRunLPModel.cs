@@ -49,11 +49,6 @@ namespace DistrictEnergy
         public Dictionary<(int, LoadTypes, AbstractDistrictLoad), double> Load =
             new Dictionary<(int, LoadTypes, AbstractDistrictLoad), double>();
 
-        /// <summary>
-        /// Exported Energy. Subject To LargeNumber Cost.
-        /// </summary>
-        public Dictionary<(int, LoadTypes), Variable> E = new Dictionary<(int, LoadTypes), Variable>();
-
         ///<summary>The only instance of the DHRunLPModel command.</summary>
         public static DHRunLPModel Instance { get; private set; }
 
@@ -121,13 +116,6 @@ namespace DistrictEnergy
             RhinoApp.WriteLine(
                 $"Computed {Qin.Count + Qout.Count + S.Count} S variables in {watch.ElapsedMilliseconds} milliseconds");
 
-            // Exports (per supply module)
-            for (var t = 0; t < timeSteps * dt; t += dt)
-            {
-                E[(t, LoadTypes.Elec)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Electricity");
-                E[(t, LoadTypes.Cooling)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Cooling");
-                E[(t, LoadTypes.Heating)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Export{t}_Heating");
-            }
 
             RhinoApp.WriteLine("Number of variables = " + LpModel.NumVariables());
 
@@ -155,7 +143,7 @@ namespace DistrictEnergy
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
                                    Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum() + E[(i, loadTypes)]);
+                                       .Sum());
                     }
                 }
 
@@ -172,7 +160,7 @@ namespace DistrictEnergy
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
                                    Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum() + E[(i, loadTypes)]);
+                                       .Sum());
                     }
                 }
 
@@ -189,7 +177,7 @@ namespace DistrictEnergy
                                        .Select(x => x.Value).ToArray()
                                        .Sum() ==
                                    Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum() + E[(i, loadTypes)]);
+                                       .Sum());
                     }
                 }
 
@@ -221,7 +209,8 @@ namespace DistrictEnergy
                                    .Select(x => x.Value).ToArray().Sum() -
                                Qout.Where(k => k.Key.Item2.OutputType == loadType && k.Key.Item1 == i)
                                    .Select(x => x.Value).ToArray().Sum() +
-                               Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == i).Select(o => o.Value).Sum())
+                               Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == i).Select(o => o.Value).Sum()
+                           )
                 );
             }
 
@@ -288,11 +277,6 @@ namespace DistrictEnergy
                 }
             }
 
-            foreach (var variable in E)
-            {
-                objective.SetCoefficient(variable.Value, UmiContext.Current.ProjectSettings.ElectricityDollars);
-            }
-
             objective.SetMinimization();
 
             var lp = LpModel.ExportModelAsLpFormat(false);
@@ -332,13 +316,6 @@ namespace DistrictEnergy
                     $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; Storage Balance {storage.Input.Sum() - storage.Output.Sum()}");
             }
 
-            // Write Exports
-            foreach (LoadTypes loadTypes in Enum.GetValues(typeof(LoadTypes)))
-            {
-                var sum = E.Where(o => o.Key.Item2 == loadTypes).Select(x => x.Value.SolutionValue()).ToArray().Sum();
-                if (sum > 0) RhinoApp.WriteLine($"Export_{loadTypes} = {sum}");
-            }
-
 
             RhinoApp.WriteLine("\nAdvanced usage:");
             RhinoApp.WriteLine("Problem solved in " + LpModel.WallTime() + " milliseconds");
@@ -355,7 +332,6 @@ namespace DistrictEnergy
             Qout.Clear();
             S.Clear();
             Load.Clear();
-            E.Clear();
         }
 
         public event EventHandler Completion;

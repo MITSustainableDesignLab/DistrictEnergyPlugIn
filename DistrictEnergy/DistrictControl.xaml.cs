@@ -37,7 +37,10 @@ namespace DistrictEnergy
                 new SolarThermalCollector(),
                 new WindTurbine(),
                 new GridElectricity(),
-                new GridGas()
+                new GridGas(),
+                new ElectricityExport(),
+                new CoolingExport(),
+                new HeatingExport()
             };
             ListOfDistrictLoads = new ObservableCollection<AbstractDistrictLoad>()
             {
