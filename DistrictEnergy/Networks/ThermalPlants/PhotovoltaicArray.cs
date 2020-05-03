@@ -13,10 +13,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public PhotovoltaicArray()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Elec, EFF_PV * UTIL_PV * (1 - LOSS_PV)}
-            };
         }
 
         /// <summary>
@@ -62,7 +58,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Elec;
         public override LoadTypes InputType => LoadTypes.SolarRadiation;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Elec, EFF_PV * UTIL_PV * (1 - LOSS_PV)}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];

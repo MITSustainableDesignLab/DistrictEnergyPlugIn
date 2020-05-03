@@ -16,7 +16,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class AdditionalLoads : AbstractDistrictLoad, IBaseLoad
+    class AdditionalLoads : BaseLoad
     {
         public AdditionalLoads(LoadTypes loadType)
         {
@@ -24,6 +24,7 @@ namespace DistrictEnergy.Networks.Loads
         }
 
         public override double[] Input { get; set; }
+        public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; }
         public override SolidColorBrush Fill { get; set; }
         public override string Name { get; set; }

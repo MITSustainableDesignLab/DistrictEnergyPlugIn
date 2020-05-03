@@ -435,26 +435,32 @@ namespace DistrictEnergy
 
         private IEnumerable<double> GetHourlyLocationSolarRadiation(UmiContext context)
         {
-            RhinoApp.WriteLine("Calculating Solar Radiation on horizontal surface");
+            RhinoApp.WriteLine("Calculating Solar Radiation on horizontal surfaces...");
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
-            return a.HourlyWeatherDataRawList.Select(b => (double) b.GHorRadiation / 1000.0); // from Wh to kWh
+            var radiation = a.HourlyWeatherDataRawList.Select(b => (double) b.GHorRadiation / 1000.0);
+            RhinoApp.WriteLine("Completed Solar Radiation");
+            return radiation; // from Wh to kWh
         }
 
         private IEnumerable<double> GetHourlyLocationWind(UmiContext context)
         {
-            RhinoApp.WriteLine("Calculating wind for location");
+            RhinoApp.WriteLine("Calculating wind for location...");
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
-            return a.HourlyWeatherDataRawList.Select(b => (double) b.WindSpeed); // m/s
+            var wind = a.HourlyWeatherDataRawList.Select(b => (double) b.WindSpeed);
+            RhinoApp.WriteLine("Completed wind");
+            return wind; // m/s
         }
 
         private IEnumerable<double> GetHourlyLocationAmbiantTemp(UmiContext context)
         {
-            RhinoApp.WriteLine("Calculating temp for location");
+            RhinoApp.WriteLine("Calculating temperature for location...");
             var a = new EPWeatherData();
             a.GetRawData(context.WeatherFilePath);
-            return a.HourlyWeatherDataRawList.Select(b => (double) b.DB); // C
+            var temp = a.HourlyWeatherDataRawList.Select(b => (double) b.DB);
+            RhinoApp.WriteLine("Completed temperature");
+            return temp; // C
         }
 
         /// <summary>

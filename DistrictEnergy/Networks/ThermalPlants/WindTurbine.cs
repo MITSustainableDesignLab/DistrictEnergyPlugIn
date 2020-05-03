@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class WindTurbine : Dispatchable
+    internal class WindTurbine : Dispatchable, IWind
     {
 
         public WindTurbine()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Elec, (1-LOSS_WND)}
-            };
         }
         /// <summary>
         ///     Target offset as percent of annual energy (%)
@@ -81,10 +78,20 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override LoadTypes OutputType => LoadTypes.Elec;
         public override LoadTypes InputType => LoadTypes.Wind;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Elec, (1-LOSS_WND)}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(192, 244, 66));
+
+        public List<double> WindAvailableInput(int t=0, int dt=8760)
+        {
+            return DHSimulateDistrictEnergy.Instance.DistrictDemand.WindN.ToList().GetRange(t, dt);
+        }
+        public double Power(int t = 0, int dt = 8760) => WindAvailableInput(t, dt).Where(w => w > CIN_WND && w < COUT_WND).Select(w => 0.6375 * ROT_WND * Math.Pow(w, 3) / 1000).Sum() * (1 - LOSS_WND);
+        public double NumWnd => Math.Ceiling(Capacity / Power() ); // Divide by 1000 because equation spits out Wh
     }
 }

@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="DistrictEnergy.Views.ExportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DistrictEnergy.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             d:DataContext="{d:DesignInstance viewModels:ExportViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <materialDesign:Card Padding="0" Margin="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
+                    <Expander.Header>
+                        <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="{Binding Name}" Margin="-15,0,0,0">
+                        </TextBlock>
+                    </Expander.Header>
+                    <StackPanel Margin="5,0,10,10">
+                        <materialDesign:ColorPicker Color="{Binding Color}" HueSliderPosition="Bottom" />
+                        <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                <ColumnDefinition Width="Auto" MinWidth="40" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Fixed cost per capacity unit"
+                                   ToolTip="The installed capital cost of the technology per capacity unit" />
+                            <Label Content="$/kW"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalAlignment="Center" Grid.Column="1" />
+                            <TextBox
+                                Text="{Binding F, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Grid.Column="2" />
+                        </Grid>
+                        <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                <ColumnDefinition Width="Auto" MinWidth="40" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Variable cost per energy unit"
+                                   ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                            <Label Content="$/kWh"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalAlignment="Center" Grid.Column="1" />
+                            <TextBox
+                                Text="{Binding V, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Grid.Column="2" />
+                        </Grid>
+                    </StackPanel>
+
+                </Expander>
+            </StackPanel>
+        </Grid></materialDesign:Card>
+</UserControl>

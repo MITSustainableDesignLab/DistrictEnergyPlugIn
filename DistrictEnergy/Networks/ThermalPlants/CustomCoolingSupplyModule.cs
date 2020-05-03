@@ -10,10 +10,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public CustomCoolingSupplyModule()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
-            {
-                {LoadTypes.Cooling, 1}
-            };
         }
 
         public double ComputeHeatBalance(double demand, int i)
@@ -30,7 +26,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType => LoadTypes.Cooling;
         public override LoadTypes InputType => LoadTypes.Custom;
         public override double CapacityFactor => 1;
-        public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        {
+            {LoadTypes.Cooling, 1}
+        };
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double F { get; set; }
