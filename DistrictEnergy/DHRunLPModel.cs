@@ -261,7 +261,7 @@ namespace DistrictEnergy
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
-                for (int t = dt; t < timeSteps * dt; t += dt)
+                for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
                         supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt + supplymodule.V);
@@ -270,7 +270,7 @@ namespace DistrictEnergy
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
-                for (int t = dt; t < timeSteps * dt; t += dt)
+                for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(S[(t, storage)],
                         storage.F * DistrictEnergy.Settings.AnnuityFactor / dt + storage.V);
