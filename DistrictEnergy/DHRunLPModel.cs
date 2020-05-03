@@ -249,18 +249,22 @@ namespace DistrictEnergy
             // Storage Rules
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
-                // storage content initial <= final, both variable [storage_state_cyclicity_rule]
-                LpModel.Add(S.Where(x => x.Key.Item2 == storage && x.Key.Item1 == 0).Select(o => o.Value).First() <=
+
+                // storage content initial <= final, both variable
+                // Must skip first timestep
+                LpModel.Add(S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() <=
                             S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Last());
 
                 // 'storage content initial == and final >= storage.init * capacity'
-                LpModel.Add(S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).First() == storage.StartingCapacity);
+                LpModel.Add(
+                    S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).First() == storage.StartingCapacity);
 
                 // Storage Balance Rule
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
                     LpModel.Add(S[(t, storage)] ==
-                                (1 - storage.StorageStandingLosses) * S[(t - dt, storage)] +
+                                (1 - storage.StorageStandingLosses) *
+                                S[(t - dt, storage)] +
                                 storage.ChargingEfficiency * Qin[(t, storage)] -
                                 (1 / storage.DischargingEfficiency) * Qout[(t, storage)]);
                 }
