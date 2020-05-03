@@ -141,6 +141,7 @@
     <Compile Include="Networks\ThermalPlants\Dispatchable.cs" />
     <Compile Include="Networks\ThermalPlants\HeatingExport.cs" />
     <Compile Include="Networks\ThermalPlants\ISolar.cs" />
+    <Compile Include="Networks\ThermalPlants\IWind.cs" />
     <Compile Include="Networks\ThermalPlants\Storage.cs" />
     <Compile Include="ViewModels\AnAdditionalLoadViewModel.cs" />
     <Compile Include="ViewModels\Converters\Converter.cs" />

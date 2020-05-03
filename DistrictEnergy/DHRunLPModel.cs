@@ -237,7 +237,14 @@ namespace DistrictEnergy
                         solarSupply.AvailableArea);
                 }
             }
-            // Todo: Add wind constraints
+            // Solar & Wind Constraints
+            foreach (var windTurbine in DistrictControl.Instance.ListOfPlantSettings.OfType<IWind>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    LpModel.Add(P[(t, windTurbine)] == windTurbine.Power(t, dt) * windTurbine.NumWnd);
+                }
+            }
 
             // Storage Rules
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
