@@ -81,6 +81,7 @@ namespace DistrictEnergy
                 RhinoApp.WriteLine(e.Message);
                 return Result.Failure;
             }
+
             RhinoApp.WriteLine("Created Solver");
 
             // Define Model Variables. Here each variable is the supply power of each available supply module
@@ -109,12 +110,9 @@ namespace DistrictEnergy
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
-                    Qin[(t, supplymodule)] =
-                        LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"StoIn_{t:0000}_{supplymodule.Name}");
-                    Qout[(t, supplymodule)] =
-                        LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"StoOut_{t:0000}_{supplymodule.Name}");
-                    S[(t, supplymodule)] =
-                        LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"StoState_{t:0000}_{supplymodule.Name}");
+                    Qin[(t, supplymodule)] = LpModel.MakeNumVar(0.0, supplymodule.MaxChargingRate, $"StoIn_{t:0000}_{supplymodule.Name}");
+                    Qout[(t, supplymodule)] = LpModel.MakeNumVar(0.0, supplymodule.MaxDischargingRate, $"StoOut_{t:0000}_{supplymodule.Name}");
+                    S[(t, supplymodule)] = LpModel.MakeNumVar(0.0, supplymodule.Capacity, $"StoState_{t:0000}_{supplymodule.Name}");
                 }
             }
 
@@ -125,7 +123,7 @@ namespace DistrictEnergy
 
             RhinoApp.WriteLine("Number of variables = " + LpModel.NumVariables());
 
-            foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
+            foreach (var load in DistrictControl.Instance.ListOfDistrictLoads.OfType<BaseLoad>())
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
@@ -148,16 +146,17 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
-                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
-                                   Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
-                                       .Select(x => x.Value).ToArray()
-                                       .Sum() +
-                                   Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
-                                       .Select(x => x.Value).ToArray()
-                                       .Sum() ==
-                                   Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum());
+                        LpModel.Add(
+                            P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
+                            Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
+                                .Select(x => x.Value).ToArray()
+                                .Sum() +
+                            Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
+                                .Select(x => x.Value).ToArray()
+                                .Sum() ==
+                            Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value).Sum() + 
+                            E.Where(x => x.Key.Item2.LoadType == loadTypes && x.Key.Item1 == i).Select(o => o.Value).ToArray().Sum());
                     }
                 }
 
@@ -165,16 +164,18 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
-                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
-                                   Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
-                                       .Select(x => x.Value).ToArray()
-                                       .Sum() +
-                                   Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
-                                       .Select(x => x.Value).ToArray()
-                                       .Sum() ==
-                                   Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum());
+                        LpModel.Add(
+                            P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
+                            Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
+                                .Select(x => x.Value).ToArray()
+                                .Sum() +
+                            Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
+                                .Select(x => x.Value).ToArray()
+                                .Sum() ==
+                            Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
+                                .Sum()+
+                            E.Where(x => x.Key.Item2.LoadType == loadTypes && x.Key.Item1 == i).Select(o => o.Value).ToArray().Sum());
                     }
                 }
 
@@ -182,16 +183,18 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
-                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
-                                   Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
-                                       .Select(x => x.Value).ToArray()
-                                       .Sum() +
-                                   Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
-                                       .Select(x => x.Value).ToArray()
-                                       .Sum() ==
-                                   Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
-                                       .Sum());
+                        LpModel.Add(
+                            P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray().Sum() -
+                            Qin.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
+                                .Select(x => x.Value).ToArray()
+                                .Sum() +
+                            Qout.Where(k => k.Key.Item2.OutputType == loadTypes && k.Key.Item1 == i)
+                                .Select(x => x.Value).ToArray()
+                                .Sum() ==
+                            Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
+                                .Sum()+
+                            E.Where(x => x.Key.Item2.LoadType == loadTypes && x.Key.Item1 == i).Select(o => o.Value).ToArray().Sum());
                     }
                 }
 
@@ -199,32 +202,29 @@ namespace DistrictEnergy
                 {
                     for (int i = 0; i < timeSteps * dt; i += dt)
                     {
-                        LpModel.Add(P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
-                                       .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray()
-                                       .Sum() ==
-                                   0);
+                        LpModel.Add(
+                            P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadTypes) && k.Key.Item1 == i)
+                                .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadTypes]).ToArray()
+                                .Sum() ==
+                            0);
                     }
                 }
             }
 
             // Capacity Constraints
-            foreach (var inputFlow in P.Where(x=>x.Key.Item2.Capacity != Double.PositiveInfinity).Where(x =>
+            LinearExpr TotalDemand(LoadTypes loadType1, int t)
+            {
+                return Load.Where(x => x.Key.Item2 == loadType1 && x.Key.Item1 == t).Select(o => o.Value).Sum() +
+                       E.Where(x => x.Key.Item2.LoadType == loadType1 && x.Key.Item1 == t).Select(o => o.Value).ToArray().Sum();
+            }
+
+            foreach (var inputFlow in P.Where(x => x.Key.Item2.Capacity != Double.PositiveInfinity).Where(x =>
                 x.Key.Item2.OutputType == LoadTypes.Elec || x.Key.Item2.OutputType == LoadTypes.Heating ||
                 x.Key.Item2.OutputType == LoadTypes.Cooling))
             {
                 var loadType = inputFlow.Key.Item2.OutputType;
                 var i = inputFlow.Key.Item1;
-                LpModel.Add(inputFlow.Value * inputFlow.Key.Item2.ConversionMatrix[loadType] <=
-                           inputFlow.Key.Item2.CapacityFactor *
-                           (
-                               P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(loadType) && k.Key.Item1 == i)
-                                   .Select(k => k.Value * k.Key.Item2.ConversionMatrix[loadType]).ToArray().Sum() +
-                               Qin.Where(k => k.Key.Item2.OutputType == loadType && k.Key.Item1 == i)
-                                   .Select(x => x.Value).ToArray().Sum() -
-                               Qout.Where(k => k.Key.Item2.OutputType == loadType && k.Key.Item1 == i)
-                                   .Select(x => x.Value).ToArray().Sum() +
-                               Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == i).Select(o => o.Value).Sum()
-                           )
+                LpModel.Add(inputFlow.Value * inputFlow.Key.Item2.ConversionMatrix[loadType] <= inputFlow.Key.Item2.CapacityFactor * TotalDemand(loadType, i)
                 );
             }
 
@@ -251,7 +251,7 @@ namespace DistrictEnergy
                 // storage content initial <= final, both variable
                 // Todo: Why Skip first timestep
                 LpModel.Add(S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() <=
-                           S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Last());
+                            S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Last());
 
                 // 'storage content initial == and final >= storage.init * capacity'
                 LpModel.Add(
@@ -261,10 +261,10 @@ namespace DistrictEnergy
                 for (int t = dt; t < timeSteps * dt; t += dt)
                 {
                     LpModel.Add(S[(t, storage)] ==
-                               (1 - storage.StorageStandingLosses) *
-                               S[(t - dt, storage)] +
-                               storage.ChargingEfficiency * Qin[(t, storage)] -
-                               (1 / storage.DischargingEfficiency) * Qout[(t, storage)]);
+                                (1 - storage.StorageStandingLosses) *
+                                S[(t - dt, storage)] +
+                                storage.ChargingEfficiency * Qin[(t, storage)] -
+                                (1 / storage.DischargingEfficiency) * Qout[(t, storage)]);
                 }
             }
 
