@@ -49,6 +49,12 @@ namespace DistrictEnergy
         public Dictionary<(int, LoadTypes, AbstractDistrictLoad), double> Load =
             new Dictionary<(int, LoadTypes, AbstractDistrictLoad), double>();
 
+        /// <summary>
+        /// Exports
+        /// </summary>
+        public Dictionary<(int, Exportable), Variable> E =
+            new Dictionary<(int, Exportable), Variable>();
+
         ///<summary>The only instance of the DHRunLPModel command.</summary>
         public static DHRunLPModel Instance { get; private set; }
 
@@ -58,7 +64,7 @@ namespace DistrictEnergy
 
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-             return Main();
+            return Main();
         }
 
         private Result Main()
@@ -89,7 +95,7 @@ namespace DistrictEnergy
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
                     P[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
-                        string.Format($"P_{t}_{supplymodule.Name}"));
+                        string.Format($"P_{t:0000}_{supplymodule.Name}"));
                 }
             }
 
@@ -104,11 +110,11 @@ namespace DistrictEnergy
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
                     Qin[(t, supplymodule)] =
-                        LpModel.MakeNumVar(0.0, supplymodule.MaxChargingRate, $"StoIn_{t}_{supplymodule.Name}");
+                        LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"StoIn_{t:0000}_{supplymodule.Name}");
                     Qout[(t, supplymodule)] =
-                        LpModel.MakeNumVar(0.0, supplymodule.MaxDischargingRate, $"StoOut_{t}_{supplymodule.Name}");
+                        LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"StoOut_{t:0000}_{supplymodule.Name}");
                     S[(t, supplymodule)] =
-                        LpModel.MakeNumVar(0.0, supplymodule.Capacity, $"StoState_{t}_{supplymodule.Name}");
+                        LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"StoState_{t:0000}_{supplymodule.Name}");
                 }
             }
 
@@ -124,6 +130,14 @@ namespace DistrictEnergy
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     Load[(t, load.LoadType, load)] = load.Input.ToList().GetRange(t, dt).Sum();
+                }
+            }
+
+            foreach (var load in DistrictControl.Instance.ListOfDistrictLoads.OfType<Exportable>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    E[(t, load)] = LpModel.MakeNumVar(0, double.PositiveInfinity, $"E_{t:0000}_{load.Name}");
                 }
             }
 
@@ -277,6 +291,15 @@ namespace DistrictEnergy
                 }
             }
 
+            foreach (var exportable in DistrictControl.Instance.ListOfDistrictLoads.OfType<Exportable>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    objective.SetCoefficient(E[(t, exportable)],
+                        exportable.F * DistrictEnergy.Settings.AnnuityFactor / dt + exportable.V);
+                }
+            }
+
             objective.SetMinimization();
 
             var lp = LpModel.ExportModelAsLpFormat(false);
@@ -301,6 +324,15 @@ namespace DistrictEnergy
                 plant.Input = solutionValues.ToDateTimePoint();
                 plant.Output = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType])
                     .ToDateTimePoint();
+                RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
+            }
+
+            foreach (var plant in DistrictControl.Instance.ListOfDistrictLoads.OfType<Exportable>())
+            {
+                var solutionValues = E.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
+                var cap = solutionValues.Max();
+                var energy = solutionValues.Sum();
+                plant.Input = solutionValues.ToArray();
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 
