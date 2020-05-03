@@ -30,20 +30,20 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <materialDesign:Card Padding="5" Margin="5">
+    <materialDesign:Card Padding="0" Margin="10">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="1">
+            <StackPanel>
                 <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
                     <Expander.Header>
                         <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
-                                   Text="{Binding Name}">
+                                   Text="{Binding Name}" Margin="-15,0,0,0">
                         </TextBlock>
                     </Expander.Header>
-                    <StackPanel>
+                    <StackPanel Margin="5,0,10,10">
                         <materialDesign:ColorPicker Color="{Binding Color}" HueSliderPosition="Bottom" />
                         <Grid Margin="0,8,0,0" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
