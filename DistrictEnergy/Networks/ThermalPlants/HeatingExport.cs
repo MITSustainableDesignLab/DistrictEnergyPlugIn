@@ -16,7 +16,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; } = LoadTypes.Heating;
-        public override double[] Input { get; set; }
+        public override double[] Input { get; set; } = new double[8760];
         public override double F { get; set; } = 0;
         public override double V { get; set; } = 0.15;
 
