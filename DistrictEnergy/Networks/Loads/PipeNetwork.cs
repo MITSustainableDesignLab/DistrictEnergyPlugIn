@@ -6,12 +6,13 @@ using System.Runtime.Serialization;
 using System.Windows.Media;
 using Deedle.Vectors;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts.Defaults;
 using Umi.Core;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    internal class PipeNetwork : AbstractDistrictLoad
+    internal class PipeNetwork : BaseLoad
     {
         public PipeNetwork(LoadTypes loadType, string name)
         {
@@ -66,6 +67,7 @@ namespace DistrictEnergy.Networks.Loads
             return final;
         }
 
+        public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; }
         public double RelativeLoss { get; set; }
     }

@@ -18,7 +18,7 @@ namespace DistrictEnergy.Networks.Loads
 {
     public abstract class AbstractDistrictLoad
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public abstract Guid Id { get; set; }
         public abstract LoadTypes LoadType { get; set; }
         public abstract double[] Input { get; set; }
         public abstract SolidColorBrush Fill { get; set; }

@@ -1,19 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts.Defaults;
 using Rhino;
 using Umi.Core;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class ElectricityLoads : AbstractDistrictLoad, IBaseLoad
+    class ElectricityLoads : BaseLoad
     {
         public ElectricityLoads()
         {
 
         }
 
+        public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; } = LoadTypes.Elec;
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(173, 221, 67));
         public override string Name { get; set; } = "Electricity Load";

@@ -38,9 +38,6 @@ namespace DistrictEnergy
                 new WindTurbine(),
                 new GridElectricity(),
                 new GridGas(),
-                new ElectricityExport(),
-                new CoolingExport(),
-                new HeatingExport()
             };
             ListOfDistrictLoads = new ObservableCollection<AbstractDistrictLoad>()
             {
@@ -49,6 +46,9 @@ namespace DistrictEnergy
                 new ElectricityLoads(),
                 new PipeNetwork(LoadTypes.Heating, "Heating Losses"),
                 new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"),
+                new ElectricityExport(),
+                new CoolingExport(),
+                new HeatingExport()
             };
             PlanningSettings = new PlanningSettings();
             DistrictSettings = new DistrictSettings();
