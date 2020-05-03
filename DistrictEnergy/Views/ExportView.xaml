@@ -30,51 +30,54 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="1">
-            <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
-                <Expander.Header>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Text="{Binding Name}"></TextBlock>
-                </Expander.Header>
-                <StackPanel>
-                    <materialDesign:ColorPicker Color="{Binding Color}" HueSliderPosition="Bottom" />
-                    <Grid Margin="0,8,0,0" VerticalAlignment="Top">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" MinWidth="30" />
-                            <ColumnDefinition Width="Auto" MinWidth="40" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Fixed cost per capacity unit"
-                               ToolTip="The installed capital cost of the technology per capacity unit" />
-                        <Label Content="$/kW"
-                               VerticalContentAlignment="Center"
-                               HorizontalAlignment="Center" Grid.Column="1" />
-                        <TextBox
-                            Text="{Binding F, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Grid.Column="2" />
-                    </Grid>
-                    <Grid Margin="0,8,0,0" VerticalAlignment="Top">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" MinWidth="30" />
-                            <ColumnDefinition Width="Auto" MinWidth="40" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Variable cost per energy unit"
-                               ToolTip="The annual O&amp;M costs of the technology per energy unit" />
-                        <Label Content="$/kWh"
-                               VerticalContentAlignment="Center"
-                               HorizontalAlignment="Center" Grid.Column="1" />
-                        <TextBox
-                            Text="{Binding V, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Grid.Column="2" />
-                    </Grid>
-                </StackPanel>
+    <materialDesign:Card Padding="5" Margin="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="1">
+                <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
+                    <Expander.Header>
+                        <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="{Binding Name}">
+                        </TextBlock>
+                    </Expander.Header>
+                    <StackPanel>
+                        <materialDesign:ColorPicker Color="{Binding Color}" HueSliderPosition="Bottom" />
+                        <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                <ColumnDefinition Width="Auto" MinWidth="40" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Fixed cost per capacity unit"
+                                   ToolTip="The installed capital cost of the technology per capacity unit" />
+                            <Label Content="$/kW"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalAlignment="Center" Grid.Column="1" />
+                            <TextBox
+                                Text="{Binding F, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Grid.Column="2" />
+                        </Grid>
+                        <Grid Margin="0,8,0,0" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                <ColumnDefinition Width="Auto" MinWidth="40" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Variable cost per energy unit"
+                                   ToolTip="The annual O&amp;M costs of the technology per energy unit" />
+                            <Label Content="$/kWh"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalAlignment="Center" Grid.Column="1" />
+                            <TextBox
+                                Text="{Binding V, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Grid.Column="2" />
+                        </Grid>
+                    </StackPanel>
 
-            </Expander>
-        </StackPanel>
-    </Grid>
+                </Expander>
+            </StackPanel>
+        </Grid></materialDesign:Card>
 </UserControl>
