@@ -57,6 +57,7 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -119,6 +120,7 @@
                                Foreground="#FF969696"
                                ToolTip="Computed Annuity Payment Factor" />
                 </StackPanel>
+                <StackPanel Grid.Row="3" x:Name="Exports" Grid.ColumnSpan="2" />
             </Grid>
         </GroupBox>
     </Grid>

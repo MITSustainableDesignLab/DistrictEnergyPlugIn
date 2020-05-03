@@ -132,9 +132,14 @@
     <Compile Include="Networks\Loads\HeatingLoads.cs" />
     <Compile Include="Networks\Loads\AbstractDistrictLoad.cs" />
     <Compile Include="Networks\Loads\IBaseLoad.cs" />
+    <Compile Include="Networks\ThermalPlants\BaseLoad.cs" />
+    <Compile Include="Networks\ThermalPlants\CoolingExport.cs" />
+    <Compile Include="Networks\ThermalPlants\ElectricityExport.cs" />
+    <Compile Include="Networks\ThermalPlants\Exportable.cs" />
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
     <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="Networks\ThermalPlants\Dispatchable.cs" />
+    <Compile Include="Networks\ThermalPlants\HeatingExport.cs" />
     <Compile Include="Networks\ThermalPlants\ISolar.cs" />
     <Compile Include="Networks\ThermalPlants\Storage.cs" />
     <Compile Include="ViewModels\AnAdditionalLoadViewModel.cs" />
@@ -186,6 +191,7 @@
     <Compile Include="ViewModels\Converters\KWConverterUnit.cs" />
     <Compile Include="ViewModels\Converters\KWhConverter.cs" />
     <Compile Include="ViewModels\Converters\NormalizedkgCO2ConverterUnit.cs" />
+    <Compile Include="ViewModels\ExportViewModel.cs" />
     <Compile Include="ViewModels\SummaryViewModel.cs" />
     <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
     <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
@@ -215,6 +221,9 @@
     <Compile Include="ViewModels\ResultsViewModel.cs" />
     <Compile Include="Views\DistrictSettings\AnAdditionalLoadsView.xaml.cs">
       <DependentUpon>AnAdditionalLoadsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExportView.xaml.cs">
+      <DependentUpon>ExportView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
       <DependentUpon>ACustomModuleView.xaml</DependentUpon>
@@ -262,6 +271,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DistrictSettings\AnAdditionalLoadsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ExportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

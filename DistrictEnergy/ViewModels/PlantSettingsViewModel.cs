@@ -98,6 +98,7 @@ namespace DistrictEnergy.ViewModels
                 {
                     DistrictControl.Instance.ListOfPlantSettings.Add(new GridGas());
                 }
+
             }
 
             OnPropertyChanged(string.Empty);

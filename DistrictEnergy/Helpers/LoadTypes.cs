@@ -11,6 +11,8 @@
         GridGas,
         SolarRadiation,
         Wind,
-        Custom
+        Custom,
+        GridHeat,
+        GridCool
     }
 }

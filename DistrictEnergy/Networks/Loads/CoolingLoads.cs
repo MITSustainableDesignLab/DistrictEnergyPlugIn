@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts.Defaults;
 using Rhino;
 using Umi.Core;
@@ -10,7 +11,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class CoolingLoads : AbstractDistrictLoad, IBaseLoad
+    class CoolingLoads : BaseLoad
     {
         public CoolingLoads()
         {
@@ -18,6 +19,7 @@ namespace DistrictEnergy.Networks.Loads
         }
 
         public override double[] Input { get; set; }
+        public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
         public override string Name { get; set; } = "Cooling Load";
