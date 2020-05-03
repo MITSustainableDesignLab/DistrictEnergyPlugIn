@@ -237,19 +237,21 @@ namespace DistrictEnergy
                         solarSupply.AvailableArea);
                 }
             }
-            // Todo: Add wind constraints
+            // Solar & Wind Constraints
+            foreach (var windTurbine in DistrictControl.Instance.ListOfPlantSettings.OfType<IWind>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    LpModel.Add(P[(t, windTurbine)] == windTurbine.Power(t, dt) * windTurbine.NumWnd);
+                }
+            }
 
             // Storage Rules
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
-                // solver.Add(S[(0, storage)]
-                //            == (1 - storage.StoredStandingLosses) *
-                //            S.Where(k => k.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() +
-                //            storage.ChargingEfficiency * Qin[(0, storage)] -
-                //            (1 / storage.DischargingEfficiency) * Qout[(0, storage)]);
 
                 // storage content initial <= final, both variable
-                // Todo: Why Skip first timestep
+                // Must skip first timestep
                 LpModel.Add(S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() <=
                             S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Last());
 
