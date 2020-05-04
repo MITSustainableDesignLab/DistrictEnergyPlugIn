@@ -30,7 +30,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(double.PositiveInfinity)]
-        double Capacity { get; }
+        [JsonIgnore] double Capacity { get; }
 
         /// <summary>
         /// Name of the Supply Module
@@ -68,6 +68,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [JsonIgnore] GraphCost FixedCost { get; }
         [JsonIgnore] GraphCost VariableCost { get; }
         [JsonIgnore] double TotalCost { get; }
-        [JsonIgnore] double CapacityFactor { get; }
+        [JsonIgnore] double CapacityFactor { get; set; }
+        bool IsForced { get; set; }
     }
 }

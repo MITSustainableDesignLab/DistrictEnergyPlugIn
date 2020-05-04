@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
+using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -59,12 +60,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double Efficiency => ConversionMatrix[OutputType];
         public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(231, 71, 126));
-        public override double ChargingEfficiency => 1 - LOSS_BAT;
-        public override double DischargingEfficiency => 1 - LOSS_BAT;
-        public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
-        public override double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
-        public override double StartingCapacity => Capacity * BAT_START;
-        public override double Capacity => CalcCapacity();
+        [JsonIgnore] public override double ChargingEfficiency => 1 - LOSS_BAT;
+        [JsonIgnore] public override double DischargingEfficiency => 1 - LOSS_BAT;
+        [JsonIgnore] public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
+        [JsonIgnore] public override double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
+        [JsonIgnore] public override double StartingCapacity => Capacity * BAT_START;
+        [JsonIgnore] public override double Capacity => CalcCapacity();
         private double CalcCapacity()
         {
             return DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Average()).Sum() * AUT_BAT * 24;

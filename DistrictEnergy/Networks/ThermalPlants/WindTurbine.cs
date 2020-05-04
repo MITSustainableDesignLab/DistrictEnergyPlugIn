@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -61,7 +62,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue(1347)] public override double F { get; set; } = 1347;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
         public override double Capacity => CalcCapacity();
-        public override double CapacityFactor => OFF_WND;
+        public override double CapacityFactor
+        {
+            get => OFF_WND;
+            set => ElectricGenerationViewModel.Instance.OFF_WND = value * 100;
+        }
+
+        public override bool IsForced { get; set; }
 
         private double CalcCapacity()
         {

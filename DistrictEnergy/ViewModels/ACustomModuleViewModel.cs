@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Media;
 using DistrictEnergy.Networks.ThermalPlants;
@@ -85,14 +85,14 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public double Norm
+        public double CapacityFactor
         {
             get
             {
                 try
                 {
                     return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
-                        .First(x => x.Id == Id).Norm * 100;
+                        .First(x => x.Id == Id).CapacityFactor * 100;
                 }
                 catch (Exception e)
                 {
@@ -103,7 +103,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
-                    .Norm = value / 100;
+                    .OFF_Custom = value / 100;
                 OnPropertyChanged();
             }
         }
@@ -112,15 +112,23 @@ namespace DistrictEnergy.ViewModels
         {
             get
             {
-
-                    return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
-                        .First(x => x.Id == Id).Color;
-                
+                return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
+                    .First(x => x.Id == Id).Color;
             }
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
                     .Color = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsForced
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id).IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id).IsForced = value;
                 OnPropertyChanged();
             }
         }

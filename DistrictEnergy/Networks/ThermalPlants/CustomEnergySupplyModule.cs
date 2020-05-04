@@ -34,6 +34,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public abstract override LoadTypes OutputType { get; }
 
+        public abstract double OFF_Custom { get; set; }
+
         public abstract override double F { get; set; }
         public abstract override double V { get; set; }
         public abstract override double Capacity { get; }
@@ -103,11 +105,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
             set => throw new NotImplementedException();
         }
 
-        public override double CapacityFactor { get; }
+        public override double CapacityFactor { get; set; }
 
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
         public abstract override Dictionary<LoadTypes, double> ConversionMatrix { get; }
         public abstract override double Efficiency { get; }
+        public abstract override bool IsForced { get; set; }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

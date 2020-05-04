@@ -56,7 +56,7 @@ namespace DistrictEnergy.Networks.Loads
                 foreach (var loads in DistrictControl.Instance.ListOfDistrictLoads.OfType<IBaseLoad>()
                     .Where(o => o.LoadType == LoadType))
                 {
-                    var adjustedLoad = loads.Input.Select(x => x * RelativeLoss).ToArray();
+                    var adjustedLoad = loads.Input.Select(x => x * RelativeLoss).ToArray(); 
                     for (int i = 0; i < final.Length; i++)
                     {
                         final[i] += adjustedLoad[i];

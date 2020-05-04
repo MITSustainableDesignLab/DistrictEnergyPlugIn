@@ -6,8 +6,6 @@ namespace DistrictEnergy.ViewModels
 {
     public class ChilledWaterViewModel : PlantSettingsViewModel
     {
-        private double _absChillerCapacity;
-
         public ChilledWaterViewModel()
         {
             Instance = this;
@@ -87,6 +85,16 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsForced_ABS
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().IsForced = value;
                 OnPropertyChanged();
             }
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -175,6 +175,7 @@ namespace DistrictEnergy.ViewModels
         {
             SeriesCollection.Clear();
             StorageSeriesCollection.Clear();
+            DemandLineCollection.Clear();
         }
 
         private void SubscribeEvents(object sender, UmiContext e)

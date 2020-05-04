@@ -56,26 +56,30 @@
                 </Expander.Header>
                 <StackPanel>
                     <materialDesign:ColorPicker Color="{Binding Color}" HueSliderPosition="Bottom" />
-                    <Grid VerticalAlignment="Top" Panel.ZIndex="1" Height="25">
+                    <Grid VerticalAlignment="Center" Panel.ZIndex="1" Height="Auto">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" MinWidth="30" />
                             <ColumnDefinition Width="Auto" MinWidth="40" />
                         </Grid.ColumnDefinitions>
-                        <Slider VerticalAlignment="Center" Maximum="300" Minimum="-300" x:Name="SliderA"
-                                Value="{Binding Norm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTip="Capacity as percent of peak cooling load"
-                                IsSnapToTickEnabled="True" Focusable="False" />
+                        <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced}">
+                            <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                        </ToggleButton>
+                        <Slider VerticalAlignment="Center" Maximum="100" Minimum="0" x:Name="SliderA"
+                                Value="{Binding CapacityFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Capacity as percent of total energy"
+                                IsSnapToTickEnabled="True" Focusable="False" Margin="10,0,0,0" Grid.Column="1" />
 
-                        <StackPanel Orientation="Horizontal" Grid.Column="1"
+                        <StackPanel Orientation="Horizontal" Grid.Column="2"
                                     Grid.ColumnSpan="2"
                                     HorizontalAlignment="Right" Margin="0">
                             <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
                                    VerticalContentAlignment="Center"
                                    HorizontalAlignment="Center" />
                             <TextBox
-                                Text="{Binding Norm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                UndoLimit="10" />
+                                Text="{Binding CapacityFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                UndoLimit="10" MinWidth="35" />
                         </StackPanel>
                     </Grid>
                     <Grid Margin="0,8,0,0" VerticalAlignment="Top">
