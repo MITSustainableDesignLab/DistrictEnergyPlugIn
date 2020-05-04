@@ -64,27 +64,27 @@
                     <StackPanel Grid.Row="1">
                         <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
                             <Expander.Header>
-                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1" Margin="-15,0,0,0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_ABS}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
+                                        <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                                    </ToggleButton>
                                     <Slider VerticalAlignment="Center" Maximum="100" x:Name="SliderA"
                                             Value="{Binding OFF_ABS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Capacity factor as ratio of the total cooling energy supplied by the energy hub"
-                                            IsSnapToTickEnabled="True" Focusable="False" />
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" Margin="10,0" />
 
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                    <StackPanel Orientation="Horizontal" Grid.Column="2"
                                                 Grid.ColumnSpan="2"
-                                                HorizontalAlignment="Right" Margin="0">
+                                                HorizontalAlignment="Right" Margin="0" VerticalAlignment="Center">
                                         <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
                                                VerticalContentAlignment="Center"
                                                HorizontalAlignment="Center" />
-                                        <TextBox
-                                            Text="{Binding OFF_ABS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            UndoLimit="10" />
-
+                                        <TextBox Text="{Binding OFF_ABS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UndoLimit="10" />
                                     </StackPanel>
                                 </Grid>
                             </Expander.Header>

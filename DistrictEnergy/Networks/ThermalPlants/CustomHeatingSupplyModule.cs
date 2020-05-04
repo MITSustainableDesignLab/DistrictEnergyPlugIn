@@ -14,6 +14,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double OFF_Custom { get; set; } = 1;
         public override LoadTypes InputType => LoadTypes.Custom;
         public override double CapacityFactor => OFF_Custom;
+        public override bool IsForced { get; set; }
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Heating, 1}

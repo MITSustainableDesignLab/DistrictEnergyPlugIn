@@ -117,6 +117,16 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool IsForced_EHP
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().IsForced = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region HWSto
@@ -225,6 +235,16 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsForced_SHW
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().IsForced = value;
                 OnPropertyChanged();
             }
         }

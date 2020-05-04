@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -57,7 +58,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType { get; } = LoadTypes.Cooling;
         public override LoadTypes InputType => LoadTypes.Heating;
-        public override double CapacityFactor => OFF_ABS;
+        public override double CapacityFactor
+        {
+            get => OFF_ABS;
+            set => ChilledWaterViewModel.Instance.OFF_ABS = value * 100;
+        }
+
+        public override bool IsForced { get; set; }
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Cooling, CCOP_ABS},
