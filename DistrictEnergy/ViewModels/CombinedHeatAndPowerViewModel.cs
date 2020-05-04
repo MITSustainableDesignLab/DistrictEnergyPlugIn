@@ -80,5 +80,15 @@ namespace DistrictEnergy.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public bool IsForced_CHP
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CombinedHeatNPower>().First().IsForced = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

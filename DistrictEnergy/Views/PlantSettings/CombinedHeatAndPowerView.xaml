@@ -23,25 +23,11 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/materialdesigncolor.bluegrey.xaml" />
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        <!--<Style x:Key="PlantComponentHeader" TargetType="{x:Type TextBlock}">
-            <Setter Property="TextWrapping" Value="NoWrap" />
-            <Setter Property="TextTrimming" Value="None" />
-            <Setter Property="Margin" Value="5, 5" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Foreground" Value="#404040" />
-        </Style>
-        <Style x:Key="StackPanelStyle" TargetType="StackPanel">
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Width" Value="Auto" />
-            <Setter Property="Margin" Value="5,0,5,5" />
-            <Setter Property="Background" Value="White" />
-        </Style>-->
     </UserControl.Resources>
     <Grid x:Name="ChpGroup">
         <GroupBox Margin="4" Style="{DynamicResource MaterialDesignCardGroupBox}"
@@ -77,25 +63,28 @@
                     <StackPanel Grid.Row="1">
                         <Expander>
                             <Expander.Header>
-                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1" Margin="-15,0,0,0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_CHP}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
+                                        <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                                    </ToggleButton>
+                                    <Slider VerticalAlignment="Center" Margin="10,0" Maximum="100"
                                             Value="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Capacity factor as ratio of the total heating OR electricity energy supplied by the energy hub. See Tracking Mode."
-                                            IsSnapToTickEnabled="True" Focusable="False" />
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" />
+                                    <StackPanel Orientation="Horizontal" Grid.Column="2"
 
-                                                HorizontalAlignment="Right" Margin="0" Grid.ColumnSpan="2">
+                                                HorizontalAlignment="Right" Margin="0">
                                         <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
                                                VerticalContentAlignment="Center"
                                                HorizontalAlignment="Center" />
                                         <TextBox
                                             Text="{Binding OFF_CHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            Margin="0,0,1,0" />
+                                            Margin="0,0,1,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center" />
                                     </StackPanel>
                                 </Grid>
                             </Expander.Header>
