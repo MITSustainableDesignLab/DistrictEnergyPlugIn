@@ -69,5 +69,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [JsonIgnore] GraphCost VariableCost { get; }
         [JsonIgnore] double TotalCost { get; }
         [JsonIgnore] double CapacityFactor { get; }
+        bool IsForced { get; set; }
     }
 }

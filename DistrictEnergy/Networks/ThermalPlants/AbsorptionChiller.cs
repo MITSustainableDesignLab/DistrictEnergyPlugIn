@@ -58,6 +58,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType { get; } = LoadTypes.Cooling;
         public override LoadTypes InputType => LoadTypes.Heating;
         public override double CapacityFactor => OFF_ABS;
+        public override bool IsForced { get; set; }
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Cooling, CCOP_ABS},

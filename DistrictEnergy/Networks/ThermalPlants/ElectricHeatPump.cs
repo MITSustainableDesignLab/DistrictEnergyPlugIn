@@ -53,6 +53,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.Elec;
         public override double CapacityFactor => OFF_EHP;
+        public override bool IsForced { get; set; }
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Heating, HCOP_EHP },

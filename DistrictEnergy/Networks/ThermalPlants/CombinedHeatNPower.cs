@@ -83,6 +83,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes OutputType => TMOD_CHP;
         public override LoadTypes InputType => LoadTypes.Gas;
         public override double CapacityFactor => OFF_CHP;
+        public override bool IsForced { get; set; }
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Elec, EFF_CHP},

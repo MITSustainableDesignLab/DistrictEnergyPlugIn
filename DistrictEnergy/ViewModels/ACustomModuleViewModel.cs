@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Media;
 using DistrictEnergy.Networks.ThermalPlants;
@@ -112,15 +112,23 @@ namespace DistrictEnergy.ViewModels
         {
             get
             {
-
-                    return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
-                        .First(x => x.Id == Id).Color;
-                
+                return DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>()
+                    .First(x => x.Id == Id).Color;
             }
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id)
                     .Color = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsForced
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id).IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>().First(x => x.Id == Id).IsForced = value;
                 OnPropertyChanged();
             }
         }

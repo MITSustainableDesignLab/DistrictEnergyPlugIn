@@ -64,16 +64,19 @@
                     <StackPanel Grid.Row="1">
                         <Expander>
                             <Expander.Header>
-                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1" Margin="-15,0,0,0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        <ColumnDefinition Width="Auto" MinWidth="60" />
                                     </Grid.ColumnDefinitions>
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_PV}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
+                                        <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                                    </ToggleButton>
                                     <Slider VerticalAlignment="Center" Maximum="100"
                                             Value="{Binding OFF_PV, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Capacity factor as ratio of the total electricity energy supplied by the energy hub"
-                                            IsSnapToTickEnabled="True" Focusable="False" />
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" Margin="10,0" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="1"
                                                 Grid.ColumnSpan="2"
                                                 HorizontalAlignment="Right" Margin="0">
@@ -178,18 +181,20 @@
                     <StackPanel Grid.Row="1">
                         <Expander>
                             <Expander.Header>
-                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1" Margin="-15,0,0,0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="30" />
-                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        <ColumnDefinition Width="Auto" MinWidth="60" />
                                     </Grid.ColumnDefinitions>
-                                    <Slider VerticalAlignment="Center" Margin="0" Maximum="100"
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_WND}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
+                                        <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                                    </ToggleButton>
+                                    <Slider VerticalAlignment="Center" Margin="10,0" Maximum="100"
                                             Value="{Binding OFF_WND, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Capacity factor as ratio of the total electricity energy supplied by the energy hub"
-                                            IsSnapToTickEnabled="True" Focusable="False" />
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                Grid.ColumnSpan="2"
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" />
+                                    <StackPanel Orientation="Horizontal" Grid.Column="2"
                                                 HorizontalAlignment="Right" Margin="0">
                                         <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
                                                VerticalContentAlignment="Center"
@@ -338,18 +343,20 @@
                     <StackPanel Grid.Row="1">
                         <Expander>
                             <Expander.Header>
-                                <Grid VerticalAlignment="Top" Panel.ZIndex="1">
+                                <Grid VerticalAlignment="Top" Panel.ZIndex="1" Margin="-15,0,0,0">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" MinWidth="50" />
-                                        <ColumnDefinition Width="Auto" MinWidth="40" />
+                                        <ColumnDefinition Width="Auto" MinWidth="60" />
                                     </Grid.ColumnDefinitions>
-                                    <Slider VerticalAlignment="Center" Margin="0" Maximum="365"
+                                    <!--<ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_ABS}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
+                                        <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                                    </ToggleButton>-->
+                                    <Slider VerticalAlignment="Center" Margin="50,0,10,0" Maximum="365"
                                             Value="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Number of average annual days that batteries can meet demand once fully charged"
-                                            IsSnapToTickEnabled="True" />
-                                    <StackPanel Orientation="Horizontal" Grid.Column="1"
-                                                Grid.ColumnSpan="2"
+                                            IsSnapToTickEnabled="True" Grid.Column="1" />
+                                    <StackPanel Orientation="Horizontal" Grid.Column="2"
                                                 HorizontalAlignment="Right" Margin="0">
                                         <Label Content="n days"
                                                VerticalContentAlignment="Center"

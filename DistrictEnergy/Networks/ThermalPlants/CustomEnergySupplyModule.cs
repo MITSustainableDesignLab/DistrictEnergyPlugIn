@@ -110,6 +110,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
         public abstract override Dictionary<LoadTypes, double> ConversionMatrix { get; }
         public abstract override double Efficiency { get; }
+        public abstract override bool IsForced { get; set; }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {

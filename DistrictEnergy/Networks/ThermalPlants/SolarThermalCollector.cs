@@ -52,6 +52,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue(0.00887)] public override double V { get; set; } = 0.00887;
         public override double Capacity => CalcCapacity();
         public override double CapacityFactor => OFF_SHW;
+        public override bool IsForced { get; set; }
 
         private double CalcCapacity()
         {

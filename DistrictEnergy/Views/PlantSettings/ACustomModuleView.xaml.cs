@@ -19,23 +19,22 @@ namespace DistrictEnergy.Views.PlantSettings
         public ACustomModuleView(LoadTypes type)
         {
             _id = Guid.NewGuid();
-            ;
+            IThermalPlantSettings customPlant = null;
             switch (type)
             {
                 // Todo: case for each
                 case LoadTypes.Cooling:
-                    DistrictControl.Instance.ListOfPlantSettings.Add(new CustomCoolingSupplyModule()
-                        {Id = _id, Name = "New Cooling Supply Module"});
+                    customPlant = new CustomCoolingSupplyModule {Id = _id, Name = "New Cooling Supply Module"};
                     break;
                 case LoadTypes.Elec:
-                    DistrictControl.Instance.ListOfPlantSettings.Add(new CustomElectricitySupplyModule()
-                        {Id = _id, Name = "New Electricity Supply Module"});
+                    customPlant = new CustomElectricitySupplyModule {Id = _id, Name = "New Electricity Supply Module"};
                     break;
                 case LoadTypes.Heating:
-                    DistrictControl.Instance.ListOfPlantSettings.Add(new CustomHeatingSupplyModule()
-                        {Id = _id, Name = "New Heating Supply Module"});
+                    customPlant = new CustomHeatingSupplyModule {Id = _id, Name = "New Heating Supply Module"};
                     break;
             }
+
+            DistrictControl.Instance.ListOfPlantSettings.Add(customPlant);
 
             InitializeComponent();
             DataContext = new ACustomModuleViewModel() {Id = _id};
@@ -75,7 +74,8 @@ namespace DistrictEnergy.Views.PlantSettings
             }
             catch (Exception exception)
             {
-                MessageBoxResult result = MessageBox.Show(exception.Message, "An Error occured while reading the CSV file");
+                MessageBoxResult result =
+                    MessageBox.Show(exception.Message, "An Error occured while reading the CSV file");
                 RhinoApp.WriteLine(exception.Message);
             }
         }

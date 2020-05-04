@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
+using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -47,6 +48,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
         [JsonIgnore] public override double Capacity => CalcCapacity();
         [JsonIgnore] public override double CapacityFactor => OFF_PV;
+        public override bool IsForced { get; set; }
 
         private double CalcCapacity()
         {

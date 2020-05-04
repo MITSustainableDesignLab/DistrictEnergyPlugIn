@@ -78,6 +78,16 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool IsForced_PV
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().IsForced = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Wind
@@ -158,6 +168,16 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().V = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsForced_WND
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForced = value;
                 OnPropertyChanged();
             }
         }

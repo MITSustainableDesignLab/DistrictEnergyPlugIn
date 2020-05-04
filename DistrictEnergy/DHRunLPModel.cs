@@ -222,25 +222,26 @@ namespace DistrictEnergy
                 x.Key.Item2.OutputType == LoadTypes.Elec || x.Key.Item2.OutputType == LoadTypes.Heating ||
                 x.Key.Item2.OutputType == LoadTypes.Cooling))
             {
-                var loadType = inputFlow.Key.Item2.OutputType;
                 var i = inputFlow.Key.Item1;
-                LpModel.Add(inputFlow.Value * inputFlow.Key.Item2.ConversionMatrix[loadType] <= inputFlow.Key.Item2.CapacityFactor * TotalDemand(loadType, i)
-                );
+                var plant = inputFlow.Key.Item2;
+                var loadType = plant.OutputType;
+                LpModel.Add(inputFlow.Value * plant.ConversionMatrix[loadType] <= plant.CapacityFactor * TotalDemand(loadType, i));
             }
 
-            foreach (var supplyModule in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>())
+            // Forced Capacity Constraints
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
-                foreach (var inputFlow in P.Where(x=>x.Key.Item2==supplyModule))
+                if (plant.IsForced)
                 {
-                    LoadTypes loadType = supplyModule.OutputType;
-                    var i = inputFlow.Key.Item1;
-                    LpModel.Add(inputFlow.Value * inputFlow.Key.Item2.ConversionMatrix[loadType] == supplyModule.CapacityFactor * supplyModule.Capacity
-                    );
+                    for (int t = 0; t < timeSteps * dt; t += dt)
+                    {
+                        var loadType = plant.OutputType;
+                        LpModel.Add(P[(t, plant)] * plant.ConversionMatrix[loadType] == plant.CapacityFactor * TotalDemand(loadType, t));
+                    }
                 }
-                
             }
 
-            // Solar & Wind Constraints
+            // Solar Constraints
             foreach (var solarSupply in DistrictControl.Instance.ListOfPlantSettings.OfType<ISolar>())
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
@@ -249,7 +250,7 @@ namespace DistrictEnergy
                         solarSupply.AvailableArea);
                 }
             }
-            // Solar & Wind Constraints
+            // Wind Constraints
             foreach (var windTurbine in DistrictControl.Instance.ListOfPlantSettings.OfType<IWind>())
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
