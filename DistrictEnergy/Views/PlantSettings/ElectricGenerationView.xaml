@@ -187,7 +187,7 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="60" />
                                     </Grid.ColumnDefinitions>
-                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_WND}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_WND}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results" Visibility="Hidden">
                                         <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
                                     </ToggleButton>
                                     <Slider VerticalAlignment="Center" Margin="10,0" Maximum="100"
