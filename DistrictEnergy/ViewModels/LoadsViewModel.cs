@@ -175,6 +175,7 @@ namespace DistrictEnergy.ViewModels
         {
             SeriesCollection.Clear();
             StorageSeriesCollection.Clear();
+            DemandLineCollection.Clear();
         }
 
         private void SubscribeEvents(object sender, UmiContext e)
