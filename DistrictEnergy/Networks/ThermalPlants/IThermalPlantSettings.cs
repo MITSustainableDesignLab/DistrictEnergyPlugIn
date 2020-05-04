@@ -30,7 +30,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(double.PositiveInfinity)]
-        double Capacity { get; }
+        [JsonIgnore] double Capacity { get; }
 
         /// <summary>
         /// Name of the Supply Module
