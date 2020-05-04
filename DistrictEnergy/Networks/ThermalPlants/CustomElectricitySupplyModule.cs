@@ -13,8 +13,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public override LoadTypes OutputType => LoadTypes.Elec;
+        public override double OFF_Custom { get; set; } = 1;
         public override LoadTypes InputType => LoadTypes.Custom;
-        public override double CapacityFactor => 1;
+        public override double CapacityFactor => OFF_Custom;
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Elec, 1}

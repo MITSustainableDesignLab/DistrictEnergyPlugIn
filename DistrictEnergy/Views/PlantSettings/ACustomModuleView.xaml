@@ -62,10 +62,10 @@
                             <ColumnDefinition Width="Auto" MinWidth="30" />
                             <ColumnDefinition Width="Auto" MinWidth="40" />
                         </Grid.ColumnDefinitions>
-                        <Slider VerticalAlignment="Center" Maximum="300" Minimum="-300" x:Name="SliderA"
-                                Value="{Binding Norm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTip="Capacity as percent of peak cooling load"
-                                IsSnapToTickEnabled="True" Focusable="False" />
+                        <Slider VerticalAlignment="Center" Maximum="100" Minimum="0" x:Name="SliderA"
+                                Value="{Binding CapacityFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Capacity as percent of total energy"
+                                IsSnapToTickEnabled="True" Focusable="False" Margin="10,0,0,0" />
 
                         <StackPanel Orientation="Horizontal" Grid.Column="1"
                                     Grid.ColumnSpan="2"
@@ -74,8 +74,8 @@
                                    VerticalContentAlignment="Center"
                                    HorizontalAlignment="Center" />
                             <TextBox
-                                Text="{Binding Norm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                UndoLimit="10" />
+                                Text="{Binding CapacityFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                UndoLimit="10" MinWidth="35" />
                         </StackPanel>
                     </Grid>
                     <Grid Margin="0,8,0,0" VerticalAlignment="Top">

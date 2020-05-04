@@ -228,6 +228,18 @@ namespace DistrictEnergy
                 );
             }
 
+            foreach (var supplyModule in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>())
+            {
+                foreach (var inputFlow in P.Where(x=>x.Key.Item2==supplyModule))
+                {
+                    LoadTypes loadType = supplyModule.OutputType;
+                    var i = inputFlow.Key.Item1;
+                    LpModel.Add(inputFlow.Value * inputFlow.Key.Item2.ConversionMatrix[loadType] == supplyModule.CapacityFactor * supplyModule.Capacity
+                    );
+                }
+                
+            }
+
             // Solar & Wind Constraints
             foreach (var solarSupply in DistrictControl.Instance.ListOfPlantSettings.OfType<ISolar>())
             {
