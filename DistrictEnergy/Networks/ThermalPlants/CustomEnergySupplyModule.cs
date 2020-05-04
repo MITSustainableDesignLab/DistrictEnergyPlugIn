@@ -34,6 +34,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public abstract override LoadTypes OutputType { get; }
 
+        public abstract double OFF_Custom { get; set; }
+
         public abstract override double F { get; set; }
         public abstract override double V { get; set; }
         public abstract override double Capacity { get; }

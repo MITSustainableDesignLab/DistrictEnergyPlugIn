@@ -7,7 +7,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
     /// </summary>
     internal interface ISolar : IThermalPlantSettings
     {
-        double AvailableArea { get; }
+        [JsonIgnore] double AvailableArea { get; }
         [JsonIgnore] double[] SolarAvailableInput { get; }
     }
 }

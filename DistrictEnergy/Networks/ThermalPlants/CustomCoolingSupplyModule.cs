@@ -24,8 +24,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public double[] Used = new double[8760];
         public override LoadTypes OutputType => LoadTypes.Cooling;
+        public override double OFF_Custom { get; set; } = 1;
         public override LoadTypes InputType => LoadTypes.Custom;
-        public override double CapacityFactor => 1;
+        public override double CapacityFactor => OFF_Custom;
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Cooling, 1}
