@@ -26,7 +26,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.Gas;
-        public override double CapacityFactor => 1;
+        public override double CapacityFactor
+        {
+            get => 1;
+            set { }
+        }
+
         public override bool IsForced { get; set; }
 
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()

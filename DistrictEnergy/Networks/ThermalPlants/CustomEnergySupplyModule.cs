@@ -105,7 +105,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             set => throw new NotImplementedException();
         }
 
-        public override double CapacityFactor { get; }
+        public override double CapacityFactor { get; set; }
 
         public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
         public abstract override Dictionary<LoadTypes, double> ConversionMatrix { get; }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
 using Newtonsoft.Json;
 
@@ -51,7 +52,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue(7191)] public override double F { get; set; } = 7191;
         [DataMember] [DefaultValue(0.00887)] public override double V { get; set; } = 0.00887;
         public override double Capacity => CalcCapacity();
-        public override double CapacityFactor => OFF_SHW;
+        public override double CapacityFactor
+        {
+            get => OFF_SHW;
+            set => HotWaterViewModel.Instance.OFF_SHW = value * 100;
+        }
+
         public override bool IsForced { get; set; }
 
         private double CalcCapacity()

@@ -331,6 +331,12 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Solution:");
             RhinoApp.WriteLine("Optimal objective value = " + LpModel.Objective().Value());
 
+            double TotalActualDemand(LoadTypes outputType)
+            {
+                return P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(outputType))
+                    .Select(k => Math.Abs(k.Value.SolutionValue()) * k.Key.Item2.ConversionMatrix[outputType]).ToArray().Sum();
+            }
+
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
@@ -339,6 +345,7 @@ namespace DistrictEnergy
                 plant.Input = solutionValues.ToDateTimePoint();
                 plant.Output = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType])
                     .ToDateTimePoint();
+                plant.CapacityFactor = Math.Round(solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).Sum() / TotalActualDemand(plant.OutputType), 2);
                 RhinoApp.WriteLine($"{plant.Name} = {cap} Peak ; {energy} Annum");
             }
 

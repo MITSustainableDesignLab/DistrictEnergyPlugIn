@@ -26,7 +26,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public GraphCost FixedCost => new FixedCost(this);
         public GraphCost VariableCost => new VariableCost(this, 200);
         public double TotalCost => FixedCost.Cost + VariableCost.Cost;
-        public abstract double CapacityFactor { get; }
+        public abstract double CapacityFactor { get; set; }
         public abstract bool IsForced { get; set; }
     }
 
