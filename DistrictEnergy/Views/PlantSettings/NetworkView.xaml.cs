@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Controls;
 using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
@@ -17,8 +18,24 @@ namespace DistrictEnergy.Views.PlantSettings
             InitializeComponent();
             DataContext = new NetworkViewModel();
             UmiEventSource.Instance.ProjectOpened += LoadThis;
+            UmiEventSource.Instance.ProjectClosed += ClearThis;
         }
 
+        /// <summary>
+        /// Clear the views in the StackPanel named "Exports"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearThis(object sender, EventArgs e)
+        {
+            Exports.Children.Clear();
+        }
+
+        /// <summary>
+        /// Create the views in the StackPanel named "Exports"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoadThis(object sender, UmiContext e)
         {
             foreach (var export in DistrictControl.Instance.ListOfDistrictLoads.OfType<Exportable>())
