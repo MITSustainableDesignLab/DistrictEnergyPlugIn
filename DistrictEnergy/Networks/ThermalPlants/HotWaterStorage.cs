@@ -51,7 +51,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override LoadTypes InputType { get; } = LoadTypes.Heating;
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(253, 199, 204));
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>()
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(253, 199, 204))}
+                };
+            set => throw new NotImplementedException();
+        }
+
         [JsonIgnore] public override double ChargingEfficiency => 1 - LOSS_HWT;
         [JsonIgnore] public override double DischargingEfficiency => 1 - LOSS_HWT;
         [JsonIgnore] public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_HWT : 0;
