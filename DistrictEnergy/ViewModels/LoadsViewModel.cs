@@ -248,7 +248,7 @@ namespace DistrictEnergy.ViewModels
                             LineSmoothness = lineSmoothness,
                             LabelPoint = KWhLabelPointFormatter,
                             AreaLimit = 0,
-                            Fill = plant.Fill[loadType.ToString()]
+                            Fill = plant.Fill[loadType]
                         };
                         SeriesCollection.Add(series);
                     }
@@ -294,7 +294,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Stored.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
-                        Fill = storage.Fill[storage.OutputType.ToString()],
+                        Fill = storage.Fill[storage.OutputType],
                         LineSmoothness = 0.5,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
@@ -306,7 +306,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Output.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = $"[{storage.OutputType}] {storage.Name} Out",
-                        Fill = storage.Fill[storage.OutputType.ToString()],
+                        Fill = storage.Fill[storage.OutputType],
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
@@ -319,7 +319,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Input.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = $"[{storage.OutputType}] {storage.Name} In",
-                        Fill = storage.Fill[storage.InputType.ToString()],
+                        Fill = storage.Fill[storage.InputType],
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,

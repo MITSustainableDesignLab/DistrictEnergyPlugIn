@@ -25,12 +25,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
 
-        public override Dictionary<string, SolidColorBrush> Fill
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
         {
             get =>
-                new Dictionary<string, SolidColorBrush>()
+                new Dictionary<LoadTypes, SolidColorBrush>()
                 {
-                    {OutputType.ToString(), new SolidColorBrush(Color.FromArgb(200, 0, 0, 0))}
+                    {OutputType, new SolidColorBrush(Color.FromArgb(200, 0, 0, 0))}
                 };
             set => throw new NotImplementedException();
         }

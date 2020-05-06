@@ -50,7 +50,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public FixedCost(Exportable plant, byte alpha = 255)
         {
-            var color = plant.Fill.Color;
+            var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Fixed Cost";
             if (plant.Input != null)
@@ -78,11 +78,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public VariableCost(Exportable plant, byte alpha = 255)
         {
-            var color = plant.Fill.Color;
+            var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Variable Cost";
             if (plant.Input != null)
-                Cost = plant.Input.Select(x => x * plant.V).Sum();
+                Cost = plant.Input.Select(x => x.Value * plant.V).Sum();
         }
     }
 

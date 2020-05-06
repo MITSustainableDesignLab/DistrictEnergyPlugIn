@@ -18,7 +18,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; }
         public abstract List<DateTimePoint> Input { get; set; }
         public abstract List<DateTimePoint> Output { get; set; }
-        public abstract Dictionary<string, SolidColorBrush> Fill { get; set; }
+        public abstract Dictionary<LoadTypes, SolidColorBrush> Fill { get; set; }
         public abstract LoadTypes InputType { get; }
         public GraphCost FixedCost => new FixedCost(this);
         public GraphCost VariableCost => new VariableCost(this, 200);
