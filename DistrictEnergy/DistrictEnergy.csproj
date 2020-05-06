@@ -135,6 +135,7 @@
     <Compile Include="Networks\ThermalPlants\BaseLoad.cs" />
     <Compile Include="Networks\ThermalPlants\CoolingExport.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricityExport.cs" />
+    <Compile Include="Networks\ThermalPlants\NotStorage.cs" />
     <Compile Include="Networks\ThermalPlants\SolarInput.cs" />
     <Compile Include="Networks\ThermalPlants\Exportable.cs" />
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
