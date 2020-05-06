@@ -1,4 +1,4 @@
-<UserControl x:Class="DistrictEnergy.Views.PlantSettings.ElectricGenerationView"
+﻿<UserControl x:Class="DistrictEnergy.Views.PlantSettings.ElectricGenerationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -70,7 +70,7 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="60" />
                                     </Grid.ColumnDefinitions>
-                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_PV}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results" Visibility="Hidden">
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_PV}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
                                         <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
                                     </ToggleButton>
                                     <Slider VerticalAlignment="Center" Maximum="100"
@@ -187,7 +187,7 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="60" />
                                     </Grid.ColumnDefinitions>
-                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_WND}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results" Visibility="Hidden">
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_WND}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results" Visibility="Visible">
                                         <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
                                     </ToggleButton>
                                     <Slider VerticalAlignment="Center" Margin="10,0" Maximum="100"

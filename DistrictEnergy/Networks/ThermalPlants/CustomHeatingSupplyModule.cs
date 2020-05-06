@@ -25,7 +25,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double F { get; set; }
         public override double V { get; set; }
 
-        public override double Capacity => Output.Max();
+        public override double Capacity
+        {
+            get => Output.Max();
+            set => throw new System.NotImplementedException();
+        }
 
         public override double Efficiency => ConversionMatrix[OutputType];
     }
