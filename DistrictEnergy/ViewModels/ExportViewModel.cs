@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using DistrictEnergy.Annotations;
@@ -23,37 +24,37 @@ namespace DistrictEnergy.ViewModels
 
         public Color Color
         {
-            get => Plant.Fill[Plant.OutputType].Color;
+            get => DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).Fill[Plant.OutputType].Color;
             set
             {
                 if (value.Equals(_color)) return;
                 _color = value;
                 OnPropertyChanged();
-                Plant.Fill[Plant.OutputType] = new SolidColorBrush(_color);
+                DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).Fill[Plant.OutputType] = new SolidColorBrush(_color);
             }
         }
 
         public double F
         {
-            get => Plant.F;
+            get => DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).F;
             set
             {
                 if (value.Equals(_f)) return;
                 _f = value;
                 OnPropertyChanged();
-                Plant.F = value;
+                DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).F = value;
             }
         }
 
         public double V
         {
-            get => Plant.V;
+            get => DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).V;
             set
             {
                 if (value.Equals(_f)) return;
                 _f = value;
                 OnPropertyChanged();
-                Plant.V = value;
+                DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).V = value;
             }
         }
 
