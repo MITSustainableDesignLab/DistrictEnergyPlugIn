@@ -33,7 +33,10 @@ namespace DistrictEnergy.ViewModels
                 typeof(WindTurbine),
                 typeof(GridElectricity),
                 typeof(GridGas),
-                typeof(CustomEnergySupplyModule)
+                typeof(CustomEnergySupplyModule),
+                typeof(ElectricityExport),
+                typeof(CoolingExport),
+                typeof(HeatingExport),
             }
         };
 
@@ -98,7 +101,18 @@ namespace DistrictEnergy.ViewModels
                 {
                     DistrictControl.Instance.ListOfPlantSettings.Add(new GridGas());
                 }
-
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricityExport>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new ElectricityExport());
+                }
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<CoolingExport>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new CoolingExport());
+                }
+                if (!DistrictControl.Instance.ListOfPlantSettings.OfType<HeatingExport>().Any())
+                {
+                    DistrictControl.Instance.ListOfPlantSettings.Add(new HeatingExport());
+                }
             }
 
             OnPropertyChanged(string.Empty);

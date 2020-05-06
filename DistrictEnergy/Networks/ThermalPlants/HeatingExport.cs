@@ -15,17 +15,27 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes LoadType { get; set; } = LoadTypes.Heating;
-        public override double[] Input { get; set; } = new double[8760];
+        public override LoadTypes OutputType => LoadTypes.Heating;
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
+        {
+            {InputType, 1}
+            
+        };
+        public override List<DateTimePoint> Input { get; set; }
+        public override List<DateTimePoint> Output { get; set; }
+        public override Dictionary<string, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<string, SolidColorBrush>()
+                {
+                    {OutputType.ToString(), new SolidColorBrush(Color.FromArgb(200, 0, 0, 0))}
+                };
+            set => throw new NotImplementedException();
+        }
+
+        public override LoadTypes InputType => LoadTypes.Heating;
         public override double F { get; set; } = 0;
         public override double V { get; set; } = 0.15;
-
-        public override SolidColorBrush Fill { get; set; } =
-            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF6161"));
-
         public override string Name { get; set; } = "Heating Export";
-        public override void GetUmiLoads(List<UmiObject> contextObjects)
-        {
-        }
     }
 }
