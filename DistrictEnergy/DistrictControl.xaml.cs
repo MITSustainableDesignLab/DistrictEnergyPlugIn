@@ -42,7 +42,7 @@ namespace DistrictEnergy
                 new CoolingExport(),
                 new HeatingExport()
             };
-            ListOfDistrictLoads = new ObservableCollection<AbstractDistrictLoad>()
+            ListOfDistrictLoads = new ObservableCollection<IBaseLoad>()
             {
                 new HeatingLoads(),
                 new CoolingLoads(),
@@ -65,7 +65,7 @@ namespace DistrictEnergy
             CombinedHeatAndPowerViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             ElectricGenerationViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             HotWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
-            NetworkViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            PlanningSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
 
             starHeight = new GridLength[expanderGrid.RowDefinitions.Count];
             starHeight[0] = expanderGrid.RowDefinitions[0].Height;
@@ -79,7 +79,7 @@ namespace DistrictEnergy
             MyExpander.Collapsed += ExpandedOrCollapsed;
         }
 
-        public ObservableCollection<AbstractDistrictLoad> ListOfDistrictLoads
+        public ObservableCollection<IBaseLoad> ListOfDistrictLoads
         {
             get => _listOfDistrictLoads;
             set
@@ -224,7 +224,7 @@ namespace DistrictEnergy
 
         GridLength[] starHeight;
         private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
-        private ObservableCollection<AbstractDistrictLoad> _listOfDistrictLoads;
+        private ObservableCollection<IBaseLoad> _listOfDistrictLoads;
 
         private void CostsChecked(object sender, RoutedEventArgs e)
         {
