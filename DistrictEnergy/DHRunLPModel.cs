@@ -183,6 +183,8 @@ namespace DistrictEnergy
 
             RhinoApp.WriteLine("Number of variables = " + LpModel.NumVariables());
 
+            RhinoApp.WriteLine("Computing contraints...");
+            watch = Stopwatch.StartNew();
             foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
@@ -404,8 +406,8 @@ namespace DistrictEnergy
                     LpModel.Add(C[storage] == storage.CapacityFactor * TotalAnnualDemand(storage.OutputType) / 365);
                 }
             }
-
-            RhinoApp.WriteLine("Number of constraints = " + LpModel.NumConstraints());
+            RhinoApp.WriteLine(
+                $"Computed {LpModel.NumConstraints()} S variables in {watch.ElapsedMilliseconds} milliseconds");
 
             // Set the Objective Function
             var objective = LpModel.Objective();
@@ -462,10 +464,6 @@ namespace DistrictEnergy
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
-            }
-
-            foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
-            {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(C[storage], storage.F * DistrictEnergy.Settings.AnnuityFactor / dt);
@@ -474,14 +472,17 @@ namespace DistrictEnergy
                 }
             }
 
+            RhinoApp.WriteLine("Solving...");
             objective.SetMinimization();
-
             var lp = LpModel.ExportModelAsLpFormat(false);
             LpModel.EnableOutput();
-            RhinoApp.WriteLine("Solving...");
             var resultStatus = LpModel.Solve();
 
             // Check that the problem has an optimal solution.
+            if (resultStatus == Solver.ResultStatus.OPTIMAL)
+            {
+                RhinoApp.WriteLine("Optimal Solution Found!");
+            }
             if (resultStatus != Solver.ResultStatus.OPTIMAL)
             {
                 RhinoApp.WriteLine("The problem does not have an optimal solution!");
