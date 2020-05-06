@@ -5,11 +5,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Rhino;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -37,6 +39,7 @@ namespace DistrictEnergy.ViewModels
                 typeof(ElectricityExport),
                 typeof(CoolingExport),
                 typeof(HeatingExport),
+                typeof(Dictionary<LoadTypes, SolidColorBrush>)
             }
         };
 
@@ -71,7 +74,7 @@ namespace DistrictEnergy.ViewModels
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                RhinoApp.WriteLine(exception.Message);
                 //throw new ArgumentException("A project settings viewmodel cannot be instantiated from a project with no instantiated settings object");
             }
         }
