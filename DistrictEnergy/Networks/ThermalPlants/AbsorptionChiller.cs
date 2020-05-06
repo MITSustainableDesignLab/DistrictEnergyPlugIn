@@ -49,15 +49,18 @@ namespace DistrictEnergy.Networks.ThermalPlants
         private double CalcCapacity()
         {
             if (DistrictControl.Instance is null) return 0;
-            return OFF_ABS * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
+            return OFF_ABS * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating)
+                .Select(v => v.Input.Max()).Sum();
         }
 
         [DataMember]
         [DefaultValue("Absorption Chiller")]
         public override string Name { get; set; } = "Absorption Chiller";
+
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType { get; } = LoadTypes.Cooling;
         public override LoadTypes InputType => LoadTypes.Heating;
+
         public override double CapacityFactor
         {
             get => OFF_ABS;
@@ -70,11 +73,21 @@ namespace DistrictEnergy.Networks.ThermalPlants
         {
             {LoadTypes.Cooling, CCOP_ABS},
             {LoadTypes.Heating, -1}
-
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(146, 241, 254));
+
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>()
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(146, 241, 254))},
+                    {InputType, new SolidColorBrush(Color.FromArgb(150,146, 241, 254))}
+                };
+            set => throw new NotImplementedException();
+        }
     }
 }

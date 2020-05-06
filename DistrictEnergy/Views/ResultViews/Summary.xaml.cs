@@ -53,7 +53,7 @@ namespace DistrictEnergy.Views.ResultViews
             EnergyPlantStack.Children.Clear();
 
             // Plot Plant Supply & Demand
-            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>().Where(x =>
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.Where(x =>
                 x.OutputType == LoadTypes.Cooling ||
                 x.OutputType == LoadTypes.Heating ||
                 x.OutputType == LoadTypes.Elec))

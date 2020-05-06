@@ -38,7 +38,7 @@ namespace DistrictEnergy.Views.PlantSettings
         /// <param name="e"></param>
         private void LoadThis(object sender, UmiContext e)
         {
-            foreach (var export in DistrictControl.Instance.ListOfDistrictLoads.OfType<Exportable>())
+            foreach (var export in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
             {
                 Exports.Children.Add(new ExportView(export));
             }

@@ -23,13 +23,13 @@ namespace DistrictEnergy.ViewModels
 
         public Color Color
         {
-            get => Plant.Fill.Color;
+            get => Plant.Fill[Plant.OutputType].Color;
             set
             {
                 if (value.Equals(_color)) return;
                 _color = value;
                 OnPropertyChanged();
-                Plant.Fill = new SolidColorBrush(_color);
+                Plant.Fill[Plant.OutputType] = new SolidColorBrush(_color);
             }
         }
 

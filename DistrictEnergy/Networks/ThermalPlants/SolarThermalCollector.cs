@@ -75,14 +75,26 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.SolarRadiation;
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Heating, EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW}
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[LoadTypes.Heating];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(251, 209, 39));
+
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(251, 209, 39))}
+                };
+            set => throw new NotImplementedException();
+        }
+
         public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
         public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }

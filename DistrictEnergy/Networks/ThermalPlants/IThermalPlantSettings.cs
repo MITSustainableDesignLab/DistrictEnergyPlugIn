@@ -62,7 +62,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// Fill Used to Color Supply Module
         /// </summary>
         [DataMember]
-        SolidColorBrush Fill { get; set; }
+        Dictionary<LoadTypes, SolidColorBrush> Fill { get; set; }
 
         [JsonIgnore] LoadTypes InputType { get; }
         [JsonIgnore] GraphCost FixedCost { get; }

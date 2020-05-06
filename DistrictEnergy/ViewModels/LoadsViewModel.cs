@@ -225,7 +225,7 @@ namespace DistrictEnergy.ViewModels
             }
 
             // Plot Plant Supply & Demand
-            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>().Where(x =>
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.Where(x =>
                 x.OutputType == LoadTypes.Cooling ||
                 x.OutputType == LoadTypes.Heating ||
                 x.OutputType == LoadTypes.Elec))
@@ -248,12 +248,41 @@ namespace DistrictEnergy.ViewModels
                             LineSmoothness = lineSmoothness,
                             LabelPoint = KWhLabelPointFormatter,
                             AreaLimit = 0,
-                            Fill = plant.Fill
+                            Fill = plant.Fill[loadType]
                         };
                         SeriesCollection.Add(series);
                     }
                 }
             }
+            /*foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Environment>().Where(x =>
+                x.OutputType == LoadTypes.Cooling ||
+                x.OutputType == LoadTypes.Heating ||
+                x.OutputType == LoadTypes.Elec))
+            {
+                foreach (var cMat in plant.ConversionMatrix.Where(x =>
+                    x.Key == LoadTypes.Cooling ||
+                    x.Key == LoadTypes.Heating ||
+                    x.Key == LoadTypes.Elec))
+                {
+                    var loadType = cMat.Key;
+                    var eff = cMat.Value;
+                    if (plant.Input.Sum() > 0)
+                    {
+                        var series = new GStackedAreaSeries
+                        {
+                            Values = plant.Input.Split(plot_duration).Select(v =>
+                                    new DateTimePoint(v.First().DateTime, v.Select(o => o.Value * eff).Sum()))
+                                .AsGearedValues(),
+                            Title = $"[{loadType}] {plant.Name}",
+                            LineSmoothness = lineSmoothness,
+                            LabelPoint = KWhLabelPointFormatter,
+                            AreaLimit = 0,
+                            Fill = plant.Fill[loadType]
+                        };
+                        SeriesCollection.Add(series);
+                    }
+                }
+            }*/
 
             StorageSeriesCollection.Clear();
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
@@ -265,7 +294,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Stored.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
-                        Fill = storage.Fill,
+                        Fill = storage.Fill[storage.OutputType],
                         LineSmoothness = 0.5,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
@@ -277,7 +306,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Output.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = $"[{storage.OutputType}] {storage.Name} Out",
-                        Fill = storage.Fill,
+                        Fill = storage.Fill[storage.OutputType],
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
@@ -290,7 +319,7 @@ namespace DistrictEnergy.ViewModels
                         Values = storage.Input.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
                         Title = $"[{storage.OutputType}] {storage.Name} In",
-                        Fill = storage.Fill,
+                        Fill = storage.Fill[storage.InputType],
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,

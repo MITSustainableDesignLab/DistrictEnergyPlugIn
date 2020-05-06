@@ -99,31 +99,6 @@ namespace DistrictEnergy.ViewModels
                 TotalCost += supplyModule.TotalCost;
             }
 
-            foreach (var supplyModule in DistrictControl.Instance.ListOfDistrictLoads.OfType<Exportable>())
-            {
-                if (supplyModule.FixedCost.Cost > 0)
-                {
-                    SeriesCollection.Add(new PieSeries
-                    {
-                        Title = supplyModule.FixedCost.Name,
-                        Values = new ChartValues<double> { supplyModule.FixedCost.Cost },
-                        LabelPoint = CostLabelPointFormatter,
-                        Fill = supplyModule.FixedCost.Fill
-                    });
-                }
-                if (supplyModule.VariableCost.Cost > 0)
-                {
-                    SeriesCollection.Add(new PieSeries
-                    {
-                        Title = supplyModule.VariableCost.Name,
-                        Values = new ChartValues<double> { supplyModule.VariableCost.Cost },
-                        LabelPoint = CostLabelPointFormatter,
-                        Fill = supplyModule.VariableCost.Fill
-                    });
-                }
-                TotalCost += supplyModule.TotalCost;
-            }
-
             NormalizedTotalCost = TotalCost / FloorArea;
         }
 

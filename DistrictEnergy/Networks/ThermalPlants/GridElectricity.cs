@@ -49,6 +49,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(0, 0, 0))}
+                };
+            set => throw new NotImplementedException();
+        }
     }
 }

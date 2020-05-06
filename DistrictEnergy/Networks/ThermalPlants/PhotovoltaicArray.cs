@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -66,6 +66,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Elec;
         public override LoadTypes InputType => LoadTypes.SolarRadiation;
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Elec, EFF_PV * UTIL_PV * (1 - LOSS_PV)}
@@ -73,7 +74,17 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(112, 159, 15));
+
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(112, 159, 15))}
+                };
+            set => throw new NotImplementedException();
+        }
+
         public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
         public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
     }

@@ -15,7 +15,7 @@ using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal abstract class CustomEnergySupplyModule: Dispatchable
+    internal abstract class CustomEnergySupplyModule : Dispatchable
     {
         /// <summary>
         /// Path of the CSV File
@@ -97,11 +97,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
             return records.ToDateTimePoint();
         }
+
         public double Norm { get; set; } = 1;
 
-        public override SolidColorBrush Fill
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
         {
-            get => new SolidColorBrush(Color);
+            get => new Dictionary<LoadTypes, SolidColorBrush>()
+            {
+                {OutputType, new SolidColorBrush(Color)}
+            };
             set => throw new NotImplementedException();
         }
 
