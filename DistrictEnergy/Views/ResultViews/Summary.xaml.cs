@@ -64,20 +64,40 @@ namespace DistrictEnergy.Views.ResultViews
                     var eff = cMat.Value;
                     if (plant.Input.Sum() > 0)
                     {
-                        TextBlock name = new TextBlock();
-                        name.Text = $"[{loadType}] {plant.Name}";
-                        NamePlantStack.Children.Add(name);
-                        Grid.SetColumn(name, 2);
+                        if (eff<0)
+                        {
+                            TextBlock name = new TextBlock();
+                            name.Text = $"[{loadType}] {plant.Name}";
+                            NameStack.Children.Add(name);
+                            Grid.SetColumn(name, 2);
 
-                        TextBlock demandValue = new TextBlock();
-                        demandValue.Text = plant.Input.Select(v =>v.Value * eff).Max().ToString("N2");
-                        PeakPlantStack.Children.Add(demandValue);
-                        Grid.SetColumn(name, 2);
+                            TextBlock demandValue = new TextBlock();
+                            demandValue.Text = plant.Input.Select(v => v.Value * eff).Min().ToString("N2");
+                            PeakStack.Children.Add(demandValue);
+                            Grid.SetColumn(name, 2);
 
-                        TextBlock energyValue = new TextBlock();
-                        energyValue.Text = plant.Input.Select(v => v.Value * eff).Sum().ToString("N2");
-                        EnergyPlantStack.Children.Add(energyValue);
-                        Grid.SetColumn(name, 2);
+                            TextBlock energyValue = new TextBlock();
+                            energyValue.Text = plant.Input.Select(v => v.Value * eff).Sum().ToString("N2");
+                            EnergyStack.Children.Add(energyValue);
+                            Grid.SetColumn(name, 2);
+                        }
+                        else
+                        {
+                            TextBlock name = new TextBlock();
+                            name.Text = $"[{loadType}] {plant.Name}";
+                            NamePlantStack.Children.Add(name);
+                            Grid.SetColumn(name, 2);
+
+                            TextBlock demandValue = new TextBlock();
+                            demandValue.Text = plant.Input.Select(v => v.Value * eff).Max().ToString("N2");
+                            PeakPlantStack.Children.Add(demandValue);
+                            Grid.SetColumn(name, 2);
+
+                            TextBlock energyValue = new TextBlock();
+                            energyValue.Text = plant.Input.Select(v => v.Value * eff).Sum().ToString("N2");
+                            EnergyPlantStack.Children.Add(energyValue);
+                            Grid.SetColumn(name, 2);
+                        }
                     }
                 }
             }
