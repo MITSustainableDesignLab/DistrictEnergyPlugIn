@@ -19,7 +19,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract double StartingCapacity { get; }
         public abstract double F { get; set; }
         public abstract double V { get; set; }
-        public abstract double Capacity { get; }
+        public abstract double Capacity { get; set; }
         public abstract string Name { get; set; }
         public Guid Id { get; set; } = Guid.NewGuid();
         public abstract LoadTypes OutputType { get; }
@@ -31,12 +31,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public GraphCost FixedCost => new FixedCost(this);
         public GraphCost VariableCost => new VariableCost(this, 200);
         public double TotalCost => FixedCost.Cost + VariableCost.Cost;
-        public double CapacityFactor
-        {
-            get => 1;
-            set => throw new NotImplementedException();
-        }
-
+        public abstract double CapacityFactor { get; set; }
         public bool IsForced { get; set; }
     }
 }
