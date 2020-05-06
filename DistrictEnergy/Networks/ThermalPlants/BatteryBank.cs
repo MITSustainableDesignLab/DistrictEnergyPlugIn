@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
 using Newtonsoft.Json;
 
@@ -54,29 +55,34 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember]
         [DefaultValue(0)]
         public override double V { get; set; } = 0;
+
         [DataMember] [DefaultValue("Battery")] public override string Name { get; set; } = "Battery";
         public override LoadTypes OutputType { get; } = LoadTypes.Elec;
         public override LoadTypes InputType { get; } = LoadTypes.Elec;
+
+        public override double CapacityFactor
+        {
+            get => AUT_BAT;
+            set => ElectricGenerationViewModel.Instance.AUT_BAT = value;
+        }
+
         public override Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
-        public double Efficiency => ConversionMatrix[OutputType];
+
         public override Dictionary<LoadTypes, SolidColorBrush> Fill
         {
             get =>
-                new Dictionary<LoadTypes, SolidColorBrush>()
+                new Dictionary<LoadTypes, SolidColorBrush>
                 {
-                    {OutputType, new SolidColorBrush(Color.FromRgb(231, 71, 126))}
+                    {OutputType, new SolidColorBrush(Color.FromArgb(200, 231, 71, 126))}
                 };
             set => throw new NotImplementedException();
         }
+
         [JsonIgnore] public override double ChargingEfficiency => 1 - LOSS_BAT;
         [JsonIgnore] public override double DischargingEfficiency => 1 - LOSS_BAT;
         [JsonIgnore] public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
         [JsonIgnore] public override double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
-        [JsonIgnore] public override double StartingCapacity => Capacity * BAT_START;
-        [JsonIgnore] public override double Capacity => CalcCapacity();
-        private double CalcCapacity()
-        {
-            return DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Average()).Sum() * AUT_BAT * 24;
-        }
+        [JsonIgnore] public override double StartingCapacity => BAT_START;
+        [JsonIgnore] public override double Capacity { get; set; }
     }
 }

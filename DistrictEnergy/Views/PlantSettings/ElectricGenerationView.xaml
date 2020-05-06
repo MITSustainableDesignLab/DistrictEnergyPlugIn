@@ -349,14 +349,14 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" MinWidth="60" />
                                     </Grid.ColumnDefinitions>
-                                    <!--<ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_ABS}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
+                                    <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_BAT}" ToolTip="Force this energy storage to have a capacity equivalent to n days of autonomy">
                                         <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
-                                    </ToggleButton>-->
+                                    </ToggleButton>
                                     <Slider VerticalAlignment="Center" Margin="50,0,10,0" Maximum="365"
                                             Value="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Number of average annual days that batteries can meet demand once fully charged"
                                             IsSnapToTickEnabled="True" Grid.Column="1" />
-                                    <StackPanel Orientation="Horizontal" Grid.Column="2"
+                                    <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Center"
                                                 HorizontalAlignment="Right" Margin="0">
                                         <Label Content="n days"
                                                VerticalContentAlignment="Center"

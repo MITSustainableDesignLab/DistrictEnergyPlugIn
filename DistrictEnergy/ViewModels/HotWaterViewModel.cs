@@ -171,6 +171,16 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool IsForced_HWT
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<HotWaterStorage>().First().IsForced = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region SolarThermal

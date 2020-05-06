@@ -236,6 +236,16 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool IsForced_BAT
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().IsForced;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().IsForced = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
     }
 }

@@ -161,15 +161,19 @@ namespace DistrictEnergy
             watch.Start();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
+                // Initial State
+                S[(-dt, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
+                    $"StoState_{-dt:0000}_{supplymodule.Name}");
                 for (var t = 0; t < timeSteps * dt; t += dt)
                 {
-                    Qin[(t, supplymodule)] = LpModel.MakeNumVar(0.0, supplymodule.MaxChargingRate,
+                    Qin[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
                         $"StoIn_{t:0000}_{supplymodule.Name}");
-                    Qout[(t, supplymodule)] = LpModel.MakeNumVar(0.0, supplymodule.MaxDischargingRate,
+                    Qout[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
                         $"StoOut_{t:0000}_{supplymodule.Name}");
-                    S[(t, supplymodule)] = LpModel.MakeNumVar(0.0, supplymodule.Capacity,
+                    S[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, 
                         $"StoState_{t:0000}_{supplymodule.Name}");
-                }
+                } 
+                C[supplymodule] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Cap_{supplymodule.Name}");
             }
 
             watch = Stopwatch.StartNew();
@@ -366,23 +370,38 @@ namespace DistrictEnergy
             // Storage Rules
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
-                // storage content initial <= final, both variable
-                // Must skip first timestep
-                LpModel.Add(S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Skip(1).First() <=
-                            S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).Last());
+                // storage content initial == final
+                // storage state cyclicity rule
+                LpModel.Add(S[(0, storage)] <= S[(timeSteps * dt - dt, storage)]);
 
                 // 'storage content initial == and final >= storage.init * capacity'
-                LpModel.Add(
-                    S.Where(x => x.Key.Item2 == storage).Select(o => o.Value).First() == storage.StartingCapacity);
+                LpModel.Add(S[(0, storage)] == storage.StartingCapacity * C[storage]);
+                //LpModel.Add(S[(timeSteps * dt, storage)] == storage.StartingCapacity * C[storage]);
 
-                // Storage Balance Rule
-                for (int t = dt; t < timeSteps * dt; t += dt)
+                // Initial Capacity Constraint
+                LpModel.Add(S[(-dt, storage)] <= C[storage]);
+
+                for (int t = 0; t < timeSteps * dt; t += dt)
                 {
+                    // Storage Balance Rule
                     LpModel.Add(S[(t, storage)] ==
                                 (1 - storage.StorageStandingLosses) *
                                 S[(t - dt, storage)] +
                                 storage.ChargingEfficiency * Qin[(t, storage)] -
                                 (1 / storage.DischargingEfficiency) * Qout[(t, storage)]);
+
+                    // Storage Capacity at time t Rule
+                    LpModel.Add(S[(t, storage)] <= C[storage]);
+
+                    // Input & Output Capacity Constraints
+                    LpModel.Add(Qin[(t, storage)] <= 0.3 * C[storage]);
+                    LpModel.Add(Qout[(t, storage)] <= 0.3 * C[storage]);
+                }
+
+                // Forced Capacity Constraint
+                if (storage.IsForced)
+                {
+                    LpModel.Add(C[storage] == storage.CapacityFactor * TotalAnnualDemand(storage.OutputType) / 365);
                 }
             }
 
@@ -443,17 +462,13 @@ namespace DistrictEnergy
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
-                for (int t = 0; t < timeSteps * dt; t += dt)
-                {
-                    objective.SetCoefficient(S[(t, storage)],
-                        storage.F * DistrictEnergy.Settings.AnnuityFactor / dt);
-                }
             }
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
+                    objective.SetCoefficient(C[storage], storage.F * DistrictEnergy.Settings.AnnuityFactor / dt);
                     objective.SetCoefficient(Qin[(t, storage)], storage.V);
                     objective.SetCoefficient(Qout[(t, storage)], storage.V);
                 }
@@ -547,8 +562,11 @@ namespace DistrictEnergy
                     .ToDateTimePoint();
                 storage.Stored = S.Where(x => x.Key.Item2 == storage).Select(v => v.Value.SolutionValue())
                     .ToDateTimePoint();
+                storage.Capacity = C[storage].SolutionValue();
+                var totalActualDemand = TotalActualDemand(storage.OutputType);
+                storage.CapacityFactor = Math.Round(storage.Output.Sum() / totalActualDemand * 365, 2);
                 RhinoApp.WriteLine(
-                    $"{storage.Name} = Qin {storage.Input.Sum()}; Qout {storage.Output.Sum()}; Storage Balance {storage.Input.Sum() - storage.Output.Sum()}");
+                    $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0}");
             }
 
             foreach (var area in Area)
