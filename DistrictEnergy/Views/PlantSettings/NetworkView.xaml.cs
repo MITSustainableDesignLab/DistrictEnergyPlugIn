@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using DistrictEnergy.Networks.ThermalPlants;
@@ -21,6 +22,11 @@ namespace DistrictEnergy.Views.PlantSettings
             UmiEventSource.Instance.ProjectClosed += ClearThis;
         }
 
+        private void LoadThis(object sender, UmiContext e)
+        {
+            PlantSettingsViewModel.Instance.PropertyChanged += LoadThis;
+        }
+
         /// <summary>
         /// Clear the views in the StackPanel named "Exports"
         /// </summary>
@@ -36,11 +42,15 @@ namespace DistrictEnergy.Views.PlantSettings
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LoadThis(object sender, UmiContext e)
+        private void LoadThis(object sender, PropertyChangedEventArgs e)
         {
-            foreach (var export in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
+            var exportables = DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>();
+            foreach (var export in exportables)
             {
-                Exports.Children.Add(new ExportView(export));
+                if (Exports.Children.Count < exportables.Count())
+                {
+                    Exports.Children.Add(new ExportView(export));
+                }
             }
         }
     }
