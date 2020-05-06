@@ -11,12 +11,12 @@ using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class WindTurbine : Dispatchable, IWind
+    internal class WindTurbine : WindInput
     {
-
         public WindTurbine()
         {
         }
+
         /// <summary>
         ///     Target offset as percent of annual energy (%)
         /// </summary>
@@ -61,7 +61,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1347)] public override double F { get; set; } = 1347;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
-        public override double Capacity => CalcCapacity();
+        public override double Capacity { get; set; }
         public override double CapacityFactor
         {
             get => OFF_WND;
@@ -69,13 +69,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public override bool IsForced { get; set; }
-
-        private double CalcCapacity()
-        {
-            if (DistrictControl.Instance is null) return 0;
-            return OFF_WND * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec)
-                .Select(v => v.Input.Sum()).Sum();
-        }
 
         [DataMember]
         [DefaultValue("Wind Turbines")]
@@ -85,20 +78,33 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override LoadTypes OutputType => LoadTypes.Elec;
         public override LoadTypes InputType => LoadTypes.Wind;
-        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Elec, (1-LOSS_WND)}
+            {LoadTypes.Elec, (1 - LOSS_WND)}
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(192, 244, 66));
 
-        public List<double> WindAvailableInput(int t=0, int dt=8760)
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(192, 244, 66))}
+                };
+            set => throw new NotImplementedException();
+        }
+
+        public override List<double> WindAvailableInput(int t = 0, int dt = 8760)
         {
             return DHSimulateDistrictEnergy.Instance.DistrictDemand.WindN.ToList().GetRange(t, dt);
         }
-        public double Power(int t = 0, int dt = 8760) => WindAvailableInput(t, dt).Where(w => w > CIN_WND && w < COUT_WND).Select(w => 0.6375 * ROT_WND * Math.Pow(w, 3) / 1000).Sum() * (1 - LOSS_WND);
-        public double NumWnd => Math.Ceiling(Capacity / Power() ); // Divide by 1000 because equation spits out Wh
+
+        public override double Power(int t = 0, int dt = 8760) =>
+            WindAvailableInput(t, dt).Where(w => w > CIN_WND && w < COUT_WND)
+                .Select(w => 0.6375 * ROT_WND * Math.Pow(w, 3) / 1000).Sum() * (1 - LOSS_WND);
     }
 }

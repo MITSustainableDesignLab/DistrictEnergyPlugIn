@@ -21,7 +21,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1360)] public override double F { get; set; } = 1360;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
-        public override double Capacity { get; } = double.PositiveInfinity;
+        public override double Capacity { get; set; } = double.PositiveInfinity;
         [DataMember] [DefaultValue("Natural Gas Boiler")] public override string Name { get; set; } = "Natural Gas Boiler";
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Heating;
@@ -42,6 +42,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(189, 133, 74));
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(189, 133, 74))}
+                };
+            set => throw new NotImplementedException();
+        }
     }
 }

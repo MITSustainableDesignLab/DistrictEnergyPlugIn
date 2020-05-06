@@ -58,23 +58,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DefaultValue(0.010)]
         public override double V { get; set; } = 0.010;
 
-        public override double Capacity => CalcCapacity();
-
-        private double CalcCapacity()
-        {
-            if (DistrictControl.Instance is null) return 0;
-            switch (TMOD_CHP)
-            {
-                case LoadTypes.Elec:
-                    return OFF_CHP * DistrictControl.Instance.ListOfDistrictLoads
-                        .Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Max()).Sum();
-                case LoadTypes.Heating:
-                    return OFF_CHP * DistrictControl.Instance.ListOfDistrictLoads
-                        .Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
-            }
-
-            return 0;
-        }
+        public override double Capacity { get; set; }
 
         [DataMember]
         [DefaultValue("Combined Heat&Power")]
@@ -100,6 +84,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(247, 96, 21));
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {LoadTypes.Elec,  new SolidColorBrush(Color.FromRgb(247, 96, 21))},
+                    {LoadTypes.Heating,  new SolidColorBrush(Color.FromArgb(200, 247, 96, 21))}
+                };
+            set => throw new NotImplementedException();
+        }
     }
 }

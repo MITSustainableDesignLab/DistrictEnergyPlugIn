@@ -191,6 +191,7 @@ namespace DistrictEnergy.ViewModels
             var lineSmoothness = 0.1;
             SeriesCollection.Clear();
             DemandLineCollection.Clear();
+            UnorderedCollection = new List<MySeries>();
 
             // Plot District Demand (Negative)
             var plot_duration = args.TimeSteps;
@@ -198,17 +199,18 @@ namespace DistrictEnergy.ViewModels
             {
                 if (Math.Abs(demand.Input.Sum()) > 0)
                 {
+                    var values = demand.Input.ToDateTimePoint().Split(plot_duration)
+                        .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum()));
                     var series = new GStackedAreaSeries
                     {
-                        Values = demand.Input.ToDateTimePoint().Split(plot_duration)
-                            .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
+                        Values = values.AsGearedValues(),
                         Title = $"[{demand.LoadType}] {demand.Name}",
                         LineSmoothness = lineSmoothness,
                         LabelPoint = KWhLabelPointFormatter,
                         AreaLimit = 0,
                         Fill = demand.Fill
                     };
-                    SeriesCollection.Add(series);
+                    UnorderedCollection.Add(new MySeries {Variance = values.Variance(), Series = series});
                     DemandLineCollection.Add(new GLineSeries
                     {
                         Values = demand.Input.ToDateTimePoint().Split(plot_duration)
@@ -225,10 +227,7 @@ namespace DistrictEnergy.ViewModels
             }
 
             // Plot Plant Supply & Demand
-            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>().Where(x =>
-                x.OutputType == LoadTypes.Cooling ||
-                x.OutputType == LoadTypes.Heating ||
-                x.OutputType == LoadTypes.Elec))
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<NotStorage>())
             {
                 foreach (var cMat in plant.ConversionMatrix.Where(x =>
                     x.Key == LoadTypes.Cooling ||
@@ -239,18 +238,41 @@ namespace DistrictEnergy.ViewModels
                     var eff = cMat.Value;
                     if (plant.Input.Sum() > 0)
                     {
+                        var values = plant.Input.Split(plot_duration).Select(v =>
+                            new DateTimePoint(v.First().DateTime, v.Select(o => o.Value * eff).Sum()));
                         var series = new GStackedAreaSeries
                         {
-                            Values = plant.Input.Split(plot_duration).Select(v =>
-                                    new DateTimePoint(v.First().DateTime, v.Select(o => o.Value * eff).Sum()))
-                                .AsGearedValues(),
+                            Values = values.AsGearedValues(),
                             Title = $"[{loadType}] {plant.Name}",
                             LineSmoothness = lineSmoothness,
                             LabelPoint = KWhLabelPointFormatter,
                             AreaLimit = 0,
-                            Fill = plant.Fill
+                            Fill = plant.Fill[loadType]
                         };
-                        SeriesCollection.Add(series);
+                        UnorderedCollection.Add(new MySeries { Variance = values.Variance(), Series = series });
+                    }
+                }
+            }
+
+            // Plot Exports
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
+            {
+                {
+                    if (plant.Input.Sum() > 0)
+                    {
+                        var values = plant.Input.Split(plot_duration).Select(v =>
+                            new DateTimePoint(v.First().DateTime, v.Select(o => -o.Value).Sum()));
+                        LoadTypes loadType = plant.OutputType;
+                        var series = new GStackedAreaSeries
+                        {
+                            Values = values.AsGearedValues(),
+                            Title = $"[{loadType}] {plant.Name}",
+                            LineSmoothness = lineSmoothness,
+                            LabelPoint = KWhLabelPointFormatter,
+                            AreaLimit = 0,
+                            Fill = plant.Fill[loadType]
+                        };
+                        UnorderedCollection.Add(new MySeries { Variance = values.Variance(), Series = series });
                     }
                 }
             }
@@ -260,49 +282,67 @@ namespace DistrictEnergy.ViewModels
             {
                 if (storage.Output.Sum() > 0)
                 {
+                    IsStorageVisible = true;
                     StorageSeriesCollection.Add(new GStackedAreaSeries()
                     {
                         Values = storage.Stored.Split(plot_duration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
-                        Fill = storage.Fill,
+                        Fill = storage.Fill[storage.OutputType],
                         LineSmoothness = 0.5,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
                     });
 
                     // Plot Supply From Storage
-                    SeriesCollection.Add(new GStackedAreaSeries()
+                    var values = storage.Output.Split(plot_duration)
+                        .Select(v => new DateTimePoint(v.First().DateTime, v.Sum()));
+                    var series = new GStackedAreaSeries()
                     {
-                        Values = storage.Output.Split(plot_duration)
-                            .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
+                        Values = values.AsGearedValues(),
                         Title = $"[{storage.OutputType}] {storage.Name} Out",
-                        Fill = storage.Fill,
+                        Fill = storage.Fill[storage.OutputType],
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
-                    });
-                    IsStorageVisible = true;
+                    };
+                    UnorderedCollection.Add(new MySeries { Variance = values.Variance(), Series = series });
 
                     // Plot Demand From Storage
-                    SeriesCollection.Add(new GStackedAreaSeries()
+                    var values2 = storage.Input.Split(plot_duration)
+                        .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum()));
+                    var series2 = new GStackedAreaSeries()
                     {
-                        Values = storage.Input.Split(plot_duration)
-                            .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum())).AsGearedValues(),
+                        Values = values2.AsGearedValues(),
                         Title = $"[{storage.OutputType}] {storage.Name} In",
-                        Fill = storage.Fill,
+                        Fill = storage.Fill[storage.InputType],
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
-                    });
+                    };
+                    UnorderedCollection.Add(new MySeries { Variance = values2.Variance(), Series = series2 });
+                }
+                else
+                {
+                    IsStorageVisible = false;
                 }
             }
+
+            SeriesCollection.AddRange(UnorderedCollection.OrderBy(x=>x.Variance).Select(o=>o.Series));
         }
+
+        public List<MySeries> UnorderedCollection { get; set; }
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class MySeries
+    {
+        public double Variance { get; set; }
+        public GStackedAreaSeries Series { get; set; }
     }
 }

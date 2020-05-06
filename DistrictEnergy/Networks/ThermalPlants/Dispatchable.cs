@@ -9,25 +9,8 @@ using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public abstract class Dispatchable : IThermalPlantSettings
+    public abstract class Dispatchable : NotStorage
     {
-        public abstract LoadTypes InputType { get; }
-        public abstract double F { get; set; }
-        public abstract double V { get; set; }
-        public abstract double Capacity { get; }
-        public abstract string Name { get; set; }
-        public abstract Guid Id { get; set; }
-        public abstract LoadTypes OutputType { get; }
-        public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; }
-        public abstract List<DateTimePoint> Input { get; set; }
-        public abstract List<DateTimePoint> Output { get; set; }
-        public abstract double Efficiency { get; }
-        public abstract SolidColorBrush Fill { get; set; }
-        public GraphCost FixedCost => new FixedCost(this);
-        public GraphCost VariableCost => new VariableCost(this, 200);
-        public double TotalCost => FixedCost.Cost + VariableCost.Cost;
-        public abstract double CapacityFactor { get; set; }
-        public abstract bool IsForced { get; set; }
     }
 
     public class FixedCost : GraphCost
@@ -40,7 +23,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <param name="cost"></param>
         public FixedCost(IThermalPlantSettings plant, byte alpha = 255)
         {
-            var color = plant.Fill.Color;
+            var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Fixed Cost";
             if (plant.Output != null)
@@ -50,7 +33,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public FixedCost(Exportable plant, byte alpha = 255)
         {
-            var color = plant.Fill.Color;
+            var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Fixed Cost";
             if (plant.Input != null)
@@ -69,7 +52,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <param name="cost"></param>
         public VariableCost(IThermalPlantSettings plant, byte alpha = 255)
         {
-            var color = plant.Fill.Color;
+            var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Variable Cost";
             if (plant.Output != null)
@@ -78,11 +61,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public VariableCost(Exportable plant, byte alpha = 255)
         {
-            var color = plant.Fill.Color;
+            var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Variable Cost";
             if (plant.Input != null)
-                Cost = plant.Input.Select(x => x * plant.V).Sum();
+                Cost = plant.Input.Select(x => x.Value * plant.V).Sum();
         }
     }
 

@@ -37,18 +37,15 @@ namespace DistrictEnergy
                 new SolarThermalCollector(),
                 new WindTurbine(),
                 new GridElectricity(),
-                new GridGas(),
+                new GridGas()
             };
-            ListOfDistrictLoads = new ObservableCollection<AbstractDistrictLoad>()
+            ListOfDistrictLoads = new ObservableCollection<IBaseLoad>()
             {
                 new HeatingLoads(),
                 new CoolingLoads(),
                 new ElectricityLoads(),
                 new PipeNetwork(LoadTypes.Heating, "Heating Losses"),
                 new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"),
-                new ElectricityExport(),
-                new CoolingExport(),
-                new HeatingExport()
             };
             PlanningSettings = new PlanningSettings();
             DistrictSettings = new DistrictSettings();
@@ -65,7 +62,7 @@ namespace DistrictEnergy
             CombinedHeatAndPowerViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             ElectricGenerationViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             HotWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
-            NetworkViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
+            PlanningSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
 
             starHeight = new GridLength[expanderGrid.RowDefinitions.Count];
             starHeight[0] = expanderGrid.RowDefinitions[0].Height;
@@ -79,7 +76,7 @@ namespace DistrictEnergy
             MyExpander.Collapsed += ExpandedOrCollapsed;
         }
 
-        public ObservableCollection<AbstractDistrictLoad> ListOfDistrictLoads
+        public ObservableCollection<IBaseLoad> ListOfDistrictLoads
         {
             get => _listOfDistrictLoads;
             set
@@ -224,7 +221,7 @@ namespace DistrictEnergy
 
         GridLength[] starHeight;
         private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
-        private ObservableCollection<AbstractDistrictLoad> _listOfDistrictLoads;
+        private ObservableCollection<IBaseLoad> _listOfDistrictLoads;
 
         private void CostsChecked(object sender, RoutedEventArgs e)
         {

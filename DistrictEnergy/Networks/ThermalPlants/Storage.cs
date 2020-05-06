@@ -19,24 +19,19 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract double StartingCapacity { get; }
         public abstract double F { get; set; }
         public abstract double V { get; set; }
-        public abstract double Capacity { get; }
+        public abstract double Capacity { get; set; }
         public abstract string Name { get; set; }
         public Guid Id { get; set; } = Guid.NewGuid();
         public abstract LoadTypes OutputType { get; }
         public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; set; }
         public List<DateTimePoint> Input { get; set; }
         public List<DateTimePoint> Output { get; set; }
-        public abstract SolidColorBrush Fill { get; set; }
+        public abstract Dictionary<LoadTypes, SolidColorBrush> Fill { get; set; }
         public abstract LoadTypes InputType { get; }
         public GraphCost FixedCost => new FixedCost(this);
         public GraphCost VariableCost => new VariableCost(this, 200);
         public double TotalCost => FixedCost.Cost + VariableCost.Cost;
-        public double CapacityFactor
-        {
-            get => 1;
-            set => throw new NotImplementedException();
-        }
-
+        public abstract double CapacityFactor { get; set; }
         public bool IsForced { get; set; }
     }
 }

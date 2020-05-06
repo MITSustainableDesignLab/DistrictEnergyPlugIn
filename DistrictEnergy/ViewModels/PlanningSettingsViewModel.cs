@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using DistrictEnergy.Annotations;
+using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.Loads;
 using Newtonsoft.Json;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -14,6 +17,7 @@ namespace DistrictEnergy.ViewModels
     {
         public PlanningSettingsViewModel()
         {
+            Instance = this;
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
@@ -42,7 +46,10 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.PlanningSettings = JsonConvert.DeserializeObject<PlanningSettings>(json);
             }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
+            UseDistrictLosses = DistrictControl.PlanningSettings.UseDistrictLosses;
+            RelDistCoolLoss = DistrictControl.PlanningSettings.RelDistCoolLoss * 100;
+            RelDistHeatLoss = DistrictControl.PlanningSettings.RelDistHeatLoss * 100;
+            OnPropertyChanged(string.Empty);
         }
 
         private void SaveSettings(UmiContext e)
@@ -58,22 +65,55 @@ namespace DistrictEnergy.ViewModels
             context.AuxiliaryFiles.StoreText("planningSettings.json", pSjson);
         }
 
-        public double C1
+        public bool UseDistrictLosses
         {
-            get { return DistrictControl.PlanningSettings.C1; }
+            get
+            {
+                if (DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>().Select(o => o.UseDistrictLosses).Any(b => b))
+                    return true;
+                return false;
+            }
             set
             {
-                DistrictControl.PlanningSettings.C1 = value;
+                foreach (var pipeNetwork in DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>())
+                {
+                    pipeNetwork.UseDistrictLosses = value;
+                }
+
+                DistrictControl.PlanningSettings.UseDistrictLosses = value;
                 OnPropertyChanged();
             }
         }
 
-        public double C2
+        public double RelDistHeatLoss
         {
-            get { return DistrictControl.PlanningSettings.C2; }
+            get => DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>().Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.RelativeLoss).Average() * 100;
             set
             {
-                DistrictControl.PlanningSettings.C2 = value;
+                foreach (var pipeNetwork in DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
+                    .Where(x => x.LoadType == LoadTypes.Heating))
+                {
+                    pipeNetwork.RelativeLoss = value / 100;
+                }
+
+                DistrictControl.PlanningSettings.RelDistHeatLoss = value / 100;
+                OnPropertyChanged();
+            }
+        }
+
+        public double RelDistCoolLoss
+        {
+            get => DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
+                .Where(x => x.LoadType == LoadTypes.Cooling).Select(o => o.RelDistCoolLoss).Average() * 100;
+            set
+            {
+                foreach (var pipeNetwork in DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
+                    .Where(x => x.LoadType == LoadTypes.Cooling))
+                {
+                    pipeNetwork.RelativeLoss = value / 100;
+                }
+
+                DistrictControl.PlanningSettings.RelDistCoolLoss = value / 100;
                 OnPropertyChanged();
             }
         }
@@ -102,17 +142,8 @@ namespace DistrictEnergy.ViewModels
 
         public double AnnuityFactor => DistrictControl.PlanningSettings.AnnuityFactor;
 
-        public double PumpEfficiency
-        {
-            get { return DistrictControl.PlanningSettings.PumpEfficiency; }
-            set
-            {
-                DistrictControl.PlanningSettings.PumpEfficiency = value;
-                OnPropertyChanged();
-            }
-        }
         /// <summary>
-        /// "365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760"
+        /// "12, 15, 20, 24, 30, 40, 60, 73, 120, 146, 219, 292, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760"
         /// </summary>
         public int TimeSteps
         {
@@ -126,6 +157,7 @@ namespace DistrictEnergy.ViewModels
         }
 
         public int DisplayTimeSteps => availableTimeSteps[TimeSteps];
+        public static PlanningSettingsViewModel Instance { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -137,7 +169,7 @@ namespace DistrictEnergy.ViewModels
 
         private readonly List<int> availableTimeSteps = new List<int>()
         {
-            365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760
+            12, 15, 20, 24, 30, 40, 60, 73, 120, 146, 219, 292, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760
         };
 
     }

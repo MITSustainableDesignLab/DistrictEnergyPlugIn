@@ -12,7 +12,7 @@ using Umi.Core;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    internal class PipeNetwork : BaseLoad
+    internal class PipeNetwork: AbstractLosses
     {
         public PipeNetwork(LoadTypes loadType, string name)
         {
@@ -31,16 +31,11 @@ namespace DistrictEnergy.Networks.Loads
         /// </summary>
         public bool UseDistrictLosses { get; set; } = false;
 
-        public override SolidColorBrush Fill { get; set; }
+        public SolidColorBrush Fill { get; set; }
 
         [DataMember]
         [DefaultValue("Distribution Pipes")]
         public override string Name { get; set; } = "Distribution Losses";
-
-        public override void GetUmiLoads(List<UmiObject> contextObjects)
-        {
-            Input = new double[8760];
-        }
 
         public override double[] Input
         {
@@ -53,7 +48,7 @@ namespace DistrictEnergy.Networks.Loads
             var final = new double[8760];
             if (UseDistrictLosses)
             {
-                foreach (var loads in DistrictControl.Instance.ListOfDistrictLoads.OfType<IBaseLoad>()
+                foreach (var loads in DistrictControl.Instance.ListOfDistrictLoads.OfType<BaseLoad>()
                     .Where(o => o.LoadType == LoadType))
                 {
                     var adjustedLoad = loads.Input.Select(x => x * RelativeLoss).ToArray(); 
@@ -67,8 +62,19 @@ namespace DistrictEnergy.Networks.Loads
             return final;
         }
 
-        public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes LoadType { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public double RelativeLoss { get; set; }
+    }
+
+    internal abstract class AbstractLosses: IBaseLoad
+    {
+        public abstract double[] Input { get; set; }
+        public LoadTypes LoadType { get; set; }
+        public abstract string Name { get; set; }
+        public SolidColorBrush Fill { get; set; }
+        public void GetUmiLoads(List<UmiObject> contextBuilding)
+        {
+            Input = new double[8760];
+        }
     }
 }

@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    public class SolarThermalCollector : Dispatchable, ISolar
+    public class SolarThermalCollector : SolarInput
     {
         public SolarThermalCollector()
         {
@@ -51,7 +51,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(7191)] public override double F { get; set; } = 7191;
         [DataMember] [DefaultValue(0.00887)] public override double V { get; set; } = 0.00887;
-        public override double Capacity => CalcCapacity();
+        public override double Capacity { get; set; }
+
         public override double CapacityFactor
         {
             get => OFF_SHW;
@@ -59,13 +60,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public override bool IsForced { get; set; }
-
-        private double CalcCapacity()
-        {
-            if (DistrictControl.Instance is null) return 0;
-            return OFF_SHW * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating)
-                .Select(v => v.Input.Sum()).Sum();
-        }
 
         [DataMember]
         [DefaultValue("Solar Thermal")]
@@ -75,15 +69,33 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override LoadTypes OutputType => LoadTypes.Heating;
         public override LoadTypes InputType => LoadTypes.SolarRadiation;
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
         {
             {LoadTypes.Heating, EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW}
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[LoadTypes.Heating];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(251, 209, 39));
-        public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_SHW * (1 - LOSS_SHW) * UTIL_SHW);
-        public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
+
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(251, 209, 39))}
+                };
+            set => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns the Array of Global Incidence Radiation (kWh/m2) for a certain range
+        /// </summary>
+        /// <param name="t">From hour of the year #</param>
+        /// <param name="dt">Duration (hours)</param>
+        /// <returns></returns>
+        public override double[] SolarAvailableInput(int t = 0, int dt = 8760) => DHSimulateDistrictEnergy.Instance
+            .DistrictDemand.RadN.ToList().GetRange(t, dt).ToArray();
     }
 }

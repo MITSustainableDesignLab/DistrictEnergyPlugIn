@@ -135,14 +135,16 @@
     <Compile Include="Networks\ThermalPlants\BaseLoad.cs" />
     <Compile Include="Networks\ThermalPlants\CoolingExport.cs" />
     <Compile Include="Networks\ThermalPlants\ElectricityExport.cs" />
+    <Compile Include="Networks\ThermalPlants\NotStorage.cs" />
+    <Compile Include="Networks\ThermalPlants\SolarInput.cs" />
     <Compile Include="Networks\ThermalPlants\Exportable.cs" />
     <Compile Include="Networks\ThermalPlants\GridElectricity.cs" />
     <Compile Include="Networks\ThermalPlants\GridGas.cs" />
     <Compile Include="Networks\ThermalPlants\Dispatchable.cs" />
     <Compile Include="Networks\ThermalPlants\HeatingExport.cs" />
-    <Compile Include="Networks\ThermalPlants\ISolar.cs" />
     <Compile Include="Networks\ThermalPlants\IWind.cs" />
     <Compile Include="Networks\ThermalPlants\Storage.cs" />
+    <Compile Include="Networks\ThermalPlants\WindInput.cs" />
     <Compile Include="ViewModels\AnAdditionalLoadViewModel.cs" />
     <Compile Include="ViewModels\Converters\Converter.cs" />
     <Compile Include="ViewModels\Converters\CostConverterUnit.cs" />
@@ -203,7 +205,6 @@
     <Compile Include="ViewModels\HotWaterViewModel.cs" />
     <Compile Include="ViewModels\Converters\KWhConverterUnit.cs" />
     <Compile Include="ViewModels\LoadsViewModel.cs" />
-    <Compile Include="ViewModels\NetworkViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />

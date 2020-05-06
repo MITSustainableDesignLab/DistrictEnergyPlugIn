@@ -23,7 +23,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             get => UmiContext.Current != null ? UmiContext.Current.ProjectSettings.GasDollars : 0;
             set => UmiContext.Current.ProjectSettings.GasDollars = value;
         }
-        public override double Capacity { get; } = double.PositiveInfinity;
+        public override double Capacity { get; set; } = double.PositiveInfinity;
 
         [DataMember]
         [DefaultValue("Grid Natural Gas")]
@@ -47,6 +47,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(189, 133, 74));
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(189, 133, 74))}
+                };
+            set => throw new NotImplementedException();
+        }
     }
 }

@@ -1472,21 +1472,21 @@ namespace DistrictEnergy
 
         public static double LossHwnet
         {
-            get { return NetworkViewModel.Instance.RelDistHeatLoss / 100; }
+            get { return PlanningSettingsViewModel.Instance.RelDistHeatLoss / 100; }
         }
 
         /// <summary>
         /// </summary>
         public static double LossChwnet
         {
-            get { return NetworkViewModel.Instance.RelDistCoolLoss / 100; }
+            get { return PlanningSettingsViewModel.Instance.RelDistCoolLoss / 100; }
         }
 
         /// <summary>
         /// </summary>
         public static bool UseDistrictLosses
         {
-            get { return NetworkViewModel.Instance.UseDistrictLosses; }
+            get { return PlanningSettingsViewModel.Instance.UseDistrictLosses; }
         }
 
         public static bool UseEhpEvap

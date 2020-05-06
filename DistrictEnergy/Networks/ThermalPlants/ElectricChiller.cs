@@ -23,15 +23,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(164.1)] public override double F { get; set; } = 164.1;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
-        public override double Capacity { get; } = double.PositiveInfinity;
+        public override double Capacity { get; set; } = double.PositiveInfinity;
         [DataMember] [DefaultValue("Chiller")] public override string Name { get; set; } = "Chiller";
         public override Guid Id { get; set; }
         public override LoadTypes OutputType => LoadTypes.Cooling;
         public override LoadTypes InputType => LoadTypes.Elec;
+
         public override double CapacityFactor
         {
             get => 1;
-            set {}
+            set { }
         }
 
         public override bool IsForced { get; set; }
@@ -41,9 +42,20 @@ namespace DistrictEnergy.Networks.ThermalPlants
             {LoadTypes.Cooling, CCOP_ECH},
             {LoadTypes.Elec, -1}
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(93, 153, 170));
+
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {OutputType, new SolidColorBrush(Color.FromRgb(93, 153, 170))},
+                    {InputType, new SolidColorBrush(Color.FromArgb(150,93, 153, 170))}
+                };
+            set => throw new NotImplementedException();
+        }
     }
 }

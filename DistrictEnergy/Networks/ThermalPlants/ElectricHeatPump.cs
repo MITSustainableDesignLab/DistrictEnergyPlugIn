@@ -39,12 +39,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1660)] public override double F { get; set; } = 1660;
         [DataMember] [DefaultValue(0.00332)] public override double V { get; set; } = 0.00332;
-        public override double Capacity => CalcCapacity();
-        private double CalcCapacity()
-        {
-            if (DistrictControl.Instance is null) return 0;
-            return OFF_EHP * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
-        }
+        public override double Capacity { get; set; }
 
         [DataMember]
         [DefaultValue("Heat Pump")]
@@ -70,6 +65,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get =>
+                new Dictionary<LoadTypes, SolidColorBrush>
+                {
+                    {LoadTypes.Cooling, new SolidColorBrush(Color.FromRgb(0, 140, 218))},
+                    {LoadTypes.Heating, new SolidColorBrush(Color.FromArgb(100,0, 140, 218))},
+                    {LoadTypes.Elec, new SolidColorBrush(Color.FromArgb(200,60, 120, 218))}
+                };
+            set => throw new NotImplementedException();
+        }
     }
 }
