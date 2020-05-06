@@ -198,7 +198,7 @@
             <RegistryKey Root="HKCU" Key="Software\MIT Sustainable Design Lab\RhinoPlugIns">
               <RegistryValue Name="CsvHelperDLL" Value="1" KeyPath="yes" Type="integer" />
             </RegistryKey>
-            <File Id="CsvHelperDLL" Name="CsvHelper.dll" Source="$(var.ExportLoadsToFile.TargetDir)CsvHelper.dll" />
+            <File Id="CsvHelperDLL" Name="CsvHelper.dll" Source="$(var.DistrictEnergy.TargetDir)CsvHelper.dll" />
           </Component>
 
           <Component Id="EnergyPlusWeatherDLL" Guid="{E31B8CD5-F5EB-4A12-A191-C66E46344E03}">
