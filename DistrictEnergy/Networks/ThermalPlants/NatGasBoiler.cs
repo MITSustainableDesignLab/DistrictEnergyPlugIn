@@ -21,7 +21,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1360)] public override double F { get; set; } = 1360;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
-        public override double Capacity { get; } = double.PositiveInfinity;
+        public override double Capacity { get; set; } = double.PositiveInfinity;
         [DataMember] [DefaultValue("Natural Gas Boiler")] public override string Name { get; set; } = "Natural Gas Boiler";
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Heating;

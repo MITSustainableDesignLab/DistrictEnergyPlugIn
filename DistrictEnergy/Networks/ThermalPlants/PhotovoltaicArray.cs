@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
-    internal class PhotovoltaicArray : Dispatchable, ISolar
+    internal class PhotovoltaicArray : SolarInput
     {
         public PhotovoltaicArray()
         {
@@ -47,8 +47,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1313)] public override double F { get; set; } = 1313;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
-        [JsonIgnore] public override double Capacity => CalcCapacity();
-        [JsonIgnore] public override double CapacityFactor
+        [JsonIgnore] public override double Capacity { get; set; }
+
+        [JsonIgnore]
+        public override double CapacityFactor
         {
             get => OFF_PV;
             set => ElectricGenerationViewModel.Instance.OFF_PV = value * 100;
@@ -56,21 +58,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override bool IsForced { get; set; }
 
-        private double CalcCapacity()
-        {
-            if(DistrictControl.Instance is null) return 0;
-            return OFF_PV * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Elec).Select(v => v.Input.Sum()).Sum();
-        }
-
         [DataMember] [DefaultValue("PV")] public override string Name { get; set; } = "PV";
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Elec;
         public override LoadTypes InputType => LoadTypes.SolarRadiation;
 
-        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Elec, EFF_PV * UTIL_PV * (1 - LOSS_PV)}
+            {LoadTypes.Elec, (1 - LOSS_PV)}
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
@@ -84,8 +81,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 };
             set => throw new NotImplementedException();
         }
-
-        public double AvailableArea => Capacity / (SolarAvailableInput.Sum() * EFF_PV * (1 - LOSS_PV) * UTIL_PV);
-        public double[] SolarAvailableInput => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN;
+        /// <summary>
+        /// Returns the Array of Global Incidence Radiation (kWh/m2) for a certain range
+        /// </summary>
+        /// <param name="t">From hour of the year #</param>
+        /// <param name="dt">Duration (hours)</param>
+        /// <returns></returns>
+        public override double[] SolarAvailableInput(int t = 0, int dt = 8760) => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.ToList().GetRange(t, dt).ToArray();
     }
 }

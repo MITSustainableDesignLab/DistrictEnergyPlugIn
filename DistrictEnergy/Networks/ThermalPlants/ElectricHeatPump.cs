@@ -39,12 +39,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         [DataMember] [DefaultValue(1660)] public override double F { get; set; } = 1660;
         [DataMember] [DefaultValue(0.00332)] public override double V { get; set; } = 0.00332;
-        public override double Capacity => CalcCapacity();
-        private double CalcCapacity()
-        {
-            if (DistrictControl.Instance is null) return 0;
-            return OFF_EHP * DistrictControl.Instance.ListOfDistrictLoads.Where(x => x.LoadType == LoadTypes.Heating).Select(v => v.Input.Max()).Sum();
-        }
+        public override double Capacity { get; set; }
 
         [DataMember]
         [DefaultValue("Heat Pump")]
