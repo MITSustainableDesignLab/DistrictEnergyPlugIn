@@ -478,6 +478,7 @@ namespace DistrictEnergy
 
             var lp = LpModel.ExportModelAsLpFormat(false);
             LpModel.EnableOutput();
+            RhinoApp.WriteLine("Solving...");
             var resultStatus = LpModel.Solve();
 
             // Check that the problem has an optimal solution.
