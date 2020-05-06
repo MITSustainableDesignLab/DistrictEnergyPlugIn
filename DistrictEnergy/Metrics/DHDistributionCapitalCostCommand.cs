@@ -37,8 +37,8 @@ namespace DistrictEnergy.Metrics
             var effectiveWidth = Metrics.EffThermalWidth(landArea, length);
 
             double annuity = Metrics.AnnuityPayment(DistrictControl.PlanningSettings.Rate, DistrictControl.PlanningSettings.Periods);
-            double c1 = DistrictControl.PlanningSettings.C1;
-            double c2 = DistrictControl.PlanningSettings.C2;
+            double c1 = 0;
+            double c2 = 0;
 
             double da = Metrics.AveragePipeDiamSwedish(heatDemand * 0.0036 / length);
 

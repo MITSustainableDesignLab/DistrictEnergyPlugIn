@@ -16,7 +16,7 @@ namespace DistrictEnergy.Views.PlantSettings
         public NetworkView()
         {
             InitializeComponent();
-            DataContext = new NetworkViewModel();
+            DataContext = new PlanningSettingsViewModel();
             UmiEventSource.Instance.ProjectOpened += LoadThis;
             UmiEventSource.Instance.ProjectClosed += ClearThis;
         }

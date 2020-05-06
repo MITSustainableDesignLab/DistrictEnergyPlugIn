@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug64</Configuration>
@@ -203,7 +203,6 @@
     <Compile Include="ViewModels\HotWaterViewModel.cs" />
     <Compile Include="ViewModels\Converters\KWhConverterUnit.cs" />
     <Compile Include="ViewModels\LoadsViewModel.cs" />
-    <Compile Include="ViewModels\NetworkViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
     <Compile Include="DistrictSettings.cs" />
