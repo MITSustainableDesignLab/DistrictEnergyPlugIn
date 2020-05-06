@@ -46,7 +46,10 @@ namespace DistrictEnergy.ViewModels
                 DistrictControl.PlanningSettings = JsonConvert.DeserializeObject<PlanningSettings>(json);
             }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(String.Empty));
+            UseDistrictLosses = DistrictControl.PlanningSettings.UseDistrictLosses;
+            RelDistCoolLoss = DistrictControl.PlanningSettings.RelDistCoolLoss * 100;
+            RelDistHeatLoss = DistrictControl.PlanningSettings.RelDistHeatLoss * 100;
+            OnPropertyChanged(string.Empty);
         }
 
         private void SaveSettings(UmiContext e)

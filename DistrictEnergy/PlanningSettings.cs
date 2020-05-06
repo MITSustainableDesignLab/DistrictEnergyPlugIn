@@ -11,7 +11,7 @@ namespace DistrictEnergy
         [DefaultValue(365)] public double TimeSteps { get; set; } = 365;
         [JsonIgnore] public double AnnuityFactor => Metrics.Metrics.AnnuityPayment(Rate, Periods);
         public bool UseDistrictLosses { get; set; } = true;
-        public double RelDistHeatLoss { get; set; } = 15;
-        public double RelDistCoolLoss { get; set; } = 6;
+        public double RelDistHeatLoss { get; set; } = 0.15;
+        public double RelDistCoolLoss { get; set; } = 0.06;
     }
 }
