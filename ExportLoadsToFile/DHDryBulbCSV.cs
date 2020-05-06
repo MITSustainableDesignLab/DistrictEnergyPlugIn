@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Rhino;
 using Rhino.Commands;
 using EnergyPlusWeather;
@@ -45,7 +46,7 @@ namespace ExportLoadsToFile
             try
             {
                 StreamWriter writer = File.CreateText(file_name);
-                var csv = new CsvWriter(writer);
+                var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
                 csv.WriteField("Hour");
                 csv.WriteField("DB");
                 csv.NextRecord();

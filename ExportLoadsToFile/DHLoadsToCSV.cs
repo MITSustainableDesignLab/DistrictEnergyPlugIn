@@ -3,6 +3,7 @@ using Rhino;
 using Rhino.Commands;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using CsvHelper;
 using Umi.RhinoServices.Context;
@@ -35,7 +36,7 @@ namespace ExportLoadsToFile
             //Create the file
             string file_name = @"C:\UMI\temp\Loads.csv";
             using (var writer = new StreamWriter(file_name))
-            using (var csvWriter = new CsvWriter(writer))
+            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
                 var filterList = new List<string>();
                 filterList.Add("SDL/Lighting");
