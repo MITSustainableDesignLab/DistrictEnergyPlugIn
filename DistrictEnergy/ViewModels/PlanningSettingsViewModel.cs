@@ -143,7 +143,7 @@ namespace DistrictEnergy.ViewModels
         public double AnnuityFactor => DistrictControl.PlanningSettings.AnnuityFactor;
 
         /// <summary>
-        /// "12, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760"
+        /// "12, 15, 20, 24, 30, 40, 60, 73, 120, 146, 219, 292, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760"
         /// </summary>
         public int TimeSteps
         {
@@ -169,7 +169,7 @@ namespace DistrictEnergy.ViewModels
 
         private readonly List<int> availableTimeSteps = new List<int>()
         {
-            12, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760
+            12, 15, 20, 24, 30, 40, 60, 73, 120, 146, 219, 292, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760
         };
 
     }
