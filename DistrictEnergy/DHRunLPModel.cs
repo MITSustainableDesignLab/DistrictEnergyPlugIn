@@ -516,44 +516,44 @@ namespace DistrictEnergy
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
                 plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity} Peak ; {energy.Sum()} Annum");
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<SolarInput>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
                 plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity} Peak ; {energy.Sum()} Annum");
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
                 plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity} Peak ; {energy.Sum()} Annum");
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
             {
                 var solutionValues = E.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue(); // solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue() / dt; // solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity} Peak ; {energy.Sum()} Annum");
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
             }
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
@@ -568,7 +568,7 @@ namespace DistrictEnergy
                 var totalActualDemand = TotalActualDemand(storage.OutputType);
                 storage.CapacityFactor = Math.Round(storage.Output.Sum() / totalActualDemand * 365, 2);
                 RhinoApp.WriteLine(
-                    $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0}");
+                    $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0} kWh");
             }
 
             foreach (var area in Area)
