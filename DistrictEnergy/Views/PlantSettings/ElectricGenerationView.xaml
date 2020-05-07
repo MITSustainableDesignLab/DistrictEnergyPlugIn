@@ -352,7 +352,7 @@
                                     <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_BAT}" ToolTip="Force this energy storage to have a capacity equivalent to n days of autonomy">
                                         <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
                                     </ToggleButton>
-                                    <Slider VerticalAlignment="Center" Margin="50,0,10,0" Maximum="365"
+                                    <Slider VerticalAlignment="Center" Margin="10,0" Maximum="365"
                                             Value="{Binding AUT_BAT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Number of average annual days that batteries can meet demand once fully charged"
                                             IsSnapToTickEnabled="True" Grid.Column="1" />
