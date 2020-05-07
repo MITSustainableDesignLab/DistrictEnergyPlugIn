@@ -183,7 +183,7 @@ namespace DistrictEnergy
 
             RhinoApp.WriteLine("Number of variables = " + LpModel.NumVariables());
 
-            RhinoApp.WriteLine("Computing contraints...");
+            RhinoApp.WriteLine("Computing constraints...");
             watch = Stopwatch.StartNew();
             foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
             {
@@ -317,7 +317,7 @@ namespace DistrictEnergy
                 }
             }
 
-            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings)
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<NotStorage>())
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
