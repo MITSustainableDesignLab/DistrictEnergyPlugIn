@@ -13,5 +13,9 @@ namespace DistrictEnergy
         public bool UseDistrictLosses { get; set; } = true;
         public double RelDistHeatLoss { get; set; } = 0.15;
         public double RelDistCoolLoss { get; set; } = 0.06;
+        /// <summary>
+        /// The ratio by which the objective function is multiplied
+        /// </summary>
+        public double CarbonRatio { get; set; } = 0.5;
     }
 }
