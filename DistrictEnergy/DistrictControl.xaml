@@ -94,7 +94,7 @@
                       Grid.Row="1">
                 <ScrollViewer Height="Auto">
                     <StackPanel>
-                        <plantSettings:NetworkView Height="auto" />
+                        <plantSettings:SettingsView Height="auto" />
                         <plantSettings:ChilledWaterView Height="auto" />
                         <plantSettings:HotWaterView Height="auto" />
                         <plantSettings:ElectricGenerationView Height="auto" />

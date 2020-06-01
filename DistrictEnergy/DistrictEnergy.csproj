@@ -230,8 +230,8 @@
     <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
       <DependentUpon>ACustomModuleView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
-      <DependentUpon>NetworkView.xaml</DependentUpon>
+    <Compile Include="Views\PlantSettings\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ResultViews\Carbon.xaml.cs">
       <DependentUpon>Carbon.xaml</DependentUpon>
@@ -284,7 +284,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlantSettings\NetworkView.xaml">
+    <Page Include="Views\PlantSettings\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
