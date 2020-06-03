@@ -170,9 +170,10 @@ namespace DistrictEnergy
                         $"StoIn_{t:0000}_{supplymodule.Name}");
                     Qout[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
                         $"StoOut_{t:0000}_{supplymodule.Name}");
-                    S[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, 
+                    S[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
                         $"StoState_{t:0000}_{supplymodule.Name}");
-                } 
+                }
+
                 C[supplymodule] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Cap_{supplymodule.Name}");
             }
 
@@ -312,7 +313,8 @@ namespace DistrictEnergy
                 {
                     var loadType = plant.OutputType;
                     LpModel.Add(
-                        P.Where(o => o.Key.Item2 == plant).Select(x => x.Value * Math.Abs(plant.ConversionMatrix[loadType]))
+                        P.Where(o => o.Key.Item2 == plant)
+                            .Select(x => x.Value * Math.Abs(plant.ConversionMatrix[loadType]))
                             .ToArray().Sum() == plant.CapacityFactor * TotalAnnualDemand(loadType));
                 }
             }
@@ -406,6 +408,7 @@ namespace DistrictEnergy
                     LpModel.Add(C[storage] == storage.CapacityFactor * TotalAnnualDemand(storage.OutputType) / 365);
                 }
             }
+
             RhinoApp.WriteLine(
                 $"Computed {LpModel.NumConstraints()} S variables in {watch.ElapsedMilliseconds} milliseconds");
 
@@ -434,12 +437,14 @@ namespace DistrictEnergy
                 }
 
                 // Fixed Costs (One for whole duration)
-                                                          Math.Abs(supplymodule.ConversionMatrix[
-                                                              supplymodule.OutputType]));
+                objective.SetCoefficient(C[supplymodule],
+                    supplymodule.F * DistrictEnergy.Settings.AnnuityFactor *
+                    Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
             }
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
+                // Fixed Costs (One for whole duration)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
@@ -483,6 +488,7 @@ namespace DistrictEnergy
             {
                 RhinoApp.WriteLine("Optimal Solution Found!");
             }
+
             if (resultStatus != Solver.ResultStatus.OPTIMAL)
             {
                 RhinoApp.WriteLine("The problem does not have an optimal solution!");
