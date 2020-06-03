@@ -23,13 +23,13 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        /// Var: Input energy flow at each supply module of the energy hub at each time step"
+        /// Var: Input energy flow at each supply module of the energy hub at each time step (kWh)"
         /// </summary>
         public Dictionary<(int, IThermalPlantSettings), Variable> P =
             new Dictionary<(int, IThermalPlantSettings), Variable>();
 
         /// <summary>
-        /// Var: Max input energy flow at each supply module of the energy hub"
+        /// Var: Capacity of each supply module of the energy hub (kW); For storage capacities, units are kWh"
         /// </summary>
         public Dictionary<IThermalPlantSettings, Variable> C =
             new Dictionary<IThermalPlantSettings, Variable>();
@@ -324,7 +324,7 @@ namespace DistrictEnergy
                     var outputType = plant.OutputType;
                     try
                     {
-                        LpModel.Add(P[(t, plant)] * plant.ConversionMatrix[outputType] <= C[plant]);
+                        LpModel.Add(P[(t, plant)] * plant.ConversionMatrix[outputType] / dt <= C[plant]);
                     }
                     catch (Exception e)
                     {
@@ -420,7 +420,7 @@ namespace DistrictEnergy
                         supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                objective.SetCoefficient(C[supplymodule], supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt *
+                // Fixed Costs (One for whole duration)
                                                           Math.Abs(supplymodule.ConversionMatrix[
                                                               supplymodule.OutputType]));
             }
@@ -433,7 +433,7 @@ namespace DistrictEnergy
                         supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                objective.SetCoefficient(C[supplymodule], supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt *
+                // Fixed Costs (One for whole duration)
                                                           Math.Abs(supplymodule.ConversionMatrix[
                                                               supplymodule.OutputType]));
             }
@@ -446,7 +446,7 @@ namespace DistrictEnergy
                         supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                objective.SetCoefficient(C[supplymodule], supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt *
+                // Fixed Costs (One for whole duration)
                                                           Math.Abs(supplymodule.ConversionMatrix[
                                                               supplymodule.OutputType]));
             }
@@ -456,7 +456,7 @@ namespace DistrictEnergy
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(C[exportable],
-                        exportable.F * DistrictEnergy.Settings.AnnuityFactor / dt *
+                    exportable.F * DistrictEnergy.Settings.AnnuityFactor *
                         Math.Abs(exportable.ConversionMatrix[exportable.OutputType]));
                     objective.SetCoefficient(E[(t, exportable)], exportable.V);
                 }
@@ -466,7 +466,7 @@ namespace DistrictEnergy
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
-                    objective.SetCoefficient(C[storage], storage.F * DistrictEnergy.Settings.AnnuityFactor / dt);
+                    objective.SetCoefficient(C[storage], storage.F * DistrictEnergy.Settings.AnnuityFactor);
                     objective.SetCoefficient(Qin[(t, storage)], storage.V);
                     objective.SetCoefficient(Qout[(t, storage)], storage.V);
                 }
@@ -516,7 +516,7 @@ namespace DistrictEnergy
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
@@ -527,7 +527,7 @@ namespace DistrictEnergy
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<SolarInput>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
@@ -538,7 +538,7 @@ namespace DistrictEnergy
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
                 var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
@@ -549,7 +549,7 @@ namespace DistrictEnergy
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
             {
                 var solutionValues = E.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; // solutionValues.Max();
+                plant.Capacity = C[plant].SolutionValue(); // solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
                 plant.Output = energy.ToDateTimePoint();
