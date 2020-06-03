@@ -330,7 +330,7 @@ namespace DistrictEnergy
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        RhinoApp.WriteLine(e.Message);
                     }
                 }
             }
@@ -398,8 +398,8 @@ namespace DistrictEnergy
                     LpModel.Add(S[(t, storage)] <= C[storage]);
 
                     // Input & Output Capacity Constraints
-                    LpModel.Add(Qin[(t, storage)] <= 0.3 * C[storage]);
-                    LpModel.Add(Qout[(t, storage)] <= 0.3 * C[storage]);
+                    LpModel.Add(Qin[(t, storage)] <= 0.3 * C[storage]);  // Can't charge more then 30% of total capacity in one time step
+                    LpModel.Add(Qout[(t, storage)] <= 0.3 * C[storage]);  // Can't discharge more then 30% of total capacity in one time step
                 }
 
                 // Forced Capacity Constraint
