@@ -51,5 +51,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 };
             set => throw new NotImplementedException();
         }
+
+        public override double CarbonIntensity { get; set; } = 181; 
     }
 }

@@ -50,5 +50,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             get => Output.Max();
             set => throw new NotImplementedException();
         }
+
+        public override double CarbonIntensity { get; set; }
     }
 }

@@ -32,5 +32,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public override double Efficiency => ConversionMatrix[OutputType];
+        public override double CarbonIntensity { get; set; }
     }
 }

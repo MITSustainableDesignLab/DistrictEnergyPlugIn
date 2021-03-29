@@ -11,6 +11,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     public abstract class Dispatchable : NotStorage
     {
+        /// <summary>
+        /// Carbon intensity of the Energy Module (g CO2 eq/kWh) in terms of the primary energy use.
+        /// </summary>
+        public abstract double CarbonIntensity { get; set; }
     }
 
     public class FixedCost : GraphCost
