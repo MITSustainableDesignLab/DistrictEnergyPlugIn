@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
-using DistrictEnergy.Networks.Loads;
 using LiveCharts.Defaults;
 
 namespace DistrictEnergy.Networks.ThermalPlants

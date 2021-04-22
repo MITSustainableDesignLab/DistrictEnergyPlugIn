@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace DistrictEnergy.Networks.ThermalPlants
+﻿namespace DistrictEnergy.Networks.ThermalPlants
 {
     /// <summary>
-    /// Interface for Supply Modules Using Solar as input
+    ///     Interface for Supply Modules Using Solar as input
     /// </summary>
     internal interface IWind : IThermalPlantSettings
     {

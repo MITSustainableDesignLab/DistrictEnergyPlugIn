@@ -11,9 +11,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class GridElectricity : Dispatchable
     {
-        [DataMember] 
-        [DefaultValue(0)] 
-        public override double F { get; set; } = 0;
+        [DataMember] [DefaultValue(0)] public override double F { get; set; }
 
         [DataMember]
         [DefaultValue(0.15)]
@@ -24,7 +22,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         /// <summary>
-        /// Carbon intensity [gCO2eq/kWh] from https://www.iea.org/reports/global-energy-co2-status-report-2019/emissions
+        ///     Carbon intensity [gCO2eq/kWh] from https://www.iea.org/reports/global-energy-co2-status-report-2019/emissions
         /// </summary>
         [DataMember]
         [DefaultValue(475)]
@@ -39,6 +37,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Elec;
         public override LoadTypes InputType => LoadTypes.GridElec;
+
         public override double CapacityFactor
         {
             get => 1;
@@ -47,13 +46,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override bool IsForced { get; set; }
 
-        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
             {LoadTypes.Elec, 1}
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
+
         public override Dictionary<LoadTypes, SolidColorBrush> Fill
         {
             get =>

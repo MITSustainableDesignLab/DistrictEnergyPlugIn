@@ -18,17 +18,17 @@ namespace DistrictEnergy.Networks.ThermalPlants
     internal abstract class CustomEnergySupplyModule : Dispatchable
     {
         /// <summary>
-        /// Path of the CSV File
+        ///     Path of the CSV File
         /// </summary>
-        public String Path { get; set; }
+        public string Path { get; set; }
 
         /// <summary>
-        /// Hourly Data Array
+        ///     Hourly Data Array
         /// </summary>
         public double[] Data { get; set; }
 
         /// <summary>
-        /// Unique identifier 
+        ///     Unique identifier
         /// </summary>
         public override Guid Id { get; set; } = Guid.NewGuid();
 
@@ -41,11 +41,29 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract override double Capacity { get; }
 
         /// <summary>
-        /// Name of the Custom Energy Supply Module
+        ///     Name of the Custom Energy Supply Module
         /// </summary>
         [DataMember]
         [DefaultValue("Unnamed")]
         public override string Name { get; set; } = "Unnamed";
+
+        public double Norm { get; set; } = 1;
+
+        public override Dictionary<LoadTypes, SolidColorBrush> Fill
+        {
+            get => new Dictionary<LoadTypes, SolidColorBrush>
+            {
+                {OutputType, new SolidColorBrush(Color)}
+            };
+            set => throw new NotImplementedException();
+        }
+
+        public override double CapacityFactor { get; set; }
+
+        public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
+        public abstract override Dictionary<LoadTypes, double> ConversionMatrix { get; }
+        public abstract override double Efficiency { get; }
+        public abstract override bool IsForced { get; set; }
 
         public void LoadCsv()
         {
@@ -98,28 +116,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
             return records.ToDateTimePoint();
         }
 
-        public double Norm { get; set; } = 1;
-
-        public override Dictionary<LoadTypes, SolidColorBrush> Fill
-        {
-            get => new Dictionary<LoadTypes, SolidColorBrush>()
-            {
-                {OutputType, new SolidColorBrush(Color)}
-            };
-            set => throw new NotImplementedException();
-        }
-
-        public override double CapacityFactor { get; set; }
-
-        public Color Color { get; set; } = Color.FromRgb(200, 1, 0);
-        public abstract override Dictionary<LoadTypes, double> ConversionMatrix { get; }
-        public abstract override double Efficiency { get; }
-        public abstract override bool IsForced { get; set; }
-
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)
         {
             var custom = Data[i];
-            var excess = Math.Max((chiller + solar + custom) - demand, 0);
+            var excess = Math.Max(chiller + solar + custom - demand, 0);
             var balance = demand - (chiller + solar + custom - excess);
             return balance;
         }

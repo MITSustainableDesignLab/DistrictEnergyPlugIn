@@ -12,33 +12,34 @@ namespace DistrictEnergy.Networks.ThermalPlants
     public interface IThermalPlantSettings
     {
         /// <summary>
-        /// Specific capacity cost per capacity unit f [$/kW]
+        ///     Specific capacity cost per capacity unit f [$/kW]
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
         double F { get; set; }
 
         /// <summary>
-        /// Variable cost per energy unit f [$/kWh]
+        ///     Variable cost per energy unit f [$/kWh]
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
         double V { get; set; }
 
         /// <summary>
-        /// Absolute Capacity of the Supply Module (kW of LoadType)
+        ///     Absolute Capacity of the Supply Module (kW of LoadType)
         /// </summary>
         [DataMember]
         [DefaultValue(double.PositiveInfinity)]
-        [JsonIgnore] double Capacity { get; set; }
+        [JsonIgnore]
+        double Capacity { get; set; }
 
         /// <summary>
-        /// Name of the Supply Module
+        ///     Name of the Supply Module
         /// </summary>
-        String Name { get; set; }
+        string Name { get; set; }
 
         /// <summary>
-        /// Unique Id of the Supply Module
+        ///     Unique Id of the Supply Module
         /// </summary>
         [DataMember]
         Guid Id { get; set; }
@@ -47,19 +48,19 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [JsonIgnore] Dictionary<LoadTypes, double> ConversionMatrix { get; }
 
         /// <summary>
-        /// Input Energy to the Supply Module per period
+        ///     Input Energy to the Supply Module per period
         /// </summary>
         [JsonIgnore]
         List<DateTimePoint> Input { get; set; }
 
         /// <summary>
-        /// Output Energy of the Supply Module per period
+        ///     Output Energy of the Supply Module per period
         /// </summary>
         [JsonIgnore]
         List<DateTimePoint> Output { get; set; }
 
         /// <summary>
-        /// Fill Used to Color Supply Module
+        ///     Fill Used to Color Supply Module
         /// </summary>
         [DataMember]
         Dictionary<LoadTypes, SolidColorBrush> Fill { get; set; }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -12,10 +11,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     public class CombinedHeatNPower : Dispatchable
     {
-        public CombinedHeatNPower()
-        {
-        }
-
         /// <summary>
         ///     Tracking Mode
         /// </summary>
@@ -28,7 +23,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public double OFF_CHP { get; set; } = 0;
+        public double OFF_CHP { get; set; }
 
         /// <summary>
         ///     Electrical Efficiency (%)
@@ -45,14 +40,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double HREC_CHP { get; set; } = 0.29;
 
         /// <summary>
-        /// Specific capacity cost per capacity unit f [$/kW]
+        ///     Specific capacity cost per capacity unit f [$/kW]
         /// </summary>
         [DataMember]
         [DefaultValue(1606)]
         public override double F { get; set; } = 1606;
 
         /// <summary>
-        /// Variable cost per energy unit f [$/kWh]
+        ///     Variable cost per energy unit f [$/kWh]
         /// </summary>
         [DataMember]
         [DefaultValue(0.010)]
@@ -67,6 +62,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => TMOD_CHP;
         public override LoadTypes InputType => LoadTypes.Gas;
+
         public override double CapacityFactor
         {
             get => OFF_CHP;
@@ -75,27 +71,30 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override bool IsForced { get; set; }
 
-        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
             {LoadTypes.Elec, EFF_CHP},
             {LoadTypes.Heating, HREC_CHP},
             {LoadTypes.Gas, -1}
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
         public override double Efficiency => ConversionMatrix[OutputType];
+
         public override Dictionary<LoadTypes, SolidColorBrush> Fill
         {
             get =>
                 new Dictionary<LoadTypes, SolidColorBrush>
                 {
-                    {LoadTypes.Elec,  new SolidColorBrush(Color.FromRgb(247, 96, 21))},
-                    {LoadTypes.Heating,  new SolidColorBrush(Color.FromArgb(200, 247, 96, 21))}
+                    {LoadTypes.Elec, new SolidColorBrush(Color.FromRgb(247, 96, 21))},
+                    {LoadTypes.Heating, new SolidColorBrush(Color.FromArgb(200, 247, 96, 21))}
                 };
             set => throw new NotImplementedException();
         }
+
         /// <summary>
-        /// 0 since carbon comes from Gas.
+        ///     0 since carbon comes from Gas.
         /// </summary>
         public override double CarbonIntensity { get; set; } = 0;
     }

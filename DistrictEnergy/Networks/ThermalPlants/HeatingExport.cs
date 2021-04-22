@@ -2,31 +2,27 @@
 using System.Collections.Generic;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
-using DistrictEnergy.Networks.Loads;
 using LiveCharts.Defaults;
-using Umi.Core;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class HeatingExport : Exportable
     {
-        public HeatingExport()
-        {
-        }
-
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Heating;
+
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
             {InputType, 1}
-            
         };
+
         public override List<DateTimePoint> Input { get; set; }
         public override List<DateTimePoint> Output { get; set; }
+
         public override Dictionary<LoadTypes, SolidColorBrush> Fill
         {
             get =>
-                new Dictionary<LoadTypes, SolidColorBrush>()
+                new Dictionary<LoadTypes, SolidColorBrush>
                 {
                     {OutputType, new SolidColorBrush(Color.FromArgb(200, 0, 0, 0))}
                 };

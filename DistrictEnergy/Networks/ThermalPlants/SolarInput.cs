@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Media;
-using DistrictEnergy.Helpers;
-using LiveCharts.Defaults;
-
-namespace DistrictEnergy.Networks.ThermalPlants
+﻿namespace DistrictEnergy.Networks.ThermalPlants
 {
     public abstract class SolarInput : NotStorage
     {

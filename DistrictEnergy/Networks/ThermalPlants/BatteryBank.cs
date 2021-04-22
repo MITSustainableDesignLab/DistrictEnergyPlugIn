@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
-using LiveCharts.Defaults;
 using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -15,7 +13,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public BatteryBank()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            ConversionMatrix = new Dictionary<LoadTypes, double>
             {
                 {LoadTypes.Elec, 1}
             };
@@ -26,7 +24,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public double AUT_BAT { get; set; } = 0;
+        public double AUT_BAT { get; set; }
 
         /// <summary>
         ///     Miscellaneous losses (%)
@@ -43,18 +41,18 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double BAT_START { get; set; } = 0.80;
 
         /// <summary>
-        /// Specific capacity cost per capacity unit f [$/kW]
+        ///     Specific capacity cost per capacity unit f [$/kW]
         /// </summary>
         [DataMember]
         [DefaultValue(1383)]
         public override double F { get; set; } = 1383;
 
         /// <summary>
-        /// Variable cost per energy unit f [$/kWh]
+        ///     Variable cost per energy unit f [$/kWh]
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public override double V { get; set; } = 0;
+        public override double V { get; set; }
 
         [DataMember] [DefaultValue("Battery")] public override string Name { get; set; } = "Battery";
         public override LoadTypes OutputType { get; } = LoadTypes.Elec;

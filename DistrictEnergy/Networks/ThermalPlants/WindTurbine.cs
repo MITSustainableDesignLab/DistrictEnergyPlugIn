@@ -98,8 +98,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         {
             return DHSimulateDistrictEnergy.Instance.DistrictDemand.WindN.ToList().GetRange(t, dt);
         }
+
         /// <summary>
-        /// Power output [kWh per wind turbine]
+        ///     Power output [kWh per wind turbine]
         /// </summary>
         /// <param name="t"></param>
         /// <param name="dt"></param>

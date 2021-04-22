@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Media;
-using Deedle;
 using DistrictEnergy.Helpers;
-using LiveCharts.Defaults;
-using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     public abstract class Dispatchable : NotStorage
     {
         /// <summary>
-        /// Carbon intensity of the Energy Module (g CO2 eq/kWh) in terms of the primary energy use.
+        ///     Carbon intensity of the Energy Module (g CO2 eq/kWh) in terms of the primary energy use.
         /// </summary>
         public abstract double CarbonIntensity { get; set; }
     }
@@ -20,7 +15,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     public class FixedCost : GraphCost
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="plant"></param>
         /// <param name="alpha">uses a default value of 255 for the alpha channel (opaque).</param>
@@ -49,7 +43,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
     public class VariableCost : GraphCost
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="plant"></param>
         /// <param name="alpha">uses a default value of 255 for the alpha channel (opaque).</param>
