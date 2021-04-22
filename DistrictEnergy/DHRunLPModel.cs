@@ -110,7 +110,7 @@ namespace DistrictEnergy
 
             // Input Energy
             RhinoApp.WriteLine("Computing input energy flow variables...");
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var watch = Stopwatch.StartNew();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
@@ -294,13 +294,14 @@ namespace DistrictEnergy
                 return Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == t).Select(o => o.Value).Sum();
             }
 
+            // Total demand from Loads and exports
             LinearExpr TotalAnnualDemand(LoadTypes loadType)
             {
                 return Load.Where(x => x.Key.Item2 == loadType).Select(o => o.Value).Sum() +
                        E.Where(x => x.Key.Item2.OutputType == loadType).Select(o => o.Value).ToArray().Sum();
             }
 
-            foreach (var loadType in new List<LoadTypes>() {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec})
+            foreach (var loadType in new List<LoadTypes> {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec})
             {
                 LpModel.Add(P.Where(x => x.Key.Item2.ConversionMatrix.ContainsKey(loadType))
                                 .Select(o => o.Value * o.Key.Item2.ConversionMatrix[loadType]).ToArray().Sum() <=
@@ -431,6 +432,7 @@ namespace DistrictEnergy
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<SolarInput>())
             {
+                // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
@@ -445,7 +447,7 @@ namespace DistrictEnergy
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
-                // Fixed Costs (One for whole duration)
+                // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
@@ -497,7 +499,7 @@ namespace DistrictEnergy
             }
 
             var activities = LpModel.ComputeConstraintActivities();
-            var stream = UmiContext.Current.AuxiliaryFiles.CreateNewFileStream("lp_solver_log.txt");
+            var stream = umiContext.AuxiliaryFiles.CreateNewFileStream("lp_solver_log.txt");
             foreach (var constraint in LpModel.constraints())
             {
                 var index0 = constraint.Index();
@@ -508,11 +510,11 @@ namespace DistrictEnergy
             }
 
             RhinoApp.WriteLine(
-                $"Constraints Activities Logged at {UmiContext.Current.AuxiliaryFiles.GetFullPath("lp_solver_log.txt")}");
+                $"Constraints Activities Logged at {umiContext.AuxiliaryFiles.GetFullPath("lp_solver_log.txt")}");
             stream.Close();
 
             RhinoApp.WriteLine("Solution:");
-            RhinoApp.WriteLine($"Optimal objective value = {LpModel.Objective().Value():C0}");
+            RhinoApp.WriteLine($"Optimal objective value = {LpModel.Objective().Value():f0}");
 
             double TotalActualDemand(LoadTypes outputType)
             {
@@ -522,45 +524,48 @@ namespace DistrictEnergy
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
+                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
+                var totalActualDemand = TotalActualDemand(plant.OutputType);
+                plant.CapacityFactor = totalActualDemand > 0 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
                 RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<SolarInput>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
+                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
+                var totalActualDemand = TotalActualDemand(plant.OutputType);
+                plant.CapacityFactor = totalActualDemand > 0 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
+                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
+                var totalActualDemand = TotalActualDemand(plant.OutputType);
+                plant.CapacityFactor = totalActualDemand > 0 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
             {
-                var solutionValues = E.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
+                var solutionValues = E.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); // solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
@@ -573,7 +578,7 @@ namespace DistrictEnergy
                     .ToDateTimePoint();
                 storage.Capacity = C[storage].SolutionValue();
                 var totalActualDemand = TotalActualDemand(storage.OutputType);
-                storage.CapacityFactor = Math.Round(storage.Output.Sum() / totalActualDemand * 365, 2);
+                storage.CapacityFactor = totalActualDemand > 0 ? Math.Round(storage.Output.Sum() / totalActualDemand * 365, 2) : 0;
                 RhinoApp.WriteLine(
                     $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0} kWh");
             }
@@ -581,13 +586,13 @@ namespace DistrictEnergy
             foreach (var area in Area)
             {
                 var areaM2 = area.Value.SolutionValue();
-                RhinoApp.WriteLine($"Area {area.Key.Name} = {areaM2:F0}");
+                RhinoApp.WriteLine($"Area {area.Key.Name} = {areaM2:F0} m�");
             }
 
             foreach (var wind in NWind)
             {
                 var nWind = wind.Value.SolutionValue();
-                RhinoApp.WriteLine($"# of {wind.Key.Name} = {nWind:F0}");
+                RhinoApp.WriteLine($"# of {wind.Key.Name} = {nWind:F2}");
             }
 
 
