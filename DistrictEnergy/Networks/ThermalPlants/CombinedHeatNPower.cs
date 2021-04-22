@@ -94,7 +94,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 };
             set => throw new NotImplementedException();
         }
-
-        public override double CarbonIntensity { get; set; }
+        /// <summary>
+        /// 0 since carbon comes from Gas.
+        /// </summary>
+        public override double CarbonIntensity { get; set; } = 0;
     }
 }

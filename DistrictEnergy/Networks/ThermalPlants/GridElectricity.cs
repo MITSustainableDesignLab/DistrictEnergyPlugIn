@@ -11,11 +11,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class GridElectricity : Dispatchable
     {
-        public GridElectricity()
-        {
-        }
-
-        [DataMember] [DefaultValue(0)] public override double F { get; set; } = 0;
+        [DataMember] 
+        [DefaultValue(0)] 
+        public override double F { get; set; } = 0;
 
         [DataMember]
         [DefaultValue(0.15)]
@@ -24,6 +22,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
             get => UmiContext.Current != null ? UmiContext.Current.ProjectSettings.ElectricityDollars : 0;
             set => UmiContext.Current.ProjectSettings.ElectricityDollars = value;
         }
+
+        /// <summary>
+        /// Carbon intensity [gCO2eq/kWh] from https://www.iea.org/reports/global-energy-co2-status-report-2019/emissions
+        /// </summary>
+        [DataMember]
+        [DefaultValue(475)]
+        public override double CarbonIntensity { get; set; } = 475;
 
         public override double Capacity { get; set; } = double.PositiveInfinity;
 
@@ -58,7 +63,5 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 };
             set => throw new NotImplementedException();
         }
-
-        public override double CarbonIntensity { get; set; }
     }
 }
