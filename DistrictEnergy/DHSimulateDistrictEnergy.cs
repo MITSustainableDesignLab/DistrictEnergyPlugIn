@@ -16,6 +16,7 @@ using Rhino;
 using Rhino.Commands;
 using Rhino.UI;
 using Umi.Core;
+using Umi.RhinoServices;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.Energy;
 using Umi.RhinoServices.UmiEvents;
@@ -26,7 +27,7 @@ namespace DistrictEnergy
 {
     [Guid("929185AA-DB2C-4AA5-B1C0-E89C93F0704D")]
     [CommandStyle(Rhino.Commands.Style.ScriptRunner)]
-    public class DHSimulateDistrictEnergy : Command
+    public class DHSimulateDistrictEnergy : UmiCommand
     {
         /// <summary>
         ///     Simulation Timestep
@@ -241,7 +242,7 @@ namespace DistrictEnergy
             chwCustom = demand_i - demand;
         }
 
-        protected override Result RunCommand(RhinoDoc doc, RunMode mode)
+        public override Result Run(RhinoDoc doc, UmiContext umiContext ,RunMode mode)
         {
             Result a = PreSolve();
 

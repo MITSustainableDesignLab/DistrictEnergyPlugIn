@@ -11,11 +11,12 @@ using DistrictEnergy.Networks.ThermalPlants;
 using Google.OrTools.LinearSolver;
 using Rhino;
 using Rhino.Commands;
+using Umi.RhinoServices;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy
 {
-    public class DHRunLPModel : Command
+    public class DHRunLPModel : UmiCommand
     {
         public DHRunLPModel()
         {
@@ -81,12 +82,12 @@ namespace DistrictEnergy
 
         public override string EnglishName => "DHRunLPModel";
 
-        protected override Result RunCommand(RhinoDoc doc, RunMode mode)
+        public override Result Run(RhinoDoc doc, UmiContext context, RunMode mode)
         {
-            return Main();
+            return Main(context);
         }
 
-        private Result Main()
+        private Result Main(UmiContext umiContext)
         {
             ClearVariables();
             DHSimulateDistrictEnergy.Instance.PreSolve();
