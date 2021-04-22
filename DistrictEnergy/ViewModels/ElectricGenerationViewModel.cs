@@ -23,7 +23,14 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value / 100;
+                var offPv = value / 100;
+                if (IsForced_WND && IsForced_PV)
+                {
+                    // Set value here to prevent recursion error
+                    DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = 1 - offPv;
+                    OnPropertyChanged(nameof(OFF_WND));
+                }
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = offPv;
                 OnPropertyChanged();
             }
         }
@@ -97,7 +104,12 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
+                var offWnd = value / 100;
+                if (IsForced_WND && IsForced_PV)
+                {
+                    OFF_PV = (1 - offWnd) * 100;
+                }
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = offWnd;
                 OnPropertyChanged();
             }
         }
