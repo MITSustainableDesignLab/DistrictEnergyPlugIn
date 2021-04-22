@@ -10,10 +10,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class ElectricChiller : Dispatchable
     {
-        public ElectricChiller()
-        {
-        }
-
         /// <summary>
         ///     Cooling coefficient of performance
         /// </summary>
@@ -37,7 +33,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override bool IsForced { get; set; }
 
-        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
             {LoadTypes.Cooling, CCOP_ECH},
             {LoadTypes.Elec, -1}
@@ -53,12 +49,13 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 new Dictionary<LoadTypes, SolidColorBrush>
                 {
                     {OutputType, new SolidColorBrush(Color.FromRgb(93, 153, 170))},
-                    {InputType, new SolidColorBrush(Color.FromArgb(150,93, 153, 170))}
+                    {InputType, new SolidColorBrush(Color.FromArgb(150, 93, 153, 170))}
                 };
             set => throw new NotImplementedException();
         }
+
         /// <summary>
-        /// 0 since carbon comes from Electricity.
+        ///     0 since carbon comes from Electricity.
         /// </summary>
         public override double CarbonIntensity { get; set; }
     }

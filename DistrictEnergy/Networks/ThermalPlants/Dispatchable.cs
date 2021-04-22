@@ -25,8 +25,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Fixed Cost";
             if (plant.Output != null)
-                Cost = plant.Output.Max() * DistrictControl.PlanningSettings.AnnuityFactor * plant.F /
-                       (8760 / DistrictControl.PlanningSettings.TimeSteps);
+                Cost = plant.Capacity * DistrictControl.PlanningSettings.AnnuityFactor * plant.F;
         }
 
         public FixedCost(Exportable plant, byte alpha = 255)
@@ -34,9 +33,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
             var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Fixed Cost";
-            if (plant.Input != null)
-                Cost = plant.Input.Max() * DistrictControl.PlanningSettings.AnnuityFactor * plant.F /
-                       (8760 / DistrictControl.PlanningSettings.TimeSteps);
+            if (plant.Output != null)
+                Cost = plant.Capacity * DistrictControl.PlanningSettings.AnnuityFactor * plant.F;
         }
     }
 
@@ -53,7 +51,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Variable Cost";
             if (plant.Output != null)
-                Cost = plant.Output.Select(x => x.Value * plant.V).Sum();
+                Cost = plant.Output.Sum() * plant.V;
         }
 
         public VariableCost(Exportable plant, byte alpha = 255)
@@ -61,8 +59,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
             var color = plant.Fill[plant.OutputType].Color;
             Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
             Name = plant.Name + " Variable Cost";
-            if (plant.Input != null)
-                Cost = plant.Input.Select(x => x.Value * plant.V).Sum();
+            if (plant.Output != null)
+                Cost = plant.Output.Sum() * plant.V;
         }
     }
 

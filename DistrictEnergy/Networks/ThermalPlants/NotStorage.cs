@@ -8,6 +8,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     public abstract class NotStorage : IThermalPlantSettings
     {
+        public abstract double Efficiency { get; }
         public abstract LoadTypes InputType { get; }
         public abstract double F { get; set; }
         public abstract double V { get; set; }
@@ -18,7 +19,6 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract Dictionary<LoadTypes, double> ConversionMatrix { get; }
         public abstract List<DateTimePoint> Input { get; set; }
         public abstract List<DateTimePoint> Output { get; set; }
-        public abstract double Efficiency { get; }
         public abstract Dictionary<LoadTypes, SolidColorBrush> Fill { get; set; }
         public GraphCost FixedCost => new FixedCost(this);
         public GraphCost VariableCost => new VariableCost(this, 200);
