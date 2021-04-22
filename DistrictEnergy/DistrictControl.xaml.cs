@@ -14,6 +14,7 @@ using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Wpf;
 using Rhino;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy
 {
@@ -174,7 +175,7 @@ namespace DistrictEnergy
         {
             if (SelectSimCase.SelectedItem != null)
             {
-                DHSimulateDistrictEnergy.Instance.PreSolve();
+                DHSimulateDistrictEnergy.Instance.PreSolve(UmiContext.Current);
                 var item = (SimCase) SelectSimCase.SelectedItem;
                 if (item.Id == 1)
                 {

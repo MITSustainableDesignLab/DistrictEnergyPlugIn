@@ -244,7 +244,7 @@ namespace DistrictEnergy
 
         public override Result Run(RhinoDoc doc, UmiContext umiContext ,RunMode mode)
         {
-            Result a = PreSolve();
+            Result a = PreSolve(umiContext);
 
             if (a == Result.Success)
             {
@@ -265,21 +265,14 @@ namespace DistrictEnergy
         /// PreSolves the model by calculating the load profiles
         /// </summary>
         /// <returns></returns>
-        public Result PreSolve()
+        public Result PreSolve(UmiContext umiContext)
         {
-            var umiContext = UmiContext.Current;
-            if (umiContext == null)
-            {
-                RhinoApp.WriteLine("Problem getting the umi context");
-                return Result.Failure;
-            }
-
             if (Instance.ResultsArray.StaleResults)
             {
                 var contextBuilding = AbstractDistrictLoad.ContextBuildings(UmiContext.Current);
                 foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
                 {
-                    load.GetUmiLoads(contextBuilding);
+                    load.GetUmiLoads(contextBuilding, umiContext);
                 }
 
                 DistrictDemand.RadN = GetHourlyLocationSolarRadiation(umiContext).ToArray();

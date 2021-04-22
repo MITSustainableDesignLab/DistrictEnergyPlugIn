@@ -645,7 +645,7 @@ namespace DistrictEnergy.ViewModels
         /// </summary>
         public void CalculateUserConstants()
         {
-            DHSimulateDistrictEnergy.Instance.PreSolve();
+            DHSimulateDistrictEnergy.Instance.PreSolve(UmiContext.Current);
             CapAbs = DistrictControl.Instance.ListOfPlantSettings.OfType<AbsorptionChiller>().First().Capacity;
             CapEhp = DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().Capacity;
             CapBat = DistrictControl.Instance.ListOfPlantSettings.OfType<BatteryBank>().First().Capacity;
@@ -697,7 +697,7 @@ namespace DistrictEnergy.ViewModels
         /// </summary>
         public void CalculateModelConstants()
         {
-            DHSimulateDistrictEnergy.Instance.PreSolve();
+            DHSimulateDistrictEnergy.Instance.PreSolve(UmiContext.Current);
             ModelCapAbs = DHSimulateDistrictEnergy.Instance.ResultsArray.ChwAbs.Max();
             ModelCapEhp = DHSimulateDistrictEnergy.Instance.ResultsArray.HwEhp.Max();
             ModelCapBat = DHSimulateDistrictEnergy.Instance.ResultsArray.BatChgN.Max();

@@ -90,7 +90,7 @@ namespace DistrictEnergy
         private Result Main(UmiContext umiContext)
         {
             ClearVariables();
-            DHSimulateDistrictEnergy.Instance.PreSolve();
+            DHSimulateDistrictEnergy.Instance.PreSolve(umiContext);
             // Create the linear solver with the CBC backend.
             try
             {
