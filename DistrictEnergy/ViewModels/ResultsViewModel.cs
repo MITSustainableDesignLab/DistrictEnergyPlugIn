@@ -69,7 +69,7 @@ namespace DistrictEnergy.ViewModels
 
             MonthFormatter = val => (val + 1).ToString(CultureInfo.CreateSpecificCulture("en-US"));
 
-            GaugeFormatter = value => value.ToString("N1"); // Formats the gauge number
+            GaugeFormatter = value => value.ToString("N0"); // Formats the gauge number
 
             //the formatter or labels property is shared 
             Formatter = x => x.ToString("N2");

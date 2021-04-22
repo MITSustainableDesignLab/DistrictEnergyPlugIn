@@ -14,11 +14,11 @@ namespace DistrictEnergy.ViewModels.Converters
             if (value is double d)
             {
                 if (d > 999)
-                    return (d / 1000).ToString("N1", culture); // for MW
+                    return (d / 1000).ToString("N0", culture); // for MW
 
                 if (d > 999999)
-                    return (d / 1000000).ToString("N1", culture); // for GW
-                return d.ToString("N1", culture); // for kW;
+                    return (d / 1000000).ToString("N0", culture); // for GW
+                return d.ToString("N0", culture); // for kW;
             }
 
             return string.Empty;
