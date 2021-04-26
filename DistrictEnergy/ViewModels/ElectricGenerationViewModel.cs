@@ -24,7 +24,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 var offPv = value / 100;
-                if (IsForced_WND && IsForced_PV)
+                if (IsForced_WND && IsForced_PV && value > 0)
                 {
                     // Set value here to prevent recursion error
                     DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = 1 - offPv;
@@ -105,7 +105,7 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 var offWnd = value / 100;
-                if (IsForced_WND && IsForced_PV)
+                if (IsForced_WND && IsForced_PV && value > 0)
                 {
                     OFF_PV = (1 - offWnd) * 100;
                 }
