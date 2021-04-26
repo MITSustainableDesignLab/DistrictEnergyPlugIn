@@ -12,7 +12,7 @@ namespace DistrictEnergy.Views.ResultViews
     /// <summary>
     /// Interaction logic for Summary.xaml
     /// </summary>
-    public partial class Summary : UserControl
+    public partial class Summary
     {
         public Summary()
         {
@@ -39,11 +39,11 @@ namespace DistrictEnergy.Views.ResultViews
                 NameStack.Children.Add(name);
 
                 TextBlock demandValue = new TextBlock();
-                demandValue.Text = load.Input.Max().ToString("N2");
+                demandValue.Text = load.Input.Max().ToString("N0");
                 PeakStack.Children.Add(demandValue);
 
                 TextBlock energyValue = new TextBlock();
-                energyValue.Text = load.Input.Sum().ToString("N2");
+                energyValue.Text = load.Input.Sum().ToString("N0");
                 EnergyStack.Children.Add(energyValue);
 
             }
@@ -61,43 +61,23 @@ namespace DistrictEnergy.Views.ResultViews
                 foreach (var cMat in plant.ConversionMatrix)
                 {
                     var loadType = cMat.Key;
-                    var eff = cMat.Value;
                     if (plant.Input.Sum() > 0)
                     {
-                        if (eff<0)
-                        {
-                            TextBlock name = new TextBlock();
-                            name.Text = $"[{loadType}] {plant.Name}";
-                            NameStack.Children.Add(name);
-                            Grid.SetColumn(name, 2);
+                        // Sources Name
+                        TextBlock name = new TextBlock {Text = $"[{loadType}] {plant.Name}"};
+                        NamePlantStack.Children.Add(name);
+                        Grid.SetColumn(name, 2);
 
-                            TextBlock demandValue = new TextBlock();
-                            demandValue.Text = plant.Input.Select(v => v.Value * eff).Min().ToString("N2");
-                            PeakStack.Children.Add(demandValue);
-                            Grid.SetColumn(name, 2);
-
-                            TextBlock energyValue = new TextBlock();
-                            energyValue.Text = plant.Input.Select(v => v.Value * eff).Sum().ToString("N2");
-                            EnergyStack.Children.Add(energyValue);
-                            Grid.SetColumn(name, 2);
-                        }
-                        else
-                        {
-                            TextBlock name = new TextBlock();
-                            name.Text = $"[{loadType}] {plant.Name}";
-                            NamePlantStack.Children.Add(name);
-                            Grid.SetColumn(name, 2);
-
-                            TextBlock demandValue = new TextBlock();
-                            demandValue.Text = plant.Input.Select(v => v.Value * eff).Max().ToString("N2");
-                            PeakPlantStack.Children.Add(demandValue);
-                            Grid.SetColumn(name, 2);
-
-                            TextBlock energyValue = new TextBlock();
-                            energyValue.Text = plant.Input.Select(v => v.Value * eff).Sum().ToString("N2");
-                            EnergyPlantStack.Children.Add(energyValue);
-                            Grid.SetColumn(name, 2);
-                        }
+                        // Peak Column
+                        TextBlock demandValue = new TextBlock {Text = plant.Capacity.ToString("N0")};
+                        PeakPlantStack.Children.Add(demandValue);
+                        Grid.SetColumn(name, 2);
+                        
+                        // Total Energy Column
+                        TextBlock energyValue = new TextBlock {Text = (plant.Input.Sum() * cMat.Value).ToString("N0")};
+                        EnergyPlantStack.Children.Add(energyValue);
+                        Grid.SetColumn(name, 2);
+                        
                     }
                 }
             }
