@@ -4,12 +4,13 @@ using System.Linq;
 using Rhino;
 using Rhino.Commands;
 using Umi.Core;
+using Umi.RhinoServices;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Metrics
 {
     [System.Runtime.InteropServices.Guid("55eb3b88-a514-4722-aa91-3c86b2788ff2")]
-    public class DHCapacityFactorCommand : Command
+    public class DHCapacityFactorCommand : UmiCommand
     {
         static DHCapacityFactorCommand _instance;
         public DHCapacityFactorCommand()
@@ -28,14 +29,14 @@ namespace DistrictEnergy.Metrics
             get { return "DHCapacityFactor"; }
         }
 
-        protected override Result RunCommand(RhinoDoc doc, RunMode mode)
+        public override Result Run(RhinoDoc doc, UmiContext context, RunMode mode)
         {
-            var MaxHeatinLoadQuery = UmiContext.Current.GetObjects().
+            var maxHeatinLoadQuery = context.GetObjects().
                 Select(b => new
                 { BuildingId = b.Id, MaxLoad = MaxHeatingLoad(b), AverageLoad = AverageHeatingLoad(b) });
 
             List<double> cap = new List<double>();
-            foreach(var a in MaxHeatinLoadQuery)
+            foreach(var a in maxHeatinLoadQuery)
             {
                 try
                 {
@@ -43,7 +44,7 @@ namespace DistrictEnergy.Metrics
                 }
                 catch (DivideByZeroException e)
                 {
-                    Console.WriteLine("Attempted divide by zero");
+                    Console.WriteLine(e.Message);
                     throw;
                 }
                 
