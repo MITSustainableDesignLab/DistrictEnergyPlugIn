@@ -393,7 +393,7 @@ namespace DistrictEnergy
                 LpModel.Add(S[(0, storage)] <= S[(timeSteps * dt - dt, storage)]);
 
                 // 'storage content initial == and final >= storage.init * capacity'
-                LpModel.Add(S[(0, storage)] == storage.StartingCapacity * C[storage]);
+                LpModel.Add(S[(-dt, storage)] == storage.StartingCapacity * C[storage]);
                 //LpModel.Add(S[(timeSteps * dt, storage)] == storage.StartingCapacity * C[storage]);
 
                 // Initial Capacity Constraint
