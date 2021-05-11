@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using DistrictEnergy.Annotations;
+using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
@@ -61,16 +62,15 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateCarbonChart;
+            DHRunLPModel.Instance.Completion += UpdateCarbonChart;
         }
 
         private void UpdateCarbonChart(object sender, EventArgs e)
         {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            var instance = DHSimulateDistrictEnergy.Instance;
+
             SeriesCollection.Clear();
 
-            var gasCarbon = instance.ResultsArray.NgasProj.Sum() * UmiContext.Current.ProjectSettings.GasCarbon;
+            var gasCarbon = DistrictControl.Instance.ListOfPlantSettings.OfType<GridGas>().Select(o=>o.Input.Select(x=>x.Value).Sum()).Sum() * UmiContext.Current.ProjectSettings.GasCarbon;
             SeriesCollection.Add(new StackedColumnSeries
             {
                 Title = "Natural Gas",
@@ -80,8 +80,7 @@ namespace DistrictEnergy.ViewModels
                 },
                 Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
             });
-            var electricityCarbon = instance.ResultsArray.ElecProj.Sum() *
-                                    UmiContext.Current.ProjectSettings.ElectricityCarbon;
+            var electricityCarbon = DistrictControl.Instance.ListOfPlantSettings.OfType<GridElectricity>().Select(o => o.Input.Select(x => x.Value).Sum()).Sum() * UmiContext.Current.ProjectSettings.ElectricityCarbon;
             SeriesCollection.Add(new StackedColumnSeries
             {
                 Title = "Grid Electricity",

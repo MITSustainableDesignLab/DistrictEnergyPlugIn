@@ -7,6 +7,7 @@ using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -96,7 +97,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override List<double> WindAvailableInput(int t = 0, int dt = 8760)
         {
-            return DHSimulateDistrictEnergy.Instance.DistrictDemand.WindN.ToList().GetRange(t, dt);
+            return WindSpeed.ToList().GetRange(t, dt);
         }
 
         /// <summary>

@@ -1,16 +1,14 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
 using DistrictEnergy.Annotations;
-using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Defaults;
-using LiveCharts.Geared;
+using LiveCharts.Helpers;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
-using DistrictEnergy.Helpers;
 using LiveCharts.Wpf;
 
 namespace DistrictEnergy.ViewModels
@@ -22,6 +20,7 @@ namespace DistrictEnergy.ViewModels
 
         public CostsViewModel()
         {
+            Instance = this;
             SeriesCollection = new SeriesCollection();
             Formatter = delegate(double value)
             {
@@ -53,6 +52,8 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public static CostsViewModel Instance { get; set; }
+
         public SeriesCollection SeriesCollection { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -64,14 +65,11 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
             DHRunLPModel.Instance.Completion += UpdateCostsChart;
         }
 
         private void UpdateCostsChart(object sender, EventArgs e)
         {
-            var args = (DHRunLPModel.SimulationCompleted) e;
-            var Total = new double[args.TimeSteps];
             TotalCost = 0;
             SeriesCollection.Clear();
             foreach (var supplyModule in DistrictControl.Instance.ListOfPlantSettings)

@@ -8,6 +8,7 @@ using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
 using Newtonsoft.Json;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -86,7 +87,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <returns></returns>
         public override double[] SolarAvailableInput(int t = 0, int dt = 8760)
         {
-            return DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.ToList().GetRange(t, dt).ToArray();
+            return SolarNormalRadiation.ToList().GetRange(t, dt).ToArray();
         }
     }
 }

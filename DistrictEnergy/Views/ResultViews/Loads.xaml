@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-             xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:LoadsViewModel}">
-    <Grid>
+    <Grid x:Name="LoadsGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition>
@@ -26,7 +25,19 @@
             </RowDefinition>
             <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
-        <lvc:CartesianChart Zoom="X"
+        <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                BorderBrush="{x:Null}" Background="{x:Null}" Click="BuildPngOnClick">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <materialDesign:PackIcon Kind="restore" Foreground="#4682b4" VerticalAlignment="Bottom" Width="12"
+                                         Height="12" Margin="0,0,1,0" />
+                <TextBlock Grid.Column="1" Foreground="#4682b4" Height="16">png</TextBlock>
+            </Grid>
+        </Button>
+        <lvc:CartesianChart x:Name="LoadsChart" Grid.Row="0" Zoom="X"
                             DisableAnimations="True"
                             Hoverable="False"
                             Series="{Binding SeriesCollection}"
@@ -35,7 +46,8 @@
                 <lvc:DefaultTooltip SelectionMode="Auto" />
             </lvc:CartesianChart.ToolTip>
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis LabelFormatter="{Binding TimeFormatter}" RangeChanged="Axis_OnRangeChanged"
+                <lvc:Axis LabelFormatter="{Binding TimeFormatter}"
+                          RangeChanged="Axis_OnRangeChanged"
                           MinValue="{Binding From, Mode=TwoWay}" MaxValue="{Binding To, Mode=TwoWay}"
                           Separator="{x:Static lvc:DefaultAxes.CleanSeparator}">
                     <lvc:Axis.Sections>

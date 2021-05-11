@@ -18,7 +18,7 @@ namespace DistrictEnergy.Views.ResultViews
         {
             InitializeComponent();
 
-            DataContext = new SummaryViewModel();
+            DataContext = this;
 
             DHRunLPModel.Instance.Completion += Window_Loaded;
 

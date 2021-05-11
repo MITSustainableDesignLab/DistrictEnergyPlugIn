@@ -24,7 +24,7 @@ using Rhino.PlugIns;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyProduct("DistricEnergyPlugIn")]
-[assembly: AssemblyVersion("2.1.1.*")]
+[assembly: AssemblyVersion("2.2.0.*")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

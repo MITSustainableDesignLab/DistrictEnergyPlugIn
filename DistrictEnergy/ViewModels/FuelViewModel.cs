@@ -7,6 +7,8 @@ using System.Windows.Media;
 using Deedle;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
+using DistrictEnergy.Views.ResultViews;
 using LiveCharts;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
@@ -59,46 +61,34 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            DHSimulateDistrictEnergy.Instance.ResultsArray.ResultsChanged += UpdateCarbonChart;
+            DHRunLPModel.Instance.Completion += UpdateCarbonChart;
         }
 
         private void UpdateCarbonChart(object sender, EventArgs e)
         {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            var instance = DHSimulateDistrictEnergy.Instance;
-
-            var Fuel = new List<ResultsViewModel.ChartValue>()
-            {
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Natural Gas",
-                    Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
-                    Value = instance.ResultsArray.NgasProj
-                },
-                new ResultsViewModel.ChartValue
-                {
-                    Key = "Purchased Elec",
-                    Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
-                    Value = instance.ResultsArray.ElecProj
-                },
-            };
-
             SeriesCollection.Clear();
 
-            foreach (var fuel in Fuel)
-                if (Math.Abs(fuel.Value.Sum()) > 0.001)
+            var gasCost = DistrictControl.Instance.ListOfPlantSettings.OfType<GridGas>().Select(o => o.Input.Select(x => x.Value).Sum()).Sum() * UmiContext.Current.ProjectSettings.GasDollars;
+            SeriesCollection.Add(new StackedColumnSeries
+            {
+                Title = "Natural Gas",
+                Values = new ChartValues<double>
                 {
-                    var series = new StackedColumnSeries
-                    {
-                        Values = AggregateByPeriod(fuel.Value, false, instance.PluginSettings.AggregationPeriod),
-                        Title = fuel.Key,
-                        //LineSmoothness = 0,
-                        LabelPoint = KWhLabelPointFormatter,
-                        //AreaLimit = 0,
-                        Fill = fuel.Fill
-                    };
-                    SeriesCollection.Add(series);
-                }
+                    gasCost
+                },
+                Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+            });
+            var electricityCarbon = DistrictControl.Instance.ListOfPlantSettings.OfType<GridElectricity>().Select(o => o.Input.Select(x => x.Value).Sum()).Sum() * UmiContext.Current.ProjectSettings.ElectricityDollars;
+            SeriesCollection.Add(new StackedColumnSeries
+            {
+                Title = "Grid Electricity",
+                Values = new ChartValues<double>
+                {
+                    electricityCarbon
+                },
+                Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
+            });
+            SeriesCollection.Clear();
         }
 
         private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true,

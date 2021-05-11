@@ -102,9 +102,9 @@ namespace DistrictEnergy
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "UseDistrictLosses")
-                DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
-            if (e.PropertyName == "RelDistHeatLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
-            if (e.PropertyName == "RelDistCoolLoss") DHSimulateDistrictEnergy.Instance.ResultsArray.StaleResults = true;
+                DHRunLPModel.Instance.StaleResults = true;
+            if (e.PropertyName == "RelDistHeatLoss") DHRunLPModel.Instance.StaleResults = true;
+            if (e.PropertyName == "RelDistCoolLoss") DHRunLPModel.Instance.StaleResults = true;
 
             // DHSimulateDistrictEnergy.Instance.RerunSimulation(); // Todo: Uncomment this to activate dynamic refresh of results
         }
@@ -137,19 +137,6 @@ namespace DistrictEnergy
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void TimeGrouped_Checked(object sender, RoutedEventArgs e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = TimeGroupers.Monthly;
-            //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
-        }
-
-        private void TimeGrouped_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHSimulateDistrictEnergy.Instance.PluginSettings.AggregationPeriod = TimeGroupers.Daily;
-            //DHSimulateDistrictEnergy.Instance.ResultsArray.OnResultsChanged(EventArgs.Empty);
-        }
 
         public class ComparisonConverter : IValueConverter
         {
@@ -175,7 +162,7 @@ namespace DistrictEnergy
         {
             if (SelectSimCase.SelectedItem != null)
             {
-                DHSimulateDistrictEnergy.Instance.PreSolve(UmiContext.Current);
+                DHRunLPModel.Instance.PreSolve(UmiContext.Current);
                 var item = (SimCase) SelectSimCase.SelectedItem;
                 if (item.Id == 1)
                 {
@@ -223,18 +210,6 @@ namespace DistrictEnergy
         GridLength[] starHeight;
         private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
         private ObservableCollection<IBaseLoad> _listOfDistrictLoads;
-
-        private void CostsChecked(object sender, RoutedEventArgs e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            // Display Costs
-        }
-
-        private void CarbonChecked(object sender, RoutedEventArgs e)
-        {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            // Display Carbon
-        }
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

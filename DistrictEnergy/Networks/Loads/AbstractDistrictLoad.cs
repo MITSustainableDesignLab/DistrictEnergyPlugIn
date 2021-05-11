@@ -26,7 +26,7 @@ namespace DistrictEnergy.Networks.Loads
             // Getting the Aggregated Load Curve for all buildings
             var contextBuildings =
                 umiContext.GetObjects()
-                    .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && idList.Contains(o.Id)).ToList();
+                    .Where(o => o.Data.Any(x => x.Value.Resolution == "Hour") && idList.Contains(o.Id)).ToList();
             var buttons = MessageBoxButton.YesNo;
             if (contextBuildings.Count == 0)
             {
@@ -38,6 +38,10 @@ namespace DistrictEnergy.Networks.Loads
                     // Sets hourly results true and calls UMISimulateEnergy
                     umiContext.ProjectSettings.GenerateHourlyEnergyResults = true;
                     RhinoApp.RunScript("-UmiSimulateEnergy", true);
+                }
+                else
+                {
+                    throw new Exception("Canceled by user");
                 }
             }
 

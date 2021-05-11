@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Deedle;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
@@ -12,6 +14,7 @@ using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Dtos;
 using LiveCharts.Geared;
+using LiveCharts.Wpf;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -180,7 +183,6 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
             DHRunLPModel.Instance.Completion += UpdateLoadsChart;
         }
 
@@ -278,11 +280,12 @@ namespace DistrictEnergy.ViewModels
             }
 
             StorageSeriesCollection.Clear();
+            IsStorageVisible = false; // Start hidden
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 if (storage.Output.Sum() > 0)
                 {
-                    IsStorageVisible = true;
+                    IsStorageVisible = true;  // Make visible
                     StorageSeriesCollection.Add(new GStackedAreaSeries()
                     {
                         Values = storage.Stored.Split(plot_duration)
@@ -292,6 +295,7 @@ namespace DistrictEnergy.ViewModels
                         LineSmoothness = 0.5,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
+                        PointGeometry = null,
                     });
 
                     // Plot Supply From Storage
@@ -305,6 +309,7 @@ namespace DistrictEnergy.ViewModels
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
+                        PointGeometry = null,
                     };
                     UnorderedCollection.Add(new MySeries { Variance = values.Variance(), Series = series });
 
@@ -319,12 +324,9 @@ namespace DistrictEnergy.ViewModels
                         LineSmoothness = lineSmoothness,
                         AreaLimit = 0,
                         LabelPoint = KWhLabelPointFormatter,
+                        PointGeometry = null,
                     };
                     UnorderedCollection.Add(new MySeries { Variance = values2.Variance(), Series = series2 });
-                }
-                else
-                {
-                    IsStorageVisible = false;
                 }
             }
 

@@ -3,15 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:DistrictEnergy.Views"
-    xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
-    xmlns:DistrictEnergy="clr-namespace:DistrictEnergy"
     xmlns:converters="clr-namespace:DistrictEnergy.ViewModels.Converters"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:resultViews="clr-namespace:DistrictEnergy.Views.ResultViews"
     x:Class="DistrictEnergy.Views.ResultViews.Summary"
     mc:Ignorable="d"
     d:DesignHeight="323.834" d:DesignWidth="388.75"
-    d:DataContext="{d:DesignInstance {x:Type viewModels:SummaryViewModel}}">
+    d:DataContext="{d:DesignInstance resultViews:Summary}">
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
         <Grid VerticalAlignment="Top">
             <Grid.RowDefinitions>
@@ -47,9 +45,9 @@
                     <TextBlock Text="Demands" Grid.Column="0" Grid.ColumnSpan="2" />
                     <TextBlock Text="Peak" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
                     <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
-                    <StackPanel x:Name="NameStack" Margin="2,0" Grid.Column="0" Grid.Row="1"></StackPanel>
-                    <StackPanel x:Name="PeakStack" Margin="2,0" Grid.Row="1" Grid.Column="2"></StackPanel>
-                    <StackPanel x:Name="EnergyStack" Margin="2,0" Grid.Row="1" Grid.Column="3"></StackPanel>
+                    <StackPanel x:Name="NameStack" Margin="2,0" Grid.Column="0" Grid.Row="1" />
+                    <StackPanel x:Name="PeakStack" Margin="2,0" Grid.Row="1" Grid.Column="2" />
+                    <StackPanel x:Name="EnergyStack" Margin="2,0" Grid.Row="1" Grid.Column="3" />
                 </Grid></materialDesign:Card>
             <materialDesign:Card Margin="10" Grid.Row="1" Padding="10">
                 <Grid >
@@ -80,9 +78,9 @@
                     <TextBlock Text="Sources" Grid.Column="0" Grid.ColumnSpan="2" />
                     <TextBlock Text="Peak" Grid.Column="2" Grid.ColumnSpan="2" />
                     <TextBlock Text="TotalEnergy" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" />
-                    <StackPanel x:Name="NamePlantStack" Margin="2,0" Grid.Column="0" Grid.Row="1"></StackPanel>
-                    <StackPanel x:Name="PeakPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="2"></StackPanel>
-                    <StackPanel x:Name="EnergyPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="3"></StackPanel>
+                    <StackPanel x:Name="NamePlantStack" Margin="2,0" Grid.Column="0" Grid.Row="1" />
+                    <StackPanel x:Name="PeakPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="2" />
+                    <StackPanel x:Name="EnergyPlantStack" Margin="2,0" Grid.Row="1" Grid.Column="3" />
                 </Grid></materialDesign:Card>
         </Grid>
     </ScrollViewer>
