@@ -21,6 +21,7 @@ namespace DistrictEnergy.ViewModels
     {
         public FuelViewModel()
         {
+            Instance = this;
             SeriesCollection = new SeriesCollection();
             Labels = new[]
             {
@@ -45,6 +46,8 @@ namespace DistrictEnergy.ViewModels
                 return string.Format("{0:N0} kWh", value);
             };
         }
+
+        public FuelViewModel Instance { get; set; }
 
         public Func<double, string> Formatter { get; set; }
 
