@@ -39,7 +39,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Name="expanderGrid">
+    <Grid Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /><!-- Scenarios -->
             <RowDefinition /><!-- LiveChart -->

@@ -52,6 +52,7 @@ namespace DistrictEnergy
             DistrictSettings = new DistrictSettings();
             InitializeComponent();
             Instance = this;
+            DataContext = this;
 
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
@@ -65,10 +66,10 @@ namespace DistrictEnergy
             HotWaterViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
             PlanningSettingsViewModel.Instance.PropertyChanged += OnCustomPropertyChanged;
 
-            starHeight = new GridLength[expanderGrid.RowDefinitions.Count];
-            starHeight[0] = expanderGrid.RowDefinitions[0].Height;
-            starHeight[1] = expanderGrid.RowDefinitions[1].Height;
-            starHeight[3] = expanderGrid.RowDefinitions[3].Height;
+            starHeight = new GridLength[MainGrid.RowDefinitions.Count];
+            starHeight[0] = MainGrid.RowDefinitions[0].Height;
+            starHeight[1] = MainGrid.RowDefinitions[1].Height;
+            starHeight[3] = MainGrid.RowDefinitions[3].Height;
 
             ExpandedOrCollapsed(MyExpander);
             // InitializeComponent calls topExpander.Expanded
@@ -232,7 +233,7 @@ namespace DistrictEnergy
             if (expander.Parent is Grid grid && grid.Name == "ExpanderGrid")
             {
                 var rowIndex = Grid.GetRow(grid);
-                var row = expanderGrid.RowDefinitions[rowIndex];
+                var row = MainGrid.RowDefinitions[rowIndex];
                 if (expander.IsExpanded)
                 {
                     row.Height = starHeight[rowIndex];
