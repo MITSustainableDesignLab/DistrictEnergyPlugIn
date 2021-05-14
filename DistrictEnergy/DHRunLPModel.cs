@@ -26,6 +26,13 @@ namespace DistrictEnergy
             Instance = this;
 
             PluginSettings = new Settings();
+
+            UmiEventSource.Instance.ProjectClosed += OnProjectClosed;
+        }
+
+        private void OnProjectClosed(object sender, EventArgs e)
+        {
+            StaleResults = true;
         }
 
         public Settings PluginSettings { get; set; }
@@ -88,7 +95,7 @@ namespace DistrictEnergy
         public Solver LpModel { get; private set; }
 
         public override string EnglishName => "DHRunLPModel";
-        public bool StaleResults { get; set; }
+        public bool StaleResults { get; set; } = true;
 
         public override Result Run(RhinoDoc doc, UmiContext context, RunMode mode)
         {
@@ -613,7 +620,7 @@ namespace DistrictEnergy
                     .ToDateTimePoint();
                 storage.Capacity = C[storage].SolutionValue();
                 var totalActualDemand = TotalActualDemand(storage.OutputType);
-                storage.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(storage.Output.Sum() / totalActualDemand * 365, 2) : 0;
+                storage.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(storage.Capacity / totalActualDemand * 365, 2) : 0;
                 RhinoApp.WriteLine(
                     $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0} kWh");
             }
