@@ -641,6 +641,8 @@ namespace DistrictEnergy
 
         private void ClearVariables()
         {
+            NWind.Clear();
+            Area.Clear();
             P.Clear();
             Qin.Clear();
             Qout.Clear();
