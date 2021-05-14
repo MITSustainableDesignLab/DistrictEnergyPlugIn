@@ -673,17 +673,16 @@ namespace DistrictEnergy
             var contextBuilding = AbstractDistrictLoad.ContextBuildings(UmiContext.Current);
             foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
             {
-                load.GetUmiLoads(contextBuilding, umiContext);
+                if (StaleResults)
+                {
+                    load.GetUmiLoads(contextBuilding, umiContext);
+
+                    SolarInput.GetHourlyLocationSolarRadiation(umiContext);
+                    WindInput.GetHourlyLocationWind(umiContext);
+                }
             }
 
-            SolarInput.GetHourlyLocationSolarRadiation(umiContext);
-            WindInput.GetHourlyLocationWind(umiContext);
-            // GetHourlyLocationAmbiantTemp(umiContext);
-
-
-            // numberTimesteps = DistrictDemand.HwN.Length;
-
-            // Instance.ResultsArray.StaleResults = false;
+            Instance.StaleResults = false;
 
             return Result.Success;
         }
