@@ -566,7 +566,7 @@ namespace DistrictEnergy
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
+                var solutionValues = P.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
@@ -578,7 +578,7 @@ namespace DistrictEnergy
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<SolarInput>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
+                var solutionValues = P.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
@@ -590,7 +590,7 @@ namespace DistrictEnergy
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
+                var solutionValues = P.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
@@ -602,7 +602,7 @@ namespace DistrictEnergy
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
             {
-                var solutionValues = E.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue()).ToArray();
+                var solutionValues = E.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
                 plant.Capacity = C[plant].SolutionValue(); // solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
