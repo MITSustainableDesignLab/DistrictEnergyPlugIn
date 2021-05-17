@@ -517,6 +517,7 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Solving...");
             objective.SetMinimization();
             var lp = LpModel.ExportModelAsLpFormat(false);
+            umiContext.AuxiliaryFiles.StoreText("lp_problem.lp", lp);
             LpModel.EnableOutput();
             var resultStatus = LpModel.Solve();
 
