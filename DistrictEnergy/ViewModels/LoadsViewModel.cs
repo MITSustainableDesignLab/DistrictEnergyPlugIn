@@ -196,12 +196,12 @@ namespace DistrictEnergy.ViewModels
             UnorderedCollection = new List<MySeries>();
 
             // Plot District Demand (Negative)
-            var plot_duration = args.TimeSteps;
+            var plotDuration = args.TimeSteps;
             foreach (var demand in DistrictControl.Instance.ListOfDistrictLoads)
             {
                 if (Math.Abs(demand.Input.Sum()) > 0)
                 {
-                    var values = demand.Input.ToDateTimePoint().Split(plot_duration)
+                    var values = demand.Input.ToDateTimePoint().Split(plotDuration)
                         .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum()));
                     var series = new GStackedAreaSeries
                     {
@@ -215,7 +215,7 @@ namespace DistrictEnergy.ViewModels
                     UnorderedCollection.Add(new MySeries {Variance = values.Variance(), Series = series});
                     DemandLineCollection.Add(new GLineSeries
                     {
-                        Values = demand.Input.ToDateTimePoint().Split(plot_duration)
+                        Values = demand.Input.ToDateTimePoint().Split(plotDuration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = demand.Name,
                         LineSmoothness = lineSmoothness,
@@ -240,7 +240,7 @@ namespace DistrictEnergy.ViewModels
                     var eff = cMat.Value;
                     if (plant.Input.Sum() > 0)
                     {
-                        var values = plant.Input.Split(plot_duration).Select(v =>
+                        var values = plant.Input.Split(plotDuration).Select(v =>
                             new DateTimePoint(v.First().DateTime, v.Select(o => o.Value * eff).Sum()));
                         var series = new GStackedAreaSeries
                         {
@@ -262,7 +262,7 @@ namespace DistrictEnergy.ViewModels
                 {
                     if (plant.Input.Sum() > 0)
                     {
-                        var values = plant.Input.Split(plot_duration).Select(v =>
+                        var values = plant.Input.Split(plotDuration).Select(v =>
                             new DateTimePoint(v.First().DateTime, v.Select(o => -o.Value).Sum()));
                         LoadTypes loadType = plant.OutputType;
                         var series = new GStackedAreaSeries
@@ -288,7 +288,7 @@ namespace DistrictEnergy.ViewModels
                     IsStorageVisible = true;  // Make visible
                     StorageSeriesCollection.Add(new GStackedAreaSeries()
                     {
-                        Values = storage.Stored.Split(plot_duration)
+                        Values = storage.Stored.Split(plotDuration)
                             .Select(v => new DateTimePoint(v.First().DateTime, v.Sum())).AsGearedValues(),
                         Title = storage.Name,
                         Fill = storage.Fill[storage.OutputType],
@@ -299,7 +299,7 @@ namespace DistrictEnergy.ViewModels
                     });
 
                     // Plot Supply From Storage
-                    var values = storage.Output.Split(plot_duration)
+                    var values = storage.Output.Split(plotDuration)
                         .Select(v => new DateTimePoint(v.First().DateTime, v.Sum()));
                     var series = new GStackedAreaSeries()
                     {
@@ -314,7 +314,7 @@ namespace DistrictEnergy.ViewModels
                     UnorderedCollection.Add(new MySeries { Variance = values.Variance(), Series = series });
 
                     // Plot Demand From Storage
-                    var values2 = storage.Input.Split(plot_duration)
+                    var values2 = storage.Input.Split(plotDuration)
                         .Select(v => new DateTimePoint(v.First().DateTime, -v.Sum()));
                     var series2 = new GStackedAreaSeries()
                     {
