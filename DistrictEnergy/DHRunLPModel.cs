@@ -366,8 +366,15 @@ namespace DistrictEnergy
                         Area[solarSupply]);
                 }
 
+                if (solarSupply.IsForcedDimensionCapacity)
+                {
+                    // Constraint linking the user-defined max area
+                    LpModel.Add(Area[solarSupply] <= solarSupply.RequiredArea);
+                }
+
                 if (solarSupply.IsForced)
                 {
+                    // Constraint linking the user-defined max area
                     LpModel.Add(
                         P.Where(x => x.Key.Item2 == solarSupply)
                             .Select(o => o.Value * solarSupply.ConversionMatrix[loadType]).ToArray().Sum() ==
@@ -384,6 +391,13 @@ namespace DistrictEnergy
                     // Constraint linking the number of wind turbines and the power available from the wind
                     LpModel.Add(P[(t, windTurbine)] == windTurbine.PowerPerTurbine(t, dt).Sum() * NWind[windTurbine]);
                 }
+
+                if (windTurbine.IsForcedDimensionCapacity)
+                {
+                    // Constraint linking the user-defined number of wind turbines
+                    LpModel.Add(NWind[windTurbine] <= windTurbine.RequiredNumberOfWindTurbines);
+                }
+
                 if (windTurbine.IsForced)
                 {
                     LpModel.Add(P.Where(x => x.Key.Item2 == windTurbine)
@@ -584,6 +598,7 @@ namespace DistrictEnergy
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
+                plant.RequiredArea = Area[plant].SolutionValue();
                 var totalActualDemand = TotalActualDemand(plant.OutputType);
                 plant.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
                 RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
@@ -596,6 +611,7 @@ namespace DistrictEnergy
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
+                plant.RequiredNumberOfWindTurbines = NWind[plant].SolutionValue();
                 var totalActualDemand = TotalActualDemand(plant.OutputType);
                 plant.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
                 RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");

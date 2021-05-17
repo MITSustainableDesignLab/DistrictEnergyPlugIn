@@ -8,7 +8,6 @@ using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
 using Newtonsoft.Json;
-using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -54,6 +53,20 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         public override bool IsForced { get; set; }
+
+        [JsonIgnore]
+        public override double RequiredArea
+        {
+            get => MaxAreaPv;
+            set => ElectricGenerationViewModel.Instance.MaxAreaPv = value;
+        }
+
+        public double MaxAreaPv { get; set; }
+
+        /// <summary>
+        ///     If True, UserMaxArea is a constraint
+        /// </summary>
+        public override bool IsForcedDimensionCapacity { get; set; }
 
         [DataMember] [DefaultValue("PV")] public override string Name { get; set; } = "PV";
         public override Guid Id { get; set; } = Guid.NewGuid();

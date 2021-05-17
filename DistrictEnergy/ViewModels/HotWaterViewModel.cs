@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
@@ -79,8 +78,7 @@ namespace DistrictEnergy.ViewModels
             {
                 if (DistrictControl.Instance.ListOfPlantSettings.OfType<ElectricHeatPump>().First().UseEhpEvap == 1)
                     return true;
-                else
-                    return false;
+                return false;
             }
             set
             {
@@ -255,6 +253,30 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().IsForced = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double MaxAreaCollector
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First()
+                .MaxAreaCollector;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().MaxAreaCollector =
+                    value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsPvForcedDimensionCapacity
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First()
+                .IsForcedDimensionCapacity;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First()
+                    .IsForcedDimensionCapacity = value;
                 OnPropertyChanged();
             }
         }

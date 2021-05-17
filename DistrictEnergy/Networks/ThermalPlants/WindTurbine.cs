@@ -7,7 +7,7 @@ using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
-using Umi.RhinoServices.Context;
+using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
@@ -94,6 +94,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 };
             set => throw new NotImplementedException();
         }
+
+        [JsonIgnore]
+        public override double RequiredNumberOfWindTurbines
+        {
+            get => MaxNumberOfWindTurbines;
+            set => ElectricGenerationViewModel.Instance.MaxNumberOfWindTurbines = value * 100;
+        }
+
+        public double MaxNumberOfWindTurbines { get; set; }
 
         public override List<double> WindAvailableInput(int t = 0, int dt = 8760)
         {
