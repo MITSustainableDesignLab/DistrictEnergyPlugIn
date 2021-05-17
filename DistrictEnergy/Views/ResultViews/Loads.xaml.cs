@@ -27,7 +27,7 @@ namespace DistrictEnergy.Views.ResultViews
         {
             InitializeComponent();
             DataContext = new LoadsViewModel();
-            DHRunLPModel.Instance.Completion += Window_Loaded;
+            DhRunLpModel.Instance.Completion += Window_Loaded;
         }
 
         private void Window_Loaded(object sender, EventArgs e)
@@ -57,7 +57,7 @@ namespace DistrictEnergy.Views.ResultViews
 
         private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
         {
-            if (DHRunLPModel.Instance == null) return;
+            if (DhRunLpModel.Instance == null) return;
             var chart = (LiveCharts.Wpf.CartesianChart) sender;
             var vm = (LoadsViewModel) DataContext;
 

@@ -63,7 +63,7 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            DHRunLPModel.Instance.Completion += UpdateCostsChart;
+            DhRunLpModel.Instance.Completion += UpdateCostsChart;
         }
 
         private void UpdateCostsChart(object sender, EventArgs e)

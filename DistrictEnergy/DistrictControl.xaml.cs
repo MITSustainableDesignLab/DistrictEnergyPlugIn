@@ -103,9 +103,9 @@ namespace DistrictEnergy
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "UseDistrictLosses")
-                DHRunLPModel.Instance.StaleResults = true;
-            if (e.PropertyName == "RelDistHeatLoss") DHRunLPModel.Instance.StaleResults = true;
-            if (e.PropertyName == "RelDistCoolLoss") DHRunLPModel.Instance.StaleResults = true;
+                DhRunLpModel.Instance.StaleResults = true;
+            if (e.PropertyName == "RelDistHeatLoss") DhRunLpModel.Instance.StaleResults = true;
+            if (e.PropertyName == "RelDistCoolLoss") DhRunLpModel.Instance.StaleResults = true;
 
             // DHSimulateDistrictEnergy.Instance.RerunSimulation(); // Todo: Uncomment this to activate dynamic refresh of results
         }
@@ -163,7 +163,7 @@ namespace DistrictEnergy
         {
             if (SelectSimCase.SelectedItem != null)
             {
-                DHRunLPModel.Instance.PreSolve(UmiContext.Current);
+                DhRunLpModel.Instance.PreSolve(UmiContext.Current);
                 var item = (SimCase) SelectSimCase.SelectedItem;
                 if (item.Id == 1)
                 {

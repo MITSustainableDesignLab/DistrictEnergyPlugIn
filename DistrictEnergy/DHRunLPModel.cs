@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Documents;
+using CsvHelper;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Metrics;
 using DistrictEnergy.Networks.Loads;
@@ -20,13 +23,11 @@ using Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy
 {
-    public class DHRunLPModel : UmiCommand
+    public class DhRunLpModel : UmiCommand
     {
-        public DHRunLPModel()
+        public DhRunLpModel()
         {
             Instance = this;
-
-            PluginSettings = new Settings();
 
             UmiEventSource.Instance.ProjectClosed += OnProjectClosed;
         }
@@ -35,8 +36,6 @@ namespace DistrictEnergy
         {
             StaleResults = true;
         }
-
-        public Settings PluginSettings { get; set; }
 
         /// <summary>
         /// Var: Input energy flow at each supply module of the energy hub at each time step (kWh)"
@@ -91,7 +90,7 @@ namespace DistrictEnergy
         public Dictionary<WindInput, Variable> NWind = new Dictionary<WindInput, Variable>();
 
         ///<summary>The only instance of the DHRunLPModel command.</summary>
-        public static DHRunLPModel Instance { get; private set; }
+        public static DhRunLpModel Instance { get; private set; }
 
         public Solver LpModel { get; private set; }
 
@@ -467,7 +466,7 @@ namespace DistrictEnergy
 
                 // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[supplymodule],
-                    supplymodule.F * Settings.AnnuityFactor *
+                    supplymodule.F * DistrictControl.PlanningSettings.AnnuityFactor *
                     Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
             }
 
@@ -482,7 +481,7 @@ namespace DistrictEnergy
 
                 // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[supplymodule],
-                    supplymodule.F * Settings.AnnuityFactor *
+                    supplymodule.F * DistrictControl.PlanningSettings.AnnuityFactor *
                     Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
             }
 
@@ -497,7 +496,7 @@ namespace DistrictEnergy
 
                 // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[supplymodule],
-                    supplymodule.F * Settings.AnnuityFactor *
+                    supplymodule.F * DistrictControl.PlanningSettings.AnnuityFactor *
                     Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
             }
 
@@ -511,7 +510,7 @@ namespace DistrictEnergy
 
                 // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[exportable],
-                    exportable.F * Settings.AnnuityFactor *
+                    exportable.F * DistrictControl.PlanningSettings.AnnuityFactor *
                     Math.Abs(exportable.ConversionMatrix[exportable.OutputType]));
             }
 
@@ -524,7 +523,8 @@ namespace DistrictEnergy
                     objective.SetCoefficient(Qout[(t, storage)], storage.V);
                 }
                 // Fixed storage cost
-                objective.SetCoefficient(C[storage], storage.F * Settings.AnnuityFactor);
+                // Only 30% of Capacity can be used each timestep therefore fixes the kW capacity for the fixed capacity;
+                objective.SetCoefficient(C[storage], storage.F * DistrictControl.PlanningSettings.AnnuityFactor / (0.3 * dt));
             }
 
             RhinoApp.WriteLine("Solving...");
@@ -773,297 +773,6 @@ namespace DistrictEnergy
             Instance.StaleResults = false;
 
             return Result.Success;
-        }
-
-        /// <summary>
-        ///     Properties of energy sources
-        /// </summary>
-        public class Settings : INotifyPropertyChanged
-        {
-            private TimeGroupers _aggregationPeriod = TimeGroupers.Monthly;
-
-            public TimeGroupers AggregationPeriod
-            {
-                get => _aggregationPeriod;
-                set
-                {
-                    _aggregationPeriod = value;
-                    OnPropertyChanged(nameof(AggregationPeriod));
-                }
-            }
-
-            /// <summary>
-            ///     Cooling coefficient of performance: Average annual ratio of useful cooling delivered to electricity consumed
-            /// </summary>
-            public static double CcopEch
-            {
-                get { return ChilledWaterViewModel.Instance.CCOP_ECH; }
-            }
-
-            /// <summary>
-            ///     Heating efficiency (%) : Average annual ratio of useful heating delivered to fuel consumed
-            /// </summary>
-            public static double EffNgb
-            {
-                get { return HotWaterViewModel.Instance.EFF_NGB / 100; }
-            }
-
-            /// <summary>
-            ///     Capacity as percent of peak cooling load (%)
-            /// </summary>
-            internal static double OffAbs
-            {
-                get { return ChilledWaterViewModel.Instance.OFF_ABS / 100; }
-            }
-
-            /// <summary>
-            ///     Cooling coefficient of performance
-            /// </summary>
-            public static double CcopAbs
-            {
-                get { return ChilledWaterViewModel.Instance.CCOP_ABS; }
-            }
-
-            /// <summary>
-            ///     Capacity as number of days of autonomy (#)
-            /// </summary>
-            internal static double AutBat
-            {
-                get { return ElectricGenerationViewModel.Instance.AUT_BAT; }
-            }
-
-            /// <summary>
-            ///     Miscellaneous losses (%). Accounts for other losses including line losses and balance of system.
-            /// </summary>
-            public static double LossBat
-            {
-                get { return ElectricGenerationViewModel.Instance.LOSS_BAT / 100; }
-            }
-
-            /// <summary>
-            ///     Tracking mode. Control the generator to prioritize meeting the hot water or electricity demand.
-            /// </summary>
-            public static string TmodChp
-            {
-                get { return CombinedHeatAndPowerViewModel.Instance.TMOD_CHP.ToString(); }
-            }
-
-            /// <summary>
-            ///     Capacity as percent of peak electric load (%).
-            /// </summary>
-            internal static double OffChp
-            {
-                get { return CombinedHeatAndPowerViewModel.Instance.OFF_CHP / 100; }
-            }
-
-            /// <summary>
-            ///     Electrical efficiency (%).
-            /// </summary>
-            public static double EffChp
-            {
-                get { return CombinedHeatAndPowerViewModel.Instance.EFF_CHP / 100; }
-            }
-
-            /// <summary>
-            ///     Waste heat recovery effectiveness (%).
-            /// </summary>
-            public static double HrecChp
-            {
-                get { return CombinedHeatAndPowerViewModel.Instance.HREC_CHP / 100; }
-            }
-
-            /// <summary>
-            ///     Capacity as percent of peak heating load (%).
-            /// </summary>
-            internal static double OffEhp
-            {
-                get { return HotWaterViewModel.Instance.OFF_EHP / 100; }
-            }
-
-            /// <summary>
-            ///     Heating coefficient of performance.
-            /// </summary>
-            public static double HcopEhp
-            {
-                get { return HotWaterViewModel.Instance.HCOP_EHP; }
-            }
-
-            /// <summary>
-            ///     Capacity as the number of days of autonomy (#).
-            /// </summary>
-            internal static double AutHwt
-            {
-                get { return HotWaterViewModel.Instance.AUT_HWT; }
-            }
-
-            /// <summary>
-            ///     Target offset as percent of annual energy (%).
-            /// </summary>
-            internal static double OffPv
-            {
-                get { return ElectricGenerationViewModel.Instance.OFF_PV / 100; }
-            }
-
-            /// <summary>
-            ///     Area utilization factor (%)
-            /// </summary>
-            public static double UtilPv
-            {
-                get { return ElectricGenerationViewModel.Instance.UTIL_PV / 100; }
-            }
-
-            /// <summary>
-            ///     Miscellaneous losses (%).
-            /// </summary>
-            public static double LossPv
-            {
-                get { return ElectricGenerationViewModel.Instance.LOSS_PV / 100; }
-            }
-
-            /// <summary>
-            ///     Cell efficiency (%).
-            /// </summary>
-            public static double EffPv
-            {
-                get { return ElectricGenerationViewModel.Instance.EFF_PV / 100; }
-            }
-
-            /// <summary>
-            ///     Collector efficiency (%)
-            /// </summary>
-            public static double EffShw
-            {
-                get { return HotWaterViewModel.Instance.EFF_SHW / 100; }
-            }
-
-            /// <summary>
-            ///     Miscellaneous losses (%)
-            /// </summary>
-            public static double LossShw
-            {
-                get { return HotWaterViewModel.Instance.LOSS_SHW / 100; }
-            }
-
-            /// <summary>
-            ///     Target offset as percent of annual energy (%)
-            /// </summary>
-            internal static double OffShw
-            {
-                get { return HotWaterViewModel.Instance.OFF_SHW / 100; }
-            }
-
-            /// <summary>
-            ///     Area utilization factor (%)
-            /// </summary>
-            public static double UtilShw
-            {
-                get { return HotWaterViewModel.Instance.UTIL_SHW / 100; }
-            }
-
-            /// <summary>
-            ///     Cut-in speed (m/s)
-            /// </summary>
-            internal static double CinWnd
-            {
-                get { return ElectricGenerationViewModel.Instance.CIN_WND; }
-            }
-
-            /// <summary>
-            ///     Turbine coefficient of performance
-            /// </summary>
-            public static double CopWnd
-            {
-                get { return ElectricGenerationViewModel.Instance.EFF_WND / 100; }
-            }
-
-            /// <summary>
-            ///     Cut-out speed (m/s)
-            /// </summary>
-            internal static double CoutWnd
-            {
-                get { return ElectricGenerationViewModel.Instance.COUT_WND; }
-            }
-
-            /// <summary>
-            ///     Target offset as percent of annual energy (%).
-            /// </summary>
-            internal static double OffWnd
-            {
-                get { return ElectricGenerationViewModel.Instance.OFF_WND / 100; }
-            }
-
-            /// <summary>
-            ///     Rotor area per turbine (m2)
-            /// </summary>
-            public static double RotWnd
-            {
-                get { return ElectricGenerationViewModel.Instance.ROT_WND; }
-            }
-
-            /// <summary>
-            ///     Miscellaneous losses (%)
-            /// </summary>
-            public static double LossWnd
-            {
-                get { return ElectricGenerationViewModel.Instance.LOSS_WND / 100; }
-            }
-
-            /// <summary>
-            ///     The Tank charged state at the begining of the simulation
-            /// </summary>
-            public static double TankStart
-            {
-                get { return HotWaterViewModel.Instance.TANK_START / 100; }
-            }
-
-            /// <summary>
-            ///     The Battery charged state at the begining of the simulation
-            /// </summary>
-            public static double BatStart
-            {
-                get { return ElectricGenerationViewModel.Instance.BAT_START / 100; }
-            }
-
-            public static double LossHwnet
-            {
-                get { return PlanningSettingsViewModel.Instance.RelDistHeatLoss / 100; }
-            }
-
-            /// <summary>
-            /// </summary>
-            public static double LossChwnet
-            {
-                get { return PlanningSettingsViewModel.Instance.RelDistCoolLoss / 100; }
-            }
-
-            /// <summary>
-            /// </summary>
-            public static bool UseDistrictLosses
-            {
-                get { return PlanningSettingsViewModel.Instance.UseDistrictLosses; }
-            }
-
-            public static bool UseEhpEvap
-            {
-                get { return HotWaterViewModel.Instance.UseEhpEvap; }
-            }
-
-            public static double AnnuityFactor
-            {
-                get
-                {
-                    double i = 0.1;
-                    double n = 40;
-                    return Math.Pow(1 + i, n) * i / (Math.Pow(1 + i, n) - 1);
-                }
-            }
-
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }

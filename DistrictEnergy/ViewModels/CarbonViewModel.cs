@@ -62,7 +62,7 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            DHRunLPModel.Instance.Completion += UpdateCarbonChart;
+            DhRunLpModel.Instance.Completion += UpdateCarbonChart;
         }
 
         private void UpdateCarbonChart(object sender, EventArgs e)

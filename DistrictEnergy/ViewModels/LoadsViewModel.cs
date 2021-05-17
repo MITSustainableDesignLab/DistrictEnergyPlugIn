@@ -183,12 +183,12 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            DHRunLPModel.Instance.Completion += UpdateLoadsChart;
+            DhRunLpModel.Instance.Completion += UpdateLoadsChart;
         }
 
         private void UpdateLoadsChart(object sender, EventArgs e)
         {
-            var args = (DHRunLPModel.SimulationCompleted) e;
+            var args = (DhRunLpModel.SimulationCompleted) e;
             var Total = new double[args.TimeSteps];
             var lineSmoothness = 0.1;
             SeriesCollection.Clear();
