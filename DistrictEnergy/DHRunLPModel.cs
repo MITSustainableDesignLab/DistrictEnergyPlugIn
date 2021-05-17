@@ -1,35 +1,50 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Documents;
+using CsvHelper;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Metrics;
 using DistrictEnergy.Networks.Loads;
 using DistrictEnergy.Networks.ThermalPlants;
+using DistrictEnergy.ViewModels;
 using Google.OrTools.LinearSolver;
 using Rhino;
 using Rhino.Commands;
+using Umi.RhinoServices;
 using Umi.RhinoServices.Context;
+using Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy
 {
-    public class DHRunLPModel : Command
+    public class DhRunLpModel : UmiCommand
     {
-        public DHRunLPModel()
+        public DhRunLpModel()
         {
             Instance = this;
+
+            UmiEventSource.Instance.ProjectClosed += OnProjectClosed;
+        }
+
+        private void OnProjectClosed(object sender, EventArgs e)
+        {
+            StaleResults = true;
         }
 
         /// <summary>
-        /// Var: Input energy flow at each supply module of the energy hub at each time step"
+        /// Var: Input energy flow at each supply module of the energy hub at each time step (kWh)"
         /// </summary>
         public Dictionary<(int, IThermalPlantSettings), Variable> P =
             new Dictionary<(int, IThermalPlantSettings), Variable>();
 
         /// <summary>
-        /// Var: Max input energy flow at each supply module of the energy hub"
+        /// Var: Capacity of each supply module of the energy hub (kW); For storage capacities, units are kWh"
         /// </summary>
         public Dictionary<IThermalPlantSettings, Variable> C =
             new Dictionary<IThermalPlantSettings, Variable>();
@@ -75,25 +90,26 @@ namespace DistrictEnergy
         public Dictionary<WindInput, Variable> NWind = new Dictionary<WindInput, Variable>();
 
         ///<summary>The only instance of the DHRunLPModel command.</summary>
-        public static DHRunLPModel Instance { get; private set; }
+        public static DhRunLpModel Instance { get; private set; }
 
         public Solver LpModel { get; private set; }
 
         public override string EnglishName => "DHRunLPModel";
+        public bool StaleResults { get; set; } = true;
 
-        protected override Result RunCommand(RhinoDoc doc, RunMode mode)
+        public override Result Run(RhinoDoc doc, UmiContext context, RunMode mode)
         {
-            return Main();
+            return Main(context);
         }
 
-        private Result Main()
+        private Result Main(UmiContext umiContext)
         {
             ClearVariables();
-            DHSimulateDistrictEnergy.Instance.PreSolve();
+            PreSolve(umiContext);
             // Create the linear solver with the CBC backend.
             try
             {
-                LpModel = Solver.CreateSolver("SimpleLP", "GLOP_LINEAR_PROGRAMMING ");
+                LpModel = Solver.CreateSolver("GLOP");
             }
             catch (Exception e)
             {
@@ -109,7 +125,7 @@ namespace DistrictEnergy
 
             // Input Energy
             RhinoApp.WriteLine("Computing input energy flow variables...");
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var watch = Stopwatch.StartNew();
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
                 for (var t = 0; t < timeSteps * dt; t += dt)
@@ -150,12 +166,12 @@ namespace DistrictEnergy
 
             foreach (var wind in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
-                NWind[wind] = LpModel.MakeNumVar(0, Double.PositiveInfinity, $"Number_of_{wind.Name}");
+                NWind[wind] = LpModel.MakeIntVar(0, int.MaxValue, $"Number_of_{wind.Name}");
             }
 
             watch.Stop();
             RhinoApp.WriteLine($"Computed {P.Count} P variables in {watch.ElapsedMilliseconds} milliseconds");
-
+            watch = Stopwatch.StartNew();
             // Storage Variables
             RhinoApp.WriteLine("Computing storage module variables...");
             watch.Start();
@@ -170,18 +186,18 @@ namespace DistrictEnergy
                         $"StoIn_{t:0000}_{supplymodule.Name}");
                     Qout[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
                         $"StoOut_{t:0000}_{supplymodule.Name}");
-                    S[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, 
+                    S[(t, supplymodule)] = LpModel.MakeNumVar(0.0, double.PositiveInfinity,
                         $"StoState_{t:0000}_{supplymodule.Name}");
-                } 
+                }
+
                 C[supplymodule] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Cap_{supplymodule.Name}");
             }
 
-            watch = Stopwatch.StartNew();
             RhinoApp.WriteLine(
                 $"Computed {Qin.Count + Qout.Count + S.Count} S variables in {watch.ElapsedMilliseconds} milliseconds");
 
 
-            RhinoApp.WriteLine("Number of variables = " + LpModel.NumVariables());
+            RhinoApp.WriteLine($"Number of variables = {LpModel.NumVariables()}");
 
             RhinoApp.WriteLine("Computing constraints...");
             watch = Stopwatch.StartNew();
@@ -292,13 +308,17 @@ namespace DistrictEnergy
                 return Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == t).Select(o => o.Value).Sum();
             }
 
+            // Total demand from Loads and exports
             LinearExpr TotalAnnualDemand(LoadTypes loadType)
             {
-                return Load.Where(x => x.Key.Item2 == loadType).Select(o => o.Value).Sum() +
+                return P
+                           .Where(x => x.Key.Item2.InputType == loadType)
+                           .Select(o => o.Value).ToArray().Sum() +
+                       Load.Where(x => x.Key.Item2 == loadType).Select(o => o.Value).Sum() +
                        E.Where(x => x.Key.Item2.OutputType == loadType).Select(o => o.Value).ToArray().Sum();
             }
 
-            foreach (var loadType in new List<LoadTypes>() {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec})
+            foreach (var loadType in new List<LoadTypes> {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec})
             {
                 LpModel.Add(P.Where(x => x.Key.Item2.ConversionMatrix.ContainsKey(loadType))
                                 .Select(o => o.Value * o.Key.Item2.ConversionMatrix[loadType]).ToArray().Sum() <=
@@ -312,9 +332,20 @@ namespace DistrictEnergy
                 {
                     var loadType = plant.OutputType;
                     LpModel.Add(
-                        P.Where(o => o.Key.Item2 == plant).Select(x => x.Value * Math.Abs(plant.ConversionMatrix[loadType]))
+                        P.Where(o => o.Key.Item2 == plant)
+                            .Select(x => x.Value * Math.Abs(plant.ConversionMatrix[loadType]))
                             .ToArray().Sum() == plant.CapacityFactor * TotalAnnualDemand(loadType));
                 }
+            }
+
+            foreach (var customEnergySupplyModule in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    // Constraint linking the area of solar device and the amount of available solar radiation
+                    LpModel.Add(P[(t, customEnergySupplyModule)] == customEnergySupplyModule.HourlyCapacity.GetRange(t, dt).Sum());
+                }
+                C[customEnergySupplyModule].SetUb(customEnergySupplyModule.HourlyCapacity.Max());
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<NotStorage>())
@@ -324,11 +355,27 @@ namespace DistrictEnergy
                     var outputType = plant.OutputType;
                     try
                     {
-                        LpModel.Add(P[(t, plant)] * plant.ConversionMatrix[outputType] <= C[plant]);
+                        LpModel.Add(P[(t, plant)] * plant.ConversionMatrix[outputType] / dt <= C[plant]);
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        RhinoApp.WriteLine(e.Message);
+                    }
+                }
+            }
+
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    var outputType = plant.OutputType;
+                    try
+                    {
+                        LpModel.Add(E[(t, plant)] * plant.ConversionMatrix[outputType] / dt <= C[plant]);
+                    }
+                    catch (Exception e)
+                    {
+                        RhinoApp.WriteLine(e.Message);
                     }
                 }
             }
@@ -343,9 +390,15 @@ namespace DistrictEnergy
                     LpModel.Add(P[(t, solarSupply)] == solarSupply.SolarAvailableInput(t, dt).Sum() *
                         Area[solarSupply]);
                 }
+                if (solarSupply.IsForcedDimensionCapacity)
+                {
+                    // Constraint linking the user-defined max area
+                    LpModel.Add(Area[solarSupply] <= solarSupply.RequiredArea);
+                }
 
                 if (solarSupply.IsForced)
                 {
+                    // Constraint linking the user-defined max area
                     LpModel.Add(
                         P.Where(x => x.Key.Item2 == solarSupply)
                             .Select(o => o.Value * solarSupply.ConversionMatrix[loadType]).ToArray().Sum() ==
@@ -360,12 +413,20 @@ namespace DistrictEnergy
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     // Constraint linking the number of wind turbines and the power available from the wind
-                    LpModel.Add(P[(t, windTurbine)] == windTurbine.Power(t, dt) * NWind[windTurbine]);
-                    if (windTurbine.IsForced)
-                    {
-                        LpModel.Add(P[(t, windTurbine)] * windTurbine.ConversionMatrix[loadType] ==
-                                    windTurbine.CapacityFactor * TotalDemand(loadType, t));
-                    }
+                    LpModel.Add(P[(t, windTurbine)] == windTurbine.PowerPerTurbine(t, dt).Sum() * NWind[windTurbine]);
+                }
+
+                if (windTurbine.IsForcedDimensionCapacity)
+                {
+                    // Constraint linking the user-defined number of wind turbines
+                    LpModel.Add(NWind[windTurbine] <= windTurbine.RequiredNumberOfWindTurbines);
+                }
+
+                if (windTurbine.IsForced)
+                {
+                    LpModel.Add(P.Where(x => x.Key.Item2 == windTurbine)
+                                    .Select(o => o.Value * windTurbine.ConversionMatrix[loadType]).ToArray().Sum() ==
+                                windTurbine.CapacityFactor * TotalAnnualDemand(loadType));
                 }
             }
 
@@ -373,12 +434,13 @@ namespace DistrictEnergy
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 // storage content initial == final
+                // LpModel.Add(S[(-dt, storage)] == S[(timeSteps * dt - dt, storage)]);
                 // storage state cyclicity rule
-                LpModel.Add(S[(0, storage)] <= S[(timeSteps * dt - dt, storage)]);
+                LpModel.Add(S[(-dt, storage)] <= S[(timeSteps * dt - dt, storage)]);
 
                 // 'storage content initial == and final >= storage.init * capacity'
-                LpModel.Add(S[(0, storage)] == storage.StartingCapacity * C[storage]);
-                //LpModel.Add(S[(timeSteps * dt, storage)] == storage.StartingCapacity * C[storage]);
+                LpModel.Add(S[(-dt, storage)] == storage.StartingCapacity * C[storage]);
+                //LpModel.Add(S[(timeSteps * dt - dt, storage)] == storage.StartingCapacity * C[storage]);
 
                 // Initial Capacity Constraint
                 LpModel.Add(S[(-dt, storage)] <= C[storage]);
@@ -396,8 +458,8 @@ namespace DistrictEnergy
                     LpModel.Add(S[(t, storage)] <= C[storage]);
 
                     // Input & Output Capacity Constraints
-                    LpModel.Add(Qin[(t, storage)] <= 0.3 * C[storage]);
-                    LpModel.Add(Qout[(t, storage)] <= 0.3 * C[storage]);
+                    LpModel.Add(Qin[(t, storage)] <= 0.3 * C[storage]);  // Can't charge more then 30% of total capacity in one time step
+                    LpModel.Add(Qout[(t, storage)] <= 0.3 * C[storage]);  // Can't discharge more then 30% of total capacity in one time step
                 }
 
                 // Forced Capacity Constraint
@@ -406,75 +468,96 @@ namespace DistrictEnergy
                     LpModel.Add(C[storage] == storage.CapacityFactor * TotalAnnualDemand(storage.OutputType) / 365);
                 }
             }
+
             RhinoApp.WriteLine(
-                $"Computed {LpModel.NumConstraints()} S variables in {watch.ElapsedMilliseconds} milliseconds");
+                $"Computed {LpModel.NumConstraints()} constraints in {watch.ElapsedMilliseconds} milliseconds");
 
             // Set the Objective Function
             var objective = LpModel.Objective();
+            double carbonRatio =
+                DistrictControl.PlanningSettings
+                    .CarbonRatio; // Objective function ratio. How much to optimize for carbon
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
+                // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
+                    // carbon intensity is divided by 1e6 to have tonCO2/kWh, then multiplied by carbon cost $/tonCO2
                     objective.SetCoefficient(P[(t, supplymodule)],
-                        supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
+                        supplymodule.V *
+                        Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType])
+                        + carbonRatio * supplymodule.CarbonIntensity / 1e6 * DistrictControl.PlanningSettings.CarbonPricePerTon *
+                        Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                objective.SetCoefficient(C[supplymodule], supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt *
-                                                          Math.Abs(supplymodule.ConversionMatrix[
-                                                              supplymodule.OutputType]));
+                // Fixed Costs (One for whole timeSteps)
+                objective.SetCoefficient(C[supplymodule],
+                    supplymodule.F * DistrictControl.PlanningSettings.AnnuityFactor *
+                    Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
             }
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<SolarInput>())
             {
+                // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
                         supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                objective.SetCoefficient(C[supplymodule], supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt *
-                                                          Math.Abs(supplymodule.ConversionMatrix[
-                                                              supplymodule.OutputType]));
+                // Fixed Costs (One for whole timeSteps)
+                objective.SetCoefficient(C[supplymodule],
+                    supplymodule.F * DistrictControl.PlanningSettings.AnnuityFactor *
+                    Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
             }
 
             foreach (var supplymodule in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
+                // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
                     objective.SetCoefficient(P[(t, supplymodule)],
                         supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                objective.SetCoefficient(C[supplymodule], supplymodule.F * DistrictEnergy.Settings.AnnuityFactor / dt *
-                                                          Math.Abs(supplymodule.ConversionMatrix[
-                                                              supplymodule.OutputType]));
+                // Fixed Costs (One for whole timeSteps)
+                objective.SetCoefficient(C[supplymodule],
+                    supplymodule.F * DistrictControl.PlanningSettings.AnnuityFactor *
+                    Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
             }
 
             foreach (var exportable in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
             {
+                // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
-                    objective.SetCoefficient(C[exportable],
-                        exportable.F * DistrictEnergy.Settings.AnnuityFactor / dt *
-                        Math.Abs(exportable.ConversionMatrix[exportable.OutputType]));
                     objective.SetCoefficient(E[(t, exportable)], exportable.V);
                 }
+
+                // Fixed Costs (One for whole timeSteps)
+                objective.SetCoefficient(C[exportable],
+                    exportable.F * DistrictControl.PlanningSettings.AnnuityFactor *
+                    Math.Abs(exportable.ConversionMatrix[exportable.OutputType]));
             }
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
+                // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
-                    objective.SetCoefficient(C[storage], storage.F * DistrictEnergy.Settings.AnnuityFactor / dt);
                     objective.SetCoefficient(Qin[(t, storage)], storage.V);
                     objective.SetCoefficient(Qout[(t, storage)], storage.V);
                 }
+                // Fixed storage cost
+                // Only 30% of Capacity can be used each timestep therefore fixes the kW capacity for the fixed capacity;
+                objective.SetCoefficient(C[storage], storage.F * DistrictControl.PlanningSettings.AnnuityFactor / (0.3 * dt));
             }
 
             RhinoApp.WriteLine("Solving...");
             objective.SetMinimization();
             var lp = LpModel.ExportModelAsLpFormat(false);
+            umiContext.AuxiliaryFiles.StoreText("lp_problem.lp", lp);
             LpModel.EnableOutput();
             var resultStatus = LpModel.Solve();
 
@@ -483,6 +566,7 @@ namespace DistrictEnergy
             {
                 RhinoApp.WriteLine("Optimal Solution Found!");
             }
+
             if (resultStatus != Solver.ResultStatus.OPTIMAL)
             {
                 RhinoApp.WriteLine("The problem does not have an optimal solution!");
@@ -490,7 +574,7 @@ namespace DistrictEnergy
             }
 
             var activities = LpModel.ComputeConstraintActivities();
-            var stream = UmiContext.Current.AuxiliaryFiles.CreateNewFileStream("lp_solver_log.txt");
+            var stream = umiContext.AuxiliaryFiles.CreateNewFileStream("lp_solver_log.txt");
             foreach (var constraint in LpModel.constraints())
             {
                 var index0 = constraint.Index();
@@ -501,59 +585,72 @@ namespace DistrictEnergy
             }
 
             RhinoApp.WriteLine(
-                $"Constraints Activities Logged at {UmiContext.Current.AuxiliaryFiles.GetFullPath("lp_solver_log.txt")}");
+                $"Constraints Activities Logged at {umiContext.AuxiliaryFiles.GetFullPath("lp_solver_log.txt")}");
             stream.Close();
 
             RhinoApp.WriteLine("Solution:");
-            RhinoApp.WriteLine($"Optimal objective value = {LpModel.Objective().Value():C0}");
+            RhinoApp.WriteLine($"Optimal objective value = {LpModel.Objective().Value():f0}");
 
-            double TotalActualDemand(LoadTypes outputType)
+            double TotalActualDemand(LoadTypes outputLoadType)
             {
-                return P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(outputType))
-                    .Select(k => k.Value.SolutionValue() * k.Key.Item2.ConversionMatrix[outputType]).ToArray().Sum();
+                var demandMetByHub = P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(outputLoadType) 
+                        ? k.Key.Item2.ConversionMatrix[outputLoadType] > 0 : false)
+                    .Select(k => k.Value.SolutionValue() * Math.Abs(k.Key.Item2.ConversionMatrix[outputLoadType])).ToArray().Sum();
+                return demandMetByHub;
+            }
+
+            foreach (LoadTypes loadType in Enum.GetValues(typeof(LoadTypes)))
+            {
+                var total = TotalActualDemand(loadType);
+                RhinoApp.WriteLine($"Actual {loadType} demand is {total:N0} kWh");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Dispatchable>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
+                var solutionValues = P.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
+                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
+                var totalActualDemand = TotalActualDemand(plant.OutputType);
+                plant.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
                 RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<SolarInput>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
+                var solutionValues = P.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
+                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
+                plant.RequiredArea = Area[plant].SolutionValue();
+                var totalActualDemand = TotalActualDemand(plant.OutputType);
+                plant.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
             {
-                var solutionValues = P.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; //solutionValues.Max();
+                var solutionValues = P.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
+                plant.Capacity = C[plant].SolutionValue(); //solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.CapacityFactor = Math.Round(energy.Sum() / TotalActualDemand(plant.OutputType), 2);
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
+                plant.RequiredNumberOfWindTurbines = NWind[plant].SolutionValue();
+                var totalActualDemand = TotalActualDemand(plant.OutputType);
+                plant.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
             {
-                var solutionValues = E.Where(o => o.Key.Item2.Name == plant.Name).Select(v => v.Value.SolutionValue());
-                plant.Capacity = C[plant].SolutionValue() / dt; // solutionValues.Max();
+                var solutionValues = E.Where(o => o.Key.Item2 == plant).Select(v => v.Value.SolutionValue()).ToArray();
+                plant.Capacity = C[plant].SolutionValue(); // solutionValues.Max();
                 plant.Input = solutionValues.ToDateTimePoint();
-                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]);
+                var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum()} kWh Annum");
+                RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
             }
 
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
@@ -566,21 +663,23 @@ namespace DistrictEnergy
                     .ToDateTimePoint();
                 storage.Capacity = C[storage].SolutionValue();
                 var totalActualDemand = TotalActualDemand(storage.OutputType);
-                storage.CapacityFactor = Math.Round(storage.Output.Sum() / totalActualDemand * 365, 2);
+                storage.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(storage.Capacity / totalActualDemand * 365, 2) : 0;
                 RhinoApp.WriteLine(
                     $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0} kWh");
+                RhinoApp.WriteLine($"{storage.Name} initial Storage Level = {storage.Stored.First().Value:N0} kWh");
+                RhinoApp.WriteLine($"{storage.Name} final Storage Level = {storage.Stored.Last().Value:N0} kWh");
             }
 
             foreach (var area in Area)
             {
                 var areaM2 = area.Value.SolutionValue();
-                RhinoApp.WriteLine($"Area {area.Key.Name} = {areaM2:F0}");
+                RhinoApp.WriteLine($"Area {area.Key.Name} = {areaM2:F0} m²");
             }
 
             foreach (var wind in NWind)
             {
                 var nWind = wind.Value.SolutionValue();
-                RhinoApp.WriteLine($"# of {wind.Key.Name} = {nWind:F0}");
+                RhinoApp.WriteLine($"# of {wind.Key.Name} = {nWind:F2}");
             }
 
 
@@ -589,11 +688,74 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Problem solved in " + LpModel.Iterations() + " iterations");
             RhinoApp.WriteLine("Problem solved in " + LpModel.Nodes() + " branch-and-bound nodes");
             OnCompletion(new SimulationCompleted() {TimeSteps = timeSteps, Period = dt});
+            SaveResults(umiContext, timeSteps, dt);
             return Result.Success;
+        }
+
+        /// <summary>
+        /// Save inputs and outputs to csv
+        /// </summary>
+        /// <param name="umiContext"></param>
+        /// <param name="timeSteps"></param>
+        /// <param name="dt"></param>
+        /// <param name="filename"></param>
+        private void SaveResults(UmiContext umiContext, int timeSteps, int dt, string filename = "lp_run.csv")
+        {
+            var stream = umiContext.AuxiliaryFiles.CreateNewFileStream(filename);
+            // var records = P.GroupBy(i => i.Key.Item2,
+            //     (key, values) => new { Name=key.Name, Values=values.Select(o => o.Value.SolutionValue()).ToArray() });
+            var records =
+                DistrictControl.Instance.ListOfPlantSettings.Select(o => new
+                    {
+                        Name = o.Name, Values = o.Input.Select(p => p.Value).ToArray(), 
+                        Type = o.InputType,
+                        Direction = "In"
+                    })
+                    .Concat(DistrictControl.Instance.ListOfPlantSettings.Select(o => new
+                    {
+                        Name = o.Name, Values = o.Output.Select(p => p.Value).ToArray(), 
+                        Type = o.OutputType,
+                        Direction = "Out"
+                    })).Concat(DistrictControl.Instance.ListOfDistrictLoads.Select(o => new
+                    {
+                        Name = o.Name,
+                        Values = o.Input.Select((s, i) => new { Value = s, Index = i }).GroupBy(x => x.Index / dt)
+                            .Select(grp => grp.Select(x => x.Value).ToArray().Sum()).ToArray(),
+                        Type = o.LoadType,
+                        Direction = "In"
+                    }));
+            using (var writer = new StreamWriter(stream))
+            {
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    // Write header
+                    csv.WriteField("TimeStamp");
+                    foreach (var record in records)
+                    {
+                        csv.WriteField($"{record.Direction}_{record.Type}_{record.Name}");
+                    }
+
+                    csv.NextRecord();
+                    // Write rows
+                    for (int i = 0; i < timeSteps; i++)
+                    {
+                        csv.WriteField(i.ToString());
+
+                        foreach (var record in records)
+                        {
+                            csv.WriteField(record.Values[i].ToString("F0"));
+                        }
+
+                        csv.NextRecord();
+                    }
+                }
+            } // Flush is also called here.
         }
 
         private void ClearVariables()
         {
+            NWind.Clear();
+            Area.Clear();
             P.Clear();
             Qin.Clear();
             Qout.Clear();
@@ -615,6 +777,29 @@ namespace DistrictEnergy
         {
             public int TimeSteps { get; set; }
             public int Period { get; set; }
+        }
+
+        /// <summary>
+        /// PreSolves the model by calculating the load profiles
+        /// </summary>
+        /// <returns></returns>
+        public Result PreSolve(UmiContext umiContext)
+        {
+            var contextBuilding = AbstractDistrictLoad.ContextBuildings(UmiContext.Current);
+            foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
+            {
+                if (StaleResults)
+                {
+                    load.GetUmiLoads(contextBuilding, umiContext);
+
+                    SolarInput.GetHourlyLocationSolarRadiation(umiContext);
+                    WindInput.GetHourlyLocationWind(umiContext);
+                }
+            }
+
+            Instance.StaleResults = false;
+
+            return Result.Success;
         }
     }
 }

@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using DistrictEnergy.Helpers;
-using DistrictEnergy.Networks.Loads;
-using LiveCharts.Defaults;
+﻿using DistrictEnergy.Networks.Loads;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     public abstract class BaseLoad : AbstractDistrictLoad, IBaseLoad
     {
-
     }
 }

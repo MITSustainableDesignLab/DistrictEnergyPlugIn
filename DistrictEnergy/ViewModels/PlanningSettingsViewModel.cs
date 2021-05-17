@@ -69,7 +69,8 @@ namespace DistrictEnergy.ViewModels
         {
             get
             {
-                if (DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>().Select(o => o.UseDistrictLosses).Any(b => b))
+                if (DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>().Select(o => o.UseDistrictLosses)
+                    .Any(b => b))
                     return true;
                 return false;
             }
@@ -87,7 +88,8 @@ namespace DistrictEnergy.ViewModels
 
         public double RelDistHeatLoss
         {
-            get => DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>().Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.RelativeLoss).Average() * 100;
+            get => DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
+                .Where(x => x.LoadType == LoadTypes.Heating).Select(o => o.RelativeLoss).Average() * 100;
             set
             {
                 foreach (var pipeNetwork in DistrictControl.Instance.ListOfDistrictLoads.OfType<PipeNetwork>()
@@ -120,7 +122,7 @@ namespace DistrictEnergy.ViewModels
 
         public double Rate
         {
-            get { return DistrictControl.PlanningSettings.Rate; }
+            get => DistrictControl.PlanningSettings.Rate;
             set
             {
                 DistrictControl.PlanningSettings.Rate = value;
@@ -131,12 +133,22 @@ namespace DistrictEnergy.ViewModels
 
         public double Periods
         {
-            get { return DistrictControl.PlanningSettings.Periods; }
+            get => DistrictControl.PlanningSettings.Periods;
             set
             {
                 DistrictControl.PlanningSettings.Periods = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(AnnuityFactor));
+            }
+        }
+
+        public double CarbonPricePerTon
+        {
+            get => DistrictControl.PlanningSettings.CarbonPricePerTon;
+            set
+            {
+                DistrictControl.PlanningSettings.CarbonPricePerTon = value;
+                OnPropertyChanged();
             }
         }
 
@@ -169,8 +181,21 @@ namespace DistrictEnergy.ViewModels
 
         private readonly List<int> availableTimeSteps = new List<int>()
         {
-            12, 15, 20, 24, 30, 40, 60, 73, 120, 146, 219, 292, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920, 4380, 8760
+            12, 15, 20, 24, 30, 40, 60, 73, 120, 146, 219, 292, 365, 438, 584, 730, 876, 1095, 1460, 1752, 2190, 2920,
+            4380, 8760
         };
 
+        public double CarbonRatio
+        {
+            get
+            {
+                return DistrictControl.PlanningSettings.CarbonRatio * 100;
+            }
+            set
+            {
+                DistrictControl.PlanningSettings.CarbonRatio = value / 100;
+                OnPropertyChanged();
+            }
+        }
     }
 }

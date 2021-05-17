@@ -4,15 +4,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
-using Deedle.Vectors;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
-using LiveCharts.Defaults;
 using Umi.Core;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    internal class PipeNetwork: AbstractLosses
+    internal class PipeNetwork : AbstractLosses
     {
         public PipeNetwork(LoadTypes loadType, string name)
         {
@@ -43,36 +42,32 @@ namespace DistrictEnergy.Networks.Loads
             set { }
         }
 
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public double RelativeLoss { get; set; }
+
         private double[] CalcInput()
         {
             var final = new double[8760];
             if (UseDistrictLosses)
-            {
                 foreach (var loads in DistrictControl.Instance.ListOfDistrictLoads.OfType<BaseLoad>()
                     .Where(o => o.LoadType == LoadType))
                 {
-                    var adjustedLoad = loads.Input.Select(x => x * RelativeLoss).ToArray(); 
-                    for (int i = 0; i < final.Length; i++)
-                    {
-                        final[i] += adjustedLoad[i];
-                    }
+                    var adjustedLoad = loads.Input.Select(x => x * RelativeLoss).ToArray();
+                    for (var i = 0; i < final.Length; i++) final[i] += adjustedLoad[i];
                 }
-            }
 
             return final;
         }
-
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public double RelativeLoss { get; set; }
     }
 
-    internal abstract class AbstractLosses: IBaseLoad
+    internal abstract class AbstractLosses : IBaseLoad
     {
         public abstract double[] Input { get; set; }
         public LoadTypes LoadType { get; set; }
         public abstract string Name { get; set; }
         public SolidColorBrush Fill { get; set; }
-        public void GetUmiLoads(List<UmiObject> contextBuilding)
+
+        public void GetUmiLoads(List<UmiObject> contextBuilding, UmiContext umiContext)
         {
             Input = new double[8760];
         }

@@ -43,14 +43,11 @@ namespace DistrictEnergy
                 Layer target_c = EnsureFullPath(layerPath_c, RhinoDocument);
                 Layer target_p = EnsureFullPath(layerPath_p, RhinoDocument);
                 target_h.Color = color_h;
-                target_h.CommitChanges();
                 target_c.Color = color_c;
-                target_c.CommitChanges();
                 target_p.Color = color_p;
-                target_p.CommitChanges();
-                var Index_h = target_h.LayerIndex;
-                var Index_c = target_c.LayerIndex;
-                var Index_p = target_p.LayerIndex;
+                var Index_h = target_h.Index;
+                var Index_c = target_c.Index;
+                var Index_p = target_p.Index;
                 RhinoDoc.ActiveDoc.Layers.SetCurrentLayerIndex(Index_h, true);
 
 
@@ -76,7 +73,6 @@ namespace DistrictEnergy
             To.Color = From.Color;
             To.RenderMaterialIndex = From.RenderMaterialIndex;
             To.IsExpanded = false;
-            To.CommitChanges();
         }
 
         /// <summary>
@@ -90,7 +86,7 @@ namespace DistrictEnergy
         /// <returns></returns>
         Layer FindLayer(RhinoDoc RhinoDocument, string name, bool isRoot)
         {
-            int id = RhinoDocument.Layers.Find(name, true);
+            int id = RhinoDocument.Layers.FindName(name).Index;
             if (id >= 0 && (!isRoot || RhinoDocument.Layers[id].ParentLayerId.Equals(Guid.Empty)))
             {
                 return RhinoDocument.Layers[id];

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
-using LiveCharts.Defaults;
 using Umi.Core;
+using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
@@ -11,7 +11,7 @@ namespace DistrictEnergy.Networks.Loads
         double[] Input { get; set; }
         LoadTypes LoadType { get; set; }
         string Name { get; set; }
-        SolidColorBrush Fill { get; set; }
-        void GetUmiLoads(List<UmiObject> contextBuilding);
+        SolidColorBrush Fill { get; }
+        void GetUmiLoads(List<UmiObject> contextBuilding, UmiContext umiContext);
     }
 }

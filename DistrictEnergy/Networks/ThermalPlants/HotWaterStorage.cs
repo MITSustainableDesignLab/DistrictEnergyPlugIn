@@ -13,7 +13,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
     {
         public HotWaterStorage()
         {
-            ConversionMatrix = new Dictionary<LoadTypes, double>()
+            ConversionMatrix = new Dictionary<LoadTypes, double>
             {
                 {LoadTypes.Heating, 1}
             };
@@ -24,7 +24,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public double AUT_HWT { get; set; } = 0;
+        public double AUT_HWT { get; set; }
 
         /// <summary>
         ///     Miscellaneous losses (%)
@@ -38,9 +38,9 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(0.8)]
-        public double TANK_START { get; set; } = 0.0;
+        public double TANK_START { get; set; }
 
-        [DataMember] [DefaultValue(0)] public override double F { get; set; } = 0;
+        [DataMember] [DefaultValue(0)] public override double F { get; set; }
         [DataMember] [DefaultValue(0.167)] public override double V { get; set; } = 0.167;
 
         [DataMember]

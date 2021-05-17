@@ -9,14 +9,13 @@ using System.Windows.Media;
 using CsvHelper;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
-using LiveCharts.Defaults;
 using Rhino;
 using Umi.Core;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
 {
-    class AdditionalLoads : BaseLoad
+    internal class AdditionalLoads : BaseLoad
     {
         public AdditionalLoads(LoadTypes loadType)
         {
@@ -26,11 +25,11 @@ namespace DistrictEnergy.Networks.Loads
         public override double[] Input { get; set; }
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; }
-        public override SolidColorBrush Fill { get; set; }
+        public override SolidColorBrush Fill => new SolidColorBrush(Color);
         public override string Name { get; set; }
         public Color Color { get; set; }
 
-        public override void GetUmiLoads(List<UmiObject> contextObjects)
+        public override void GetUmiLoads(List<UmiObject> contextObjects, UmiContext umiContext)
         {
         }
 
@@ -40,8 +39,6 @@ namespace DistrictEnergy.Networks.Loads
 
 
             var context = UmiContext.Current;
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
 
             using (var openFileDialog = new OpenFileDialog())
             {
@@ -53,7 +50,7 @@ namespace DistrictEnergy.Networks.Loads
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     //Get the path of specified file and assign to class instance
-                    filePath = openFileDialog.FileName;
+                    var filePath = openFileDialog.FileName;
                     Path = filePath;
                     //Read the contents of the file into the umi db
 
@@ -64,7 +61,7 @@ namespace DistrictEnergy.Networks.Loads
         }
 
         /// <summary>
-        /// Reads a CSV file with 3 columns.
+        ///     Reads a CSV file with 3 columns.
         /// </summary>
         /// <param name="filePath">The path to the csv file</param>
         /// <param name="context"></param>
@@ -90,19 +87,18 @@ namespace DistrictEnergy.Networks.Loads
         /// </summary>
         /// <param name="filePath">The path to the csv file</param>
         /// <param name="context"></param>
+        /// <param name="refId"></param>
         /// <returns></returns>
-        public static ICollection<IUmiObject> AddAdditionalLoad(string filePath, UmiContext context, Guid refId)
+        public static void AddAdditionalLoad(string filePath, UmiContext context, Guid refId)
         {
-            ICollection<IUmiObject> records;
-
             // Start stream reader
             using (var reader = new StreamReader(filePath))
             {
                 // Using CSV reader class
                 using (var csv = new CsvReader(reader, CultureInfo.CurrentCulture))
                 {
-                    records = new Collection<IUmiObject>();
-                    var name = "Additional Loads";
+                    ICollection<IUmiObject> records = new Collection<IUmiObject>();
+                    const string name = "Additional Loads";
                     var record = new UmiAdditionalLoad
                     {
                         Name = name, //Path.GetFileName(filePath),
@@ -112,9 +108,9 @@ namespace DistrictEnergy.Networks.Loads
                     };
 
 
-                    foreach (var _type in DHLoadAdditionalProfile.Types)
+                    foreach (var type in DHLoadAdditionalProfile.Types)
                     {
-                        var seriesName = $"Additional {_type} Load";
+                        var seriesName = $"Additional {type} Load";
                         record.Data[seriesName] = new UmiDataSeries
                         {
                             Name = seriesName,
@@ -129,18 +125,16 @@ namespace DistrictEnergy.Networks.Loads
                     csv.ReadHeader();
                     while (csv.Read())
                         // Iterate over 3 columns
-                        foreach (var _type in DHLoadAdditionalProfile.Types)
+                        foreach (var type in DHLoadAdditionalProfile.Types)
                         {
-                            var value = csv.GetField<double>(_type);
-                            record.Data[$"Additional {_type} Load"].Data.Add(value);
+                            var value = csv.GetField<double>(type);
+                            record.Data[$"Additional {type} Load"].Data.Add(value);
                         }
 
                     records.Add(record);
                     context.StoreObjects(records);
                 }
             }
-
-            return records;
         }
     }
 
