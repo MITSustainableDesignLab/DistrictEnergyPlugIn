@@ -11,7 +11,7 @@ namespace DistrictEnergy.Networks.Loads
         double[] Input { get; set; }
         LoadTypes LoadType { get; set; }
         string Name { get; set; }
-        SolidColorBrush Fill { get; set; }
+        SolidColorBrush Fill { get; }
         void GetUmiLoads(List<UmiObject> contextBuilding, UmiContext umiContext);
     }
 }

@@ -34,7 +34,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double LOSS_BAT { get; set; } = 0.15;
 
         /// <summary>
-        ///     The Battery charged state at the beginning of the simulation. Assumed at 0%.
+        ///     The Battery charged state at the beginning of the simulation. Assumed at 80%.
         /// </summary>
         [DataMember]
         [DefaultValue(0.80)]

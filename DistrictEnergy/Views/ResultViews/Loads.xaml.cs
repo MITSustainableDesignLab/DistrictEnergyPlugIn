@@ -21,14 +21,12 @@ namespace DistrictEnergy.Views.ResultViews
     /// <summary>
     /// Interaction logic for Loads.xaml
     /// </summary>
-    public partial class Loads
+    public partial class Loads : UserControl
     {
         public Loads()
         {
             InitializeComponent();
-
             DataContext = new LoadsViewModel();
-
             DHRunLPModel.Instance.Completion += Window_Loaded;
         }
 

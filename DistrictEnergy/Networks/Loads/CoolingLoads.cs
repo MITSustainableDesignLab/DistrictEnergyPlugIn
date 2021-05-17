@@ -15,7 +15,7 @@ namespace DistrictEnergy.Networks.Loads
         public override double[] Input { get; set; }
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; } = LoadTypes.Cooling;
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(0, 140, 218));
+        public override SolidColorBrush Fill => new SolidColorBrush(Color.FromRgb(0, 140, 218));
         public override string Name { get; set; } = "Cooling Load";
 
         public override void GetUmiLoads(List<UmiObject> contextObjects, UmiContext umiContext)

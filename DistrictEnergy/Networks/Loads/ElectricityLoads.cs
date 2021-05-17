@@ -14,7 +14,7 @@ namespace DistrictEnergy.Networks.Loads
     {
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes LoadType { get; set; } = LoadTypes.Elec;
-        public override SolidColorBrush Fill { get; set; } = new SolidColorBrush(Color.FromRgb(173, 221, 67));
+        public override SolidColorBrush Fill => new SolidColorBrush(Color.FromRgb(173, 221, 67));
         public override string Name { get; set; } = "Electricity Load";
 
         /// <summary>

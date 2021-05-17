@@ -69,8 +69,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 new Dictionary<LoadTypes, SolidColorBrush>
                 {
                     {LoadTypes.Cooling, new SolidColorBrush(Color.FromRgb(0, 140, 218))},
-                    {LoadTypes.Heating, new SolidColorBrush(Color.FromArgb(100, 0, 140, 218))},
-                    {LoadTypes.Elec, new SolidColorBrush(Color.FromArgb(200, 60, 120, 218))}
+                    {LoadTypes.Heating, new SolidColorBrush(Color.FromRgb(0, 112, 174))},
+                    {LoadTypes.Elec, new SolidColorBrush(Color.FromRgb(0, 70, 109))}
                 };
             set => throw new NotImplementedException();
         }

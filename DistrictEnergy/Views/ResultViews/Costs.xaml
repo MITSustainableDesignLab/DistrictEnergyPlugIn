@@ -7,8 +7,9 @@
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:converters="clr-namespace:DistrictEnergy.ViewModels.Converters"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:CostsViewModel}">
-    <Grid>
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance viewModels:CostsViewModel}">
+    <Grid x:Name="CostsGrid">
         <StackPanel Background="#4CFFFFFF" Height="auto" VerticalAlignment="Center"
                     HorizontalAlignment="Center">
             <StackPanel.Resources>

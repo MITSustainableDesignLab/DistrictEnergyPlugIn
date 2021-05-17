@@ -64,6 +64,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public abstract override Dictionary<LoadTypes, double> ConversionMatrix { get; }
         public abstract override double Efficiency { get; }
         public abstract override bool IsForced { get; set; }
+        public List<double> HourlyCapacity { get; set; }
 
         public void LoadCsv()
         {
@@ -88,7 +89,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                     Path = filePath;
                     //Read the contents of the file into the umi db
 
-                    Output = LoadCustomDemand(filePath, context);
+                    HourlyCapacity = LoadCustomDemand(filePath, context);
                     RhinoApp.WriteLine($"Added additional load from '{filePath}'");
                 }
             }
@@ -100,7 +101,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// <param name="filePath">The path to the csv file</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private static List<DateTimePoint> LoadCustomDemand(string filePath, UmiContext context)
+        private static List<double> LoadCustomDemand(string filePath, UmiContext context)
         {
             // Start stream reader
             double[] records;
@@ -113,7 +114,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 }
             }
 
-            return records.ToDateTimePoint();
+            return records.ToList();
         }
 
         public double ComputeHeatBalance(double demand, double chiller, double solar, int i)

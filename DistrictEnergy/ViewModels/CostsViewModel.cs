@@ -20,8 +20,8 @@ namespace DistrictEnergy.ViewModels
 
         public CostsViewModel()
         {
-            Instance = this;
             SeriesCollection = new SeriesCollection();
+
             Formatter = delegate(double value)
             {
                 if (Math.Abs(value) > 999999) return string.Format("{0:N} M$", value / 1000000);
@@ -52,8 +52,6 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public static CostsViewModel Instance { get; set; }
-
         public SeriesCollection SeriesCollection { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -74,7 +72,7 @@ namespace DistrictEnergy.ViewModels
             SeriesCollection.Clear();
             foreach (var supplyModule in DistrictControl.Instance.ListOfPlantSettings)
             {
-                if (supplyModule.FixedCost.Cost > 0)
+                if (supplyModule.FixedCost.Cost > 0.01)  // higher than one cent
                 {
                     SeriesCollection.Add(new PieSeries
                     {
@@ -84,7 +82,7 @@ namespace DistrictEnergy.ViewModels
                         Fill = supplyModule.FixedCost.Fill
                     });
                 }
-                if (supplyModule.VariableCost.Cost > 0)
+                if (supplyModule.VariableCost.Cost > 0.01)  // higher than one cent
                 {
                     SeriesCollection.Add(new PieSeries
                     {

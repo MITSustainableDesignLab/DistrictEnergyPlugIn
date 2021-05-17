@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
 
@@ -34,7 +33,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double Capacity
         {
             get => Output.Max();
-            set => throw new NotImplementedException();
+            set { }
         }
 
         public override double CarbonIntensity { get; set; }

@@ -91,7 +91,6 @@ namespace DistrictEnergy.ViewModels
                 },
                 Fill = new SolidColorBrush(Color.FromRgb(189, 133, 74)),
             });
-            SeriesCollection.Clear();
         }
 
         private ChartValues<double> AggregateByPeriod(double[] d, bool negative = true,

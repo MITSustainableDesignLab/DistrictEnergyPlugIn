@@ -7,7 +7,8 @@
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:LoadsViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance viewModels:LoadsViewModel}">
     <Grid x:Name="LoadsGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
