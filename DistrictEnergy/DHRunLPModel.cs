@@ -338,6 +338,16 @@ namespace DistrictEnergy
                 }
             }
 
+            foreach (var customEnergySupplyModule in DistrictControl.Instance.ListOfPlantSettings.OfType<CustomEnergySupplyModule>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    // Constraint linking the area of solar device and the amount of available solar radiation
+                    LpModel.Add(P[(t, customEnergySupplyModule)] == customEnergySupplyModule.HourlyCapacity.GetRange(t, dt).Sum());
+                }
+                C[customEnergySupplyModule].SetUb(customEnergySupplyModule.HourlyCapacity.Max());
+            }
+
             foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<NotStorage>())
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
@@ -346,6 +356,22 @@ namespace DistrictEnergy
                     try
                     {
                         LpModel.Add(P[(t, plant)] * plant.ConversionMatrix[outputType] / dt <= C[plant]);
+                    }
+                    catch (Exception e)
+                    {
+                        RhinoApp.WriteLine(e.Message);
+                    }
+                }
+            }
+
+            foreach (var plant in DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>())
+            {
+                for (int t = 0; t < timeSteps * dt; t += dt)
+                {
+                    var outputType = plant.OutputType;
+                    try
+                    {
+                        LpModel.Add(E[(t, plant)] * plant.ConversionMatrix[outputType] / dt <= C[plant]);
                     }
                     catch (Exception e)
                     {
