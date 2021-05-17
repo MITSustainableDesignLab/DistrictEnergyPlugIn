@@ -645,7 +645,68 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Problem solved in " + LpModel.Iterations() + " iterations");
             RhinoApp.WriteLine("Problem solved in " + LpModel.Nodes() + " branch-and-bound nodes");
             OnCompletion(new SimulationCompleted() {TimeSteps = timeSteps, Period = dt});
+            SaveResults(umiContext, timeSteps, dt);
             return Result.Success;
+        }
+
+        /// <summary>
+        /// Save inputs and outputs to csv
+        /// </summary>
+        /// <param name="umiContext"></param>
+        /// <param name="timeSteps"></param>
+        /// <param name="dt"></param>
+        /// <param name="filename"></param>
+        private void SaveResults(UmiContext umiContext, int timeSteps, int dt, string filename = "lp_run.csv")
+        {
+            var stream = umiContext.AuxiliaryFiles.CreateNewFileStream(filename);
+            // var records = P.GroupBy(i => i.Key.Item2,
+            //     (key, values) => new { Name=key.Name, Values=values.Select(o => o.Value.SolutionValue()).ToArray() });
+            var records =
+                DistrictControl.Instance.ListOfPlantSettings.Select(o => new
+                    {
+                        Name = o.Name, Values = o.Input.Select(p => p.Value).ToArray(), 
+                        Type = o.InputType,
+                        Direction = "In"
+                    })
+                    .Concat(DistrictControl.Instance.ListOfPlantSettings.Select(o => new
+                    {
+                        Name = o.Name, Values = o.Output.Select(p => p.Value).ToArray(), 
+                        Type = o.OutputType,
+                        Direction = "Out"
+                    })).Concat(DistrictControl.Instance.ListOfDistrictLoads.Select(o => new
+                    {
+                        Name = o.Name,
+                        Values = o.Input.Select((s, i) => new { Value = s, Index = i }).GroupBy(x => x.Index / dt)
+                            .Select(grp => grp.Select(x => x.Value).ToArray().Sum()).ToArray(),
+                        Type = o.LoadType,
+                        Direction = "In"
+                    }));
+            using (var writer = new StreamWriter(stream))
+            {
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    // Write header
+                    csv.WriteField("TimeStamp");
+                    foreach (var record in records)
+                    {
+                        csv.WriteField($"{record.Direction}_{record.Type}_{record.Name}");
+                    }
+
+                    csv.NextRecord();
+                    // Write rows
+                    for (int i = 0; i < timeSteps; i++)
+                    {
+                        csv.WriteField(i.ToString());
+
+                        foreach (var record in records)
+                        {
+                            csv.WriteField(record.Values[i].ToString("F0"));
+                        }
+
+                        csv.NextRecord();
+                    }
+                }
+            } // Flush is also called here.
         }
 
         private void ClearVariables()
