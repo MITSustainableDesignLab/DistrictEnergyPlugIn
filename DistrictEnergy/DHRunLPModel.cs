@@ -456,11 +456,11 @@ namespace DistrictEnergy
                 // Variable Costs (One per time step)
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
-                    // carbon intensity is divided by 1000 to have kgCO2/kWh, then multiplied by carbon cost 0.05 $/kgCO2
+                    // carbon intensity is divided by 1e6 to have tonCO2/kWh, then multiplied by carbon cost $/tonCO2
                     objective.SetCoefficient(P[(t, supplymodule)],
                         supplymodule.V *
                         Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType])
-                        + carbonRatio * supplymodule.CarbonIntensity / 1000 * 0.0562178769 *
+                        + carbonRatio * supplymodule.CarbonIntensity / 1e6 * DistrictControl.PlanningSettings.CarbonPricePerTon *
                         Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 

@@ -122,7 +122,7 @@ namespace DistrictEnergy.ViewModels
 
         public double Rate
         {
-            get { return DistrictControl.PlanningSettings.Rate; }
+            get => DistrictControl.PlanningSettings.Rate;
             set
             {
                 DistrictControl.PlanningSettings.Rate = value;
@@ -133,12 +133,22 @@ namespace DistrictEnergy.ViewModels
 
         public double Periods
         {
-            get { return DistrictControl.PlanningSettings.Periods; }
+            get => DistrictControl.PlanningSettings.Periods;
             set
             {
                 DistrictControl.PlanningSettings.Periods = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(AnnuityFactor));
+            }
+        }
+
+        public double CarbonPricePerTon
+        {
+            get => DistrictControl.PlanningSettings.CarbonPricePerTon;
+            set
+            {
+                DistrictControl.PlanningSettings.CarbonPricePerTon = value;
+                OnPropertyChanged();
             }
         }
 

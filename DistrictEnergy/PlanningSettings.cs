@@ -17,5 +17,9 @@ namespace DistrictEnergy
         /// The ratio by which the objective function is multiplied
         /// </summary>
         public double CarbonRatio { get; set; } = 0.5;
+        /// <summary>
+        /// The price of carbon per ton emitted as defined by the Biden administration.
+        /// </summary>
+        [DefaultValue(51)] public double CarbonPricePerTon { get; set; } = 51;
     }
 }
