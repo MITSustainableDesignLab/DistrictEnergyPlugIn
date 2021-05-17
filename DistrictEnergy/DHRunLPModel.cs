@@ -365,7 +365,6 @@ namespace DistrictEnergy
                     LpModel.Add(P[(t, solarSupply)] == solarSupply.SolarAvailableInput(t, dt).Sum() *
                         Area[solarSupply]);
                 }
-
                 if (solarSupply.IsForcedDimensionCapacity)
                 {
                     // Constraint linking the user-defined max area
@@ -640,8 +639,8 @@ namespace DistrictEnergy
                 storage.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(storage.Capacity / totalActualDemand * 365, 2) : 0;
                 RhinoApp.WriteLine(
                     $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0} kWh");
-                RhinoApp.WriteLine($"{storage.Name} initial Storage Level = {storage.Stored.First().Value}");
-                RhinoApp.WriteLine($"{storage.Name} final Storage Level = {storage.Stored.Last().Value}");
+                RhinoApp.WriteLine($"{storage.Name} initial Storage Level = {storage.Stored.First().Value:N0} kWh");
+                RhinoApp.WriteLine($"{storage.Name} final Storage Level = {storage.Stored.Last().Value:N0} kWh");
             }
 
             foreach (var area in Area)
