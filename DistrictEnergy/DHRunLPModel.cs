@@ -16,6 +16,7 @@ using Rhino;
 using Rhino.Commands;
 using Umi.RhinoServices;
 using Umi.RhinoServices.Context;
+using Umi.RhinoServices.UmiEvents;
 
 namespace DistrictEnergy
 {
@@ -109,7 +110,7 @@ namespace DistrictEnergy
             // Create the linear solver with the CBC backend.
             try
             {
-                LpModel = Solver.CreateSolver("SimpleLP", "GLOP_LINEAR_PROGRAMMING ");
+                LpModel = Solver.CreateSolver("GLOP");
             }
             catch (Exception e)
             {
@@ -171,7 +172,7 @@ namespace DistrictEnergy
 
             watch.Stop();
             RhinoApp.WriteLine($"Computed {P.Count} P variables in {watch.ElapsedMilliseconds} milliseconds");
-
+            watch = Stopwatch.StartNew();
             // Storage Variables
             RhinoApp.WriteLine("Computing storage module variables...");
             watch.Start();
@@ -193,7 +194,6 @@ namespace DistrictEnergy
                 C[supplymodule] = LpModel.MakeNumVar(0.0, double.PositiveInfinity, $"Cap_{supplymodule.Name}");
             }
 
-            watch = Stopwatch.StartNew();
             RhinoApp.WriteLine(
                 $"Computed {Qin.Count + Qout.Count + S.Count} S variables in {watch.ElapsedMilliseconds} milliseconds");
 
@@ -431,7 +431,7 @@ namespace DistrictEnergy
             }
 
             RhinoApp.WriteLine(
-                $"Computed {LpModel.NumConstraints()} S variables in {watch.ElapsedMilliseconds} milliseconds");
+                $"Computed {LpModel.NumConstraints()} constraints in {watch.ElapsedMilliseconds} milliseconds");
 
             // Set the Objective Function
             var objective = LpModel.Objective();
@@ -452,7 +452,7 @@ namespace DistrictEnergy
                         Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                // Fixed Costs (One for whole duration)
+                // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[supplymodule],
                     supplymodule.F * Settings.AnnuityFactor *
                     Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
@@ -467,7 +467,7 @@ namespace DistrictEnergy
                         supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                // Fixed Costs (One for whole duration)
+                // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[supplymodule],
                     supplymodule.F * Settings.AnnuityFactor *
                     Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
@@ -482,7 +482,7 @@ namespace DistrictEnergy
                         supplymodule.V * Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
                 }
 
-                // Fixed Costs (One for whole duration)
+                // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[supplymodule],
                     supplymodule.F * Settings.AnnuityFactor *
                     Math.Abs(supplymodule.ConversionMatrix[supplymodule.OutputType]));
@@ -496,7 +496,7 @@ namespace DistrictEnergy
                     objective.SetCoefficient(E[(t, exportable)], exportable.V);
                 }
 
-                // Fixed Costs (One for whole duration)
+                // Fixed Costs (One for whole timeSteps)
                 objective.SetCoefficient(C[exportable],
                     exportable.F * Settings.AnnuityFactor *
                     Math.Abs(exportable.ConversionMatrix[exportable.OutputType]));
@@ -623,6 +623,8 @@ namespace DistrictEnergy
                 storage.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(storage.Capacity / totalActualDemand * 365, 2) : 0;
                 RhinoApp.WriteLine(
                     $"{storage.Name} = Qin {storage.Input.Sum():N0}; Qout {storage.Output.Sum():N0}; Storage Balance {storage.Input.Sum() - storage.Output.Sum():N0}; Storage Capacity {storage.Capacity:N0} kWh");
+                RhinoApp.WriteLine($"{storage.Name} initial Storage Level = {storage.Stored.First().Value}");
+                RhinoApp.WriteLine($"{storage.Name} final Storage Level = {storage.Stored.Last().Value}");
             }
 
             foreach (var area in Area)
