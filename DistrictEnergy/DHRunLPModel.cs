@@ -408,12 +408,13 @@ namespace DistrictEnergy
             foreach (var storage in DistrictControl.Instance.ListOfPlantSettings.OfType<Storage>())
             {
                 // storage content initial == final
+                // LpModel.Add(S[(-dt, storage)] == S[(timeSteps * dt - dt, storage)]);
                 // storage state cyclicity rule
-                LpModel.Add(S[(0, storage)] <= S[(timeSteps * dt - dt, storage)]);
+                LpModel.Add(S[(-dt, storage)] <= S[(timeSteps * dt - dt, storage)]);
 
                 // 'storage content initial == and final >= storage.init * capacity'
                 LpModel.Add(S[(-dt, storage)] == storage.StartingCapacity * C[storage]);
-                //LpModel.Add(S[(timeSteps * dt, storage)] == storage.StartingCapacity * C[storage]);
+                //LpModel.Add(S[(timeSteps * dt - dt, storage)] == storage.StartingCapacity * C[storage]);
 
                 // Initial Capacity Constraint
                 LpModel.Add(S[(-dt, storage)] <= C[storage]);
