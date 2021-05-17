@@ -39,8 +39,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Heating, EFF_NGB},
-            {LoadTypes.Gas, -1}
+            {OutputType, EFF_NGB},
+            {InputType, -1}
         };
 
         public override List<DateTimePoint> Input { get; set; }
