@@ -10,8 +10,6 @@ namespace DistrictEnergy.ViewModels
 {
     public class ExportViewModel : INotifyPropertyChanged
     {
-        private Color _color;
-        private double _f;
 
         public ExportViewModel(Exportable plant)
         {
@@ -27,10 +25,8 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).Fill[Plant.OutputType].Color;
             set
             {
-                if (value.Equals(_color)) return;
-                _color = value;
+                DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).Fill[Plant.OutputType] = new SolidColorBrush(value);
                 OnPropertyChanged();
-                DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).Fill[Plant.OutputType] = new SolidColorBrush(_color);
             }
         }
 
@@ -39,10 +35,8 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).F;
             set
             {
-                if (value.Equals(_f)) return;
-                _f = value;
-                OnPropertyChanged();
                 DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).F = value;
+                OnPropertyChanged();
             }
         }
 
@@ -51,10 +45,8 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).V;
             set
             {
-                if (value.Equals(_f)) return;
-                _f = value;
-                OnPropertyChanged();
                 DistrictControl.Instance.ListOfPlantSettings.First(o => o.Id == Plant.Id).V = value;
+                OnPropertyChanged();
             }
         }
 

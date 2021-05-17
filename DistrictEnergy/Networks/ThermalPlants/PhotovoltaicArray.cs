@@ -13,16 +13,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class PhotovoltaicArray : SolarInput
     {
-        public PhotovoltaicArray()
-        {
-        }
-
         /// <summary>
         ///     Target offset as percent of annual energy (%)
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public double OFF_PV { get; set; } = 0;
+        public double OFF_PV { get; set; }
 
         /// <summary>
         ///     Cell efficiency (%)
@@ -58,6 +54,20 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override bool IsForced { get; set; }
 
+        [JsonIgnore]
+        public override double RequiredArea
+        {
+            get => MaxAreaPv;
+            set => ElectricGenerationViewModel.Instance.MaxAreaPv = value;
+        }
+
+        public double MaxAreaPv { get; set; }
+
+        /// <summary>
+        ///     If True, UserMaxArea is a constraint
+        /// </summary>
+        public override bool IsForcedDimensionCapacity { get; set; }
+
         [DataMember] [DefaultValue("PV")] public override string Name { get; set; } = "PV";
         public override Guid Id { get; set; } = Guid.NewGuid();
         public override LoadTypes OutputType => LoadTypes.Elec;
@@ -65,7 +75,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Elec, (1 - LOSS_PV)}
+            {LoadTypes.Elec, 1 - LOSS_PV}
         };
 
         public override List<DateTimePoint> Input { get; set; }
@@ -81,12 +91,16 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 };
             set => throw new NotImplementedException();
         }
+
         /// <summary>
-        /// Returns the Array of Global Incidence Radiation (kWh/m2) for a certain range
+        ///     Returns the Array of Global Incidence Radiation (kWh/m2) for a certain range
         /// </summary>
         /// <param name="t">From hour of the year #</param>
         /// <param name="dt">Duration (hours)</param>
         /// <returns></returns>
-        public override double[] SolarAvailableInput(int t = 0, int dt = 8760) => DHSimulateDistrictEnergy.Instance.DistrictDemand.RadN.ToList().GetRange(t, dt).ToArray();
+        public override double[] SolarAvailableInput(int t = 0, int dt = 8760)
+        {
+            return SolarNormalRadiation.ToList().GetRange(t, dt).ToArray();
+        }
     }
 }

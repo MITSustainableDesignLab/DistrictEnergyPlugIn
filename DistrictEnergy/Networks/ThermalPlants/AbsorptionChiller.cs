@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
@@ -12,16 +11,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class AbsorptionChiller : Dispatchable
     {
-        public AbsorptionChiller()
-        {
-        }
-
         /// <summary>
         ///     Capacity as percent of peak cooling load (%)
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public double OFF_ABS { get; set; } = 0;
+        public double OFF_ABS { get; set; }
 
         /// <summary>
         ///     Cooling coefficient of performance
@@ -31,14 +26,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public double CCOP_ABS { get; set; } = 0.90;
 
         /// <summary>
-        /// Specific capacity cost per capacity unit f [$/kW]
+        ///     Specific capacity cost per capacity unit f [$/kW]
         /// </summary>
         [DataMember]
         [DefaultValue(633)]
         public override double F { get; set; } = 633;
 
         /// <summary>
-        /// Variable cost per energy unit f [$/kWh]
+        ///     Variable cost per energy unit f [$/kWh]
         /// </summary>
         [DataMember]
         [DefaultValue(0.0004)]
@@ -62,10 +57,10 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override bool IsForced { get; set; }
 
-        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>()
+        public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Cooling, CCOP_ABS},
-            {LoadTypes.Heating, -1}
+            {OutputType, CCOP_ABS},
+            {InputType, -1}
         };
 
         public override List<DateTimePoint> Input { get; set; }
@@ -75,12 +70,17 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override Dictionary<LoadTypes, SolidColorBrush> Fill
         {
             get =>
-                new Dictionary<LoadTypes, SolidColorBrush>()
+                new Dictionary<LoadTypes, SolidColorBrush>
                 {
                     {OutputType, new SolidColorBrush(Color.FromRgb(146, 241, 254))},
-                    {InputType, new SolidColorBrush(Color.FromArgb(150,146, 241, 254))}
+                    {InputType, new SolidColorBrush(Color.FromRgb(192,247,254))}
                 };
             set => throw new NotImplementedException();
         }
+
+        /// <summary>
+        ///     0 since carbon comes from Gas.
+        /// </summary>
+        public override double CarbonIntensity { get; set; } = 0;
     }
 }

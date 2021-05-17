@@ -3,26 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Defaults;
+using Newtonsoft.Json;
 
 namespace DistrictEnergy.Networks.ThermalPlants
 {
     internal class WindTurbine : WindInput
     {
-        public WindTurbine()
-        {
-        }
-
         /// <summary>
         ///     Target offset as percent of annual energy (%)
         /// </summary>
         [DataMember]
         [DefaultValue(0)]
-        public double OFF_WND { get; set; } = 0;
+        public double OFF_WND { get; set; }
 
         /// <summary>
         ///     Turbine efficiency (%)
@@ -62,6 +58,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         [DataMember] [DefaultValue(1347)] public override double F { get; set; } = 1347;
         [DataMember] [DefaultValue(0)] public override double V { get; set; }
         public override double Capacity { get; set; }
+
         public override double CapacityFactor
         {
             get => OFF_WND;
@@ -81,7 +78,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Elec, (1 - LOSS_WND)}
+            {LoadTypes.Elec, 1 - LOSS_WND}
         };
 
         public override List<DateTimePoint> Input { get; set; }
@@ -98,13 +95,30 @@ namespace DistrictEnergy.Networks.ThermalPlants
             set => throw new NotImplementedException();
         }
 
-        public override List<double> WindAvailableInput(int t = 0, int dt = 8760)
+        [JsonIgnore]
+        public override double RequiredNumberOfWindTurbines
         {
-            return DHSimulateDistrictEnergy.Instance.DistrictDemand.WindN.ToList().GetRange(t, dt);
+            get => MaxNumberOfWindTurbines;
+            set => ElectricGenerationViewModel.Instance.MaxNumberOfWindTurbines = value * 100;
         }
 
-        public override double Power(int t = 0, int dt = 8760) =>
-            WindAvailableInput(t, dt).Where(w => w > CIN_WND && w < COUT_WND)
-                .Select(w => 0.6375 * ROT_WND * Math.Pow(w, 3) / 1000).Sum() * (1 - LOSS_WND);
+        public double MaxNumberOfWindTurbines { get; set; }
+
+        public override List<double> WindAvailableInput(int t = 0, int dt = 8760)
+        {
+            return WindSpeed.ToList().GetRange(t, dt);
+        }
+
+        /// <summary>
+        ///     Power output [kWh per wind turbine]
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public override List<double> PowerPerTurbine(int t = 0, int dt = 8760)
+        {
+            return WindAvailableInput(t, dt).Where(w => w > CIN_WND && w < COUT_WND)
+                .Select(windSpeed => 0.6375 * ROT_WND * Math.Pow(windSpeed, 3) / 1000).ToList();
+        }
     }
 }

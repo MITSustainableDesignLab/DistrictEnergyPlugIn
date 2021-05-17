@@ -27,10 +27,9 @@ namespace DistrictEnergy.Views.ResultViews
         /// <param name="e"></param>
         private void ClearThis(object sender, EventArgs e)
         {
-            foreach (var loadsView in ((Panel)stackCustomCW.Parent).Children.OfType<AnAdditionalLoadsView>())
-            {
-                ((Panel)stackCustomCW.Parent).Children.Remove(loadsView);
-            }
+
+            StackOfAdditionalLoads.Children.Clear();
+            
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace DistrictEnergy.Views.ResultViews
         private void btnAddAdditionalLoad_Click(object sender, RoutedEventArgs e)
         {
             AnAdditionalLoadsView newBtn = new AnAdditionalLoadsView(LoadTypes.Cooling);
-            ((Panel)stackCustomCW.Parent).Children.Add(newBtn);
+            StackOfAdditionalLoads.Children.Add(newBtn);
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace DistrictEnergy.Views.ResultViews
         private void btnAddAdditionalHeatingLoad_Click(object sender, RoutedEventArgs e)
         {
             AnAdditionalLoadsView newBtn = new AnAdditionalLoadsView(LoadTypes.Heating);
-            ((Panel)stackCustomCW.Parent).Children.Add(newBtn);
+            StackOfAdditionalLoads.Children.Add(newBtn);
         }
 
         /// <summary>
@@ -63,7 +62,7 @@ namespace DistrictEnergy.Views.ResultViews
         private void btnAddAdditionalElecLoad_Click(object sender, RoutedEventArgs e)
         {
             AnAdditionalLoadsView newBtn = new AnAdditionalLoadsView(LoadTypes.Elec);
-            ((Panel)stackCustomCW.Parent).Children.Add(newBtn);
+            StackOfAdditionalLoads.Children.Add(newBtn);
         }
     }
 }

@@ -39,8 +39,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RhinoCommon, Version=5.1.30000.16, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RhinoCommon">
       <HintPath>..\..\..\Program Files\Rhino 6\System\RhinoCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -61,11 +60,11 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Umi.Core">
-      <HintPath>C:\UMI\Umi.Core.dll</HintPath>
+      <HintPath>..\..\Umi\bin\net462\Umi.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Rhino">
-      <HintPath>C:\UMI\Umi.Rhino.dll</HintPath>
+      <HintPath>..\..\Umi\bin\net462\Umi.Rhino.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

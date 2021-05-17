@@ -1,14 +1,10 @@
 ﻿using System.Linq;
-using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.ThermalPlants;
 
 namespace DistrictEnergy.ViewModels
 {
     public class ElectricGenerationViewModel : PlantSettingsViewModel
     {
-        private double _pvCapacity;
-        private double _windCapacity;
-
         public ElectricGenerationViewModel()
         {
             Instance = this;
@@ -23,7 +19,15 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = value / 100;
+                var offPv = value / 100;
+                if (IsForced_WND && IsForced_PV && value > 50 && OFF_WND > 0)
+                {
+                    // Set value here to prevent recursion error
+                    DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = 1 - offPv;
+                    OnPropertyChanged(nameof(OFF_WND));
+                }
+
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().OFF_PV = offPv;
                 OnPropertyChanged();
             }
         }
@@ -88,6 +92,28 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool IsPvForcedDimensionCapacity
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First()
+                .IsForcedDimensionCapacity;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First()
+                    .IsForcedDimensionCapacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double MaxAreaPv
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().MaxAreaPv;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().MaxAreaPv = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Wind
@@ -97,7 +123,9 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND * 100;
             set
             {
-                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = value / 100;
+                var offWnd = value / 100;
+                if (IsForced_WND && IsForced_PV && value > 50 && OFF_PV > 0) OFF_PV = (1 - offWnd) * 100;
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().OFF_WND = offWnd;
                 OnPropertyChanged();
             }
         }
@@ -178,6 +206,28 @@ namespace DistrictEnergy.ViewModels
             set
             {
                 DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForced = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsWindForcedDimensionCapacity
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForcedDimensionCapacity;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForcedDimensionCapacity =
+                    value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double MaxNumberOfWindTurbines
+        {
+            get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().MaxNumberOfWindTurbines;
+            set
+            {
+                DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().MaxNumberOfWindTurbines =
+                    value;
                 OnPropertyChanged();
             }
         }

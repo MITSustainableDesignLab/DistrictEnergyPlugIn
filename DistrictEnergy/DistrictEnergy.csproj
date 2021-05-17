@@ -36,61 +36,62 @@
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Basilisk">
-      <HintPath>..\..\..\UMI\Basilisk.dll</HintPath>
+      <HintPath>..\..\basilisk\LibraryEditor\bin\Debug\net45\Basilisk.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.15.0.5\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="Deedle, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Deedle.2.1.2\lib\net45\Deedle.dll</HintPath>
+    <Reference Include="Deedle, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Deedle.2.3.0\lib\net45\Deedle.dll</HintPath>
     </Reference>
-    <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
+    <Reference Include="Dragablz, Version=0.0.3.223, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dragablz.0.0.3.223\lib\net45\Dragablz.dll</HintPath>
     </Reference>
     <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.25.20114.5271\lib\net45\Eto.dll</HintPath>
+      <HintPath>..\packages\RhinoCommon.7.4.21078.1001\lib\net45\Eto.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core, Version=4.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Google.OrTools, Version=7.6.7691.0, Culture=neutral, PublicKeyToken=53dbb1ea090cbef7, processorArchitecture=AMD64">
-      <HintPath>..\packages\Google.OrTools.7.6.7691\lib\net452\Google.OrTools.dll</HintPath>
+    <Reference Include="Google.OrTools, Version=9.0.9048.0, Culture=neutral, PublicKeyToken=56194fae38141417, processorArchitecture=AMD64">
+      <HintPath>..\packages\Google.OrTools.9.0.9048\lib\net452\Google.OrTools.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.11.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.11.2\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.16.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.16.0\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
-    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    <Reference Include="LiveCharts, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.6\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
-    <Reference Include="LiveCharts.Geared, Version=1.2.8.2, Culture=neutral, PublicKeyToken=7292f245d14ab8bf, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.Geared.1.2.9\lib\net45\LiveCharts.Geared.dll</HintPath>
+    <Reference Include="LiveCharts.Geared, Version=1.2.8.0, Culture=neutral, PublicKeyToken=7292f245d14ab8bf, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Geared.1.2.8\lib\net45\LiveCharts.Geared.dll</HintPath>
     </Reference>
-    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.6\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignColors, Version=1.2.3.1244, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignColors.1.2.3\lib\net45\MaterialDesignColors.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MaterialDesignColors, Version=2.0.0.2422, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.2.0.0\lib\net452\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=3.1.0.1244, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.3.1.0\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=4.0.0.2422, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.4.0.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json.Rhino, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b9a188c8922137c6, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.7.4.21078.1001\lib\net45\Newtonsoft.Json.Rhino.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Rhino.UI, Version=6.25.20114.5270, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.25.20114.5271\lib\net45\Rhino.UI.dll</HintPath>
+    <Reference Include="Rhino.UI, Version=7.4.21078.1000, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.7.4.21078.1001\lib\net45\Rhino.UI.dll</HintPath>
     </Reference>
-    <Reference Include="RhinoCommon, Version=6.25.20114.5270, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.25.20114.5271\lib\net45\RhinoCommon.dll</HintPath>
+    <Reference Include="RhinoCommon, Version=7.4.21078.1000, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.7.4.21078.1001\lib\net45\RhinoCommon.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -98,25 +99,21 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="Umi.Core">
-      <HintPath>..\..\..\UMI\Umi.Core.dll</HintPath>
+      <HintPath>..\..\Umi\bin\net462\Umi.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Rhino">
-      <HintPath>..\..\..\UMI\Umi.Rhino.dll</HintPath>
+      <HintPath>..\..\Umi\bin\net462\Umi.Rhino.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -153,7 +150,6 @@
     <Compile Include="CreateLoadProfilesFiles.cs" />
     <Compile Include="DHLoadAdditionalProfile.cs" />
     <Compile Include="DHRunLPModel.cs" />
-    <Compile Include="DHSimulateDistrictEnergy.cs" />
     <Compile Include="ViewModels\Converters\DollarConverter.cs" />
     <Compile Include="Helpers\ChartMode.cs" />
     <Compile Include="Helpers\ComparisonConverter.cs" />
@@ -195,7 +191,6 @@
     <Compile Include="ViewModels\Converters\KWhConverter.cs" />
     <Compile Include="ViewModels\Converters\NormalizedkgCO2ConverterUnit.cs" />
     <Compile Include="ViewModels\ExportViewModel.cs" />
-    <Compile Include="ViewModels\SummaryViewModel.cs" />
     <Compile Include="ViewModels\CombinedHeatAndPowerViewModel.cs" />
     <Compile Include="ViewModels\ChilledWaterViewModel.cs" />
     <Compile Include="ViewModels\CostsViewModel.cs" />
@@ -220,7 +215,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\PlantSettingsViewModel.cs" />
-    <Compile Include="ViewModels\ResultsViewModel.cs" />
     <Compile Include="Views\DistrictSettings\AnAdditionalLoadsView.xaml.cs">
       <DependentUpon>AnAdditionalLoadsView.xaml</DependentUpon>
     </Compile>
@@ -230,8 +224,8 @@
     <Compile Include="Views\PlantSettings\ACustomModuleView.xaml.cs">
       <DependentUpon>ACustomModuleView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlantSettings\NetworkView.xaml.cs">
-      <DependentUpon>NetworkView.xaml</DependentUpon>
+    <Compile Include="Views\PlantSettings\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ResultViews\Carbon.xaml.cs">
       <DependentUpon>Carbon.xaml</DependentUpon>
@@ -284,7 +278,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlantSettings\NetworkView.xaml">
+    <Page Include="Views\PlantSettings\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -341,9 +335,11 @@
     <None Include="constraint_solver\routing_enums.proto" />
     <None Include="constraint_solver\routing_parameters.proto" />
     <None Include="constraint_solver\search_limit.proto" />
+    <None Include="constraint_solver\search_stats.proto" />
     <None Include="constraint_solver\solver_parameters.proto" />
     <None Include="data\jobshop_scheduling.proto" />
     <None Include="data\rcpsp.proto" />
+    <None Include="data\vector_bin_packing.proto" />
     <None Include="glop\parameters.proto" />
     <None Include="graph\flow_problem.proto" />
     <None Include="linear_solver\linear_solver.proto" />
@@ -351,6 +347,7 @@
     <None Include="Resources\TabHeaderIcon.ico" />
     <None Include="sat\boolean_problem.proto" />
     <None Include="sat\cp_model.proto" />
+    <None Include="sat\cp_model_service.proto" />
     <None Include="sat\sat_parameters.proto" />
     <None Include="util\optional_boolean.proto" />
   </ItemGroup>
@@ -400,15 +397,15 @@
     </DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <Import Project="..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.1.0\build\MaterialDesignThemes.targets'))" />
-    <Error Condition="!Exists('..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets'))" />
-    <Error Condition="!Exists('..\packages\RhinoCommon.6.25.20114.5271\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.6.25.20114.5271\build\net45\RhinoCommon.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.OrTools.runtime.win-x64.9.0.9048\build\net45\Google.OrTools.runtime.win-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.OrTools.runtime.win-x64.9.0.9048\build\net45\Google.OrTools.runtime.win-x64.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets'))" />
+    <Error Condition="!Exists('..\packages\RhinoCommon.7.4.21078.1001\build\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.7.4.21078.1001\build\RhinoCommon.targets'))" />
   </Target>
-  <Import Project="..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets" Condition="Exists('..\packages\Google.OrTools.runtime.win-x64.7.6.7691\build\net45\Google.OrTools.runtime.win-x64.targets')" />
-  <Import Project="..\packages\RhinoCommon.6.25.20114.5271\build\net45\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.6.25.20114.5271\build\net45\RhinoCommon.targets')" />
+  <Import Project="..\packages\Google.OrTools.runtime.win-x64.9.0.9048\build\net45\Google.OrTools.runtime.win-x64.targets" Condition="Exists('..\packages\Google.OrTools.runtime.win-x64.9.0.9048\build\net45\Google.OrTools.runtime.win-x64.targets')" />
+  <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
+  <Import Project="..\packages\RhinoCommon.7.4.21078.1001\build\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.7.4.21078.1001\build\RhinoCommon.targets')" />
 </Project>

@@ -1,16 +1,14 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
 using DistrictEnergy.Annotations;
-using DistrictEnergy.Networks.ThermalPlants;
 using LiveCharts;
 using LiveCharts.Defaults;
-using LiveCharts.Geared;
+using LiveCharts.Helpers;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
-using DistrictEnergy.Helpers;
 using LiveCharts.Wpf;
 
 namespace DistrictEnergy.ViewModels
@@ -23,6 +21,7 @@ namespace DistrictEnergy.ViewModels
         public CostsViewModel()
         {
             SeriesCollection = new SeriesCollection();
+
             Formatter = delegate(double value)
             {
                 if (Math.Abs(value) > 999999) return string.Format("{0:N} M$", value / 1000000);
@@ -64,19 +63,16 @@ namespace DistrictEnergy.ViewModels
 
         private void SubscribeEvents(object sender, UmiContext e)
         {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
-            DHRunLPModel.Instance.Completion += UpdateCostsChart;
+            DhRunLpModel.Instance.Completion += UpdateCostsChart;
         }
 
         private void UpdateCostsChart(object sender, EventArgs e)
         {
-            var args = (DHRunLPModel.SimulationCompleted) e;
-            var Total = new double[args.TimeSteps];
             TotalCost = 0;
             SeriesCollection.Clear();
             foreach (var supplyModule in DistrictControl.Instance.ListOfPlantSettings)
             {
-                if (supplyModule.FixedCost.Cost > 0)
+                if (supplyModule.FixedCost.Cost > 0.01)  // higher than one cent
                 {
                     SeriesCollection.Add(new PieSeries
                     {
@@ -86,7 +82,7 @@ namespace DistrictEnergy.ViewModels
                         Fill = supplyModule.FixedCost.Fill
                     });
                 }
-                if (supplyModule.VariableCost.Cost > 0)
+                if (supplyModule.VariableCost.Cost > 0.01)  // higher than one cent
                 {
                     SeriesCollection.Add(new PieSeries
                     {

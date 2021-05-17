@@ -61,7 +61,7 @@ namespace DistrictEnergy.Views
 
         private void CartesianChart_MouseMove(object sender, MouseEventArgs e)
         {
-            if (DHSimulateDistrictEnergy.Instance == null) return;
+            if (DhRunLpModel.Instance == null) return;
             var chart = (LiveCharts.Wpf.CartesianChart) sender;
             var vm = this;
 

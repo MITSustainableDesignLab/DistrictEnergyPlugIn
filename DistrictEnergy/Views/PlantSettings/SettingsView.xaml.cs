@@ -10,11 +10,11 @@ using Umi.RhinoServices.UmiEvents;
 namespace DistrictEnergy.Views.PlantSettings
 {
     /// <summary>
-    /// Interaction logic for NetworkView.xaml
+    /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class NetworkView : UserControl
+    public partial class SettingsView : UserControl
     {
-        public NetworkView()
+        public SettingsView()
         {
             InitializeComponent();
             DataContext = new PlanningSettingsViewModel();

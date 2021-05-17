@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
-using CsvHelper;
 using DistrictEnergy.Helpers;
-using LiveCharts.Defaults;
 using Rhino;
 using Umi.Core;
 using Umi.RhinoServices.Context;
-using MessageBox = System.Windows.MessageBox;
 
 namespace DistrictEnergy.Networks.Loads
 {
@@ -21,24 +15,22 @@ namespace DistrictEnergy.Networks.Loads
         public abstract Guid Id { get; set; }
         public abstract LoadTypes LoadType { get; set; }
         public abstract double[] Input { get; set; }
-        public abstract SolidColorBrush Fill { get; set; }
+        public abstract SolidColorBrush Fill { get; }
         public abstract string Name { get; set; }
         public string Path { get; set; }
-        public abstract void GetUmiLoads(List<UmiObject> contextObjects);
+        public abstract void GetUmiLoads(List<UmiObject> contextObjects, UmiContext umiContext);
 
         public static List<UmiObject> ContextBuildings(UmiContext umiContext)
         {
-            var _idList = new List<string>();
-            foreach (var building in umiContext.Buildings.All) _idList.Add(building.Id.ToString());
+            var idList = umiContext.Buildings.All.Select(building => building.Id.ToString()).ToList();
             // Getting the Aggregated Load Curve for all buildings
             var contextBuildings =
                 umiContext.GetObjects()
-                    .Where(o => o.Data.Any(x => x.Value.Data.Count == 8760) && _idList.Contains(o.Id)).ToList();
-            MessageBoxButton buttons = MessageBoxButton.YesNo;
+                    .Where(o => o.Data.Any(x => x.Value.Resolution == "Hour") && idList.Contains(o.Id)).ToList();
+            var buttons = MessageBoxButton.YesNo;
             if (contextBuildings.Count == 0)
             {
-                MessageBoxResult result;
-                result = MessageBox.Show(
+                var result = MessageBox.Show(
                     "There are no buildings with hourly results. Would you like to run an hourly energy simulation now?",
                     "Cannot continue with District simulation", buttons);
                 if (result == MessageBoxResult.Yes)
@@ -46,6 +38,10 @@ namespace DistrictEnergy.Networks.Loads
                     // Sets hourly results true and calls UMISimulateEnergy
                     umiContext.ProjectSettings.GenerateHourlyEnergyResults = true;
                     RhinoApp.RunScript("-UmiSimulateEnergy", true);
+                }
+                else
+                {
+                    throw new Exception("Canceled by user");
                 }
             }
 
