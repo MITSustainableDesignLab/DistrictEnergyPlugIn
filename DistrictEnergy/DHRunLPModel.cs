@@ -1038,7 +1038,7 @@ namespace DistrictEnergy
                 {
                     double i = 0.1;
                     double n = 40;
-                    return (Math.Pow(1 + i, n) * i) / ((Math.Pow(1 + i, n) - 1));
+                    return Math.Pow(1 + i, n) * i / (Math.Pow(1 + i, n) - 1);
                 }
             }
 
