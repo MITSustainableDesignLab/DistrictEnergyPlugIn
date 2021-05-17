@@ -36,6 +36,15 @@ namespace DistrictEnergy.Networks.ThermalPlants
             if (plant.Output != null)
                 Cost = plant.Capacity * DistrictControl.PlanningSettings.AnnuityFactor * plant.F;
         }
+
+        public FixedCost(Storage storage, byte alpha = 255)
+        {
+            var color = storage.Fill[storage.OutputType].Color;
+            Fill = new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
+            Name = storage.Name + " Fixed Cost";
+            if (storage.CapacityFactor > 0)
+                Cost = storage.Capacity * 0.3 / (storage.CapacityFactor * 24) * DistrictControl.PlanningSettings.AnnuityFactor * storage.F;
+        }
     }
 
     public class VariableCost : GraphCost
