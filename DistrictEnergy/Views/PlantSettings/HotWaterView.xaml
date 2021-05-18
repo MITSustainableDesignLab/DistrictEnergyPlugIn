@@ -201,7 +201,7 @@
                                             VerticalAlignment="Center" />
                                     </StackPanel>
                                     <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40"
-                                                  IsChecked="{Binding IsPvForcedDimensionCapacity}"
+                                                  IsChecked="{Binding IsThermalForcedDimensionCapacity}"
                                                   ToolTip="Turn on to limit the number of wind turbines this supply module can use."
                                                   Grid.Row="1"
                                                   Grid.Column="0">
