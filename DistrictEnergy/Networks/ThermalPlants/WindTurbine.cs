@@ -100,7 +100,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double RequiredNumberOfWindTurbines
         {
             get => MaxNumberOfWindTurbines;
-            set => ElectricGenerationViewModel.Instance.MaxNumberOfWindTurbines = value * 100;
+            set => ElectricGenerationViewModel.Instance.MaxNumberOfWindTurbines = value;
         }
 
         public double MaxNumberOfWindTurbines { get; set; }
