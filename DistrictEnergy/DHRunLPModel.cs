@@ -585,11 +585,13 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Solution:");
             RhinoApp.WriteLine($"Optimal objective value = {LpModel.Objective().Value():f0}");
 
-            double TotalActualDemand(LoadTypes inputLoadType)
+            double TotalActualDemand(LoadTypes outputLoadType)
             {
-                var demandMetByHub = P.Where(k => 
-                        k.Key.Item2.ConversionMatrix.ContainsKey(inputLoadType))
-                    .Select(k => k.Value.SolutionValue() * Math.Abs(k.Key.Item2.ConversionMatrix[inputLoadType])).ToArray().Sum();
+                var demandMetByHub = P.Where(k =>
+                        k.Key.Item2.ConversionMatrix.ContainsKey(outputLoadType) &&
+                        k.Key.Item2.ConversionMatrix[outputLoadType] > 0)
+                    .Select(k => k.Value.SolutionValue() * Math.Abs(k.Key.Item2.ConversionMatrix[outputLoadType]))
+                    .ToArray().Sum();
                 return demandMetByHub;
             }
 
