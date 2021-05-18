@@ -419,7 +419,7 @@ namespace DistrictEnergy
                 if (windTurbine.IsForcedDimensionCapacity)
                 {
                     // Constraint linking the user-defined number of wind turbines
-                    LpModel.Add(NWind[windTurbine] <= windTurbine.RequiredNumberOfWindTurbines);
+                    LpModel.Add(NWind[windTurbine] == windTurbine.RequiredNumberOfWindTurbines);
                 }
 
                 if (windTurbine.IsForced)
@@ -641,7 +641,7 @@ namespace DistrictEnergy
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.RequiredNumberOfWindTurbines = NWind[plant].SolutionValue();
+                plant.RequiredNumberOfWindTurbines = Math.Ceiling(NWind[plant].SolutionValue());
                 var totalActualDemand = TotalActualDemand(plant.OutputType);
                 plant.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
                 RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");
