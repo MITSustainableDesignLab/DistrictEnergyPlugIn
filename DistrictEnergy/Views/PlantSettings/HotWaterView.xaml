@@ -209,7 +209,7 @@
                                     </ToggleButton>
                                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
                                                 Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="10,0,0,0">
-                                        <Label Content="#" Margin="0,2,3,2" Padding="0"
+                                        <Label Content="m²" Margin="0,2,3,2" Padding="0"
                                                VerticalContentAlignment="Center"
                                                HorizontalAlignment="Center" />
                                         <TextBox
