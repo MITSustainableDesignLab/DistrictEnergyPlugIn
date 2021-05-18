@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DistrictEnergy.Views.PlantSettings"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
@@ -124,7 +123,7 @@
                         Text="{Binding CarbonPricePerTon, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Margin="0" ToolTip="Rate per period"
                         VerticalContentAlignment="Center" MinWidth="20" />
-                    <Label Content="$/tonCO2" Margin="0,2"/>
+                    <Label Content="$/tonCO2" Margin="0,2" />
                 </StackPanel>
                 <StackPanel Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="5,0,5,0" Grid.Row="3">
 

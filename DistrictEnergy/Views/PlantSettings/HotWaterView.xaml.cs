@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.ViewModels;
@@ -15,9 +16,9 @@ namespace DistrictEnergy.Views.PlantSettings
             DataContext = new HotWaterViewModel();
         }
 
-        private void btnAddCustomHotWaterModule_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnAddCustomHotWaterModule_Click(object sender, RoutedEventArgs e)
         {
-            ACustomModuleView newBtn = new ACustomModuleView(LoadTypes.Heating);
+            var newBtn = new ACustomModuleView(LoadTypes.Heating);
             stackCustomCW.Children.Add(newBtn);
         }
     }

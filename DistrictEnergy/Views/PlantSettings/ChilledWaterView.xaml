@@ -1,4 +1,4 @@
-<UserControl x:Class="DistrictEnergy.Views.PlantSettings.ChilledWaterView"
+<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,6 +8,7 @@
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
              xmlns:converters="clr-namespace:DistrictEnergy.ViewModels.Converters"
+             xmlns:Helpers="clr-namespace:DistrictEnergy.Helpers" x:Class="DistrictEnergy.Views.PlantSettings.ChilledWaterView"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -17,7 +18,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DataContext="{d:DesignInstance viewModels:ChilledWaterViewModel}">
+             d:DataContext="{d:DesignInstance {x:Type viewModels:ChilledWaterViewModel}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,6 +31,7 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Helpers:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="ChilledWaterGroup">
@@ -60,7 +62,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Absorption Chiller</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"><Run Text="Absorption Chiller"/></TextBlock>
                     <StackPanel Grid.Row="1">
                         <Expander BorderBrush="{DynamicResource MaterialDesignBody}">
                             <Expander.Header>
@@ -71,12 +73,12 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced_ABS}" ToolTip="Force this supply module to meet the specfied ratio of the total demand despite the optimization results">
-                                        <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                                        <materialDesign:PackIcon Kind="Lock"/>
                                     </ToggleButton>
                                     <Slider VerticalAlignment="Center" Maximum="100" x:Name="SliderA"
                                             Value="{Binding OFF_ABS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Capacity factor as ratio of the total cooling energy supplied by the energy hub"
-                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" Margin="10,0" />
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" Margin="10,0" IsEnabled="{Binding IsForced_ABS, Converter={StaticResource InverseBooleanConverter}}" />
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="2"
                                                 Grid.ColumnSpan="2"
@@ -142,7 +144,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Grid.Row="0" ToolTip="Always Available">Electric Chiller</TextBlock>
+                    <TextBlock Style="{DynamicResource MaterialDesignSubtitle1TextBlock}" Grid.Row="0" ToolTip="Always Available"><Run Text="Electric Chiller"/></TextBlock>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto"
                                 Grid.Row="1">
                         <Expander>
@@ -201,11 +203,11 @@
                                 </Grid>
                             </StackPanel>
                         </Expander>
-                        
+
                     </StackPanel>
                 </Grid>
                 <StackPanel x:Name="stackCustomCW">
-                    <Button Name="btnAddCustomChilledWaterModule" Click="btnAddCustomChilledWaterModule_Click" Margin="0,20,0,0">Add Custom Cooling Supply Module</Button>
+                    <Button x:Name="btnAddCustomChilledWaterModule" Click="btnAddCustomChilledWaterModule_Click" Margin="0,20,0,0" Content="Add Custom Cooling Supply Module"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
