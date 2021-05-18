@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DistrictEnergy.Views.PlantSettings.HotWaterView"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,6 +6,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
+             xmlns:Helpers="clr-namespace:DistrictEnergy.Helpers" x:Class="DistrictEnergy.Views.PlantSettings.HotWaterView"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -15,7 +16,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DataContext="{d:DesignInstance viewModels:HotWaterViewModel}">
+             d:DataContext="{d:DesignInstance {x:Type viewModels:HotWaterViewModel}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -28,6 +29,7 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Helpers:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="HotWaterGroup">
@@ -58,9 +60,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">
-                        Electric Heat Pump
-                    </TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"><Run Text="Electric Heat Pump"/></TextBlock>
                     <StackPanel Grid.Row="1">
                         <Expander>
                             <Expander.Header>
@@ -78,7 +78,7 @@
                                     <Slider VerticalAlignment="Center" Margin="10,0" Maximum="100"
                                             Value="{Binding OFF_EHP, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Capacity factor as ratio of the total heating energy supplied by the energy hub"
-                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" />
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" IsEnabled="{Binding IsForced_EHP, Converter={StaticResource InverseBooleanConverter}}" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="2"
                                                 Grid.ColumnSpan="2"
                                                 HorizontalAlignment="Right" Margin="0">
@@ -167,7 +167,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Solar Hot Water</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"><Run Text="Solar Hot Water"/></TextBlock>
                     <StackPanel Grid.Row="1">
 
                         <Expander>
@@ -190,7 +190,7 @@
                                     <Slider VerticalAlignment="Center" Margin="10,0" Maximum="100"
                                             Value="{Binding OFF_SHW, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Capacity factor as ratio of the total heating energy supplied by the energy hub"
-                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" />
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" IsEnabled="{Binding IsForced_SHW, Converter={StaticResource InverseBooleanConverter}}" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="2"
                                                 HorizontalAlignment="Right" Margin="0">
                                         <Label Content="%" Margin="0,2,3,2" Padding="3,0,0,0"
@@ -213,7 +213,7 @@
                                                VerticalContentAlignment="Center"
                                                HorizontalAlignment="Center" />
                                         <TextBox
-                                            Text="{Binding MaxAreaCollector, StringFormat=N0, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Text="{Binding MaxAreaCollector, BindsDirectlyToSource=True, Mode=TwoWay, StringFormat=N0, UpdateSourceTrigger=PropertyChanged}"
                                             MinWidth="30" VerticalContentAlignment="Center"
                                             ToolTip="Computed area of solar collectors" />
                                     </StackPanel>
@@ -321,7 +321,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Hot Water Tank</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"><Run Text="Hot Water Tank"/></TextBlock>
                     <StackPanel Grid.Row="1">
                         <Expander>
                             <Expander.Header>
@@ -339,22 +339,20 @@
                                     <Slider VerticalAlignment="Center" Margin="10,0" Maximum="365"
                                             Value="{Binding AUT_HWT, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Number of average annual days that tanks can meet demand once fully charged"
-                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" />
+                                            IsSnapToTickEnabled="True" Focusable="False" Grid.Column="1" IsEnabled="{Binding IsForced_HWT, Converter={StaticResource InverseBooleanConverter}}" />
                                     <StackPanel Orientation="Horizontal" Grid.Column="2"
                                                 HorizontalAlignment="Right" Margin="0">
                                         <Label Content="n days" Margin="0,2,3,2" Padding="3,0,0,0"
                                                VerticalContentAlignment="Center"
                                                HorizontalAlignment="Center" />
                                         <TextBox x:Name="AutHwt" VerticalAlignment="Center">
-                                            <TextBox.Text>
-                                                <Binding Path="AUT_HWT" BindsDirectlyToSource="True"
+                                            <Binding Path="AUT_HWT" BindsDirectlyToSource="True"
                                                          Mode="TwoWay"
                                                          UpdateSourceTrigger="PropertyChanged">
-                                                    <Binding.ValidationRules>
-                                                        <districtEnergy:DoubleRangeRule Min="0" Max="365" />
-                                                    </Binding.ValidationRules>
-                                                </Binding>
-                                            </TextBox.Text>
+                                                <Binding.ValidationRules>
+                                                    <districtEnergy:DoubleRangeRule Min="0" Max="365" />
+                                                </Binding.ValidationRules>
+                                            </Binding>
                                         </TextBox>
                                     </StackPanel>
                                 </Grid>
@@ -416,7 +414,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}">Natural Gas Boiler</TextBlock>
+                    <TextBlock Grid.Row="0" Style="{DynamicResource MaterialDesignSubtitle1TextBlock}"><Run Text="Natural Gas Boiler"/></TextBlock>
                     <StackPanel Grid.Row="1" Margin="0">
                         <Expander>
                             <Expander.Header>
@@ -481,10 +479,8 @@
                     </StackPanel>
                 </Grid>
                 <StackPanel x:Name="stackCustomCW">
-                    <Button Name="btnAddCustomHotWaterModule" Margin="0,20,0,0"
-                            Click="btnAddCustomHotWaterModule_Click">
-                        Add Custom Heating Supply Module
-                    </Button>
+                    <Button x:Name="btnAddCustomHotWaterModule" Margin="0,20,0,0"
+                            Click="btnAddCustomHotWaterModule_Click" Content="Add Custom Heating Supply Module"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

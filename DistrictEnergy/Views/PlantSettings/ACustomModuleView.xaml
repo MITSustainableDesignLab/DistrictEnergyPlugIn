@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="ACustomUserControl" x:Class="DistrictEnergy.Views.PlantSettings.ACustomModuleView"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,6 +6,7 @@
              xmlns:districtEnergy="clr-namespace:DistrictEnergy"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:Helpers="clr-namespace:DistrictEnergy.Helpers" x:Name="ACustomUserControl" x:Class="DistrictEnergy.Views.PlantSettings.ACustomModuleView"
              mc:Ignorable="d"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
@@ -15,7 +16,7 @@
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance viewModels:ACustomModuleViewModel}">
+             d:DataContext="{d:DesignInstance {x:Type viewModels:ACustomModuleViewModel}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -28,6 +29,7 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Helpers:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -48,7 +50,7 @@
                         <Button x:Name="Delete" Style="{DynamicResource MaterialDesignToolButton}" Click="delete_Click">
                             <materialDesign:PackIcon Kind="delete" VerticalAlignment="Center" />
                         </Button>
-                        <Button Grid.Column="2" Margin="5,0" Click="LoadCSV_Click">Load CSV</Button>
+                        <Button Grid.Column="2" Margin="5,0" Click="LoadCSV_Click" Content="Load CSV"/>
                         <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"
                                  Style="{DynamicResource MaterialDesignTextBox}"
                                  Margin="5,0,0,0" VerticalAlignment="Center" Height="32" />
@@ -64,12 +66,12 @@
                             <ColumnDefinition Width="Auto" MinWidth="40" />
                         </Grid.ColumnDefinitions>
                         <ToggleButton Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="40" IsChecked="{Binding IsForced}">
-                            <materialDesign:PackIcon Kind="Lock"></materialDesign:PackIcon>
+                            <materialDesign:PackIcon Kind="Lock"/>
                         </ToggleButton>
                         <Slider VerticalAlignment="Center" Maximum="100" Minimum="0" x:Name="SliderA"
                                 Value="{Binding CapacityFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 ToolTip="Capacity as percent of total energy"
-                                IsSnapToTickEnabled="True" Focusable="False" Margin="10,0,0,0" Grid.Column="1" />
+                                IsSnapToTickEnabled="True" Focusable="False" Margin="10,0,0,0" Grid.Column="1" IsEnabled="{Binding IsForced, Converter={StaticResource InverseBooleanConverter}}" />
 
                         <StackPanel Orientation="Horizontal" Grid.Column="2"
                                     Grid.ColumnSpan="2"
