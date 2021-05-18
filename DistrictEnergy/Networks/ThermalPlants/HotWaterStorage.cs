@@ -63,7 +63,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
             get =>
                 new Dictionary<LoadTypes, SolidColorBrush>
                 {
-                    {OutputType, new SolidColorBrush(Color.FromArgb(200, 253, 100, 30))}
+                    {OutputType, new SolidColorBrush(Color.FromRgb(253,134,80))}
                 };
             set => throw new NotImplementedException();
         }
