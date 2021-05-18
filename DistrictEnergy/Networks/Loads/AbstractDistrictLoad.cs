@@ -6,6 +6,7 @@ using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using Rhino;
 using Umi.Core;
+using Umi.RhinoServices.Buildings;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.Loads
@@ -20,9 +21,16 @@ namespace DistrictEnergy.Networks.Loads
         public string Path { get; set; }
         public abstract void GetUmiLoads(List<UmiObject> contextObjects, UmiContext umiContext);
 
-        public static List<UmiObject> ContextBuildings(UmiContext umiContext)
+        public static List<UmiObject> ContextBuildings(UmiContext umiContext, RhinoDoc doc)
         {
-            var idList = umiContext.Buildings.All.Select(building => building.Id.ToString()).ToList();
+            var selection = new BuildingGetter().GetSelectedBuildings(
+                doc,
+                umiContext.Buildings.Visible).ToArray();
+
+            var idList =  selection.Any()
+                ? selection.Select(building => building.Id.ToString()).ToList()
+                : umiContext.Buildings.Visible.Select(building => building.Id.ToString()).ToList();
+            // var idList = umiContext.Buildings.Visible.Select(building => building.Id.ToString()).ToList();
             // Getting the Aggregated Load Curve for all buildings
             var contextBuildings =
                 umiContext.GetObjects()
