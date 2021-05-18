@@ -15,7 +15,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         {
             ConversionMatrix = new Dictionary<LoadTypes, double>
             {
-                {LoadTypes.Elec, 1}
+                {OutputType, 1}
             };
         }
 

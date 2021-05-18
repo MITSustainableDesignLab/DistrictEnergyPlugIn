@@ -41,7 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Basilisk">
-      <HintPath>..\..\basilisk\LibraryEditor\bin\Debug\net45\Basilisk.dll</HintPath>
+      <HintPath>..\..\..\UMI\Basilisk.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
@@ -80,12 +80,13 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.0.0.2422, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.0.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json.Rhino, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b9a188c8922137c6, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.7.4.21078.1001\lib\net45\Newtonsoft.Json.Rhino.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Rhino.UI, Version=7.4.21078.1000, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.7.4.21078.1001\lib\net45\Rhino.UI.dll</HintPath>
@@ -109,11 +110,11 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="Umi.Core">
-      <HintPath>..\..\Umi\bin\net462\Umi.Core.dll</HintPath>
+      <HintPath>..\..\..\umi\Umi.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Umi.Rhino">
-      <HintPath>..\..\Umi\bin\net462\Umi.Rhino.dll</HintPath>
+      <HintPath>..\..\..\umi\Umi.Rhino.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />

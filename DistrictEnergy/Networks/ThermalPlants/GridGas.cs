@@ -18,7 +18,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         public override double V
         {
             get => UmiContext.Current != null ? UmiContext.Current.ProjectSettings.GasDollars : 0;
-            set => UmiContext.Current.ProjectSettings.GasDollars = value;
+            set { }
         }
 
         /// <summary>
@@ -26,7 +26,11 @@ namespace DistrictEnergy.Networks.ThermalPlants
         /// </summary>
         [DataMember]
         [DefaultValue(185)]
-        public override double CarbonIntensity { get; set; } = 185;
+        public override double CarbonIntensity
+        {
+            get => UmiContext.Current != null ? UmiContext.Current.ProjectSettings.GasCarbon * 1000 : 185;
+            set { }
+        }
 
         public override double Capacity { get; set; } = double.PositiveInfinity;
 
