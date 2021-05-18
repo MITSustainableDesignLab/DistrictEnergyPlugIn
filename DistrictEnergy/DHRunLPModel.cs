@@ -237,7 +237,7 @@ namespace DistrictEnergy
                                 .Select(x => x.Value).ToArray()
                                 .Sum() ==
                             Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value).Sum() +
-                            E.Where(x => x.Key.Item2.OutputType == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
+                            E.Where(x => x.Key.Item2.InputType == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
                                 .ToArray().Sum());
                     }
                 }
@@ -257,7 +257,7 @@ namespace DistrictEnergy
                                 .Sum() ==
                             Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
                                 .Sum() +
-                            E.Where(x => x.Key.Item2.OutputType == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
+                            E.Where(x => x.Key.Item2.InputType == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
                                 .ToArray().Sum());
                     }
                 }
@@ -277,7 +277,7 @@ namespace DistrictEnergy
                                 .Sum() ==
                             Load.Where(x => x.Key.Item2 == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
                                 .Sum() +
-                            E.Where(x => x.Key.Item2.OutputType == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
+                            E.Where(x => x.Key.Item2.InputType == loadTypes && x.Key.Item1 == i).Select(o => o.Value)
                                 .ToArray().Sum());
                     }
                 }
@@ -299,7 +299,7 @@ namespace DistrictEnergy
             LinearExpr TotalDemand(LoadTypes loadType, int t)
             {
                 return Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == t).Select(o => o.Value).Sum() +
-                       E.Where(x => x.Key.Item2.OutputType == loadType && x.Key.Item1 == t).Select(o => o.Value)
+                       E.Where(x => x.Key.Item2.InputType == loadType && x.Key.Item1 == t).Select(o => o.Value)
                            .ToArray().Sum();
             }
 
@@ -315,14 +315,14 @@ namespace DistrictEnergy
                            .Where(x => x.Key.Item2.InputType == loadType)
                            .Select(o => o.Value).ToArray().Sum() +
                        Load.Where(x => x.Key.Item2 == loadType).Select(o => o.Value).Sum() +
-                       E.Where(x => x.Key.Item2.OutputType == loadType).Select(o => o.Value).ToArray().Sum();
+                       E.Where(x => x.Key.Item2.InputType == loadType).Select(o => o.Value).ToArray().Sum();
             }
 
-            foreach (var loadType in new List<LoadTypes> {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec})
+            foreach (var inputType in new List<LoadTypes> {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec})
             {
-                LpModel.Add(P.Where(x => x.Key.Item2.ConversionMatrix.ContainsKey(loadType))
-                                .Select(o => o.Value * o.Key.Item2.ConversionMatrix[loadType]).ToArray().Sum() <=
-                            TotalAnnualDemand(loadType));
+                LpModel.Add(P.Where(x => x.Key.Item2.ConversionMatrix.ContainsKey(inputType))
+                                .Select(o => o.Value * o.Key.Item2.ConversionMatrix[inputType]).ToArray().Sum() <=
+                            TotalAnnualDemand(inputType));
             }
 
             // Forced Capacity Constraints
@@ -368,10 +368,10 @@ namespace DistrictEnergy
             {
                 for (int t = 0; t < timeSteps * dt; t += dt)
                 {
-                    var outputType = plant.OutputType;
+                    var outputType = plant.InputType;
                     try
                     {
-                        LpModel.Add(E[(t, plant)] * plant.ConversionMatrix[outputType] / dt <= C[plant]);
+                        LpModel.Add(E[(t, plant)] * Math.Abs(plant.ConversionMatrix[outputType]) / dt <= C[plant]);
                     }
                     catch (Exception e)
                     {
@@ -419,7 +419,7 @@ namespace DistrictEnergy
                 if (windTurbine.IsForcedDimensionCapacity)
                 {
                     // Constraint linking the user-defined number of wind turbines
-                    LpModel.Add(NWind[windTurbine] <= windTurbine.RequiredNumberOfWindTurbines);
+                    LpModel.Add(NWind[windTurbine] == windTurbine.RequiredNumberOfWindTurbines);
                 }
 
                 if (windTurbine.IsForced)
@@ -554,10 +554,14 @@ namespace DistrictEnergy
                 objective.SetCoefficient(C[storage], storage.F * DistrictControl.PlanningSettings.AnnuityFactor / (0.3 * dt));
             }
 
+            var lp = LpModel.ExportModelAsLpFormat(false); 
+            umiContext.AuxiliaryFiles.StoreText("lp_problem.lp", lp);
+            RhinoApp.WriteLine(
+                $"Model saved in LpFormat at {umiContext.AuxiliaryFiles.GetFullPath("lp_problem.lp")}");
+
             RhinoApp.WriteLine("Solving...");
             objective.SetMinimization();
-            var lp = LpModel.ExportModelAsLpFormat(false);
-            umiContext.AuxiliaryFiles.StoreText("lp_problem.lp", lp);
+            
             LpModel.EnableOutput();
             var resultStatus = LpModel.Solve();
 
@@ -591,11 +595,11 @@ namespace DistrictEnergy
             RhinoApp.WriteLine("Solution:");
             RhinoApp.WriteLine($"Optimal objective value = {LpModel.Objective().Value():f0}");
 
-            double TotalActualDemand(LoadTypes outputLoadType)
+            double TotalActualDemand(LoadTypes inputLoadType)
             {
-                var demandMetByHub = P.Where(k => k.Key.Item2.ConversionMatrix.ContainsKey(outputLoadType) 
-                        ? k.Key.Item2.ConversionMatrix[outputLoadType] > 0 : false)
-                    .Select(k => k.Value.SolutionValue() * Math.Abs(k.Key.Item2.ConversionMatrix[outputLoadType])).ToArray().Sum();
+                var demandMetByHub = P.Where(k => 
+                        k.Key.Item2.ConversionMatrix.ContainsKey(inputLoadType))
+                    .Select(k => k.Value.SolutionValue() * Math.Abs(k.Key.Item2.ConversionMatrix[inputLoadType])).ToArray().Sum();
                 return demandMetByHub;
             }
 
@@ -637,7 +641,7 @@ namespace DistrictEnergy
                 plant.Input = solutionValues.ToDateTimePoint();
                 var energy = solutionValues.Select(x => x * plant.ConversionMatrix[plant.OutputType]).ToArray();
                 plant.Output = energy.ToDateTimePoint();
-                plant.RequiredNumberOfWindTurbines = NWind[plant].SolutionValue();
+                plant.RequiredNumberOfWindTurbines = Math.Ceiling(NWind[plant].SolutionValue());
                 var totalActualDemand = TotalActualDemand(plant.OutputType);
                 plant.CapacityFactor = totalActualDemand > 1e-3 ? Math.Round(energy.Sum() / totalActualDemand, 2) : 0;
                 RhinoApp.WriteLine($"{plant.Name} = {plant.Capacity:N0} kW Peak ; {energy.Sum():N0} kWh Annum");

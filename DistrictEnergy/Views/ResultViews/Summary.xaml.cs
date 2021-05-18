@@ -46,6 +46,25 @@ namespace DistrictEnergy.Views.ResultViews
 
             }
 
+            foreach (var load in DistrictControl.Instance.ListOfPlantSettings.Where(x =>
+                x.OutputType == LoadTypes.GridCool ||
+                x.OutputType == LoadTypes.GridHeat ||
+                x.OutputType == LoadTypes.GridElec))
+            {
+                TextBlock name = new TextBlock();
+                name.Text = load.Name;
+                NameStack.Children.Add(name);
+
+                TextBlock demandValue = new TextBlock();
+                demandValue.Text = load.Input.Max().ToString("N0");
+                PeakStack.Children.Add(demandValue);
+
+                TextBlock energyValue = new TextBlock();
+                energyValue.Text = load.Input.Sum().ToString("N0");
+                EnergyStack.Children.Add(energyValue);
+
+            }
+
             NamePlantStack.Children.Clear();
             PeakPlantStack.Children.Clear();
             EnergyPlantStack.Children.Clear();

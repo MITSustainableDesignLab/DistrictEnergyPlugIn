@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Windows.Media;
 using DistrictEnergy.Helpers;
 using LiveCharts.Defaults;
+using Newtonsoft.Json;
 using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy.Networks.ThermalPlants
@@ -22,11 +23,21 @@ namespace DistrictEnergy.Networks.ThermalPlants
         }
 
         /// <summary>
-        ///     Carbon intensity [gCO2eq/kWh] from https://www.iea.org/reports/global-energy-co2-status-report-2019/emissions
+        /// Carbon intensity [gCO2eq/kWh] from https://www.iea.org/reports/global-energy-co2-status-report-2019/emissions
         /// </summary>
-        [DataMember]
-        [DefaultValue(475)]
-        public override double CarbonIntensity { get; set; } = 475;
+        [JsonIgnore]
+        public override double CarbonIntensity
+        {
+            get
+            {
+                if (UmiContext.Current != null) return UmiContext.Current.ProjectSettings.ElectricityCarbon * 1000;
+                return 475;
+            }
+            set
+            {
+                if (UmiContext.Current != null) UmiContext.Current.ProjectSettings.ElectricityCarbon = value;
+            }
+        }
 
         public override double Capacity { get; set; } = double.PositiveInfinity;
 
@@ -48,7 +59,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Elec, 1}
+            {OutputType, 1},
+            {InputType, -1}
         };
 
         public override List<DateTimePoint> Input { get; set; }
