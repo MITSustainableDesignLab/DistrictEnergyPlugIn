@@ -296,34 +296,23 @@ namespace DistrictEnergy
                 }
             }
 
-            // Capacity Constraints
-            LinearExpr TotalDemand(LoadTypes loadType, int t)
-            {
-                return Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == t).Select(o => o.Value).Sum() +
-                       E.Where(x => x.Key.Item2.InputType == loadType && x.Key.Item1 == t).Select(o => o.Value)
-                           .ToArray().Sum();
-            }
-
-            double TotalLoad(LoadTypes loadType, int t)
-            {
-                return Load.Where(x => x.Key.Item2 == loadType && x.Key.Item1 == t).Select(o => o.Value).Sum();
-            }
-
             // Total demand from Loads and exports
             LinearExpr TotalAnnualDemand(LoadTypes loadType)
             {
                 return P
                            .Where(x => x.Key.Item2.InputType == loadType)
                            .Select(o => o.Value).ToArray().Sum() +
+                       Qin.Where(x => x.Key.Item2.InputType == loadType).Select(o => o.Value).ToArray().Sum() -
+                       Qout.Where(x => x.Key.Item2.InputType == loadType).Select(o => o.Value).ToArray().Sum() +
                        Load.Where(x => x.Key.Item2 == loadType).Select(o => o.Value).Sum() +
                        E.Where(x => x.Key.Item2.InputType == loadType).Select(o => o.Value).ToArray().Sum();
             }
 
-            foreach (var inputType in new List<LoadTypes> {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec})
+            foreach (var outputType in new List<LoadTypes> {LoadTypes.Heating, LoadTypes.Cooling, LoadTypes.Elec, LoadTypes.Gas})
             {
-                LpModel.Add(P.Where(x => x.Key.Item2.ConversionMatrix.ContainsKey(inputType))
-                                .Select(o => o.Value * o.Key.Item2.ConversionMatrix[inputType]).ToArray().Sum() <=
-                            TotalAnnualDemand(inputType));
+                LpModel.Add(P.Where(x => x.Key.Item2.ConversionMatrix.ContainsKey(outputType))
+                                .Select(o => o.Value * o.Key.Item2.ConversionMatrix[outputType]).ToArray().Sum() <=
+                            TotalAnnualDemand(outputType));
             }
 
             // Forced Capacity Constraints
