@@ -163,7 +163,6 @@ namespace DistrictEnergy
         {
             if (SelectSimCase.SelectedItem != null)
             {
-                DhRunLpModel.Instance.PreSolve(UmiContext.Current);
                 var item = (SimCase) SelectSimCase.SelectedItem;
                 if (item.Id == 1)
                 {

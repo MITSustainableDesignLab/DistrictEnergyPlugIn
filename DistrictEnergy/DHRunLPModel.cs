@@ -17,6 +17,7 @@ using DistrictEnergy.ViewModels;
 using Google.OrTools.LinearSolver;
 using Rhino;
 using Rhino.Commands;
+using Umi.Core;
 using Umi.RhinoServices;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
@@ -99,13 +100,13 @@ namespace DistrictEnergy
 
         public override Result Run(RhinoDoc doc, UmiContext context, RunMode mode)
         {
-            return Main(context);
+            return Main(context, doc);
         }
 
-        private Result Main(UmiContext umiContext)
+        private Result Main(UmiContext umiContext, RhinoDoc doc)
         {
             ClearVariables();
-            PreSolve(umiContext);
+            PreSolve(umiContext, doc);
             // Create the linear solver with the CBC backend.
             try
             {
@@ -787,9 +788,14 @@ namespace DistrictEnergy
         /// PreSolves the model by calculating the load profiles
         /// </summary>
         /// <returns></returns>
-        public Result PreSolve(UmiContext umiContext)
+        public void PreSolve(UmiContext umiContext, RhinoDoc doc)
         {
-            var contextBuilding = AbstractDistrictLoad.ContextBuildings(UmiContext.Current);
+            var contextBuilding = AbstractDistrictLoad.ContextBuildings(umiContext, doc);
+            if (ContextBuildings is null || !contextBuilding.Select(o => o.Id).SequenceEqual(ContextBuildings.Select(o=>o.Id)))
+            {
+                StaleResults = true;
+                ContextBuildings = contextBuilding;
+            }
             foreach (var load in DistrictControl.Instance.ListOfDistrictLoads)
             {
                 if (StaleResults)
@@ -800,10 +806,10 @@ namespace DistrictEnergy
                     WindInput.GetHourlyLocationWind(umiContext);
                 }
             }
-
+            RhinoApp.WriteLine($"\nRunning optimization for {ContextBuildings.Count} buildings.");
             Instance.StaleResults = false;
-
-            return Result.Success;
         }
+
+        public List<UmiObject> ContextBuildings { get; set; }
     }
 }
