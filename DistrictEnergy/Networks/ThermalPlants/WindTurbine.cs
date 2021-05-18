@@ -78,7 +78,8 @@ namespace DistrictEnergy.Networks.ThermalPlants
 
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {LoadTypes.Elec, 1 - LOSS_WND}
+            {OutputType, 1 - LOSS_WND},
+            {InputType, -1}
         };
 
         public override List<DateTimePoint> Input { get; set; }

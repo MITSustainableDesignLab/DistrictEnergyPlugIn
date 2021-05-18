@@ -9,11 +9,12 @@ namespace DistrictEnergy.Networks.ThermalPlants
     internal class ElectricityExport : Exportable
     {
         public override Guid Id { get; set; } = Guid.NewGuid();
-        public override LoadTypes OutputType => LoadTypes.Elec;
+        public override LoadTypes OutputType => LoadTypes.GridElec;
 
         public override Dictionary<LoadTypes, double> ConversionMatrix => new Dictionary<LoadTypes, double>
         {
-            {InputType, 1}
+            {OutputType, 1},
+            {InputType, -1}
         };
 
         public override List<DateTimePoint> Input { get; set; }

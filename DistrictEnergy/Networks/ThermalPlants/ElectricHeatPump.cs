@@ -56,7 +56,7 @@ namespace DistrictEnergy.Networks.ThermalPlants
         {
             {LoadTypes.Heating, HCOP_EHP},
             {LoadTypes.Cooling, UseEhpEvap == 0 ? 0 : 1 - 1 / HCOP_EHP},
-            {LoadTypes.Elec, -1}
+            {InputType, -1}
         };
 
         public override List<DateTimePoint> Input { get; set; }
