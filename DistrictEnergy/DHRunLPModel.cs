@@ -396,13 +396,25 @@ namespace DistrictEnergy
                 }
             }
 
+            
             // Zero Energy Community
             // An energy-efficient community where, on a source energy basis, the actual annual delivered energy is less than
             // or equal to the on-site renewable exported energy.
-            var exports = E.Where(x => x.Key.Item2.InputType == LoadTypes.Elec).Select(o => o.Value).ToArray().Sum();
-            var grid = P.Where(k => k.Key.Item2.GetType() == typeof(GridElectricity))
-                .Select(k => k.Value * k.Key.Item2.ConversionMatrix[LoadTypes.Elec]).ToArray().Sum();
-            LpModel.Add(grid <= exports);
+            if (DistrictControl.PlanningSettings.IsZeroEnergyCommunity)
+            {
+                var exports = E.Where(x => x.Key.Item2.InputType == LoadTypes.Elec).Select(o => o.Value).ToArray().Sum();
+                var grid = P.Where(k => k.Key.Item2.GetType() == typeof(GridElectricity))
+                    .Select(k => k.Value * k.Key.Item2.ConversionMatrix[LoadTypes.Elec]).ToArray().Sum();
+                LpModel.Add(grid <= exports);
+            }
+
+            // No Gas Solution
+            if (DistrictControl.PlanningSettings.IsNoGasSolution)
+            {
+                var gasImports = P.Where(k => k.Key.Item2.GetType() == typeof(GridGas))
+                    .Select(k => k.Value).ToArray().Sum();
+                LpModel.Add(gasImports <= 0);
+            }
 
             // Wind Constraints
             foreach (var windTurbine in DistrictControl.Instance.ListOfPlantSettings.OfType<WindInput>())
