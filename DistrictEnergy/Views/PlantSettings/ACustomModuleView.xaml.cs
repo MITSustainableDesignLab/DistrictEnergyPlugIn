@@ -10,7 +10,7 @@ using Rhino;
 namespace DistrictEnergy.Views.PlantSettings
 {
     /// <summary>
-    /// Interaction logic for ACustomModuleView.xaml
+    ///     Interaction logic for ACustomModuleView.xaml
     /// </summary>
     public partial class ACustomModuleView : UserControl
     {
@@ -37,30 +37,30 @@ namespace DistrictEnergy.Views.PlantSettings
             DistrictControl.Instance.ListOfPlantSettings.Add(customPlant);
 
             InitializeComponent();
-            DataContext = new ACustomModuleViewModel() {Id = _id};
+            DataContext = new ACustomModuleViewModel {Id = _id};
         }
 
         /// <summary>
-        /// Removes the CustomEnergySupplyModule model from the list of PlantSettings
+        ///     Removes the CustomEnergySupplyModule model from the list of PlantSettings
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void delete_Click(object sender, RoutedEventArgs e)
         {
-            Button btn = sender as Button;
+            var btn = sender as Button;
             if (btn != null)
             {
-                ((Panel) this.Parent).Children.Remove(this);
+                ((Panel) Parent).Children.Remove(this);
 
-                CustomEnergySupplyModule to_remove = DistrictControl.Instance.ListOfPlantSettings
+                var to_remove = DistrictControl.Instance.ListOfPlantSettings
                     .OfType<CustomEnergySupplyModule>().First(x => x.Id == _id);
                 DistrictControl.Instance.ListOfPlantSettings.Remove(to_remove);
-                Rhino.RhinoApp.WriteLine($"Removed {nameof(CustomEnergySupplyModule)} named {to_remove.Name}");
+                RhinoApp.WriteLine($"Removed {nameof(CustomEnergySupplyModule)} named {to_remove.Name}");
             }
         }
 
         /// <summary>
-        /// Loads in a CSV file for the CustomEnergySupplyModule
+        ///     Loads in a CSV file for the CustomEnergySupplyModule
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -74,7 +74,7 @@ namespace DistrictEnergy.Views.PlantSettings
             }
             catch (Exception exception)
             {
-                MessageBoxResult result =
+                var result =
                     MessageBox.Show(exception.Message, "An Error occured while reading the CSV file");
                 RhinoApp.WriteLine(exception.Message);
             }

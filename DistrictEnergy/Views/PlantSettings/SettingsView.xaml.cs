@@ -10,7 +10,7 @@ using Umi.RhinoServices.UmiEvents;
 namespace DistrictEnergy.Views.PlantSettings
 {
     /// <summary>
-    /// Interaction logic for SettingsView.xaml
+    ///     Interaction logic for SettingsView.xaml
     /// </summary>
     public partial class SettingsView : UserControl
     {
@@ -28,7 +28,7 @@ namespace DistrictEnergy.Views.PlantSettings
         }
 
         /// <summary>
-        /// Clear the views in the StackPanel named "Exports"
+        ///     Clear the views in the StackPanel named "Exports"
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -38,7 +38,7 @@ namespace DistrictEnergy.Views.PlantSettings
         }
 
         /// <summary>
-        /// Create the views in the StackPanel named "Exports"
+        ///     Create the views in the StackPanel named "Exports"
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -46,12 +46,8 @@ namespace DistrictEnergy.Views.PlantSettings
         {
             var exportables = DistrictControl.Instance.ListOfPlantSettings.OfType<Exportable>();
             foreach (var export in exportables)
-            {
                 if (Exports.Children.Count < exportables.Count())
-                {
                     Exports.Children.Add(new ExportView(export));
-                }
-            }
         }
     }
 }

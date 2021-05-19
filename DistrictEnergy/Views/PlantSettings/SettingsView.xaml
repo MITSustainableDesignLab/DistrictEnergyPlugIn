@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DistrictEnergy.Views.PlantSettings"
              xmlns:viewModels="clr-namespace:DistrictEnergy.ViewModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
@@ -59,6 +58,7 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -83,10 +83,8 @@
                            Margin="0,2,3,2" />
                     <CheckBox IsChecked="{Binding UseDistrictLosses, Mode=TwoWay}"
                               VerticalAlignment="Center" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
                     <Label Content="Hot"
-                           ToolTip="Relative distribution heat loss" Margin="0,2,4,2" />
+                           ToolTip="Relative distribution heat loss" Margin="15,2,4,2" />
                     <TextBox
                         Text="{Binding RelDistHeatLoss, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,5,0"
@@ -99,6 +97,7 @@
                         IsEnabled="{Binding UseDistrictLosses, Mode=OneWay}" Margin="0,0,10,0"
                         VerticalContentAlignment="Center" MinWidth="20" />
                 </StackPanel>
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2">
                     <StackPanel.DataContext>
                         <viewModels:PlanningSettingsViewModel />
@@ -124,7 +123,7 @@
                         Text="{Binding CarbonPricePerTon, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Margin="0" ToolTip="Rate per period"
                         VerticalContentAlignment="Center" MinWidth="20" />
-                    <Label Content="$/tonCO2" Margin="0,2"/>
+                    <Label Content="$/tonCO2" Margin="0,2" />
                 </StackPanel>
                 <StackPanel Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="5,0,5,0" Grid.Row="3">
 
@@ -139,7 +138,15 @@
                         <TextBlock HorizontalAlignment="Right">Carbon Only</TextBlock>
                     </Grid>
                 </StackPanel>
-                <StackPanel Grid.Row="4" x:Name="Exports" Grid.ColumnSpan="2" />
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal">
+                    <Label Content="Zero Energy Solution" Margin="0,2,3,2"/>
+                    <ToggleButton HorizontalAlignment="Left" IsChecked="{Binding IsNetZero}" 
+                                  ToolTip="If Checked, the solution will ensure that the electricity exports are higher or equal than grid electricity purchases\r\nwhich is inline with the definition of a Zero Energy Community " />
+                    <Label Content="No Gas Solution" Margin="0,2,3,2"/>
+                    <ToggleButton HorizontalAlignment="Left" IsChecked="{Binding IsNoGas}" 
+                                  ToolTip="If Checked, the solution will ensure that the electricity exports are higher or equal than grid electricity purchases\r\nwhich is inline with the definition of a Zero Energy Community " />
+                </StackPanel>
+                <StackPanel Grid.Row="5" x:Name="Exports" Grid.ColumnSpan="2" Grid.Column="0" />
             </Grid>
         </GroupBox>
     </Grid>

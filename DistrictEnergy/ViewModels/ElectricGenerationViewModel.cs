@@ -87,6 +87,10 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().IsForced;
             set
             {
+                if (IsPvForcedDimensionCapacity)
+                {
+                    IsPvForcedDimensionCapacity = !value;
+                }
                 DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First().IsForced = value;
                 OnPropertyChanged();
             }
@@ -98,6 +102,10 @@ namespace DistrictEnergy.ViewModels
                 .IsForcedDimensionCapacity;
             set
             {
+                if (IsForced_PV)
+                {
+                    IsForced_PV = !value;
+                }
                 DistrictControl.Instance.ListOfPlantSettings.OfType<PhotovoltaicArray>().First()
                     .IsForcedDimensionCapacity = value;
                 OnPropertyChanged();
@@ -205,6 +213,10 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForced;
             set
             {
+                if (IsWindForcedDimensionCapacity)
+                {
+                    IsWindForcedDimensionCapacity = !value;
+                }
                 DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForced = value;
                 OnPropertyChanged();
             }
@@ -215,6 +227,10 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForcedDimensionCapacity;
             set
             {
+                if (IsForced_WND)
+                {
+                    IsForced_WND = !value;
+                }
                 DistrictControl.Instance.ListOfPlantSettings.OfType<WindTurbine>().First().IsForcedDimensionCapacity =
                     value;
                 OnPropertyChanged();

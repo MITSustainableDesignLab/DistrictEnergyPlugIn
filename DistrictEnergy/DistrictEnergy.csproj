@@ -203,7 +203,7 @@
     <Compile Include="ViewModels\LoadsViewModel.cs" />
     <Compile Include="ViewModels\PlanningSettingsViewModel.cs" />
     <Compile Include="ViewModels\DistrictSettingsViewModel.cs" />
-    <Compile Include="DistrictSettings.cs" />
+    <Compile Include="Scenarios.cs" />
     <Compile Include="CreateNetworkLayer.cs" />
     <Compile Include="DistrictEnergyPlugIn.cs" />
     <Compile Include="DistrictControl.xaml.cs">

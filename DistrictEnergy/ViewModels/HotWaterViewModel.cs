@@ -252,6 +252,7 @@ namespace DistrictEnergy.ViewModels
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().IsForced;
             set
             {
+                if (IsThermalForcedDimensionCapacity) IsThermalForcedDimensionCapacity = !value;
                 DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First().IsForced = value;
                 OnPropertyChanged();
             }
@@ -269,12 +270,13 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
-        public bool IsPvForcedDimensionCapacity
+        public bool IsThermalForcedDimensionCapacity
         {
             get => DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First()
                 .IsForcedDimensionCapacity;
             set
             {
+                if (IsForced_SHW) IsForced_SHW = !value;
                 DistrictControl.Instance.ListOfPlantSettings.OfType<SolarThermalCollector>().First()
                     .IsForcedDimensionCapacity = value;
                 OnPropertyChanged();

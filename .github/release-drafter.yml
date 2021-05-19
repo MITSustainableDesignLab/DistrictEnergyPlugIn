@@ -1,24 +1,42 @@
-template: |
-  ## What’s Changed
-
-  $CHANGES
-
-  ## Contributors
-
-  $CONTRIBUTORS
-
+name-template: 'v$RESOLVED_VERSION 🌈'
+tag-template: 'v$RESOLVED_VERSION'
 categories:
-  - title: 'Features'
+  - title: '🚀 New Features'
     labels:
-      - 'feature'
       - 'enhancement'
-  - title: 'Bug Fixes'
+      - 'new feature'
+  - title: '🐛 Bug Fixes'
     labels:
       - 'fix'
       - 'bugfix'
       - 'bug'
-  - title: 'Under the hood refactoring ⚙'
+  - title: '🧰 Maintenance'
     labels:
       - 'refactoring'
-name-template: 'v$NEXT_PATCH_VERSION 🌈'
-tag-template: 'v$NEXT_PATCH_VERSION'
+      - 'dependencies'
+      - 'UI/UX'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+      - 'feature'
+      - 'new feature'
+      - 'enhancement'
+      - 'UI/UX'
+  patch:
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+      - 'patch'
+      - 'refactoring'
+  default: patch
+template: |
+  ## Changes
+
+  $CHANGES
