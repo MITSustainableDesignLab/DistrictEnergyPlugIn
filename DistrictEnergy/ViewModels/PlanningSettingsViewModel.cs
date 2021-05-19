@@ -168,6 +168,26 @@ namespace DistrictEnergy.ViewModels
             }
         }
 
+        public bool IsNetZero
+        {
+            get => DistrictControl.PlanningSettings.IsZeroEnergyCommunity;
+            set
+            {
+                DistrictControl.PlanningSettings.IsZeroEnergyCommunity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsNoGas
+        {
+            get => DistrictControl.PlanningSettings.IsNoGasSolution;
+            set
+            {
+                DistrictControl.PlanningSettings.IsNoGasSolution = value;
+                OnPropertyChanged();
+            }
+        }
+
         public int DisplayTimeSteps => availableTimeSteps[TimeSteps];
         public static PlanningSettingsViewModel Instance { get; set; }
 

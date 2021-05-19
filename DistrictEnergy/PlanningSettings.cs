@@ -21,5 +21,14 @@ namespace DistrictEnergy
         /// The price of carbon per ton emitted as defined by the Biden administration.
         /// </summary>
         [DefaultValue(51)] public double CarbonPricePerTon { get; set; } = 51;
+
+        /// <summary>
+        /// If True, a constraint is added to satisfy the Zero Energy Community rule
+        /// </summary>
+        public bool IsZeroEnergyCommunity { get; set; }
+        /// <summary>
+        /// If True, a constraint is added preventing use of natural gas in the energy hub
+        /// </summary>
+        public bool IsNoGasSolution { get; set; }
     }
 }
