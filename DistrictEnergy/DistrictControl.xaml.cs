@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.Loads;
@@ -14,7 +16,6 @@ using DistrictEnergy.Networks.ThermalPlants;
 using DistrictEnergy.ViewModels;
 using LiveCharts.Wpf;
 using Rhino;
-using Umi.RhinoServices.Context;
 
 namespace DistrictEnergy
 {
@@ -23,6 +24,10 @@ namespace DistrictEnergy
     /// </summary>
     public partial class DistrictControl : UserControl, INotifyPropertyChanged
     {
+        private readonly GridLength[] starHeight;
+        private ObservableCollection<IBaseLoad> _listOfDistrictLoads;
+        private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
+
         public DistrictControl()
         {
             ListOfPlantSettings = new ObservableCollection<IThermalPlantSettings>
@@ -40,19 +45,20 @@ namespace DistrictEnergy
                 new GridElectricity(),
                 new GridGas()
             };
-            ListOfDistrictLoads = new ObservableCollection<IBaseLoad>()
+            ListOfDistrictLoads = new ObservableCollection<IBaseLoad>
             {
                 new HeatingLoads(),
                 new CoolingLoads(),
                 new ElectricityLoads(),
                 new PipeNetwork(LoadTypes.Heating, "Heating Losses"),
-                new PipeNetwork(LoadTypes.Cooling, "Cooling Losses"),
+                new PipeNetwork(LoadTypes.Cooling, "Cooling Losses")
             };
             PlanningSettings = new PlanningSettings();
-            DistrictSettings = new DistrictSettings();
-            InitializeComponent();
+            Scenarios = new ObservableCollection<SimCase>();
             Instance = this;
             DataContext = this;
+
+            InitializeComponent();
 
             SelectSimCase.SelectionChanged += OnSimCaseChanged;
             SelectSimCase.DropDownOpened += OnDropDownOpened;
@@ -100,6 +106,13 @@ namespace DistrictEnergy
             }
         }
 
+        public static DistrictControl Instance { get; set; }
+        public static PlanningSettings PlanningSettings { get; set; }
+        public ObservableCollection<SimCase> Scenarios { get; set; }
+        public SimCase ASimCase { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnCustomPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "UseDistrictLosses")
@@ -109,10 +122,6 @@ namespace DistrictEnergy
 
             // DHSimulateDistrictEnergy.Instance.RerunSimulation(); // Todo: Uncomment this to activate dynamic refresh of results
         }
-
-        public static DistrictControl Instance { get; set; }
-        public static PlanningSettings PlanningSettings { get; set; }
-        public static DistrictSettings DistrictSettings { get; set; }
 
         private void ListBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -136,80 +145,27 @@ namespace DistrictEnergy
             RhinoApp.RunScript("DHLoadAdditionalProfile", true);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-
-        public class ComparisonConverter : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter,
-                System.Globalization.CultureInfo culture)
-            {
-                return value?.Equals(parameter);
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter,
-                System.Globalization.CultureInfo culture)
-            {
-                return value?.Equals(true) == true ? parameter : Binding.DoNothing;
-            }
-        }
-
         private void OnDropDownOpened(object sender, EventArgs e)
         {
             // SelectSimCase.SelectedItem = null;
         }
 
-        private void OnSimCaseChanged(object sender, SelectionChangedEventArgs e)
+        public void OnSimCaseChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SelectSimCase.SelectedItem != null)
             {
                 var item = (SimCase) SelectSimCase.SelectedItem;
-                if (item.Id == 1)
-                {
-                    ChilledWaterViewModel.Instance.OFF_ABS = 0;
-                    CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 0;
-                    ElectricGenerationViewModel.Instance.OFF_PV = 100;
-                    HotWaterViewModel.Instance.OFF_EHP = 100;
-                    HotWaterViewModel.Instance.OFF_SHW = 100;
-                    ElectricGenerationViewModel.Instance.OFF_WND = 100;
-                    ElectricGenerationViewModel.Instance.AUT_BAT = 0;
-                    HotWaterViewModel.Instance.AUT_HWT = 0;
-                }
+                ListOfPlantSettings.Clear();
+                if (item.ListOfPlantSettings == null) return;
+                foreach (var plant in item.ListOfPlantSettings) ListOfPlantSettings.Add(plant);
 
-                if (item.Id == 2)
-                {
-                    ChilledWaterViewModel.Instance.OFF_ABS = 0;
-                    CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 0;
-                    ElectricGenerationViewModel.Instance.OFF_PV = 0;
-                    HotWaterViewModel.Instance.OFF_EHP = 0;
-                    HotWaterViewModel.Instance.OFF_SHW = 0;
-                    ElectricGenerationViewModel.Instance.OFF_WND = 0;
-                    ElectricGenerationViewModel.Instance.AUT_BAT = 0;
-                    HotWaterViewModel.Instance.AUT_HWT = 0;
-                }
-
-                if (item.Id == 3)
-                {
-                    ChilledWaterViewModel.Instance.OFF_ABS = 100;
-                    CombinedHeatAndPowerViewModel.Instance.OFF_CHP = 100;
-                    CombinedHeatAndPowerViewModel.Instance.TMOD_CHP = LoadTypes.Elec;
-                    ElectricGenerationViewModel.Instance.OFF_PV = 0;
-                    HotWaterViewModel.Instance.OFF_EHP = 0;
-                    HotWaterViewModel.Instance.OFF_SHW = 0;
-                    ElectricGenerationViewModel.Instance.OFF_WND = 0;
-                    ElectricGenerationViewModel.Instance.AUT_BAT = 0;
-                    HotWaterViewModel.Instance.AUT_HWT = 0;
-                }
-
+                ChilledWaterViewModel.Instance.OnPropertyChanged(null);
+                ElectricGenerationViewModel.Instance.OnPropertyChanged(null);
+                HotWaterViewModel.Instance.OnPropertyChanged(null);
+                CombinedHeatAndPowerViewModel.Instance.OnPropertyChanged(null);
                 RhinoApp.WriteLine($"Plant settings changed to predefined case {item.DName}");
             }
-
-            OnPropertyChanged();
         }
-
-        GridLength[] starHeight;
-        private ObservableCollection<IThermalPlantSettings> _listOfPlantSettings;
-        private ObservableCollection<IBaseLoad> _listOfDistrictLoads;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -218,7 +174,7 @@ namespace DistrictEnergy
         }
 
         /// <summary>
-        /// See http://csuporj2.blogspot.com/2009/12/wpf-expanders-with-stretching-height.html for more information
+        ///     See http://csuporj2.blogspot.com/2009/12/wpf-expanders-with-stretching-height.html for more information
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -227,7 +183,7 @@ namespace DistrictEnergy
             ExpandedOrCollapsed(sender as Expander);
         }
 
-        void ExpandedOrCollapsed(Expander expander)
+        private void ExpandedOrCollapsed(Expander expander)
         {
             if (expander.Parent is Grid grid && grid.Name == "ExpanderGrid")
             {
@@ -248,6 +204,61 @@ namespace DistrictEnergy
 
             var isExpanded = MyExpander.IsExpanded;
             splitter.Visibility = isExpanded ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void BtnOk_Click(object sender, RoutedEventArgs e)
+        {
+            var inputScenarioName = DistrictSettingsViewModel.InputScenarioName;
+            if (string.IsNullOrEmpty(inputScenarioName)) return;
+            var json = PlantSettingsViewModel.SerializeToString(Instance.ListOfPlantSettings);
+            Instance.Scenarios.Add(new SimCase
+            {
+                DName = inputScenarioName,
+                ListOfPlantSettings = new ObservableCollection<IThermalPlantSettings>(PlantSettingsViewModel.DeserializeFromString(json))
+            });
+            DistrictSettingsViewModel.Instance.OnPropertyChanged(nameof(DistrictSettingsViewModel.Instance.SimCases));
+            DistrictSettingsViewModel.Instance.IsDialogBoxVisible = Visibility.Collapsed;
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            DistrictSettingsViewModel.Instance.IsDialogBoxVisible = Visibility.Collapsed;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DistrictSettingsViewModel.Instance.IsDialogBoxVisible = Visibility.Visible;
+        }
+
+
+        public class ComparisonConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter,
+                CultureInfo culture)
+            {
+                return value?.Equals(parameter);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter,
+                CultureInfo culture)
+            {
+                return value?.Equals(true) == true ? parameter : Binding.DoNothing;
+            }
+        }
+
+        private void RemoveRemotePathItem_Click(object sender, RoutedEventArgs e)
+        {
+            var depObj = sender as DependencyObject;
+
+            while (!(depObj is ComboBoxItem))
+            {
+                if (depObj == null) return;
+                depObj = VisualTreeHelper.GetParent(depObj);
+            }
+
+            var comboBoxItem = depObj as ComboBoxItem;
+            Instance.Scenarios.Remove((SimCase)comboBoxItem.Content);
+            DistrictSettingsViewModel.Instance.OnPropertyChanged(nameof(DistrictSettingsViewModel.Instance.SimCases));
         }
     }
 

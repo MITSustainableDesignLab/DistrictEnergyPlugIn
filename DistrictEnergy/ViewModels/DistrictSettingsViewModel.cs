@@ -1,9 +1,16 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Media;
 using DistrictEnergy.Annotations;
+using DistrictEnergy.Helpers;
+using DistrictEnergy.Networks.ThermalPlants;
 using Newtonsoft.Json;
+using Rhino;
 using Umi.RhinoServices.Context;
 using Umi.RhinoServices.UmiEvents;
 
@@ -11,32 +18,50 @@ namespace DistrictEnergy.ViewModels
 {
     public class DistrictSettingsViewModel : INotifyPropertyChanged
     {
+        private Visibility _isDialogBoxVisible;
+
         public DistrictSettingsViewModel()
         {
+            Instance = this;
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
         }
 
         public ObservableCollection<SimCase> SimCases
         {
-            get => DistrictControl.DistrictSettings.SimCases;
+            get => DistrictControl.Instance.Scenarios;
             set
             {
-                DistrictControl.DistrictSettings.SimCases = value;
+                DistrictControl.Instance.Scenarios = value;
                 OnPropertyChanged();
             }
         }
 
         public SimCase ASimCase
         {
-            get => DistrictControl.DistrictSettings.ASimCase;
+            get => DistrictControl.Instance.ASimCase;
             set
             {
-                if (Equals(value, DistrictControl.DistrictSettings.ASimCase = value)) return;
-                DistrictControl.DistrictSettings.ASimCase = value;
+                if (Equals(value, DistrictControl.Instance.ASimCase = value)) return;
+                DistrictControl.Instance.ASimCase = value;
                 OnPropertyChanged();
             }
         }
+
+        public static string InputScenarioName { get; set; }
+
+        public Visibility IsDialogBoxVisible
+        {
+            get => _isDialogBoxVisible;
+            set
+            {
+                if (value == _isDialogBoxVisible) return;
+                _isDialogBoxVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public static DistrictSettingsViewModel Instance { get; set; }
 
         private void RhinoDoc_EndSaveDocument(object sender, UmiContext e)
         {
@@ -45,21 +70,34 @@ namespace DistrictEnergy.ViewModels
 
         private void PopulateFrom(object sender, UmiContext e)
         {
+            IsDialogBoxVisible = Visibility.Collapsed;
+            SimCases.Clear();
             LoadSettings(e);
-            LoadSimCases(e);
+            // LoadSimCases(e);
         }
 
         private void LoadSettings(UmiContext context)
         {
             if (context == null) return;
-            var path = context.AuxiliaryFiles.GetFullPath("districtSettings.json");
+            var path = context.AuxiliaryFiles.GetFullPath("district_energy_scenarios.json");
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                DistrictControl.DistrictSettings = JsonConvert.DeserializeObject<DistrictSettings>(json);
+                try
+                {
+                    DistrictControl.Instance.Scenarios = JsonConvert.DeserializeObject<ObservableCollection<SimCase>>(json, new JsonSerializerSettings
+                    {
+                        DefaultValueHandling = DefaultValueHandling.Populate,
+                        TypeNameHandling = TypeNameHandling.Objects,
+                        SerializationBinder = _knownTypesBinder
+                    });
+                }
+                catch (Exception e)
+                {
+                    RhinoApp.WriteLine(e.Message);
+                }
             }
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DistrictSettings)));
+            OnPropertyChanged(nameof(Instance.SimCases));
         }
 
         private void SaveSettings(UmiContext e)
@@ -68,25 +106,45 @@ namespace DistrictEnergy.ViewModels
 
             if (context == null) return;
 
-            var dSjson = JsonConvert.SerializeObject(DistrictControl.DistrictSettings);
-            context.AuxiliaryFiles.StoreText("districtSettings.json", dSjson);
+            var dSjson = JsonConvert.SerializeObject(DistrictControl.Instance.Scenarios, Formatting.Indented,
+                new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Objects,
+                    SerializationBinder = _knownTypesBinder
+                });
+            context.AuxiliaryFiles.StoreText("district_energy_scenarios.json", dSjson);
         }
 
-        private void LoadSimCases(UmiContext context)
+        private static readonly PlantSettingsViewModel.KnownTypesBinder _knownTypesBinder = new PlantSettingsViewModel.KnownTypesBinder
         {
-            if (context == null) return;
-            SimCases = new ObservableCollection<SimCase>
+            KnownTypes = new List<Type>
             {
-                new SimCase {Id = 1, DName = "Net Zero Community"},
-                new SimCase {Id = 2, DName = "Business As Usual"},
-                new SimCase {Id = 3, DName = "TriGeneration (all gas)"}
-            };
-        }
+                typeof(ObservableCollection<SimCase>),
+                typeof(SimCase),
+                typeof(AbsorptionChiller),
+                typeof(BatteryBank),
+                typeof(CombinedHeatNPower),
+                typeof(ElectricChiller),
+                typeof(ElectricHeatPump),
+                typeof(HotWaterStorage),
+                typeof(NatGasBoiler),
+                typeof(PhotovoltaicArray),
+                typeof(SolarThermalCollector),
+                typeof(WindTurbine),
+                typeof(GridElectricity),
+                typeof(GridGas),
+                typeof(CustomEnergySupplyModule),
+                typeof(ElectricityExport),
+                typeof(CoolingExport),
+                typeof(HeatingExport),
+                typeof(Dictionary<LoadTypes, SolidColorBrush>)
+            }
+        };
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -3,12 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:DistrictEnergy"
              xmlns:vm="clr-namespace:DistrictEnergy.ViewModels"
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:views="clr-namespace:DistrictEnergy.Views"
-             xmlns:helpers="clr-namespace:DistrictEnergy.Helpers"
              xmlns:plantSettings="clr-namespace:DistrictEnergy.Views.PlantSettings"
              xmlns:resultViews="clr-namespace:DistrictEnergy.Views.ResultViews"
              xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
@@ -41,19 +37,57 @@
 
     <Grid Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" /><!-- Scenarios -->
-            <RowDefinition /><!-- LiveChart -->
-            <RowDefinition Height="Auto" /><!-- GridSplitter -->
-            <RowDefinition /><!-- Button --><!-- Expander -->
+            <RowDefinition Height="Auto" />
+            <!-- Scenarios -->
+            <RowDefinition />
+            <!-- LiveChart -->
+            <RowDefinition Height="Auto" />
+            <!-- GridSplitter -->
+            <RowDefinition />
+            <!-- Button -->
+            <!-- Expander -->
         </Grid.RowDefinitions>
-        <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
-                  SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario"
-                  Style="{StaticResource MaterialDesignComboBox}"
-                  DisplayMemberPath="DName">
-            <ComboBox.DataContext>
-                <vm:DistrictSettingsViewModel />
-            </ComboBox.DataContext>
-        </ComboBox>
+        <Grid>
+            <Grid.DataContext>
+                <vm:DistrictSettingsViewModel/>
+            </Grid.DataContext>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="164*" />
+                <ColumnDefinition Width="61*" />
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="SelectSimCase" Width="Auto" ItemsSource="{Binding SimCases}" Margin="5"
+                      SelectedItem="{Binding ASimCase}" materialDesign:HintAssist.Hint="Choose A Scenario"
+                      Style="{StaticResource MaterialDesignComboBox}" Height="25">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <Button x:Name="Delete" Style="{DynamicResource MaterialDesignToolButton}" Click="RemoveRemotePathItem_Click">
+                                <materialDesign:PackIcon Kind="delete" VerticalAlignment="Center" />
+                            </Button>
+                            <TextBlock Name="ItemTextBlock" VerticalAlignment="Center" Text="{Binding Path=DName}"></TextBlock>
+                        </DockPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Content="Save Scenario" Grid.Column="1" Height="Auto" Margin="0,2,0,1" Click="Button_Click" />
+            <StackPanel Margin="5,5,5,5" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Visibility="{Binding IsDialogBoxVisible}">
+                <TextBox Text="{Binding InputScenarioName, BindsDirectlyToSource=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         materialDesign:HintAssist.Hint="Name the scenario..." materialDesign:HintAssist.IsFloating="True" />
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Name="BtnOk" Content="OK" Grid.Column="0" Margin="0,0,5,0" Padding="8" Click="BtnOk_Click" />
+                    <Button Name="BtnCancel" Content="Cancel" Grid.Column="1" Margin="5,0,0,0" Padding="8"
+                            Click="BtnCancel_Click" />
+                </Grid>
+            </StackPanel>
+        </Grid>
 
 
         <dragablz:TabablzControl Margin="5" Grid.Row="1">
@@ -70,10 +104,10 @@
                 <resultViews:Loads Margin="0,5,0,0" />
             </TabItem>
             <TabItem Header="Summary">
-                <resultViews:Summary  Margin="0,5,0,0" />
+                <resultViews:Summary Margin="0,5,0,0" />
             </TabItem>
             <TabItem Header="Demands">
-                <resultViews:Demands  Margin="0,5,0,0" />
+                <resultViews:Demands Margin="0,5,0,0" />
             </TabItem>
         </dragablz:TabablzControl>
 
