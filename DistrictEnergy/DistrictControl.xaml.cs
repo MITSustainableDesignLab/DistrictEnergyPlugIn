@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using DistrictEnergy.Annotations;
 using DistrictEnergy.Helpers;
 using DistrictEnergy.Networks.Loads;
@@ -243,6 +244,21 @@ namespace DistrictEnergy
             {
                 return value?.Equals(true) == true ? parameter : Binding.DoNothing;
             }
+        }
+
+        private void RemoveRemotePathItem_Click(object sender, RoutedEventArgs e)
+        {
+            var depObj = sender as DependencyObject;
+
+            while (!(depObj is ComboBoxItem))
+            {
+                if (depObj == null) return;
+                depObj = VisualTreeHelper.GetParent(depObj);
+            }
+
+            var comboBoxItem = depObj as ComboBoxItem;
+            Instance.Scenarios.Remove((SimCase)comboBoxItem.Content);
+            DistrictSettingsViewModel.Instance.OnPropertyChanged(nameof(DistrictSettingsViewModel.Instance.SimCases));
         }
     }
 
