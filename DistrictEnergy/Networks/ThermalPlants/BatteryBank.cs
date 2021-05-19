@@ -75,9 +75,14 @@ namespace DistrictEnergy.Networks.ThermalPlants
                 };
             set => throw new NotImplementedException();
         }
-
-        [JsonIgnore] public override double ChargingEfficiency => 1 - LOSS_BAT;
-        [JsonIgnore] public override double DischargingEfficiency => 1 - LOSS_BAT;
+        /// <summary>
+        /// Assumed half of the roundtrip efficiency
+        /// </summary>
+        [JsonIgnore] public override double ChargingEfficiency => (1 - LOSS_BAT / 2);
+        /// <summary>
+        /// Assumed half of the roundtrip efficiency
+        /// </summary>
+        [JsonIgnore] public override double DischargingEfficiency => (1 - LOSS_BAT / 2);
         [JsonIgnore] public override double MaxChargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
         [JsonIgnore] public override double MaxDischargingRate => Capacity > 0 ? Capacity / AUT_BAT : 0;
         [JsonIgnore] public override double StartingCapacity => BAT_START;
