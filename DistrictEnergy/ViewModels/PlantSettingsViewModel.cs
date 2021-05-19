@@ -19,7 +19,7 @@ namespace DistrictEnergy.ViewModels
 {
     public class PlantSettingsViewModel : INotifyPropertyChanged
     {
-        private readonly KnownTypesBinder _knownTypesBinder = new KnownTypesBinder
+        private static readonly KnownTypesBinder _knownTypesBinder = new KnownTypesBinder
         {
             KnownTypes = new List<Type>
             {
@@ -48,6 +48,7 @@ namespace DistrictEnergy.ViewModels
             Instance = this;
             UmiEventSource.Instance.ProjectSaving += RhinoDoc_EndSaveDocument;
             UmiEventSource.Instance.ProjectOpened += PopulateFrom;
+            // DistrictControl.Instance.SimCaseChanged += PopulateFrom;
         }
 
         public static PlantSettingsViewModel Instance { get; set; }
@@ -56,7 +57,7 @@ namespace DistrictEnergy.ViewModels
 
         // Create the OnPropertyChanged method to raise the event
         // The calling member's name will be used as the parameter.
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        public void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -86,14 +87,7 @@ namespace DistrictEnergy.ViewModels
             if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
-                DistrictControl.Instance.ListOfPlantSettings =
-                    JsonConvert.DeserializeObject<ObservableCollection<IThermalPlantSettings>>(json,
-                        new JsonSerializerSettings
-                        {
-                            DefaultValueHandling = DefaultValueHandling.Populate,
-                            TypeNameHandling = TypeNameHandling.Objects,
-                            SerializationBinder = _knownTypesBinder
-                        });
+                DistrictControl.Instance.ListOfPlantSettings = DeserializeFromString(json);
 
                 if (!DistrictControl.Instance.ListOfPlantSettings.OfType<GridElectricity>().Any())
                 {
@@ -121,18 +115,37 @@ namespace DistrictEnergy.ViewModels
             OnPropertyChanged(string.Empty);
         }
 
+        public static ObservableCollection<IThermalPlantSettings> DeserializeFromString(string json)
+        {
+            var plants =
+                JsonConvert.DeserializeObject<ObservableCollection<IThermalPlantSettings>>(json,
+                    new JsonSerializerSettings
+                    {
+                        DefaultValueHandling = DefaultValueHandling.Populate,
+                        TypeNameHandling = TypeNameHandling.Objects,
+                        SerializationBinder = _knownTypesBinder
+                    });
+            return plants;
+        }
+
         private void SaveSettings(UmiContext e)
         {
             var context = e;
 
             if (context == null) return;
-            var dSjson = JsonConvert.SerializeObject(DistrictControl.Instance.ListOfPlantSettings, Formatting.Indented,
+            var dSjson = SerializeToString(DistrictControl.Instance.ListOfPlantSettings);
+            context.AuxiliaryFiles.StoreText("ThermalPlantSettings.json", dSjson);
+        }
+
+        public static string SerializeToString(ObservableCollection<IThermalPlantSettings> listOfPlantSettings)
+        {
+            var dSjson = JsonConvert.SerializeObject(listOfPlantSettings, Formatting.Indented,
                 new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.Objects,
                     SerializationBinder = _knownTypesBinder
                 });
-            context.AuxiliaryFiles.StoreText("ThermalPlantSettings.json", dSjson);
+            return dSjson;
         }
 
         public class KnownTypesBinder : ISerializationBinder
