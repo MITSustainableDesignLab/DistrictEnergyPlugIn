@@ -76,7 +76,7 @@
                             ScrollBarFill="#134682b4"
                             DataTooltip="{x:Null}"
                             Hoverable="False"
-                            Series="{Binding StorageSeriesCollection}" Margin="35,0,0,10" Grid.RowSpan="2">
+                            Series="{Binding StorageSeriesCollection}" Margin="35,0,0,10">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis ShowLabels="True"
                           IsMerged="True"
