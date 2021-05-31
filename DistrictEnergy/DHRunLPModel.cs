@@ -21,10 +21,17 @@ namespace DistrictEnergy
 {
     public class DhRunLpModel : UmiCommand
     {
+        #region Variables
+
         /// <summary>
         ///     Var: Total Area (m2)
         /// </summary>
         public Dictionary<SolarInput, Variable> Area = new Dictionary<SolarInput, Variable>();
+
+        /// <summary>
+        ///     Var: Number of Wind Turbines
+        /// </summary>
+        public Dictionary<WindInput, Variable> NWind = new Dictionary<WindInput, Variable>();
 
         /// <summary>
         ///     Var: Capacity of each supply module of the energy hub (kW); For storage capacities, units are kWh"
@@ -39,17 +46,6 @@ namespace DistrictEnergy
             new Dictionary<(int, Exportable), Variable>();
 
         /// <summary>
-        ///     Param: DistrictLoad Demand (Umi Buildings + Additional Loads + Losses)
-        /// </summary>
-        public Dictionary<(int, LoadTypes, IBaseLoad), double> Load =
-            new Dictionary<(int, LoadTypes, IBaseLoad), double>();
-
-        /// <summary>
-        ///     Var: Number of Wind Turbines
-        /// </summary>
-        public Dictionary<WindInput, Variable> NWind = new Dictionary<WindInput, Variable>();
-
-        /// <summary>
         ///     Var: Input energy flow at each supply module of the energy hub at each time step (kWh)"
         /// </summary>
         public Dictionary<(int, IThermalPlantSettings), Variable> P =
@@ -58,20 +54,28 @@ namespace DistrictEnergy
         /// <summary>
         ///     Var: Input energy flow at each storage module of the energy hub at each time step"
         /// </summary>
-        public Dictionary<(int, IThermalPlantSettings), Variable> Qin =
-            new Dictionary<(int, IThermalPlantSettings), Variable>();
+        public Dictionary<(int, Storage), Variable> Qin =
+            new Dictionary<(int, Storage), Variable>();
 
         /// <summary>
         ///     Var: Output energy flow at each storage module of the energy hub at each time step"
         /// </summary>
-        public Dictionary<(int, IThermalPlantSettings), Variable> Qout =
-            new Dictionary<(int, IThermalPlantSettings), Variable>();
+        public Dictionary<(int, Storage), Variable> Qout =
+            new Dictionary<(int, Storage), Variable>();
 
         /// <summary>
         ///     Var: Storage state at each storage module of the energy hub at each time step"
         /// </summary>
-        public Dictionary<(int, IThermalPlantSettings), Variable> S =
-            new Dictionary<(int, IThermalPlantSettings), Variable>();
+        public Dictionary<(int, Storage), Variable> S =
+            new Dictionary<(int, Storage), Variable>();
+
+        #endregion
+
+        /// <summary>
+        ///     Param: DistrictLoad Demand (Umi Buildings + Additional Loads + Losses)
+        /// </summary>
+        public Dictionary<(int, LoadTypes, IBaseLoad), double> Load =
+            new Dictionary<(int, LoadTypes, IBaseLoad), double>();
 
         public DhRunLpModel()
         {
